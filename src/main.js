@@ -1,5 +1,5 @@
 
-import initNw from './shared/InitNw';
+import init from './shared/Init';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Root from './components/Root';
@@ -13,11 +13,11 @@ Promise.all([
 		}
 	})
 ]).then(() => {
-	// var win = window.nw.Window.get();
+	// window.nw && window.nw.Window.get()
+	// var win = ;
 	// win.showDevTools();
-	//require('nw.gui').Window.get().showDevTools(false);
-	initNw();
-	console.log(initNw);
+	require('nw.gui').Window.get().showDevTools();
+	init();
 
 	if (process.env.NODE_ENV === 'development') {
       var head = document.getElementsByTagName('head')[0];
@@ -26,7 +26,6 @@ Promise.all([
       script.src = 'http://localhost:35729/livereload.js';
       head.appendChild(script);
     }
-    delete global.require.cache;
 	console.log('window onload');
 	ReactDOM.render(<Root />,document.getElementById('app'));
 });

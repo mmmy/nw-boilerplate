@@ -1,18 +1,17 @@
 import React from 'react';
+import MainChart from './main_chart/MainChart';
 
 class Root extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log(props,'aaa');
-		//window.alert('aa');
 	}
 
 	handleClick(){
-		alert('clicked-0-');
+		alert('clicked--');
 	}
 
 	render(){
-		return <div><h2 onClick={this.handleClick}>Root</h2><button onClick={this.handleClick}>click</button></div>;
+		return <MainChart />;
 	}
 }
 

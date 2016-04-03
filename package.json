@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "onkeystone new project",
   "main": "./build/index.html",
+  "chromium-args": "--mixed-context",
   "window": {
     "show": true,
     "width": 1280,

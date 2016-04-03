@@ -3,9 +3,36 @@
 <head>
 	<title>keystone</title>
 	<link rel="stylesheet" type="text/css" href="main.css" />
+	<!-- <script type="text/javascript" src='../node_modules/jquery/dist/jquery.min.js '></script> -->
+	<!-- <script type="text/javascript" src='../tradingview/charting_library/charting_library.js'></script> -->
+	<!-- <script type="text/javascript" src='../tradingview/charting_library/datafeed/udf/datafeed.js'></script> -->
+	<script type="text/javascript">
+		if(window.nw == undefined){ 					//nw 0.12.3
+			global.document = window.document;
+			global.navigator = window.navigator;
+			global.DOMParser = window.DOMParser;
+			global.localStorage = window.localStorage;
+			global.focus = window.focus;
+			global.location = window.location;		
+		}
+	</script>
 </head>
 <body>
 	<div id='app'></div>
+	<script type="text/javascript">
+		var gulp = require('gulp');
+		gulp.task('reload', function(){
+			console.log('reload');
+			if(window.nw){                             //nw 0.13.2
+				chrome.runtime.reload();
+			}else{
+				var gui = require('nw.gui');
+			  	var win = gui.Window.get();
+			  	win.reloadDev();
+			}
+		});	
+		gulp.watch(['./build/*.js','./build/**/*.js'], ['reload']);
+	</script>
 	<script src="main.js"></script>
 </body>
 </html>

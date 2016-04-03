@@ -1,8 +1,8 @@
 'use strict';
 
-var _InitNw = require('./shared/InitNw');
+var _Init = require('./shared/Init');
 
-var _InitNw2 = _interopRequireDefault(_InitNw);
+var _Init2 = _interopRequireDefault(_Init);
 
 var _react = require('react');
 
@@ -25,11 +25,11 @@ Promise.all([new Promise(function (resolve) {
 		window.attachEvent('onLoad', resolve);
 	}
 })]).then(function () {
-	// var win = window.nw.Window.get();
+	// window.nw && window.nw.Window.get()
+	// var win = ;
 	// win.showDevTools();
-	//require('nw.gui').Window.get().showDevTools(false);
-	(0, _InitNw2.default)();
-	console.log(_InitNw2.default);
+	require('nw.gui').Window.get().showDevTools();
+	(0, _Init2.default)();
 
 	if (process.env.NODE_ENV === 'development') {
 		var head = document.getElementsByTagName('head')[0];
@@ -38,7 +38,6 @@ Promise.all([new Promise(function (resolve) {
 		script.src = 'http://localhost:35729/livereload.js';
 		head.appendChild(script);
 	}
-	delete global.require.cache;
 	console.log('window onload');
 	_reactDom2.default.render(_react2.default.createElement(_Root2.default, null), document.getElementById('app'));
 });

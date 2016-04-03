@@ -1,0 +1,4 @@
+[submodule "tradingview"]
+	path = tradingview
+	url = https://github.com/onekeystone/charting_library.git
+	branch = beautify1.4

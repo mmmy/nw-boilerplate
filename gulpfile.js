@@ -62,7 +62,7 @@ gulp.task('watch', ['html', 'scripts', 'styles'], function(){
 	var env = process.env;
 	env.NODE_ENV = 'development';
 	gulp.src('')
-	.pipe($.shell(['/Users/yangqi/lib/nw/nwjs.app/Contents/MacOS/nwjs --child-clean-exit --remote-debugging-port=9000 .'], {
+	.pipe($.shell(['nw12 --child-clean-exit --remote-debugging-port=9000 .'], {
 		env: env
 	}));
 });
