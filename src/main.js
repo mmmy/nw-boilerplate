@@ -2,7 +2,11 @@
 import init from './shared/Init';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+
 import Root from './components/Root';
+import Store from './flux';
+
 
 Promise.all([
 	new Promise((resolve) => {
@@ -27,5 +31,5 @@ Promise.all([
       head.appendChild(script);
     }
 	console.log('window onload');
-	ReactDOM.render(<Root />,document.getElementById('app'));
+	ReactDOM.render(<Provider store={Store}><Root /></Provider>, document.getElementById('app'));
 });

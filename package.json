@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "onkeystone search",
   "main": "./build/index.html",
-  "chromium-args": "--mixed-context",
   "window": {
     "show": true,
     "width": 1280,
@@ -13,8 +12,7 @@
     "resizable": true,
     "standard-window": false,
     "fullscreen": false,
-    "frame": true,
-    "node-main": "."
+    "frame": true
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,6 +24,7 @@
     "babel-preset-es2015": "^6.6.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
+    "gulp-eslint": "^2.0.0",
     "gulp-less": "^3.0.5",
     "gulp-livereload": "^3.8.1",
     "gulp-load-plugins": "^1.2.0",
@@ -41,6 +40,7 @@
     "react": "^0.14.7",
     "react-bootstrap": "^0.28.4",
     "react-dom": "^0.14.7",
+    "react-redux": "^4.4.1",
     "redux": "^3.3.1"
   }
 }

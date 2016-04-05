@@ -34,7 +34,10 @@ gulp.task('scripts', [], function(){
       	this.emit('end');
 	}))
 	.pipe($.babel())
-	.pipe(gulp.dest(paths.BUILD));
+	.pipe(gulp.dest(paths.BUILD))
+	// .pipe($.eslint())
+	// .pipe($.eslint.format())
+	// .pipe($.eslint.failAfterError());
 });
 
 gulp.task('styles', [], function(){

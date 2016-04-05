@@ -12,9 +12,15 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _reactRedux = require('react-redux');
+
 var _Root = require('./components/Root');
 
 var _Root2 = _interopRequireDefault(_Root);
+
+var _flux = require('./flux');
+
+var _flux2 = _interopRequireDefault(_flux);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39,5 +45,9 @@ Promise.all([new Promise(function (resolve) {
 		head.appendChild(script);
 	}
 	console.log('window onload');
-	_reactDom2.default.render(_react2.default.createElement(_Root2.default, null), document.getElementById('app'));
+	_reactDom2.default.render(_react2.default.createElement(
+		_reactRedux.Provider,
+		{ store: _flux2.default },
+		_react2.default.createElement(_Root2.default, null)
+	), document.getElementById('app'));
 });
