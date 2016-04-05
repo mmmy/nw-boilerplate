@@ -1,7 +1,7 @@
 {
   "name": "keystone_search",
   "version": "1.0.0",
-  "description": "onkeystone new project",
+  "description": "onkeystone search",
   "main": "./build/index.html",
   "chromium-args": "--mixed-context",
   "window": {

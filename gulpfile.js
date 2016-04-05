@@ -11,7 +11,7 @@ var $ 		= require('gulp-load-plugins')();
 var paths = {
 	APP: 		'src/index.html',
 	STYLES: 	['src/styles/*.less', 'src/styles/**/*.less'],
-	SCRIPTS: 		['src/*.js', 'src/**/*.js'],
+	SCRIPTS: 	['src/*.js', 'src/**/*.js'],
 	COMPONENTS: ['src/components/**/*.js'],
 	FLUX: 		['src/flux/*.js','src/flux/**/*.js'],	
 	BUILD: 		'./build',
@@ -62,7 +62,7 @@ gulp.task('watch', ['html', 'scripts', 'styles'], function(){
 	var env = process.env;
 	env.NODE_ENV = 'development';
 	gulp.src('')
-	.pipe($.shell(['nw12 --child-clean-exit --remote-debugging-port=9000 .'], {
+	.pipe($.shell(['nw --child-clean-exit --remote-debugging-port=9000 .'], {
 		env: env
 	}));
 });
