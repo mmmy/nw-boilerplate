@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
-import ReactTradingView from '../widgets/ReactTradingView';
-import { STOCK_VIEW } from '../utils/Const';
+import { connect } from 'react-redux';
+import ReactTradingView from '../components/ReactTradingView';
+import { STOCK_VIEW } from '../flux/constants/Const';
 
 class StockView extends React.Component {
 
@@ -28,7 +29,7 @@ class StockView extends React.Component {
 	}
 
 	render(){
-
+		let { stockView } = this.props;
 		let options = {
 				fullscreen: true,
 				symbol: 'AA',
@@ -50,8 +51,18 @@ class StockView extends React.Component {
 				height: 300,
 			};
 
-		return <div className={"transition-all container-stockview " + (this.props.show ? "" : "stockview-hide")}>{/*<ReactTradingView viewId={ STOCK_VIEW } options={ options }/>*/}</div>;
+		return <div className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")}>{/*<ReactTradingView viewId={ STOCK_VIEW } options={ options }/>*/}</div>;
 	}
 }
 
-export default StockView;
+var mapStateToProps = function mapStateToProps(state) {
+	console.log('state changed');
+	const { layout } = state;
+	const { stockView } = layout;
+	return {
+	  stockView
+	};
+}
+
+export default connect(mapStateToProps)(StockView);
+

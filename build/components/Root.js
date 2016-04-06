@@ -50,14 +50,15 @@ var propTypes = {
 	dispatch: _react.PropTypes.func.isRequired
 };
 
-function mapStateToProps(state) {
+var mapStateToProps = function mapStateToProps(state) {
+	console.log('state changed');
 	var layout = state.layout;
 	var stockView = layout.stockView;
 
 	return {
 		stockView: stockView
 	};
-}
+};
 
 // function mapDispatchProps(dispatch) {
 //   return {

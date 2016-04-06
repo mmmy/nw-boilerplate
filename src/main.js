@@ -1,14 +1,18 @@
+import 'babel-polyfill';
 
 import init from './shared/Init';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import Root from './components/Root';
+
+import Root from './containers/Root';
 import GenerateStore from './flux/GenerateStore';
 
 let store = GenerateStore();
 window.store = store;
+
+
 Promise.all([
 	new Promise((resolve) => {
 		if(window.addEventListener) {
@@ -24,6 +28,10 @@ Promise.all([
 	require('nw.gui').Window.get().showDevTools();
 	init();
 
+	store.subscribe(function(state){
+	console.log('1111',state);
+});
+
 	if (process.env.NODE_ENV === 'development') {
       var head = document.getElementsByTagName('head')[0];
       var script = document.createElement('script');
@@ -31,6 +39,5 @@ Promise.all([
       script.src = 'http://localhost:35729/livereload.js';
       head.appendChild(script);
     }
-	console.log('window onload');
 	ReactDOM.render(<Provider store={store}><Root /></Provider>, document.getElementById('app'));
 });

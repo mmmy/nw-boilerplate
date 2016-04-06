@@ -5,12 +5,14 @@ const initalState = {
 }
 
 export default function layout(state = initalState, action) {
-	console.log('layout action');
+
 	switch (action.type) {
+		
 		case types.TOGGLE_STOCK_VIEW:
-			state.stockView = !state.stockView;
-			console.log(state);
-			return state;
+			return {
+				...state,
+				stockView: !state.stockView
+			};
 
 		default:
 			return state;

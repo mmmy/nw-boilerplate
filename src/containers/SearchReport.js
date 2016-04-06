@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Comparator from './Comparator';
 import SearchDetail from './SearchDetail';
 
@@ -43,4 +44,12 @@ class SearchReport extends React.Component {
 
 SearchReport.defaultProps = defaultProps;
 
-export default SearchReport;
+var stateToProps = function(state){
+	const {layout} = state;
+	const {stockView} = layout;
+	return {
+		fullView: !stockView
+	}
+};
+
+export default connect(stateToProps)(SearchReport);

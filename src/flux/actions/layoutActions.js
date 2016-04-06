@@ -1,7 +1,7 @@
 import * as types from '../constants/ActionTypes';
  
 
-export function toggleStockView() {
+var toggleStockView = function toggleStockView() {
 	// return (dispatch) => {
 	// 	dispatch(() => {
 	// 		return {
@@ -17,4 +17,8 @@ export function toggleStockView() {
 	// return {
 	// 		type: types.TOGGLE_STOCK_VIEW,
 	// 		}
+}
+
+module.exports = {
+	toggleStockView
 }

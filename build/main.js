@@ -1,5 +1,7 @@
 'use strict';
 
+require('babel-polyfill');
+
 var _Init = require('./shared/Init');
 
 var _Init2 = _interopRequireDefault(_Init);
@@ -14,7 +16,7 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _reactRedux = require('react-redux');
 
-var _Root = require('./components/Root');
+var _Root = require('./containers/Root');
 
 var _Root2 = _interopRequireDefault(_Root);
 
@@ -26,6 +28,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var store = (0, _GenerateStore2.default)();
 window.store = store;
+
 Promise.all([new Promise(function (resolve) {
 	if (window.addEventListener) {
 		window.addEventListener('DOMContentLoaded', resolve);
@@ -39,6 +42,10 @@ Promise.all([new Promise(function (resolve) {
 	require('nw.gui').Window.get().showDevTools();
 	(0, _Init2.default)();
 
+	store.subscribe(function (state) {
+		console.log('1111', state);
+	});
+
 	if (process.env.NODE_ENV === 'development') {
 		var head = document.getElementsByTagName('head')[0];
 		var script = document.createElement('script');
@@ -46,7 +53,6 @@ Promise.all([new Promise(function (resolve) {
 		script.src = 'http://localhost:35729/livereload.js';
 		head.appendChild(script);
 	}
-	console.log('window onload');
 	_reactDom2.default.render(_react2.default.createElement(
 		_reactRedux.Provider,
 		{ store: store },
