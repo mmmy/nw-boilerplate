@@ -18,12 +18,14 @@ var _Root = require('./components/Root');
 
 var _Root2 = _interopRequireDefault(_Root);
 
-var _flux = require('./flux');
+var _GenerateStore = require('./flux/GenerateStore');
 
-var _flux2 = _interopRequireDefault(_flux);
+var _GenerateStore2 = _interopRequireDefault(_GenerateStore);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var store = (0, _GenerateStore2.default)();
+window.store = store;
 Promise.all([new Promise(function (resolve) {
 	if (window.addEventListener) {
 		window.addEventListener('DOMContentLoaded', resolve);
@@ -47,7 +49,7 @@ Promise.all([new Promise(function (resolve) {
 	console.log('window onload');
 	_reactDom2.default.render(_react2.default.createElement(
 		_reactRedux.Provider,
-		{ store: _flux2.default },
+		{ store: store },
 		_react2.default.createElement(_Root2.default, null)
 	), document.getElementById('app'));
 });

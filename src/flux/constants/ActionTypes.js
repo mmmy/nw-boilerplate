@@ -1,0 +1,1 @@
+export const TOGGLE_STOCK_VIEW = 'TOGGLE_STOCK_VIEW';

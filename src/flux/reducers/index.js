@@ -1,15 +1,7 @@
 import { combineReducers } from 'redux';
+import layout from './layout';
 
-function toggleStockView(state = true, action){
-
-	switch (action.type) {
-		case "TOGGLE_STOCK_VIEW":
-			return !state;
-		default:
-			return state;
-	}
-};
 
 export default combineReducers({
-	toggleStockView,
+	layout,
 });

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import MainContainer from './main-container/MainContainer';
 import { connect } from 'react-redux'
-
+import { toggleStockView } from '../flux/actions/layoutActions';
 import Header from './header/Header';
 import RightToolBar from './right-tool-bar/RightToolBar';
 import CoreApp from './core-app/CoreApp';
@@ -9,27 +9,32 @@ import CoreApp from './core-app/CoreApp';
 import StockView from './stock-view/StockView';
 import SearchReport from './search-report/SearchReport';
 
+const propTypes = {
+	dispatch: PropTypes.func.isRequired,
+};
+
 function mapStateToProps(state) {
-  return {
-    toggleStockView: state.toggleStockView
-  };
+	const { layout } = state;
+	const { stockView } = layout;
+	return {
+	  stockView
+	};
 }
 
-function mapDispatchProps(dispatch) {
-  return {
-    toggleView: function(toggleStockView){ dispatch({type:"TOGGLE_STOCK_VIEW", toggleStockView:toggleStockView}); },
-  };
-}
+// function mapDispatchProps(dispatch) {
+//   return {
+//     toggleView: function(toggleStockView){ dispatch({type:"TOGGLE_STOCK_VIEW", toggleStockView:toggleStockView}); },
+//   };
+// }
 
 class Root extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		this.state = {viewStock:true};
 	}
 
 	render(){
-		const { toggleStockView,  toggleView} = this.props;
+		const { stockView } = this.props;
 		return <MainContainer>
 
 			<Header />
@@ -37,19 +42,20 @@ class Root extends React.Component {
 			<RightToolBar />
 
 			<CoreApp>
-				<StockView show={toggleStockView}/>
-				<div><button className="btn btn-default" onClick={toggleView.bind(this, !toggleStockView)}>云搜索</button></div>
-				<SearchReport fullView={!toggleStockView}/>
+				<StockView show={stockView}/>
+				<div><button className="btn btn-default" onClick={this.toggleView.bind(this)}>云搜索</button></div>
+				<SearchReport fullView={!stockView}/>
 			</CoreApp>
 
 		</MainContainer>;
 	}
 
 	toggleView(){
-		//this.setState({viewStock: !this.state.viewStock});
-		//let toggleStockView = !this.props.store.getState().toggleStockView;
-		//this.props.store.dispatch({type:"TOGGLE_STOCK_VIEW", toggleStockView});
+		const { dispatch } = this.props;
+		dispatch(toggleStockView());
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchProps)(Root);
+Root.propTypes = propTypes;
+
+export default connect(mapStateToProps)(Root);

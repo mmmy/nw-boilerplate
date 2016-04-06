@@ -5,9 +5,10 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 import Root from './components/Root';
-import Store from './flux';
+import GenerateStore from './flux/GenerateStore';
 
-
+let store = GenerateStore();
+window.store = store;
 Promise.all([
 	new Promise((resolve) => {
 		if(window.addEventListener) {
@@ -31,5 +32,5 @@ Promise.all([
       head.appendChild(script);
     }
 	console.log('window onload');
-	ReactDOM.render(<Provider store={Store}><Root /></Provider>, document.getElementById('app'));
+	ReactDOM.render(<Provider store={store}><Root /></Provider>, document.getElementById('app'));
 });

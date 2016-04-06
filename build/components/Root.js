@@ -16,6 +16,8 @@ var _MainContainer2 = _interopRequireDefault(_MainContainer);
 
 var _reactRedux = require('react-redux');
 
+var _layoutActions = require('../flux/actions/layoutActions');
+
 var _Header = require('./header/Header');
 
 var _Header2 = _interopRequireDefault(_Header);
@@ -44,19 +46,24 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var propTypes = {
+	dispatch: _react.PropTypes.func.isRequired
+};
+
 function mapStateToProps(state) {
+	var layout = state.layout;
+	var stockView = layout.stockView;
+
 	return {
-		toggleStockView: state.toggleStockView
+		stockView: stockView
 	};
 }
 
-function mapDispatchProps(dispatch) {
-	return {
-		toggleView: function toggleView(toggleStockView) {
-			dispatch({ type: "TOGGLE_STOCK_VIEW", toggleStockView: toggleStockView });
-		}
-	};
-}
+// function mapDispatchProps(dispatch) {
+//   return {
+//     toggleView: function(toggleStockView){ dispatch({type:"TOGGLE_STOCK_VIEW", toggleStockView:toggleStockView}); },
+//   };
+// }
 
 var Root = function (_React$Component) {
 	_inherits(Root, _React$Component);
@@ -64,18 +71,13 @@ var Root = function (_React$Component) {
 	function Root(props) {
 		_classCallCheck(this, Root);
 
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Root).call(this, props));
-
-		_this.state = { viewStock: true };
-		return _this;
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(Root).call(this, props));
 	}
 
 	_createClass(Root, [{
 		key: 'render',
 		value: function render() {
-			var _props = this.props;
-			var toggleStockView = _props.toggleStockView;
-			var toggleView = _props.toggleView;
+			var stockView = this.props.stockView;
 
 			return _react2.default.createElement(
 				_MainContainer2.default,
@@ -85,30 +87,32 @@ var Root = function (_React$Component) {
 				_react2.default.createElement(
 					_CoreApp2.default,
 					null,
-					_react2.default.createElement(_StockView2.default, { show: toggleStockView }),
+					_react2.default.createElement(_StockView2.default, { show: stockView }),
 					_react2.default.createElement(
 						'div',
 						null,
 						_react2.default.createElement(
 							'button',
-							{ className: 'btn btn-default', onClick: toggleView.bind(this, !toggleStockView) },
+							{ className: 'btn btn-default', onClick: this.toggleView.bind(this) },
 							'云搜索'
 						)
 					),
-					_react2.default.createElement(_SearchReport2.default, { fullView: !toggleStockView })
+					_react2.default.createElement(_SearchReport2.default, { fullView: !stockView })
 				)
 			);
 		}
 	}, {
 		key: 'toggleView',
 		value: function toggleView() {
-			//this.setState({viewStock: !this.state.viewStock});
-			//let toggleStockView = !this.props.store.getState().toggleStockView;
-			//this.props.store.dispatch({type:"TOGGLE_STOCK_VIEW", toggleStockView});
+			var dispatch = this.props.dispatch;
+
+			dispatch((0, _layoutActions.toggleStockView)());
 		}
 	}]);
 
 	return Root;
 }(_react2.default.Component);
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchProps)(Root);
+Root.propTypes = propTypes;
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(Root);
