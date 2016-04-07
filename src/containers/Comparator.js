@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
+import {connect} from 'react-redux';
 
 const propTypes = {
 
@@ -35,11 +37,21 @@ class Component extends React.Component {
 	}
 
 	render(){
-		return <div className={"transition-all container-comparator " + (this.props.stretchView ? "comparator-stretch":"")} ></div>;
+		let calssName = classNames('transition-all','container-comparator',{
+			'comparator-stretch': this.props.stretchView,
+		});
+		return <div className={ calssName } ></div>;
 	}
 }
 
 Component.propTypes = propTypes;
 Component.defaultProps = defaultProps;
 
-export default Component;
+var stateToProps = function(state) {
+	const {layout} = state;
+	const {stockView} = layout;
+	return {
+		stretchView: !stockView,
+	};
+};
+export default connect(stateToProps)(Component);

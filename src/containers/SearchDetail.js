@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import PatternContainer from './PatternContainer';
 import StatisticsContainer from './StatisticsContainer';
+import {connect} from 'react-redux';
+import classNames from 'classnames';
 
 const propTypes = {
 
@@ -37,7 +39,10 @@ class Component extends React.Component {
 	}
 
 	render(){
-		return <div className={"transition-all container-searchdetail " + (this.props.shrinkView ? "searchdetail-shrink":"")}>
+		let className = classNames('transition-all', 'container-searchdetail', {
+			'searchdetail-shrink': this.props.shrinkView,
+		});
+		return <div className={ className }>
 			<StatisticsContainer />
 			<PatternContainer />
 		</div>;
@@ -47,4 +52,13 @@ class Component extends React.Component {
 Component.propTypes = propTypes;
 Component.defaultProps = defaultProps;
 
-export default Component;
+
+var stateToProps = function(state) {
+	const {layout} = state;
+	const {stockView} = layout;
+	return {
+		shrinkView: !stockView,
+	};
+};
+
+export default connect(stateToProps)(Component);

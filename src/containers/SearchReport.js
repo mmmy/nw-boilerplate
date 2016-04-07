@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Comparator from './Comparator';
 import SearchDetail from './SearchDetail';
+import { layoutActions } from '../flux/actions';
+import classNames from 'classnames';
 
 const defaultProps = {
 	fullView : false,
@@ -32,14 +34,22 @@ class SearchReport extends React.Component {
 	}
 
 	render(){
-		return <div className={"transition-all container-searchreport " + (this.props.fullView ? "searchreport-full":"")}>
+		const { fullView, statisticsLarger} = this.props;
+		const className = classNames('transition-all', 'container-searchreport', {
+			'searchreport-full': this.props.fullView,
+		});
+		return <div className={ className }>
+			<div className="container-toggle"><button className="btn btn-default" onClick={this.toggleView.bind(this)}>云搜索</button></div>
 			<div className="inner-searchreport">
-				<Comparator stretchView={this.props.fullView}/>
-				<SearchDetail shrinkView={this.props.fullView}/>
+				<Comparator />
+				<SearchDetail />
 			</div>
 		</div>;
 	}
 
+	toggleView(){
+		this.props.dispatch(layoutActions.toggleStockView());
+	}
 }
 
 SearchReport.defaultProps = defaultProps;

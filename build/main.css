@@ -6743,26 +6743,37 @@ button.close {
 }
 .container-stockview {
   border: 1px solid #aaa;
-  position: relative;
+  position: absolute;
+  width: 100%;
   height: 65%;
 }
 .stockview-hide {
-  height: 0;
   opacity: 0;
 }
 .container-searchreport {
   border: 1px solid #aaa;
-  position: relative;
+  position: absolute;
+  top: 68%;
+  width: 100%;
   height: 35%;
 }
+.container-toggle {
+  position: absolute;
+  top: -10px;
+}
+.container-toggle.full {
+  top: 0;
+}
 .inner-searchreport {
-  position: relative;
-  height: 100%;
+  position: absolute;
+  top: 30px;
+  height: calc(100% - 30px);
+  width: calc(100%);
   padding: 20px 5px 10px 5px;
-  border: 1px solid #aaa;
-  margin: 10px 5px;
+  border: 1px solid red;
 }
 .searchreport-full {
+  top: 0;
   height: 100%;
 }
 .container-comparator {
