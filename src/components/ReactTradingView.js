@@ -32,14 +32,8 @@ class ReactTradingView extends React.Component {
 	}
 
 	render(){
-    let style = {
-      position: 'absolute',
-      height: '100%',
-      width: '100%'
-    };
-
 		return (
-    <div id={ this.props.viewId } style={ style } />
+    <div className={ "chart-container" } id={ this.props.viewId } />
     )
 	}
 }
