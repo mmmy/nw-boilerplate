@@ -9,7 +9,7 @@ class MainChart extends React.Component {
 	}
 
 	componentDidMount(){
-		
+
 	}
 
 	render(){
