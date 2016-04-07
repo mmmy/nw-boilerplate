@@ -32,7 +32,15 @@ class ReactTradingView extends React.Component {
 	}
 
 	render(){
-		return <div id={this.props.viewId} style={{height: '300px'}}></div>
+    let style = {
+      position: 'absolute',
+      height: '100%',
+      width: '100%'
+    };
+
+		return (
+    <div id={ this.props.viewId } style={ style } />
+    )
 	}
 }
 
