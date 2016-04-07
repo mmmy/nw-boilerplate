@@ -8,15 +8,17 @@ class MainChart extends React.Component {
 		super(props);
 	}
 
-	componentDidMount(){
+	componentDidMount() {
 
 	}
 
-	render(){
-		return <div className='container-coreapp'>
-				<StockView />
-				<SearchReport />
-		</div>;
+	render() {
+		return (
+      <div className='container-coreapp'>
+        <StockView />
+        <SearchReport />
+      </div>
+    );
 	}
 
 }
@@ -24,4 +26,3 @@ function stateToPorps(state){
 	return {};
 }
 export default connect(stateToPorps)(MainChart);
-//export default MainChart;

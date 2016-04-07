@@ -52,15 +52,11 @@ class StockView extends React.Component {
         // width: 300,
 			};
 
-
 		return (
-      <div
-        className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")}
-        >
+      <div className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
         <ReactTradingView
           viewId={ STOCK_VIEW }
-          options={ options }
-          />
+          options={ options } />
       </div>
     );
 	}
