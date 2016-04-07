@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 const propTypes = {
 
@@ -39,4 +40,8 @@ class Template extends React.Component {
 Template.propTypes = propTypes;
 Template.defaultProps = defaultProps;
 
-export default Template;
+var stateToProps = function(state) {
+	return {};
+};
+
+export default connect(stateToProps)(Template);

@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import PatternContainer from './PatternContainer';
+import StatisticsContainer from './StatisticsContainer';
 
 const propTypes = {
 
@@ -35,7 +37,10 @@ class Component extends React.Component {
 	}
 
 	render(){
-		return <div className={"transition-all container-searchdetail " + (this.props.shrinkView ? "searchdetail-shrink":"")}></div>;
+		return <div className={"transition-all container-searchdetail " + (this.props.shrinkView ? "searchdetail-shrink":"")}>
+			<StatisticsContainer />
+			<PatternContainer />
+		</div>;
 	}
 }
 

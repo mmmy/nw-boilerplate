@@ -6731,13 +6731,13 @@ button.close {
   position: absolute;
   top: 0;
   left: 0;
-  height: 40px;
+  height: 30px;
   width: 100%;
 }
 .container-righttoolbar {
   position: absolute;
   right: 0;
-  top: 40px;
+  top: 30px;
   width: 40px;
   height: 100%;
 }
@@ -6749,6 +6749,21 @@ button.close {
 .stockview-hide {
   height: 0;
   opacity: 0;
+}
+.container-searchreport {
+  border: 1px solid #aaa;
+  position: relative;
+  height: 35%;
+}
+.inner-searchreport {
+  position: relative;
+  height: 100%;
+  padding: 20px 5px 10px 5px;
+  border: 1px solid #aaa;
+  margin: 10px 5px;
+}
+.searchreport-full {
+  height: 100%;
 }
 .container-comparator {
   float: left;
@@ -6768,27 +6783,37 @@ button.close {
 .searchdetail-shrink {
   width: calc(100% -  40%);
 }
-.container-searchreport {
-  border: 1px solid #aaa;
-  position: relative;
-  height: 35%;
-}
-.inner-searchreport {
-  position: relative;
+.pattern-container {
+  float: left;
+  right: 0;
+  width: 50%;
   height: 100%;
-  padding: 20px 5px 10px 5px;
-  border: 1px solid #aaa;
-  margin: 10px 5px;
 }
-.searchreport-full {
+.pattern-container.full {
+  width: 250px;
   height: 100%;
+}
+.pattern-container.smaller {
+  width: 125px;
+}
+.statistics-container {
+  float: left;
+  width: 50%;
+  height: 100%;
+}
+.statistics-container.full {
+  width: calc(100% - 250px);
+  height: 100%;
+}
+.statistics-container.larger {
+  width: calc(100% - 125px);
 }
 .container-coreapp {
   position: absolute;
-  top: 40px;
+  top: 30px;
   left: 0;
   width: calc(100% -  40px);
-  height: calc(100% -  40px);
+  height: calc(100% -  30px);
 }
 .container-main {
   position: absolute;

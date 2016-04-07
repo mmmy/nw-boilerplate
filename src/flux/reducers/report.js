@@ -17,7 +17,7 @@ const initialState = {
 
 const namespace = Object.keys(initialState);
 
-export default function statistics(state = initialState, actions){
+export default function report(state = initialState, actions){
 
 	switch (actions.type) {
 		

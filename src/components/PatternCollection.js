@@ -5,10 +5,10 @@ const propTypes = {
 };
 
 const defaultProps = {
-  
+  	
 };
 
-class Template extends React.Component {
+class PatternCollection extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -32,11 +32,13 @@ class Template extends React.Component {
 	}
 
 	render(){
-		return <div className=""></div>;
+		return <div className="partter-collection">
+
+		</div>;
 	}
 }
 
-Template.propTypes = propTypes;
-Template.defaultProps = defaultProps;
+PatternCollection.propTypes = propTypes;
+PatternCollection.defaultProps = defaultProps;
 
-export default Template;
+export default PatternCollection;

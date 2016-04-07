@@ -1,5 +1,5 @@
 
-@header_H:  40px;
+@header_H:  30px;
 @header_W: 	100%;
 
 @rightToolBar_H: 100%;
@@ -9,4 +9,21 @@
 @comparator_H: 100%;
 @comparator_W: 20%;
 
-@comparatorStreth_W: 40%;
+@comparatorStretch_W: 40%;
+
+@patternContainer_W: 50%;
+@patternContainer_H: 100%;
+//@patternView_W: 100px;
+//@patternView_H: @patternView_W * 1.3;
+//@patternCollection_W: @patternView_W + 20px;
+@patternContainerStretch_W: 250px;
+@patternContainerStretch_H: 100%;
+
+@statisticsContainer_W: 100% - @patternContainer_W;
+@statisticsContainer_H: 100%;
+@statisticsContainerStretch_W: calc(~'100% -'@patternContainerStretch_W);
+@statisticsContainerStretch_H: 100%;
+
+@patternContianerSmall_W: @patternContainerStretch_W/2;
+@statisticsContainerLarger_W: calc(~'100% -'@patternContianerSmall_W);
+

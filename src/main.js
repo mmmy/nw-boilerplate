@@ -28,10 +28,6 @@ Promise.all([
 	require('nw.gui').Window.get().showDevTools();
 	init();
 
-	store.subscribe(function(state){
-	console.log('1111',state);
-});
-
 	if (process.env.NODE_ENV === 'development') {
       var head = document.getElementsByTagName('head')[0];
       var script = document.createElement('script');
