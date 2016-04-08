@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
+import PatternView from './PatternView';
 
 const propTypes = {
-
+	data: PropTypes.array.isRequired,
+	dispatch: PropTypes.func.isRequired,
+	fullView: PropTypes.bool.isRequired
 };
 
 const defaultProps = {
@@ -32,9 +35,11 @@ class PatternCollection extends React.Component {
 	}
 
 	render(){
-		return <div className="partter-collection">
-
-		</div>;
+		return (<div className="pattern-collection">
+			{ this.props.data.map((e, i) => {
+				return <PatternView kLine={e} key={i} index={i}/>
+			}) }
+		</div>);
 	}
 }
 

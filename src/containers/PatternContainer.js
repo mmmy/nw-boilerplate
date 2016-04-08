@@ -40,9 +40,20 @@ class PatternContainer extends React.Component {
 			'full': fullView,
 			'smaller': patternSmallView,
 		});
+		const toolbarClass = classNames('transition-all', 'pattern-toolbar-container', {
+			'hide': !fullView,
+		});
+		const collectionClass = classNames('transition-all', 'pattern-collection-container', {
+			'stretch': !fullView,
+		});
+
 		return <div className={ className }>
-			<div></div>
-			<PatternCollection />
+			<div className={ toolbarClass }>
+
+			</div>
+			<div className={ collectionClass }>
+				<PatternCollection {...this.props}/>
+			</div>
 		</div>;
 	}
 }
@@ -51,9 +62,10 @@ PatternContainer.propTypes = propTypes;
 PatternContainer.defaultProps = defaultProps;
 
 var stateToProps = function(state) {
-	const {layout} = state;
+	const {layout, patterns} = state;
 	const {stockView, patternSmallView} = layout;
-	return {fullView: !stockView, patternSmallView};
+	const {data} = patterns;
+	return {fullView: !stockView, patternSmallView, data};
 };
 
 export default connect(stateToProps)(PatternContainer);

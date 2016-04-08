@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import EChart from './EChart';
 
 const propTypes = {
-
+	kLine: PropTypes.object.isRequired,
+	index: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
@@ -33,7 +35,10 @@ class Template extends React.Component {
 	}
 
 	render(){
-		return (<div className=""></div>);
+		const className = classNames('pattern-view');
+		return (<div className={className}>
+			<EChart {...this.props} />
+		</div>);
 	}
 }
 

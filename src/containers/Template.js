@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 const propTypes = {
 
@@ -33,7 +34,7 @@ class Template extends React.Component {
 	}
 
 	render(){
-		return <div className=""></div>;
+		return (<div className=""></div>);
 	}
 }
 

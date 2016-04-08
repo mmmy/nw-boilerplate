@@ -22,7 +22,8 @@ let randomprice = function(floor, ceil) {
 	let open = low + Math.random() * dis;
 	let close = low + Math.random() * dis;
 
-	return {open, close, high, low};
+	//return {open, close, high, low};
+	return [open, close, low, high];
 }
 
 let randomKLine = function(n) {
@@ -31,7 +32,10 @@ let randomKLine = function(n) {
 	let randomStartDate = randomDate();
 	let milliSecOneDay = 24 * 3600 * 1000;
 	for(let i=0; i<n; i++) {
-		KLine.push(Object.assign(randomprice(), { date: randomStartDate + milliSecOneDay * i }));
+		// KLine.push(Object.assign(randomprice(), { date: randomStartDate + milliSecOneDay * i }));
+		let data = randomprice();
+		data.unshift(randomStartDate + milliSecOneDay * i);
+		KLine.push(data);
 	}
 	return KLine;
 }

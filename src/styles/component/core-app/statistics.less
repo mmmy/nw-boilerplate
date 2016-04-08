@@ -1,3 +1,5 @@
+@reportContainer_H: 90px;
+
 
 .statistics-container{
 	float: left;
@@ -12,4 +14,18 @@
 	&.larger{
 		width: @statisticsContainerLarger_W;
 	}
+}
+
+.report-container-wrap {
+	height: @reportContainer_H;
+	border: 1px solid green;
+	margin: 0;
+	&.stretch{
+		height: @reportContainer_H*1.8;
+		margin: 5px;
+	}
+}
+
+.crossfilter-container-wrap {
+	height: calc(~'100% - '@reportContainer_H*3);
 }

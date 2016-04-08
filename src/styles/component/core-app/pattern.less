@@ -1,9 +1,12 @@
+@patternToolbar_H: 60px;
+@patternView_W: @patternContainerStretch_W/2 - 13px;
 
 .pattern-container{
 	float: left;
 	right: 0;
 	width: @patternContainer_W;
 	height: @patternContainer_H;
+	border: 1px solid rebeccapurple;
 
 	&.full{
 		width: @patternContainerStretch_W;
@@ -13,4 +16,46 @@
 	&.smaller{
 		width: @patternContianerSmall_W;
 	}
+}
+
+.pattern-toolbar-container{
+	height: @patternToolbar_H;
+	background-color: white;
+	
+	&.hide{
+		height: 0;
+	}
+}
+
+.pattern-collection-container{
+	position: relative;
+	border: 1px dotted #aaa;
+	height: calc(~'100% - '@patternToolbar_H);
+
+	&.stretch{
+		height: 100%;
+	}
+}
+
+
+
+.pattern-collection{
+	//border: 1px solid green;
+	position: relative;
+	height: 100%;
+	overflow: scroll;
+}
+
+.pattern-view{
+	float: left;
+	margin: 3px;
+	width: @patternView_W;
+	height: @patternView_W * 1.4;
+	background-color: #fff;
+	border: 1px solid #bbb;
+}
+
+.echart{
+	width: @patternView_W;
+	height: @patternView_W;
 }

@@ -70,6 +70,14 @@ gulp.task('watch', ['html', 'scripts', 'styles'], function(){
 	}));
 });
 
+gulp.task('dev_react',['styles'],function(){
+  gulp.watch(paths.STYLES, ['styles']);
+  gulp.src('dev_react/*.html').pipe(gulp.dest(paths.BUILD));
+  gulp.src('').pipe($.shell([
+      "webpack-dev-server --devtool eval --progress --colors --hot --content-base build",
+      "nw --child-clean-exit --url='http://127.0.0.1:8080'"
+    ]));
+});
 
 gulp.task('default', ['watch']);
 
