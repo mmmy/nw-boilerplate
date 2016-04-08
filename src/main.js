@@ -19,7 +19,7 @@ let setChartLayout = () => {
       tv.W76.setChartLayout(tv.Q5, '2v');
     else
       getTV();
-  }, 3.5E3)
+  }, 5E3)
 }
 
 Promise.all([
