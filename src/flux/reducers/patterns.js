@@ -1,8 +1,9 @@
 import * as types from '../constants/ActionTypes';
-import { randomPartterns } from '../util/randomData';
+//import { randomPartterns } from '../util/randomData';
+import { randomPartterns } from '../util/randomKline';
 
 const initialState = {
-	data: (process.env.NODE_ENV == 'development' ? randomPartterns(10) : []),
+	data: (process.env.NODE_ENV == 'development' ? randomPartterns(20) : []),
 };
 
 export default function patterns(state = initialState, actions){
