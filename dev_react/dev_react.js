@@ -10,7 +10,10 @@ let tabsArr = [
 
 let Main = React.createClass({
 	getInitialState(){
-		return {current:(<h3>请选择</h3>),index:-1};
+		let data = this.props.data;
+		let index = 0;
+		let Current = (typeof data[index].component == 'string') ? require(data[index].component) : data[index].component;
+		return {current:(<Current /> || (<h3>请选择</h3>)),index:index};
 	},
 	handleSelectComponent(index){
 		//require.ensure([], () => {

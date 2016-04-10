@@ -1,5 +1,6 @@
 var factorCandleOption=function(){
 	let option = {
+			animation: false,
 		    title: { show: false },
 		    tooltip: {
 		    	show: false,
@@ -70,6 +71,7 @@ var factorCandleOption=function(){
 
 var factorLineOption = function(){
 	let lineOption = {
+			animation: false,
 			title: {
 		        show: false,
 		    },

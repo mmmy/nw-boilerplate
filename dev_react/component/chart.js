@@ -1,7 +1,7 @@
 import React from 'react';
 import echarts from 'echarts';
-import {candleOption, lineOption} from '../../src/components/utils/echart-options';
-
+import {factorCandleOption, factorLineOption} from '../../src/components/utils/echart-options';
+import {randomPartterns} from '../../src/flux/util/randomKline';
 
 var data = [
 		    ['2013/1/24', 2320.26,2320.26,2287.3,2362.94],
@@ -223,32 +223,35 @@ var data1 = data.map((e,i) => {
 	};
 });
 
-console.log(data);
+// console.log(data);
 
 var data0 = splitData(data);
-		function splitData(rawData) {
-		    var categoryData = [];
-		    var values = []
-		    for (var i = 0; i < rawData.length; i++) {
-		        categoryData.push(rawData[i].splice(0, 1)[0]);
-		        values.push(rawData[i])
-		    }
-		    return {
-		        categoryData: categoryData,
-		        values: values
-		    };
-		}
-		function formatDate(data) {
-		    for (var i = 0; i < data.length; i++) {
-		        var item = data[i];
-		        var date = new Date(item[0].replace('-', '/'));
-		        item[0] = +date;
-		    }
-		    return data;
-		}
-		console.log(data0.values.length);
-		candleOption.xAxis.data = data0.categoryData;
-		candleOption.series[0].data = data0.values;
+function splitData(rawData) {
+    var categoryData = [];
+    var values = [];
+    for (var i = 0; i < rawData.length; i++) {
+        categoryData.push(rawData[i].splice(0, 1)[0]);
+        values.push(rawData[i])
+    }
+    return {
+        categoryData: categoryData,
+        values: values
+    };
+}
+function formatDate(data) {
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        var date = new Date(item[0].replace('-', '/'));
+        item[0] = +date;
+    }
+    return data;
+}
+// console.log(data0.values.length);
+let candleOption = factorCandleOption();
+let lineOption = factorLineOption();
+candleOption.xAxis.data = data0.categoryData;
+candleOption.series[0].data = data0.values;
+lineOption.series[0].data = data1;
 		var option = {
 		    title: {
 		        text: '上证指数',
@@ -405,13 +408,53 @@ var data0 = splitData(data);
 
 
 
-export default React.createClass({
-	drawChart(){
-		this.chart = echarts.init(this.refs.echart);
-		this.chart.setOption(candleOption);
-		this.chart1 = echarts.init(this.refs.echart1);
-		this.chart1.setOption(option1);
+let patterns = randomPartterns(10),
+	candleOptions = [],
+	lineOptions = [];
+patterns.forEach((e, i) => {
+	let candleOption = factorCandleOption();
+	let candleData = splitData(e.kLine);
+	candleOption.xAxis.data = candleData.categoryData;
+	candleOption.series[0].data = candleData.values;
 
+	let lineOption = factorLineOption();
+	lineOption.series[0].data = e.kLine.map((e,i) => {
+		return {name: e[0],
+			value:[i,e[2]]
+		};
+	});
+
+	candleOptions.push(candleOption);
+	lineOptions.push(lineOption);
+});
+
+export default React.createClass({
+	candleCharts: [],
+	lineCharts: [],
+	drawChart(){
+		// this.chart = echarts.init(this.refs.echart_0);
+		// this.chart.setOption(candleOption);
+		// this.chart1 = echarts.init(this.refs.echart1_0);
+		// this.chart1.setOption(option1);
+		let that = this;
+		patterns.forEach((e ,i) => {
+			
+			//echarts.init(that.refs['echart_'+i]).setOption(candleOptions);
+			setTimeout(()=>{ 
+				//that.candleCharts[i] && that.candleCharts[i].dispose();
+				echarts.init(that.refs['echart_'+i]).setOption(candleOptions[i]);
+				//that.candleCharts[i] = that.candleCharts[i] || echarts.init(that.refs['echart_'+i]);
+				//that.candleCharts[i].setOption(candleOptions[i]); 
+			},10);
+
+			//echarts.init(that.refs['echart1_'+i]).setOption(lineOptions);
+			setTimeout(() => { 
+				//that.lineCharts[i] && that.lineCharts[i].dispose();
+				echarts.init(that.refs['echart1_'+i]).setOption(lineOptions[i]);
+				//that.lineCharts[i] =  that.lineCharts[i] || echarts.init(that.refs['echart1_'+i]);
+				//that.lineCharts[i].setOption(lineOptions[i]); 
+			},100*i);
+		});
 	},
 	componentDidMount(){
 		// 开盘，收盘，最低，最高
@@ -421,13 +464,22 @@ export default React.createClass({
 		return {height: 200, width: 600};
 	},
 	componentDidUpdate(){
-		this.drawChart();
+		setTimeout((e) => {
+			this.drawChart();
+		},10);
 	},
 	render(){
+
 		return (<div> 
 			<input type='number' value={this.state.width} onChange={this.changeWidth}/><input type='number' value={this.state.height} onChange={this.changeHeight}/>
-			<div ref='echart' style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #aaa'}}></div>
-			<div ref='echart1' style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #aaa'}}></div>
+			<div style={{overFlow:'scroll'}} >
+				{patterns.map((e, i) => {
+					return (<div style={{float:'left'}} key={i}>
+						<div ref={'echart_'+ i} style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #aaa'}}></div>
+						<div ref={'echart1_'+i} style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #aaa'}}></div>						
+					</div>);
+				})}
+			</div>
 		</div>);
 	},
 	changeHeight(e){

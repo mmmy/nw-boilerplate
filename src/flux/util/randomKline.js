@@ -1,4 +1,4 @@
-var data = require('../../../samples/ss600000-s.json');
+var data = require('../../../samples/ss600000-s');
 
 let len = data.length,
 	maxIndex = len - 200;
