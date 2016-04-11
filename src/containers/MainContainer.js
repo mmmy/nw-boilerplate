@@ -13,8 +13,8 @@ class MainChart extends React.Component {
 		return (
       <div className="container-main">
         { this.props.children }
-      </div>;
-    )
+      </div>
+    );
 	}
 }
 
