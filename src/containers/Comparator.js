@@ -43,13 +43,20 @@ class Component extends React.Component {
       'container-comparator-stretch': this.props.stretchView,
     });
 
-    const screenshot = path.join('..', 'src/static/img', 'chart-screenshot.png');
+    const screenshotPrediction = path.join('..', 'src/static/img', 'chart-screenshot.png');
+    const screenshotOrigin = path.join('..', 'src/static/img', 'chart-screenshot-origin.png');
 
-    const screenshotClassName = classNames('comparator-chart-screenshot');
+    const screenshotPredictionClassName = classNames('comparator-chart-screenshot');
+    const screenshotOriginClassName = classNames(
+    'comparator-chart-screenshot', {
+      'comparator-chart-screenshot-origin-slide': this.props.stretchView,
+      'comparator-chart-screenshot-origin-slide-transition': this.props.stretchView
+     });
 
 		return (
       <div className={ containerClassName } >
-        <img src={ screenshot } className={ screenshotClassName }/>
+        <img src={ screenshotPrediction } className={ screenshotPredictionClassName }/>
+        <img src={ screenshotOrigin } className={ screenshotOriginClassName }/>
       </div>
     );
 	}
