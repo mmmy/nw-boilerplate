@@ -15,7 +15,7 @@ class MainChart extends React.Component {
 	}
 
 	render() {
-    let klassNames = classNames('transition-all', 'comparator-chart', {
+    let klassNames = classNames('comparator-chart-transition', 'comparator-chart', {
       'comparator-chart-show': this.props.stretchView,
     });
     const STOCK_VIEW = 'comparator-chart';
