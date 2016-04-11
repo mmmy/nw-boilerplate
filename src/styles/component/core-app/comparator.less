@@ -1,13 +1,48 @@
 
-
 .container-comparator{
   position: relative;
-	float: left;
-	border: 1px solid green;
-	width: @comparator_W;
-	height: @comparator_H;
+  float: left;
+  border: 1px solid green;
+  width: @comparator_W;
+  height: @comparator_H;
 }
 
-.comparator-stretch{
-	width: @comparatorStretch_W;
+.container-comparator-stretch{
+  width: @comparatorStretch_W;
+}
+
+// comparator-chart-static
+
+.comparator-chart-static{
+  position: absolute;
+  width: @comparatorStretch_W;
+  height: calc(100% - 10px);
+  top: 31px;
+}
+
+.comparator-chart-static-show{
+  opacity: 1;
+  z-index: 100;
+}
+
+.comparator-chart-static-hide{
+  height: 0px;
+  width: 0px;
+  top: 0px;
+  opacity: 0;
+}
+
+.comparator-chart-static-transition-hidding{
+  transition: opacity .2s ease 1s;
+}
+
+.comparator-chart-static-transition-showing{
+  // transition: opacity .2s ease .3s;
+}
+
+// comparator-chart-screenshot
+
+.comparator-chart-screenshot{
+  position: absolute;
+  width: 100%;
 }

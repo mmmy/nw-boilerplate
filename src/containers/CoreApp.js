@@ -15,8 +15,11 @@ class MainChart extends React.Component {
 	}
 
 	render() {
-    let klassNames = classNames('comparator-chart-transition', 'comparator-chart', {
-      'comparator-chart-show': this.props.stretchView,
+    let comparatorChartClassName = classNames('comparator-chart-static', {
+      'comparator-chart-static-show': this.props.stretchView,
+      'comparator-chart-static-hide': !this.props.stretchView,
+      'comparator-chart-static-transition-hidding': this.props.stretchView,
+      'comparator-chart-static-transition-showing': !this.props.stretchView,
     });
     const STOCK_VIEW = 'comparator-chart';
     let options = {
@@ -43,7 +46,7 @@ class MainChart extends React.Component {
 
 		return (
       <div className='container-coreapp'>
-        <div className={ klassNames }>
+        <div className={ comparatorChartClassName }>
           <ReactTradingView
             viewId={ STOCK_VIEW }
             options={ options } />
