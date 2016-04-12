@@ -13,7 +13,7 @@ var paths = {
 	STYLES: 	['src/styles/*.less', 'src/styles/**/*.less'],
 	SCRIPTS: 	['src/*.js', 'src/**/*.js'],
 	COMPONENTS: ['src/components/**/*.js'],
-	FLUX: 		['src/flux/*.js','src/flux/**/*.js'],	
+	FLUX: 		['src/flux/*.js','src/flux/**/*.js'],
 	BUILD: 		'./build',
 };
 
@@ -52,7 +52,7 @@ gulp.task('styles', [], function(){
 });
 
 gulp.task('compile', function(){
-	
+
 });
 
 gulp.task('watch', ['html', 'scripts', 'styles'], function(){
@@ -80,4 +80,3 @@ gulp.task('dev_react',['styles'],function(){
 });
 
 gulp.task('default', ['watch']);
-

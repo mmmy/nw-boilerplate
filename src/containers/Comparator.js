@@ -44,19 +44,12 @@ class Component extends React.Component {
     });
 
     const screenshotPrediction = path.join('..', 'src/static/img', 'chart-screenshot.png');
-    const screenshotOrigin = path.join('..', 'src/static/img', 'chart-screenshot-origin.png');
 
     const screenshotPredictionClassName = classNames('comparator-chart-screenshot');
-    const screenshotOriginClassName = classNames(
-    'comparator-chart-screenshot', {
-      'comparator-chart-screenshot-origin-slide': this.props.stretchView,
-      'comparator-chart-screenshot-origin-slide-transition': this.props.stretchView
-     });
 
 		return (
       <div className={ containerClassName } >
         <img src={ screenshotPrediction } className={ screenshotPredictionClassName }/>
-        <img src={ screenshotOrigin } className={ screenshotOriginClassName }/>
       </div>
     );
 	}

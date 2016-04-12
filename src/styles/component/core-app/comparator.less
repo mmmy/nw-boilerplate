@@ -22,23 +22,13 @@
 }
 
 .comparator-chart-static-show{
-  opacity: 1;
   z-index: 100;
+  .ks-show();
+  .ks-fade-in();
 }
 
 .comparator-chart-static-hide{
-  height: 0px;
-  width: 0px;
-  top: 0px;
-  opacity: 0;
-}
-
-.comparator-chart-static-transition-hidding{
-  transition: opacity .2s ease 2.5s;
-}
-
-.comparator-chart-static-transition-showing{
-  // transition: opacity .2s ease .3s;
+  .ks-hidden();
 }
 
 // comparator-chart-screenshot
@@ -46,16 +36,5 @@
 .comparator-chart-screenshot{
   position: absolute;
   width: 100%;
-  // height: 100%;
   top: 0;
-}
-
-// screenshots
-.comparator-chart-screenshot-origin-slide{
-  height: 50%;
-  top: 50%;
-}
-
-.comparator-chart-screenshot-origin-slide-transition{
-  transition: top .2s linear 1s, height .2s linear 0s;
 }
