@@ -15,10 +15,12 @@ window.store = store;
 let setChartLayout = () => {
   setTimeout(() => {
     var tv = document[window.document.getElementsByTagName('iframe')[0].id];
-    if (tv.Q5)
+    if (!tv.Q5) {
+      setChartLayout();
+    } else {
+      const tv = window.document[window.document.getElementsByTagName('iframe')[0].id];
       tv.W76.setChartLayout(tv.Q5, '2v');
-    else
-      getTV();
+    }
   }, 6E3)
 }
 

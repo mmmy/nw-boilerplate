@@ -1,7 +1,9 @@
-import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Crossfilter from 'crossfilter';
+import React, { PropTypes } from 'react';
 import d3 from 'd3';
 import DC from 'dc';
+import classnames from 'classnames';
 
 import { filterActions } from '../flux/actions';
 
@@ -11,7 +13,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  
+
 };
 
 class CrossfilterView extends React.Component {
@@ -38,6 +40,7 @@ class CrossfilterView extends React.Component {
 
 	}
 
+<<<<<<< HEAD
 	componentDidUpdate() {
 		this.drawDc();
 	}
@@ -49,6 +52,22 @@ class CrossfilterView extends React.Component {
 			<div ref='yield_count_chart'></div>
 		</div>;
 	}
+=======
+  render() {
+    const className = classnames('crossfilter-container', {
+      'crossfilter-container-stretch': this.props.stretchView,
+      'crossfilter-container-shrink': !this.props.stretchView
+    });
+
+    return (
+      <div className={ className }>
+        <div ref='position_bubble_chart'></div>
+        <div ref='industry_quarter_chart'></div>
+        <div ref='yield_count_chart'></div>
+      </div>
+    );
+  }
+>>>>>>> f45ac10521ce853fac8b107c82fd3ae27865d7d2
 
 	drawDc(){
 		window.d3 = d3;
@@ -117,7 +136,7 @@ class CrossfilterView extends React.Component {
 	drawIndustryPieChart() {
 		let {industry_quarter_chart} = this.refs;
 
-		let { crossFilter } = this.props; 
+		let { crossFilter } = this.props;
 
 		let industryDim = crossFilter.dimension((data) => { return data.industry; });
 
@@ -141,10 +160,10 @@ class CrossfilterView extends React.Component {
 
 		let {yield_count_chart} = this.refs;
 
-		let { crossFilter } = this.props; 
+		let { crossFilter } = this.props;
 
 		let yieldDim = crossFilter.dimension((data) => { return Math.round(data.yield*10/1.5); });
-		
+
 		window.yieldDim = yieldDim;
 
 		let yieldGroup = yieldDim.group();
@@ -186,4 +205,12 @@ class CrossfilterView extends React.Component {
 CrossfilterView.propTypes = propTypes;
 CrossfilterView.defaultProps = defaultProps;
 
-export default CrossfilterView;
+function stateToPorps(state) {
+  const {layout} = state;
+	const {stockView} = layout;
+	return {
+		stretchView: !stockView,
+	};
+}
+
+export default connect(stateToPorps)(CrossfilterView);
