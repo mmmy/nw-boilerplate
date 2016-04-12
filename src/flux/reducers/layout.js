@@ -5,7 +5,7 @@ let getPatternSmallView = function() {
 }
 
 const initalState = {
-	stockView: true,
+	stockView: false,
 	patternSmallView: getPatternSmallView(),
 }
 

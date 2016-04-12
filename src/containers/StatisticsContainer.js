@@ -37,7 +37,7 @@ class Template extends React.Component {
 	}
 
 	render(){
-		const { fullView, statisticsLarger, report, statistics} = this.props;
+		const { fullView, statisticsLarger, report, crossFilter, dispatch} = this.props;
 		const className = classNames('transition-all', 'statistics-container', {
 			'full': fullView,
 			'larger': statisticsLarger,
@@ -47,10 +47,10 @@ class Template extends React.Component {
 			'stretch': !fullView
 		});
 		return (<div className={ className }>
-			<div className={fistReportClass}><ReportDetailView reprot={report} /></div>
-			<div className={'report-container-wrap'}><ReportDetailView reprot={report} /></div>
-			<div className={'report-container-wrap'}><ReportTypeView reprot={report} /></div>
-			<div className={'crossfilter-container-wrap'}><CrossfilterView statistics={statistics} /></div>
+			<div className={fistReportClass}><ReportDetailView report={report} /></div>
+			<div className={'report-container-wrap'}><ReportDetailView report={report} /></div>
+			<div className={'report-container-wrap'}><ReportTypeView report={report} /></div>
+			<div className={'crossfilter-container-wrap'}><CrossfilterView dispatch={dispatch} crossFilter={crossFilter} /></div>
 		</div>);
 	}
 }
@@ -59,12 +59,13 @@ Template.propTypes = propTypes;
 Template.defaultProps = defaultProps;
 
 var stateToProps = function(state) {
-	const {layout, report, statistics} = state;
+	const {layout, report, patterns} = state;
 	const {stockView, patternSmallView} = layout;
+	const {crossFilter} = patterns;
 	return {
 			fullView: !stockView, 
 			statisticsLarger: patternSmallView,
-			statistics,
+			crossFilter,
 			report,
 		};
 };

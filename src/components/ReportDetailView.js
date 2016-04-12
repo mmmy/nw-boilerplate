@@ -37,7 +37,7 @@ class ReportDetailView extends React.Component {
 			<h6 style={{textAlign:'center',fontWeight:'bold'}}>{title}</h6>
 			<div className='flex-container'>
 				{items.map((e, i) => {
-					return (<div>
+					return (<div key={i}>
 							<div>{e.name}</div>
 							<div>{e.content}</div>
 						</div>);

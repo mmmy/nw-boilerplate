@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import EChart from './EChart';
 
 const propTypes = {
-	kLine: PropTypes.object.isRequired,
+	pattern: PropTypes.object.isRequired,
 	index: PropTypes.number.isRequired,
 };
 
@@ -11,7 +11,7 @@ const defaultProps = {
   
 };
 
-class Template extends React.Component {
+class PatternView extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -42,7 +42,7 @@ class Template extends React.Component {
 	}
 }
 
-Template.propTypes = propTypes;
-Template.defaultProps = defaultProps;
+PatternView.propTypes = propTypes;
+PatternView.defaultProps = defaultProps;
 
-export default Template;
+export default PatternView;

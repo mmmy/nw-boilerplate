@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import PatternView from './PatternView';
 
 const propTypes = {
-	data: PropTypes.array.isRequired,
+	patterns: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
 	fullView: PropTypes.bool.isRequired
 };
@@ -35,9 +35,13 @@ class PatternCollection extends React.Component {
 	}
 
 	render(){
+		let { dispatch } = this.props;
+		let { crossFilter, rawData } = this.props.patterns;
+
+		let data = crossFilter.dimension(e=>{ return e.symbol; }).top(Infinity);
 		return (<div className="pattern-collection">
-			{ this.props.data.map((e, i) => {
-				return <PatternView kLine={e} key={i} index={i}/>
+			{ data.map((e, i) => {
+				return <PatternView pattern={e} key={i} index={i} dispatch={dispatch}/>
 			}) }
 		</div>);
 	}

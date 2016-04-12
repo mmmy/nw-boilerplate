@@ -7,8 +7,8 @@ function splitData(rawData) {
     var categoryData = [];
     var values = []
     for (var i = 0; i < rawData.length; i++) {
-        categoryData.push(rawData[i].splice(0, 1)[0]);
-        values.push(rawData[i])
+        categoryData.push(rawData[i].slice(0, 1)[0]);
+        values.push(rawData[i].slice(1));
     }
     return {
         categoryData: categoryData,
@@ -17,7 +17,7 @@ function splitData(rawData) {
 }
 
 const propTypes = {
-	kLine: PropTypes.object.isRequired,
+	pattern: PropTypes.object.isRequired,
 	index: PropTypes.number.isRequired,
 };
 
@@ -25,18 +25,19 @@ const defaultProps = {
   
 };
 
-class Template extends React.Component {
+class EChart extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {};
 	}
 
-	componentDidMount() {
+	drawChart() {
 		let node = this.refs['echart'+this.props.index];
 		let chart = echarts.init(node);
-		const data = this.props.kLine.kLine;
-		var data0 = splitData(data);
+		//let crossFilter = this.props.
+		const kLine = this.props.pattern.kLine;
+		var data0 = splitData(kLine);
 		let candleOption = factorCandleOption();
 		candleOption.xAxis.data = data0.categoryData;
 		candleOption.series[0].data = data0.values;
@@ -44,6 +45,10 @@ class Template extends React.Component {
 		setTimeout(function(){
         	chart.setOption(candleOption);	
 		},0);
+	}
+
+	componentDidMount() {
+		this.drawChart();
 	}
 
 	componentWillReceiveProps(){
@@ -65,7 +70,7 @@ class Template extends React.Component {
 	}
 }
 
-Template.propTypes = propTypes;
-Template.defaultProps = defaultProps;
+EChart.propTypes = propTypes;
+EChart.defaultProps = defaultProps;
 
-export default Template;
+export default EChart;

@@ -32,7 +32,7 @@ class Template extends React.Component {
 	}
 
 	render(){
-		return <div className=""></div>;
+		return <div className="reporttype-container"></div>;
 	}
 }
 
