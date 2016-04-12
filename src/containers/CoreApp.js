@@ -18,8 +18,6 @@ class MainChart extends React.Component {
     let comparatorChartClassName = classNames('comparator-chart-static', {
       'comparator-chart-static-show': this.props.stretchView,
       'comparator-chart-static-hide': !this.props.stretchView,
-      'comparator-chart-static-transition-hidding': this.props.stretchView,
-      'comparator-chart-static-transition-showing': !this.props.stretchView,
     });
     const STOCK_VIEW = 'comparator-chart';
     let options = {
