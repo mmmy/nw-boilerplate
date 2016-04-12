@@ -62,10 +62,10 @@ PatternContainer.propTypes = propTypes;
 PatternContainer.defaultProps = defaultProps;
 
 var stateToProps = function(state) {
-	const {layout, patterns} = state;
+	const {layout, patterns, filter} = state;
 	const {stockView, patternSmallView} = layout;
 	//const {crossFilter,rawData} = patterns;
-	return {fullView: !stockView, patternSmallView, patterns};
+	return {fullView: !stockView, patternSmallView, patterns, filter};
 };
 
 export default connect(stateToProps)(PatternContainer);

@@ -42,9 +42,7 @@ Promise.all([
   }
   ReactDOM.render(<Provider store={store}><Root /></Provider>, document.getElementById('app'));
 
-  if (process.env.NODE_ENV === 'development') require('nw.gui').Window.get().showDevTools();
-
 })
 .then(() => {
-  setChartLayout();
+  if(process.env.yq!='yes') setChartLayout();
 });

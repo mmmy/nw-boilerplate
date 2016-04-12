@@ -5,12 +5,17 @@
 @rightToolBar_H: 100%;
 @rightToolBar_W: 40px;
 
+@searchResultWrap_H: 220px;
+@searchResultWrap_T: calc(~"100% + 18px -"@searchResultWrap_H);
+@stockViewContainer_H: calc(~"100% -"@searchResultWrap_H);
 //search-detail
 @comparator_H: 100%;
 @comparator_W: 25%;
 
+@searchDetail_W: 725px;
+
 @comparatorStretch_H: calc(100% - 10px);
-@comparatorStretch_W: 45.9%;
+@comparatorStretch_W: calc(~"100% - "@searchDetail_W);
 
 @patternContainer_W: 50%;
 @patternContainer_H: 100%;

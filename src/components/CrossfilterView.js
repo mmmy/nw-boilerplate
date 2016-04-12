@@ -3,6 +3,8 @@ import Crossfilter from 'crossfilter';
 import d3 from 'd3';
 import DC from 'dc';
 
+import { filterActions } from '../flux/actions';
+
 const propTypes = {
 	crossFilter: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
@@ -24,7 +26,8 @@ class CrossfilterView extends React.Component {
 	}
 
 	componentWillReceiveProps(){
-
+		// console.log("CrossfilterView componentWillReceiveProps");
+		// //this.drawDc();
 	}
 
 	shouldComponentUpdate(){
@@ -33,6 +36,10 @@ class CrossfilterView extends React.Component {
 
 	componentWillUnmount(){
 
+	}
+
+	componentDidUpdate() {
+		this.drawDc();
 	}
 
 	render(){
@@ -103,7 +110,8 @@ class CrossfilterView extends React.Component {
 			.renderTitle(true)
 			.title((p)=>{return '历史时间分布';})
 			.yAxis().tickFormat((v) => { return v+'%';});
-
+		window.positionBubbleChart = positionBubbleChart;
+		//positionBubbleChart.on('filtered', this.onChartFiltered.bind(this));	
 	}
 
 	drawIndustryPieChart() {
@@ -115,13 +123,18 @@ class CrossfilterView extends React.Component {
 
 		let industryGroup = industryDim.group();
 
-		let industryPieChart = DC.pieChart(industry_quarter_chart)
+		let industryPieChart = this.industryPieChart || DC.pieChart(industry_quarter_chart);
+
+			industryPieChart
 			.width(170)
 			.height(170)
 			.radius(80)
 			.innerRadius(50)
 			.dimension(industryDim)
 			.group(industryGroup);
+
+		industryPieChart.on('filtered', this.onChartFiltered.bind(this));
+		this.industryPieChart = industryPieChart;
 	}
 
 	drawYieldDimCountChart() {
@@ -154,9 +167,19 @@ class CrossfilterView extends React.Component {
 	}
 
 	onChartFiltered(chart, filter) {
-		console.log('chart filtered');
+		console.log('chart filtered & filter:',filter);
 		let { dispatch } = this.props;
-		dispatch({type: 'HHHHH'});
+
+		switch (typeof filter) {
+			case 'string':
+				dispatch(filterActions.setFilterIndustry(filter));
+				break;
+			case 'object':
+				dispatch(filterActions.setFilterYieldRange(filter));
+				break;
+			default:
+				break;
+		}
 	}
 }
 

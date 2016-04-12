@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import PatternView from './PatternView';
-
+import _ from 'underscore';
 const propTypes = {
 	patterns: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
@@ -38,10 +38,12 @@ class PatternCollection extends React.Component {
 		let { dispatch } = this.props;
 		let { crossFilter, rawData } = this.props.patterns;
 
-		let data = crossFilter.dimension(e=>{ return e.symbol; }).top(Infinity);
+		let filteredData = crossFilter.dimension(e=>{ return e.symbol; }).top(Infinity),
+			idArr = _.pluck(filteredData, 'id');
 		return (<div className="pattern-collection">
-			{ data.map((e, i) => {
-				return <PatternView pattern={e} key={i} index={i} dispatch={dispatch}/>
+			{ rawData.map((e, i) => {
+				let show = idArr.indexOf(e.id) != -1;
+				return <PatternView show={show} pattern={e} key={i} index={i} dispatch={dispatch}/>
 			}) }
 		</div>);
 	}

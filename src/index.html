@@ -7,6 +7,8 @@
 	<!-- <script type="text/javascript" src='../tradingview/charting_library/charting_library.js'></script> -->
 	<!-- <script type="text/javascript" src='../tradingview/charting_library/datafeed/udf/datafeed.js'></script> -->
 	<script type="text/javascript">
+		if (process.env.NODE_ENV === 'development') require('nw.gui').Window.get().showDevTools();
+
 		if(window.nw == undefined){ 					//nw 0.12.3
 			global.document = window.document;
 			global.navigator = window.navigator;
@@ -42,7 +44,7 @@
 			  	win.reloadDev();
 			}
 		});
-		gulp.watch(['./build/*.js','./build/**/*.js'], ['reload']);
+		gulp.watch(['./build/*.js'], ['reload']);
 	</script>
 	<script src="main.js"></script>
 </body>

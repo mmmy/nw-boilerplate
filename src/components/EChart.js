@@ -51,6 +51,10 @@ class EChart extends React.Component {
 		this.drawChart();
 	}
 
+	componentDidUpdate() {
+		//this.drawChart();
+	}
+
 	componentWillReceiveProps(){
 
 	}

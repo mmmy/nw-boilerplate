@@ -7,3 +7,6 @@ export const CHANGE_PATTERNS = 'CHANGE_PATTERNS';
 export const ADD_PATTERNS = 'ADD_PATTERNS';
 export const FILTER_PATTERNS = 'FILTER_PATTERNS';
 export const SORT_PATTERNS = 'SORT_PATTERNS';
+
+export const SET_FILTER_INDUSTRY = 'SET_FILTER_INDUSTRY';  //filter行业
+export const SET_FILTER_YIELDRANGE = 'SET_FILTER_YIELDRANGE'; 		//filter收益率

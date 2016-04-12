@@ -11,6 +11,18 @@ var loadChartLib = () => {
 
 };
 
+var initAssert = () => {
+	window.Assert = (condition, message) => {
+		if (!condition) {
+			message = message || "Assertion failed 请检查代码!";
+	        if (typeof Error !== "undefined") {
+	            throw new Error(message);
+	        }
+	        throw message; // Fallback
+		}
+	};
+};
+
 module.exports = () => {
 	/******************************************
 		.showDevTools()  not work at here
@@ -30,4 +42,5 @@ module.exports = () => {
  //    }
 
  	initJquery();
+ 	initAssert();
 };

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Comparator from './Comparator';
 import SearchDetail from './SearchDetail';
-import { layoutActions } from '../flux/actions';
+import { layoutActions, patternActions } from '../flux/actions';
 import classNames from 'classnames';
 
 const defaultProps = {
@@ -46,7 +46,7 @@ class SearchReport extends React.Component {
 			'full': this.props.fullView
 		});
 		return (<div className={ className }>
-			<div className={toggleClass}><button style={{'marginLeft':'48%'}} className="btn btn-default btn-sm" onClick={this.toggleView.bind(this)}>云搜索</button></div>
+			<div className={toggleClass}><button style={{'marginLeft':'48%'}} className="btn btn-default btn-sm" onClick={this.toggleView.bind(this)}>云搜索</button><button className="btn btn-default btn-sm" onClick={this.getPatterns.bind(this)}>获取数据</button></div>
 			<div className="inner-searchreport">
 				<Comparator />
 				<SearchDetail />
@@ -54,8 +54,12 @@ class SearchReport extends React.Component {
 		</div>);
 	}
 
-	toggleView(){
+	toggleView() {
 		this.props.dispatch(layoutActions.toggleStockView());
+	}
+
+	getPatterns() {
+		this.props.dispatch(patternActions.getPatterns());
 	}
 }
 

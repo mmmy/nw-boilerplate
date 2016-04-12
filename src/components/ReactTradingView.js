@@ -14,7 +14,7 @@ const defaultProps = {
 class ReactTradingView extends React.Component {
 	constructor(props) {
 		super(props);
-
+    
 	}
 
   componentDidMount() {
@@ -27,6 +27,7 @@ class ReactTradingView extends React.Component {
     };
 
     let options = window.$.extend(this.props.options, {container_id: this.props.viewId});
+    if (process.env.yq == 'yes') return;
     var widget = new window.TradingView.widget(options);
   }
 

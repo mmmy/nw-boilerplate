@@ -35,7 +35,8 @@ class PatternView extends React.Component {
 	}
 
 	render(){
-		const className = classNames('pattern-view');
+		let {show} = this.props;
+		const className = classNames('transition-all', 'pattern-view', {'hide': !show});
 		return (<div className={className}>
 			<EChart {...this.props} />
 		</div>);
