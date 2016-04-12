@@ -6,13 +6,15 @@ class MainChart extends React.Component {
 	}
 
 	componentDidMount(){
-		
+
 	}
 
 	render(){
-		return <div className="container-main">
-			{ this.props.children }
-		</div>;
+		return (
+      <div className="container-main">
+        { this.props.children }
+      </div>
+    );
 	}
 }
 

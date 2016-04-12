@@ -13,11 +13,11 @@
 			global.DOMParser = window.DOMParser;
 			global.localStorage = window.localStorage;
 			global.focus = window.focus;
-			global.location = window.location;		
+			global.location = window.location;
 		}
 		(function() {
 		  var gui = require("nw.gui");
-		  		  
+
 		  if (process.platform === "darwin") {
 			  var mb = new gui.Menu({type: 'menubar'});
 			  mb.createMacBuiltin('RoboPaint', {
@@ -41,7 +41,7 @@
 			  	var win = gui.Window.get();
 			  	win.reloadDev();
 			}
-		});	
+		});
 		gulp.watch(['./build/*.js','./build/**/*.js'], ['reload']);
 	</script>
 	<script src="main.js"></script>

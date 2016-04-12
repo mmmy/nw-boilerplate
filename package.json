@@ -5,14 +5,15 @@
   "main": "./build/index.html",
   "window": {
     "show": true,
-    "width": 1280,
-    "height": 675,
-    "min_width": 1280,
-    "min_height": 675,
+    "width": 1366,
+    "height": 768,
+    "min_width": 1366,
+    "min_height": 768,
     "resizable": true,
     "standard-window": false,
     "fullscreen": false,
-    "frame": true
+    "frame": true,
+    "toolbar": false
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
