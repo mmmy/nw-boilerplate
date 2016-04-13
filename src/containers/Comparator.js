@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
-//import ReactTradingView from '../components/ReactTradingView';
 import path from 'path';
 
 const propTypes = {
@@ -9,7 +8,7 @@ const propTypes = {
 };
 
 const defaultProps = {
- 
+
 };
 
 class Component extends React.Component {

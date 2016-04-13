@@ -13,18 +13,6 @@ import GenerateStore from './flux/GenerateStore';
 let store = GenerateStore();
 window.store = store;
 
-let setChartLayout = () => {
-  setTimeout(() => {
-    let tv = document[window.document.getElementsByTagName('iframe')[0].id];
-    if (!tv.Q5) {
-      setChartLayout();
-    } else {
-      //const tv = window.document[window.document.getElementsByTagName('iframe')[0].id];
-      tv.W76.setChartLayout(tv.Q5, '2v');
-    }
-  }, 6E3)
-}
-
 Promise.all([
   new Promise((resolve) => {
     if(window.addEventListener) {
@@ -34,7 +22,7 @@ Promise.all([
     }
   })
 ]).then(() => {
-  
+
   init();
 
   actionsForIframe(store);
@@ -48,7 +36,4 @@ Promise.all([
   }
   ReactDOM.render(<Provider store={store}><Root /></Provider>, document.getElementById('app'));
 
-})
-.then(() => {
-  if(process.env.yq !== 'yes') { setChartLayout(); }
 });
