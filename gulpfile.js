@@ -52,13 +52,8 @@ gulp.task('styles', [], function(){
 	.pipe($.livereload());
 });
 
-<<<<<<< HEAD
 gulp.task('compile', function(cb){
 	sequence('html','scripts','styles',cb);
-=======
-gulp.task('compile', function(){
-
->>>>>>> f45ac10521ce853fac8b107c82fd3ae27865d7d2
 });
 
 gulp.task('watch', ['html','scripts','styles'], function(){

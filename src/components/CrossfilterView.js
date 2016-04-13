@@ -40,19 +40,10 @@ class CrossfilterView extends React.Component {
 
 	}
 
-<<<<<<< HEAD
 	componentDidUpdate() {
 		this.drawDc();
 	}
 
-	render(){
-		return <div className="crossfilter-container">
-			<div ref='position_bubble_chart'></div>
-			<div ref='industry_quarter_chart'></div>
-			<div ref='yield_count_chart'></div>
-		</div>;
-	}
-=======
   render() {
     const className = classnames('crossfilter-container', {
       'crossfilter-container-stretch': this.props.stretchView,
@@ -67,7 +58,6 @@ class CrossfilterView extends React.Component {
       </div>
     );
   }
->>>>>>> f45ac10521ce853fac8b107c82fd3ae27865d7d2
 
 	drawDc(){
 		window.d3 = d3;
