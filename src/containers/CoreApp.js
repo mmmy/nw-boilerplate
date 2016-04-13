@@ -31,10 +31,11 @@ class MainChart extends React.Component {
       //	BEWARE: no trailing slash is expected in feed URL
       datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
       library_path: "charting_library/",
-      locale: "en",
+      locale: "zh",
       //	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
       drawings_access: { type: 'black', tools: [ { name: "Regression Trend" } ] },
-      disabled_features: ["use_localstorage_for_settings"],
+      // disabled_features: ["use_localstorage_for_settings"],
+      disabled_features: ["header_widget"],
       enabled_features: ["study_templates"],
       charts_storage_url: 'http://saveload.tradingview.com',
       charts_storage_api_version: "1.1",
