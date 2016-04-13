@@ -1,4 +1,3 @@
-import { connect } from 'react-redux';
 import Crossfilter from 'crossfilter';
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
@@ -8,6 +7,7 @@ import classnames from 'classnames';
 import { filterActions } from '../flux/actions';
 
 const propTypes = {
+  stretchView: PropTypes.bool.isRequired,
 	crossFilter: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
 };
@@ -120,7 +120,7 @@ class CrossfilterView extends React.Component {
 			.title((p)=>{return '历史时间分布';})
 			.yAxis().tickFormat((v) => { return v+'%';});
 		window.positionBubbleChart = positionBubbleChart;
-		//positionBubbleChart.on('filtered', this.onChartFiltered.bind(this));	
+		//positionBubbleChart.on('filtered', this.onChartFiltered.bind(this));
 	}
 
 	drawIndustryPieChart() {
@@ -195,12 +195,4 @@ class CrossfilterView extends React.Component {
 CrossfilterView.propTypes = propTypes;
 CrossfilterView.defaultProps = defaultProps;
 
-function stateToPorps(state) {
-  const {layout} = state;
-	const {stockView} = layout;
-	return {
-		stretchView: !stockView,
-	};
-}
-
-export default connect(stateToPorps)(CrossfilterView);
+export default CrossfilterView;

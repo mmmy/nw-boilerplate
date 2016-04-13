@@ -10,7 +10,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  
+
 };
 
 class Template extends React.Component {
@@ -46,12 +46,19 @@ class Template extends React.Component {
 		const fistReportClass = classNames('transition-all', 'transition-delay2','report-container-wrap',{
 			'stretch': !fullView
 		});
-		return (<div className={ className }>
-			<div className={fistReportClass}><ReportDetailView report={report} /></div>
-			<div className={'report-container-wrap'}><ReportDetailView report={report} /></div>
-			<div className={'report-container-wrap'}><ReportTypeView report={report} /></div>
-			<div className={'crossfilter-container-wrap'}><CrossfilterView dispatch={dispatch} crossFilter={crossFilter} /></div>
-		</div>);
+    return (
+      <div className={ className }>
+        <div className={fistReportClass}><ReportDetailView report={report} /></div>
+        <div className={'report-container-wrap'}><ReportDetailView report={report} /></div>
+        <div className={'report-container-wrap'}><ReportTypeView report={report} /></div>
+        <div className={'crossfilter-container-wrap'}>
+          <CrossfilterView
+            dispatch={dispatch}
+            crossFilter={crossFilter}
+            stretchView={fullView} />
+        </div>
+      </div>
+    );
 	}
 }
 
@@ -63,7 +70,7 @@ var stateToProps = function(state) {
 	const {stockView, patternSmallView} = layout;
 	const {crossFilter} = patterns;
 	return {
-			fullView: !stockView, 
+			fullView: !stockView,
 			statisticsLarger: patternSmallView,
 			crossFilter,
 			report,
