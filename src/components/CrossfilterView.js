@@ -16,11 +16,14 @@ const defaultProps = {
 
 };
 
+//node 重要: 一个crossfilter不能 生成超过128个dimentsion, 所以注意缓存dimentsion !
+
 class CrossfilterView extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {};
+		//this.oldCrossFilter = props.crossFilter;
 	}
 
 	componentDidMount() {
@@ -44,24 +47,80 @@ class CrossfilterView extends React.Component {
 		this.drawDc();
 	}
 
-  render() {
-    const className = classnames('crossfilter-container', {
-      'crossfilter-container-stretch': this.props.stretchView,
-      'crossfilter-container-shrink': !this.props.stretchView
-    });
+	render() {
+		const className = classnames('crossfilter-container', {
+		  'crossfilter-container-stretch': this.props.stretchView,
+		  'crossfilter-container-shrink': !this.props.stretchView
+		});
 
-    return (
-      <div className={ className }>
-        <div ref='position_bubble_chart'></div>
-        <div ref='industry_quarter_chart'></div>
-        <div ref='yield_count_chart'></div>
-      </div>
-    );
-  }
+		return (
+		  <div className={ className }>
+		    <div ref='position_bubble_chart'></div>
+		    <div ref='industry_quarter_chart'></div>
+		    <div ref='yield_count_chart'></div>
+		  </div>
+		);
+	}
+
+	initDimensions() {
+
+		let { crossFilter } = this.props;
+
+		//crossFilter 如果改变或者不存在 那么重新生成dimentsions !!
+		if(this.oldCrossFilter != crossFilter) {
+
+			console.info('crossfilter changed !');
+			
+			this.oldCrossFilter = crossFilter;
+
+			this.idDim = crossFilter.dimension((data) => { return data.id; });
+
+			this.idGroup = this.idDim.group().reduce(
+					(p, v)=>{
+						try{
+							let lastBar = v.kLine[v.kLine.length - 1];
+							p.year = new Date(lastBar[0]).getFullYear();
+							p.yield100 = Math.round(v.yield*100);
+							p.show = true;
+							return p;
+						} catch (e) {
+							console.error(e);
+						}
+					},
+					(p, v)=>{
+						p.show = false;
+						return p;
+					},
+					()=>{
+						return {
+							year: 1990,
+							yield100: 0,
+							show: true,
+						};
+					}
+				);
+
+			this.yieldDim = crossFilter.dimension((data) => { return Math.round(data.yield*10/1.5); });
+
+			this.yieldGroup = this.yieldDim.group();
+
+			this.industryDim = crossFilter.dimension((data) => { return data.industry; });
+
+			this.industryGroup = this.industryDim.group();
+
+		} else { //没有变化, 则不需要生成dimesions
+
+		}
+
+	}
 
 	drawDc(){
+
 		window.d3 = d3;
 		window.dc = DC;
+
+		this.initDimensions();
+
 		this.drawPositionBubbleChart();
 		this.drawYieldDimCountChart();
 		this.drawIndustryPieChart();
@@ -74,40 +133,10 @@ class CrossfilterView extends React.Component {
 
 		let {position_bubble_chart} = this.refs;
 
-		let { crossFilter } = this.props;
-
-		let idDim = crossFilter.dimension((data) => { return data.id; });
-
-		let idGroup = idDim.group().reduce(
-				(p, v)=>{
-					try{
-						let lastBar = v.kLine[v.kLine.length - 1];
-						p.year = new Date(lastBar[0]).getFullYear();
-						p.yield100 = Math.round(v.yield*100);
-						p.show = true;
-						return p;
-					} catch (e) {
-						console.error(e);
-					}
-				},
-				(p, v)=>{
-					p.show = false;
-					return p;
-				},
-				()=>{
-					return {
-						year: 1990,
-						yield100: 0,
-						show: true,
-					};
-				}
-			);
-
-		window.idGroup = idGroup;
 		let positionBubbleChart = DC.bubbleChart(position_bubble_chart)
 			.width(500)
-			.dimension(idDim)
-			.group(idGroup)
+			.dimension(this.idDim)
+			.group(this.idGroup)
 			.keyAccessor((p) => { return p.value.year; })
 			.valueAccessor((p) => { return p.value.yield100; })
 			.radiusValueAccessor((p) => { return (p.value.show ? 1 : 0); })
@@ -124,13 +153,8 @@ class CrossfilterView extends React.Component {
 	}
 
 	drawIndustryPieChart() {
+
 		let {industry_quarter_chart} = this.refs;
-
-		let { crossFilter } = this.props;
-
-		let industryDim = crossFilter.dimension((data) => { return data.industry; });
-
-		let industryGroup = industryDim.group();
 
 		let industryPieChart = this.industryPieChart || DC.pieChart(industry_quarter_chart);
 
@@ -139,8 +163,8 @@ class CrossfilterView extends React.Component {
 			.height(170)
 			.radius(80)
 			.innerRadius(50)
-			.dimension(industryDim)
-			.group(industryGroup);
+			.dimension(this.industryDim)
+			.group(this.industryGroup);
 
 		industryPieChart.on('filtered', this.onChartFiltered.bind(this));
 		this.industryPieChart = industryPieChart;
@@ -150,21 +174,13 @@ class CrossfilterView extends React.Component {
 
 		let {yield_count_chart} = this.refs;
 
-		let { crossFilter } = this.props;
-
-		let yieldDim = crossFilter.dimension((data) => { return Math.round(data.yield*10/1.5); });
-
-		window.yieldDim = yieldDim;
-
-		let yieldGroup = yieldDim.group();
-
 		//收益率统计
 		let yieldDimCountChart = DC.barChart(yield_count_chart);
 		yieldDimCountChart
 			//.width(420)
 			//.height(200)
-			.dimension(yieldDim)
-			.group(yieldGroup)
+			.dimension(this.yieldDim)
+			.group(this.yieldGroup)
 			.elasticY(true)
 			//.centerBar(true)
 			.gap(1)
@@ -176,7 +192,9 @@ class CrossfilterView extends React.Component {
 	}
 
 	onChartFiltered(chart, filter) {
+
 		console.log('chart filtered & filter:',filter);
+
 		let { dispatch } = this.props;
 
 		switch (typeof filter) {

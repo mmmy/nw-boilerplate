@@ -10,7 +10,9 @@ var $ 		= require('gulp-load-plugins')();
 
 //
 var paths = {
+	BASE:  		'src',
 	APP: 		'src/index.html',
+	FONTS:      ['src/fonts/*'],
 	STYLES: 	['src/styles/*.less', 'src/styles/**/*.less'],
 	SCRIPTS: 	['src/*.js', 'src/**/*.js'],
 	COMPONENTS: ['src/components/**/*.js'],
@@ -41,6 +43,11 @@ gulp.task('scripts', [], function(){
 	// .pipe($.eslint.failAfterError());
 });
 
+gulp.task('fonts', [], function(){
+	gulp.src(paths.FONTS, {base: paths.BASE})
+	.pipe(gulp.dest(paths.BUILD));
+});
+
 gulp.task('styles', [], function(){
 	gulp.src('src/styles/main.less')
 	.pipe($.plumber(function(error){
@@ -56,7 +63,7 @@ gulp.task('compile', function(cb){
 	sequence('html','scripts','styles',cb);
 });
 
-gulp.task('watch', ['html','scripts','styles'], function(){
+gulp.task('watch', ['html','fonts','scripts','styles'], function(){
 	gulp.watch(paths.APP, ['html']);
 	gulp.watch(paths.STYLES, ['styles']);
 	gulp.watch(paths.SCRIPTS, ['scripts','html']);

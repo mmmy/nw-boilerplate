@@ -11,6 +11,8 @@ const defaultProps = {
   	
 };
 
+//note 重要: crossfilter 生成的dimensions数量不能超过128个 , 所以要注意保存dimension !!
+
 class PatternCollection extends React.Component {
 
 	constructor(props) {
@@ -43,11 +45,20 @@ class PatternCollection extends React.Component {
 
 		if (waitingForPatterns) {
 
-			nodes = (<div>正在获取数据...</div>);
+			nodes = (<div><i className='fa fa-circle-o-notch fa-spin'></i>正在获取数据...</div>);
 
 		} else {
 
-			let filteredData = crossFilter.dimension(e=>{ return e.symbol; }).top(Infinity),
+			//如果crossFilter 是新来的
+			if(this.oldCrossFilter != crossFilter) {
+
+				console.info('crossFilter changed!');
+				this.oldCrossFilter = crossFilter;
+				this.symbolDim = crossFilter.dimension(e=>{ return e.symbol; });
+				
+			}
+
+			let filteredData = this.symbolDim.top(Infinity),
 				idArr = _.pluck(filteredData, 'id');
 			
 			nodes = rawData.map((e, i) => {
