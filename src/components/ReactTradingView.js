@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom';
 import React, { PropTypes } from 'react';
 import { setChartLayout } from '../flux/util/tradingViewWidget';
 
