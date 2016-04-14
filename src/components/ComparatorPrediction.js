@@ -9,7 +9,7 @@ const defaultProps = {
 
 };
 
-class ComparatorPredition extends React.Component {
+class ComparatorPrediction extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -33,14 +33,14 @@ class ComparatorPredition extends React.Component {
 	}
 
 	render(){
-    let className = classNames('comparator-predition');
+    let className = classNames('comparator-prediction');
 		return (
       <div className={ className }></div>
     );
 	}
 }
 
-ComparatorPredition.propTypes = propTypes;
-ComparatorPredition.defaultProps = defaultProps;
+ComparatorPrediction.propTypes = propTypes;
+ComparatorPrediction.defaultProps = defaultProps;
 
-export default ComparatorPredition;
+export default ComparatorPrediction;
