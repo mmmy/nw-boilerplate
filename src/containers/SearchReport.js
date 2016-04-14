@@ -40,10 +40,6 @@ class SearchReport extends React.Component {
 
 	}
 
-  toggleView(){
-    this.props.dispatch(layoutActions.toggleStockView());
-  }
-
 	render(){
 		const { fullView, statisticsLarger} = this.props;
 		const className = classNames('transition-all', 'container-searchreport', {

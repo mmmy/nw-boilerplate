@@ -1,21 +1,30 @@
 import * as types from '../constants/ActionTypes';
 
 
-var toggleStockView = function toggleStockView() {
-  return (dispatch) => {
-    dispatch({
-      type: types.TOGGLE_STOCK_VIEW,
-    })
-  }
-};
-
-var waitingForPatterns = function() {
+const waitingForPatterns = function() {
   return {
     type: types.WAITING_PATTERNS
+  };
+};
+
+const toggleStockView = function toggleStockView() {
+	return (dispatch) => {
+		dispatch({
+			type: types.TOGGLE_STOCK_VIEW,
+		})
+	};
+};
+
+const togglePredictionPanel = function togglePredictionPanel() {
+  return (dispatch) => {
+    dispatch({
+      type: types.TOGGLE_PREDICTION_PANEL
+    })
   };
 };
 
 module.exports = {
   toggleStockView,
   waitingForPatterns,
+  togglePredictionPanel,
 }
