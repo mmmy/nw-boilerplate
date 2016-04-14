@@ -9,13 +9,15 @@
 @searchResultWrap_T: calc(~"100% + 18px -"@searchResultWrap_H);
 @stockViewContainer_H: calc(~"100% -"@searchResultWrap_H);
 //search-detail
+@searchDetail_W: 725px;
+
+// comparator
 @comparator_H: 100%;
 @comparator_W: 25%;
 
-@searchDetail_W: 725px;
-
-@comparatorStretch_H: calc(100% - 10px);
+@comparatorStretch_H: 100%;
 @comparatorStretch_W: calc(~"100% - "@searchDetail_W);
+@comparatorChartStatic_H: calc(~'100% - 2 * '@header_H);
 
 @patternContainer_W: 50%;
 @patternContainer_H: 100%;

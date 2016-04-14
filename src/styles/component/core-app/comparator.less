@@ -17,12 +17,12 @@
 .comparator-chart-static{
   position: absolute;
   width: @comparatorStretch_W;
-  height: @comparatorStretch_H;
-  top: 31px;
+  height: @comparatorChartStatic_H ;
+  top: @header_H;
 }
 
 .comparator-chart-static-show{
-  z-index: 100;
+  z-index: 1;
   .ks-show();
   .ks-fade-in();
 }
@@ -37,4 +37,15 @@
   position: absolute;
   width: 100%;
   top: 0;
+}
+
+.comparator-predition{
+  position: absolute;
+  height: calc(~'50% - 37px -' @header_H);
+  width: 30%;
+  right: 40px;
+  top: 5px;
+  background-color: #FAFBFC;
+  z-index: 2;
+  box-shadow: inset 0 0 20px #ccc;
 }

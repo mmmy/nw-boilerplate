@@ -33,7 +33,10 @@ class ComparatorPredition extends React.Component {
 	}
 
 	render(){
-		return (<div className=""></div>);
+    let className = classNames('comparator-predition');
+		return (
+      <div className={ className }></div>
+    );
 	}
 }
 

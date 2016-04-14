@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import path from 'path';
+import ComparatorPredition from '../components/ComparatorPredition';
 
 const propTypes = {
 	stretchView: PropTypes.bool
@@ -49,6 +50,7 @@ class Component extends React.Component {
 		return (
       <div className={ containerClassName } >
         <img src={ screenshotPrediction } className={ screenshotPredictionClassName }/>
+        <ComparatorPredition />
       </div>
     );
 	}
