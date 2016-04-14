@@ -8,6 +8,7 @@ let initialState = {
 	rawData: [],
 	//rawData: (process.env.NODE_ENV == 'development' ? randomPartterns(50) : []),
 	//crossFilter: function(){ return crossfilter(this.rawData); }(),
+	error: null,
 };
 initialState.crossFilter = crossfilter(initialState.rawData);
 
@@ -20,6 +21,12 @@ export default function patterns(state = initialState, actions){
 
 		case types.CHANGE_PATTERNS:
 			return actions.patterns || [];
+
+		case types.GET_PATTERNS_ERROR:
+			return {
+				...state,
+				error: actions.error,
+			};
 
 		default:
 			return state;

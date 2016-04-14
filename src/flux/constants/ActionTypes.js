@@ -12,3 +12,6 @@ export const SORT_PATTERNS = 'SORT_PATTERNS';
 
 export const SET_FILTER_INDUSTRY = 'SET_FILTER_INDUSTRY';     //filter行业
 export const SET_FILTER_YIELDRANGE = 'SET_FILTER_YIELDRANGE'; 		//filter收益率
+
+//错误处理
+export const GET_PATTERNS_ERROR = 'GET_PATTERNS_ERROR';          //获取patterns错误

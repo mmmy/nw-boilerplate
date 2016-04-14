@@ -40,6 +40,12 @@ export default function layout(state = initalState, action) {
 				waitingForPatterns: false,
 			};
 
+		case types.GET_PATTERNS_ERROR: //搜索错误
+			return {
+				...state,
+				waitingForPatterns: false
+			};
+
 		default:
 			return state;
 	}

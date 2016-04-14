@@ -39,15 +39,22 @@ class PatternCollection extends React.Component {
 	getPatternNodes() {
 		
 		let { dispatch, waitingForPatterns } = this.props;
-		let { crossFilter, rawData } = this.props.patterns;
+		let { crossFilter, rawData , error} = this.props.patterns;
 
 		let nodes = null;
 
-		if (waitingForPatterns) {
+		if (waitingForPatterns) {		//正在请求
 
 			nodes = (<div><i className='fa fa-circle-o-notch fa-spin'></i>正在获取数据...</div>);
 
-		} else {
+		} else if(error) { 					//请求错误
+
+			nodes = (<div>
+						<h4>请求数据错误</h4>
+						<p>{ '' + error }</p>
+					</div>);
+
+		} else {                        //请求成功
 
 			//如果crossFilter 是新来的
 			if(this.oldCrossFilter != crossFilter) {

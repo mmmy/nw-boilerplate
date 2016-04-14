@@ -12,12 +12,23 @@ import crossfilter from 'crossfilter';
 let getPatterns = (symbol, dateRange, cb) => {
 	console.log('patternActions: getPatterns',symbol, dateRange);
 	return (dispacth) => {
-		ajaxData.getPatterns((res) => {
-			let patterns = JSON.parse(res);
-			patterns.crossFilter = crossfilter(patterns.rawData);
-			dispacth({type: types.CHANGE_PATTERNS, patterns});
-			cb && cb();
-		});
+
+		ajaxData.getPatterns(
+			
+			{symbol, dateRange}, 
+			
+			(res) => {
+				let patterns = JSON.parse(res);
+				patterns.crossFilter = crossfilter(patterns.rawData);
+				dispacth({type: types.CHANGE_PATTERNS, patterns});
+				cb && cb();
+			},
+
+			(error) => {
+				//请求错误后的处理
+				console.error(error);
+				dispacth({type: types.GET_PATTERNS_ERROR, error: error});
+			});
 	};
 }
 
