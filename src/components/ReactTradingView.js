@@ -1,4 +1,6 @@
+import ReactDOM from 'react-dom';
 import React, { PropTypes } from 'react';
+import { setChartLayout } from '../flux/util/tradingViewWidget';
 
 const propTypes = {
 	viewId: PropTypes.string.isRequired,
@@ -12,7 +14,7 @@ const defaultProps = {
 class ReactTradingView extends React.Component {
 	constructor(props) {
 		super(props);
-    
+
 	}
 
   componentDidMount() {
@@ -25,13 +27,18 @@ class ReactTradingView extends React.Component {
     // };
 
     let options = window.$.extend(this.props.options, {container_id: this.props.viewId});
-    if (process.env.yq === 'yes') { return; }
-    /*var widget = */new window.TradingView.widget(options);
+    if (process.env.yq == 'yes') return;
+
+    let widget = new window.TradingView.widget(options);
+
+    if (this.props.viewId === 'comparator-chart') {
+      setChartLayout();
+    }
   }
 
 	render(){
 		return (
-    <div className={ "chart-container" } id={ this.props.viewId } />
+    <div className={ "chart-container" } ref={ this.props.viewId } id={ this.props.viewId } />
     )
 	}
 }
