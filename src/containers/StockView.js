@@ -38,19 +38,41 @@ class StockView extends React.Component {
 				datafeed: new Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
 				library_path: "charting_library/",
 				locale: "zh",
-        theme: "Black",
+      			theme: "Black",
 				//	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
 				drawings_access: { type: 'black', tools: [ { name: "Regression Trend" } ] },
 				disabled_features: ["use_localstorage_for_settings"],
 				enabled_features: ["study_templates"],
 				charts_storage_url: 'http://saveload.tradingview.com',
-        charts_storage_api_version: "1.1",
+        		charts_storage_api_version: "1.1",
 				client_id: 'tradingview.com',
 				user_id: 'public_user_id',
 				autosize: true,
-        fullscreen: false,
-        // height: 300,
-        // width: 300,
+        		fullscreen: false,
+        		// height: 300,
+        		// width: 300,
+        		overrides: {
+						"paneProperties.background": "#30313B",
+                        "paneProperties.vertGridProperties.color": "#30313B",
+                        "paneProperties.horzGridProperties.color": "#30313B",
+						"symbolWatermarkProperties.transparency": 90,
+						"scalesProperties.textColor" : "#AAA",
+						
+						"mainSeriesProperties.candleStyle.upColor": "#30313B",
+						"mainSeriesProperties.candleStyle.downColor": "#67FBF9",
+						"mainSeriesProperties.candleStyle.drawWick": true,
+						"mainSeriesProperties.candleStyle.drawBorder": true,
+						"mainSeriesProperties.candleStyle.borderColor": "#378658",
+						"mainSeriesProperties.candleStyle.borderUpColor": "#CD1123",
+						"mainSeriesProperties.candleStyle.borderDownColor": "#67FBF9",
+						"mainSeriesProperties.candleStyle.wickUpColor": '#CD1123',
+						"mainSeriesProperties.candleStyle.wickDownColor": '#67FBF9',
+						"mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
+
+				},
+				studies_overrides: {
+
+				}
 			};
 
 		return (

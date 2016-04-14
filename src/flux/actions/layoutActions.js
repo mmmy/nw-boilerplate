@@ -17,8 +17,15 @@ var toggleStockView = function toggleStockView() {
 	// return {
 	// 		type: types.TOGGLE_STOCK_VIEW,
 	// 		}
-}
+};
+
+var waitingForPatterns = function() {
+	return {
+		type: types.WAITING_PATTERNS
+	};
+};
 
 module.exports = {
-	toggleStockView
+	toggleStockView,
+	waitingForPatterns,
 }

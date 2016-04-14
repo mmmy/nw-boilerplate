@@ -1,6 +1,7 @@
 import 'babel-polyfill';
 
 import init from './shared/Init';
+import actionsForIframe from './shared/actionsForIframe';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -33,7 +34,10 @@ Promise.all([
     }
   })
 ]).then(() => {
+  
   init();
+
+  actionsForIframe(store);
 
   if (process.env.NODE_ENV === 'development') {
     var head = document.getElementsByTagName('head')[0];
