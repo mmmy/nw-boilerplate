@@ -2,10 +2,19 @@
 import { compose, createStore, applyMiddleware } from 'redux';
 import DevTools from '../containers/DevTools';
 import thunkMiddleware from 'redux-thunk';
+import promise from 'redux-promise';
 import reducers from './reducers';
 
+//Env===dev
+import createLogger from 'redux-logger';
+
+const logger = createLogger({
+  duration: true,
+  collapsed: true
+});
+
 const createStoreWithMiddleware = compose(
-  applyMiddleware(thunkMiddleware),
+  applyMiddleware(thunkMiddleware, logger), //!\ logger must be last middleware in chain
   DevTools.instrument()
 )(createStore);
 
