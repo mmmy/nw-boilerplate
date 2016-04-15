@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import echarts from 'echarts';
 import classNames from 'classnames';
-import {factorCandleOption, factorLineOption} from './utils/echart-options';
+import {factorCandleOption /*, factorLineOption*/} from './utils/echart-options';
 
 function splitData(rawData) {
-    var categoryData = [];
-    var values = []
-    for (var i = 0; i < rawData.length; i++) {
+    let categoryData = [];
+    let values = []
+    for (let i = 0; i < rawData.length; i += 1) {
         categoryData.push(rawData[i].slice(0, 1)[0]);
         values.push(rawData[i].slice(1));
     }
@@ -37,7 +37,7 @@ class EChart extends React.Component {
 		let chart = echarts.init(node);
 		//let crossFilter = this.props.
 		const kLine = this.props.pattern.kLine;
-		var data0 = splitData(kLine);
+		let data0 = splitData(kLine);
 		let candleOption = factorCandleOption();
 		candleOption.xAxis.data = data0.categoryData;
 		candleOption.series[0].data = data0.values;

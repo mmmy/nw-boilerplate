@@ -36,7 +36,12 @@ class Template extends React.Component {
 
 	}
 
+	componentDidUpdate() {
+		console.log('statisticsContainer did update', new Date() - this.renderDate);
+	}
+
 	render(){
+		this.renderDate = new Date();
 		const { fullView, statisticsLarger, report, crossFilter, dispatch} = this.props;
 		const className = classNames('transition-all', 'statistics-container', {
 			'full': fullView,

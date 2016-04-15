@@ -32,7 +32,7 @@ let getPatterns = (args, cb, errorCb) => {
 	setTimeout(()=>{
 
 		let patterns = {
-			"rawData": randomPartterns(50)
+			"rawData": randomPartterns(200)
 		};
 
 		Math.random() > 0.5 ? (cb(JSON.stringify(patterns))) : (errorCb && errorCb('error test '+ new Date()));
