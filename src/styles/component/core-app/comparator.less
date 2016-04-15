@@ -46,7 +46,7 @@
   right: 40px;
   top: 5px;
   background-color: #FAFBFC;
-  z-index: 2;
+  z-index: 100;
   box-shadow: inset 0 0 20px #ccc;
 
   .comparator-prediction-header{
@@ -61,5 +61,21 @@
     line-height: 30px;
     white-space: nowrap;
     padding: 0px 5px;
+    width: 90%;
+    display: inline-block;
   }
+
+  // .comparator-prediction-panel{
+  //   width: 20px;
+  //   height: 100%;
+  //   background-color: gray;
+  //   top: -30px;
+  //   right: 0;
+  // }
+}
+
+.comparator-prediction-hide{
+  right: -30%;
+  z-index: -1;
+  transition: right .3s ease-out 0, z-index 0 ease .3s;
 }

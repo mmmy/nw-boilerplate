@@ -13,58 +13,62 @@ const defaultProps = {
 
 class ComparatorPrediction extends React.Component {
 
-	constructor(props) {
-		super(props);
-		this.state = {};
-	}
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
-	componentDidMount() {
+  componentDidMount() {
 
-	}
+  }
 
-	componentWillReceiveProps(){
+  componentWillReceiveProps(){
 
-	}
+  }
 
-	shouldComponentUpdate(){
-		return true;
-	}
+  shouldComponentUpdate(){
+    return true;
+  }
 
-	componentWillUnmount(){
+  componentWillUnmount(){
 
-	}
+  }
 
   togglePredictionPanel() {
     this.props.dispatch(layoutActions.togglePredictionPanel());
   }
 
-	render(){
-    let className = classNames('comparator-prediction');
+  render(){
+    let className = classNames('comparator-prediction', {
+      // 'comparator-prediction-hide': !this.props.isPredictionShow
+    });
     return (
       <div className={ className }>
         <div className='comparator-prediction-header'>
-          <span>走势预测</span>
-            <span
-              className='glyphicon glyphicon-chevron-right'
-              style={{float: "right"}}
-              onClick={ this.togglePredictionPanel.bind(this) }>
-            </span>
+          <span className='header'>走势预测</span>
+          <i className="fa fa-chevron-right"
+            aria-hidden="true"
+            style={ { "top": "5px" } }
+            onClick={ this.togglePredictionPanel.bind(this) }>
+          </i>
+        </div>
+        <div className='comparator-prediction-panel'>
         </div>
       </div>
     );
-	}
+  }
 }
 
 ComparatorPrediction.propTypes = propTypes;
 ComparatorPrediction.defaultProps = defaultProps;
 
 var stateToProps = function(state){
-	const { layout } = state;
-	const { stockView, isPredictionShow } = layout;
-	return {
-		fullView: !stockView,
+  const { layout } = state;
+  const { stockView, isPredictionShow } = layout;
+  return {
+    fullView: !stockView,
     isPredictionShow: isPredictionShow
-	}
+  }
 };
 
 export default connect(stateToProps)(ComparatorPrediction);

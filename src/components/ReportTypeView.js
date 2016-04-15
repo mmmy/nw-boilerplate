@@ -5,10 +5,10 @@ const propTypes = {
 };
 
 const defaultProps = {
-  
+
 };
 
-class Template extends React.Component {
+class ReportTypeView extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -32,11 +32,11 @@ class Template extends React.Component {
 	}
 
 	render(){
-		return <div className="reporttype-container"></div>;
+		return <div className="reporttype-container">ReportTypeView</div>;
 	}
 }
 
-Template.propTypes = propTypes;
-Template.defaultProps = defaultProps;
+ReportTypeView.propTypes = propTypes;
+ReportTypeView.defaultProps = defaultProps;
 
-export default Template;
+export default ReportTypeView;
