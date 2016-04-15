@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import classNames from 'classnames';
 
 const propTypes = {
-
+	shrinkView: PropTypes.bool
 };
 
 const defaultProps = {
@@ -42,10 +42,10 @@ class Component extends React.Component {
 		let className = classNames('transition-all', 'container-searchdetail', {
 			'searchdetail-shrink': this.props.shrinkView,
 		});
-		return <div className={ className }>
+		return (<div className={ className }>
 			<StatisticsContainer />
 			<PatternContainer />
-		</div>;
+		</div>);
 	}
 }
 
@@ -53,7 +53,7 @@ Component.propTypes = propTypes;
 Component.defaultProps = defaultProps;
 
 
-var stateToProps = function(state) {
+let stateToProps = function(state) {
 	const {layout} = state;
 	const {stockView} = layout;
 	return {

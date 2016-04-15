@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import StockView from './StockView';
 import SearchReport from './SearchReport';
 import ReactTradingView from '../components/ReactTradingView';
 import classNames from 'classnames';
+
+const propTypes = {
+  stretchView: PropTypes.bool
+};
 
 class MainChart extends React.Component {
 	constructor(props) {
@@ -25,7 +29,7 @@ class MainChart extends React.Component {
       interval: 'D',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
-      datafeed: new Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
+      datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
       library_path: "charting_library/",
       locale: "en",
       //	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
@@ -56,6 +60,9 @@ class MainChart extends React.Component {
 	}
 
 }
+
+MainChart.propTypes = propTypes;
+
 function stateToPorps(state) {
   const {layout} = state;
 	const {stockView} = layout;

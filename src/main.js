@@ -15,11 +15,11 @@ window.store = store;
 
 let setChartLayout = () => {
   setTimeout(() => {
-    var tv = document[window.document.getElementsByTagName('iframe')[0].id];
+    let tv = document[window.document.getElementsByTagName('iframe')[0].id];
     if (!tv.Q5) {
       setChartLayout();
     } else {
-      const tv = window.document[window.document.getElementsByTagName('iframe')[0].id];
+      //const tv = window.document[window.document.getElementsByTagName('iframe')[0].id];
       tv.W76.setChartLayout(tv.Q5, '2v');
     }
   }, 6E3)
@@ -40,8 +40,8 @@ Promise.all([
   actionsForIframe(store);
 
   if (process.env.NODE_ENV === 'development') {
-    var head = document.getElementsByTagName('head')[0];
-    var script = document.createElement('script');
+    let head = document.getElementsByTagName('head')[0];
+    let script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = 'http://localhost:35729/livereload.js';
     head.appendChild(script);
@@ -50,5 +50,5 @@ Promise.all([
 
 })
 .then(() => {
-  if(process.env.yq!='yes') setChartLayout();
+  if(process.env.yq !== 'yes') { setChartLayout(); }
 });

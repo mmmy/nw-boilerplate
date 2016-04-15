@@ -5,10 +5,11 @@ import EChart from './EChart';
 const propTypes = {
 	pattern: PropTypes.object.isRequired,
 	index: PropTypes.number.isRequired,
+	show: PropTypes.bool
 };
 
 const defaultProps = {
-  
+  show: true
 };
 
 class PatternView extends React.Component {

@@ -1,7 +1,7 @@
 import * as types from '../constants/ActionTypes';
  
 
-var toggleStockView = function toggleStockView() {
+let toggleStockView = function toggleStockView() {
 	// return (dispatch) => {
 	// 	dispatch(() => {
 	// 		return {
@@ -19,7 +19,7 @@ var toggleStockView = function toggleStockView() {
 	// 		}
 };
 
-var waitingForPatterns = function() {
+let waitingForPatterns = function() {
 	return {
 		type: types.WAITING_PATTERNS
 	};

@@ -7,6 +7,9 @@ import CrossfilterView from '../components/CrossfilterView';
 
 const propTypes = {
 	fullView: PropTypes.bool.isRequired,
+	report: PropTypes.object,
+	crossFilter: PropTypes.object.isRequired,
+	dispatch: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -70,7 +73,7 @@ class Template extends React.Component {
 Template.propTypes = propTypes;
 Template.defaultProps = defaultProps;
 
-var stateToProps = function(state) {
+let stateToProps = function(state) {
 	const {layout, report, patterns} = state;
 	const {stockView, patternSmallView} = layout;
 	const {crossFilter} = patterns;

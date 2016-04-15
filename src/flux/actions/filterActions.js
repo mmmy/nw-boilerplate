@@ -1,7 +1,7 @@
 import * as types from '../constants/ActionTypes';
 
 
-var setFilterIndustry = function(industry) {
+let setFilterIndustry = function(industry) {
 
 	return {
 		type: types.SET_FILTER_INDUSTRY,
@@ -10,7 +10,7 @@ var setFilterIndustry = function(industry) {
 
 }
 
-var setFilterYieldRange = function(yieldRange) {
+let setFilterYieldRange = function(yieldRange) {
 
 	return {
 		type: types.SET_FILTER_YIELDRANGE,

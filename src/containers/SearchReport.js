@@ -5,6 +5,13 @@ import SearchDetail from './SearchDetail';
 import { layoutActions, patternActions } from '../flux/actions';
 import classNames from 'classnames';
 
+const propTypes = {
+	dispatch: PropTypes.func.isRequired,
+	fullView: PropTypes.bool,
+	statisticsLarger: PropTypes.bool,
+
+};
+
 const defaultProps = {
 	fullView : false,
 };
@@ -40,10 +47,10 @@ class SearchReport extends React.Component {
 	render(){
 		const { fullView, statisticsLarger} = this.props;
 		const className = classNames('transition-all', 'container-searchreport', {
-			'searchreport-full': this.props.fullView,
+			'searchreport-full': fullView,
 		});
 		const toggleClass = classNames('container-toggle', {
-			'full': this.props.fullView
+			'full': fullView
 		});
     return (
       <div className={ className }>
@@ -74,9 +81,10 @@ class SearchReport extends React.Component {
 	}
 }
 
+SearchReport.propTypes = propTypes;
 SearchReport.defaultProps = defaultProps;
 
-var stateToProps = function(state){
+let stateToProps = function(state){
 	const {layout} = state;
 	const {stockView} = layout;
 	return {
