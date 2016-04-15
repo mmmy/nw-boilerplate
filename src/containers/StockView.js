@@ -57,7 +57,7 @@ class StockView extends React.Component {
                         "paneProperties.horzGridProperties.color": "#30313B",
 						"symbolWatermarkProperties.transparency": 90,
 						"scalesProperties.textColor" : "#AAA",
-						
+
 						"mainSeriesProperties.candleStyle.upColor": "#30313B",
 						"mainSeriesProperties.candleStyle.downColor": "#67FBF9",
 						"mainSeriesProperties.candleStyle.drawWick": true,
@@ -86,7 +86,6 @@ class StockView extends React.Component {
 }
 
 var mapStateToProps = function mapStateToProps(state) {
-	console.log('state changed');
 	const { layout } = state;
 	const { stockView } = layout;
 	return {
