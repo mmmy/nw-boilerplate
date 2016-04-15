@@ -1,15 +1,15 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
-import ReactTradingView from '../components/ReactTradingView';
+//import ReactTradingView from '../components/ReactTradingView';
 import path from 'path';
 
 const propTypes = {
-
+	stretchView: PropTypes.bool
 };
 
 const defaultProps = {
-  show: true,
+ 
 };
 
 class Component extends React.Component {
@@ -58,7 +58,7 @@ class Component extends React.Component {
 Component.propTypes = propTypes;
 Component.defaultProps = defaultProps;
 
-var stateToProps = function(state) {
+let stateToProps = function(state) {
 	const {layout} = state;
 	const {stockView} = layout;
 	return {

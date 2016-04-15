@@ -34,14 +34,15 @@ class Template extends React.Component {
 	}
 
 	render(){
-		return (<div className=""></div>);
+		let className = classNames();
+		return (<div className={ className }></div>);
 	}
 }
 
 Template.propTypes = propTypes;
 Template.defaultProps = defaultProps;
 
-var stateToProps = function(state) {
+let stateToProps = function(state) {
 	return {};
 };
 

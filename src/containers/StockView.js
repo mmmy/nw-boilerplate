@@ -3,6 +3,11 @@ import { connect } from 'react-redux';
 import ReactTradingView from '../components/ReactTradingView';
 import { STOCK_VIEW } from '../flux/constants/Const';
 
+
+const propTypes = {
+	stockView: PropTypes.bool
+};
+
 class StockView extends React.Component {
 
 	constructor(props) {
@@ -35,7 +40,7 @@ class StockView extends React.Component {
 				interval: 'D',
 				container_id: STOCK_VIEW,
 				//	BEWARE: no trailing slash is expected in feed URL
-				datafeed: new Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
+				datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
 				library_path: "charting_library/",
 				locale: "zh",
       			theme: "Black",
@@ -76,16 +81,19 @@ class StockView extends React.Component {
 			};
 
 		return (
-      <div className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
-        <ReactTradingView
-          viewId={ STOCK_VIEW }
-          options={ options } />
-      </div>
-    );
+	      <div className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
+	        <ReactTradingView
+	          viewId={ STOCK_VIEW }
+	          options={ options } />
+	      </div>
+	    );
 	}
 }
 
-var mapStateToProps = function mapStateToProps(state) {
+StockView.propTypes = propTypes;
+
+let mapStateToProps = function mapStateToProps(state) {
+	console.log('state changed');
 	const { layout } = state;
 	const { stockView } = layout;
 	return {

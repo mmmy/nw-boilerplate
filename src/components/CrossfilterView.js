@@ -1,4 +1,3 @@
-import Crossfilter from 'crossfilter';
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 import DC from 'dc';
@@ -7,7 +6,7 @@ import classnames from 'classnames';
 import { filterActions } from '../flux/actions';
 
 const propTypes = {
-  stretchView: PropTypes.bool.isRequired,
+  	stretchView: PropTypes.bool.isRequired,
 	crossFilter: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
 };
@@ -45,9 +44,11 @@ class CrossfilterView extends React.Component {
 
 	componentDidUpdate() {
 		this.drawDc();
+		console.log('crossFilter view did update', new Date() - this.renderDate);
 	}
 
 	render() {
+		this.renderDate = new Date();
 		const className = classnames('crossfilter-container', {
 		  'crossfilter-container-stretch': this.props.stretchView,
 		  'crossfilter-container-shrink': !this.props.stretchView
@@ -67,7 +68,7 @@ class CrossfilterView extends React.Component {
 		let { crossFilter } = this.props;
 
 		//crossFilter 如果改变或者不存在 那么重新生成dimentsions !!
-		if(this.oldCrossFilter != crossFilter) {
+		if(this.oldCrossFilter !== crossFilter) {
 
 			console.info('crossfilter changed !');
 			
@@ -85,9 +86,10 @@ class CrossfilterView extends React.Component {
 							return p;
 						} catch (e) {
 							console.error(e);
+							return p;
 						}
 					},
-					(p, v)=>{
+					(p)=>{
 						p.show = false;
 						return p;
 					},
@@ -108,9 +110,11 @@ class CrossfilterView extends React.Component {
 
 			this.industryGroup = this.industryDim.group();
 
-		} else { //没有变化, 则不需要生成dimesions
+			return true;
 
-		}
+		} 
+		//没有变化, 则不需要生成dimesions
+		return false;
 
 	}
 
@@ -119,13 +123,15 @@ class CrossfilterView extends React.Component {
 		window.d3 = d3;
 		window.dc = DC;
 
-		this.initDimensions();
+		// !! note: 如果crossFilter 没有变化那么不需要重新调用DC render 各个chart, it's expensive ! 
+		if (this.initDimensions()) {
 
-		this.drawPositionBubbleChart();
-		this.drawYieldDimCountChart();
-		this.drawIndustryPieChart();
+			this.drawPositionBubbleChart();
+			this.drawYieldDimCountChart();
+			this.drawIndustryPieChart();
 
-		DC.renderAll();
+			DC.renderAll();
+		}
 
 	}
 
@@ -146,7 +152,7 @@ class CrossfilterView extends React.Component {
 			.elasticY(true)
 			.elasticX(true)
 			.renderTitle(true)
-			.title((p)=>{return '历史时间分布';})
+			.title(()=>{return '历史时间分布';})
 			.yAxis().tickFormat((v) => { return v+'%';});
 		window.positionBubbleChart = positionBubbleChart;
 		//positionBubbleChart.on('filtered', this.onChartFiltered.bind(this));

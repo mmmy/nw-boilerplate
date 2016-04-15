@@ -4,7 +4,8 @@ import _ from 'underscore';
 const propTypes = {
 	patterns: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
-	fullView: PropTypes.bool.isRequired
+	fullView: PropTypes.bool.isRequired,
+	waitingForPatterns: PropTypes.bool.isRequired
 };
 
 const defaultProps = {
@@ -24,16 +25,20 @@ class PatternCollection extends React.Component {
 
 	}
 
-	componentWillReceiveProps(){
+	componentWillReceiveProps() {
 
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate() {
 		return true;
 	}
 
-	componentWillUnmount(){
+	componentWillUnmount() {
 
+	}
+
+	componentDidUpdate() {
+		console.log('patterns collections view  did update', new Date() - this.renderDate);
 	}
 
 	getPatternNodes() {
@@ -57,7 +62,7 @@ class PatternCollection extends React.Component {
 		} else {                        //请求成功
 
 			//如果crossFilter 是新来的
-			if(this.oldCrossFilter != crossFilter) {
+			if(this.oldCrossFilter !== crossFilter) {
 
 				console.info('crossFilter changed!');
 				this.oldCrossFilter = crossFilter;
@@ -69,7 +74,7 @@ class PatternCollection extends React.Component {
 				idArr = _.pluck(filteredData, 'id');
 			
 			nodes = rawData.map((e, i) => {
-				let show = idArr.indexOf(e.id) != -1;
+				let show = idArr.indexOf(e.id) !== -1;
 				return <PatternView show={show} pattern={e} key={i} index={i} dispatch={dispatch}/>
 			});
 
@@ -80,6 +85,7 @@ class PatternCollection extends React.Component {
 
 	render(){
 		
+		this.renderDate = new Date();
 
 		return (<div className="pattern-collection">
 			{ this.getPatternNodes() }

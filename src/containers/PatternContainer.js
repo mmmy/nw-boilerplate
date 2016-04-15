@@ -5,6 +5,7 @@ import classNames from 'classnames';
 
 const propTypes = {
 	fullView: PropTypes.bool.isRequired,
+	patternSmallView: PropTypes.bool
 };
 
 const defaultProps = {
@@ -47,21 +48,21 @@ class PatternContainer extends React.Component {
 			'stretch': !fullView,
 		});
 
-		return <div className={ className }>
+		return (<div className={ className }>
 			<div className={ toolbarClass }>
 
 			</div>
 			<div className={ collectionClass }>
 				<PatternCollection {...this.props}/>
 			</div>
-		</div>;
+		</div>);
 	}
 }
 
 PatternContainer.propTypes = propTypes;
 PatternContainer.defaultProps = defaultProps;
 
-var stateToProps = function(state) {
+let stateToProps = function(state) {
 	const {layout, patterns, filter} = state;
 	const {stockView, patternSmallView, waitingForPatterns} = layout;
 	//const {crossFilter,rawData} = patterns;
