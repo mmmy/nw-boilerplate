@@ -15,17 +15,15 @@ const getChart = (type) => {
 }
 
 const setChartLayout = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
+  setTimeout(() => {
+    let chart = getChart('comparator');
+    if (!chart.W76 || !chart.Q5) {
+      setChartLayout();
+    } else {
       let chart = getChart('comparator');
-      if (!chart.W76 || !chart.Q5) {
-        setChartLayout();
-      } else {
-        let chart = getChart('comparator');
-        chart.W76.setChartLayout(chart.Q5, '2v');
-      }
-    }, 1E3)
-  })
+      chart.W76.setChartLayout(chart.Q5, '2v');
+    }
+  }, 1E3);
 }
 
 
