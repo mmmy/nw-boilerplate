@@ -1,15 +1,17 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { sortActions } from '../flux/actions';
 
 const propTypes = {
-
+	dispatch: PropTypes.func.isRequired,
+	sort: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
-  
+  	
 };
 
-class Template extends React.Component {
+class SortBar extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -33,11 +35,19 @@ class Template extends React.Component {
 	}
 
 	render(){
-		return (<div className=""></div>);
+		//let {sort} = this.props;
+		return (<div className="sortbar-container">
+				{<button onClick={this.handleSort.bind(this)}>sort</button>}
+			</div>);
 	}
+
+	handleSort(){
+		this.props.dispatch(sortActions.sortByDate());
+	}
+
 }
 
-Template.propTypes = propTypes;
-Template.defaultProps = defaultProps;
+SortBar.propTypes = propTypes;
+SortBar.defaultProps = defaultProps;
 
-export default Template;
+export default SortBar;

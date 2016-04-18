@@ -4,6 +4,7 @@ import statistics from './statistics';
 import patterns from './patterns';
 import report from './report';
 import filter from './filter';
+import sort from './sort';
 
 
 export default combineReducers({
@@ -12,4 +13,5 @@ export default combineReducers({
 	patterns,
 	report,
 	filter,
+	sort,
 });

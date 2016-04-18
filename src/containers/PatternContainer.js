@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import PatternCollection from '../components/PatternCollection';
+import SortBar from '../components/SortBar';
+import FilterBar from '../components/FilterBar';
 import classNames from 'classnames';
 
 const propTypes = {
@@ -36,7 +38,7 @@ class PatternContainer extends React.Component {
 	}
 
 	render(){
-		const { fullView, patternSmallView } = this.props;
+		const { fullView, patternSmallView, dispatch, sort, patterns } = this.props;
 		const className = classNames('transition-all', 'pattern-container', {
 			'full': fullView,
 			'smaller': patternSmallView,
@@ -50,10 +52,11 @@ class PatternContainer extends React.Component {
 
 		return (<div className={ className }>
 			<div className={ toolbarClass }>
-				
+				<SortBar dispatch={dispatch} sort={sort} />
+				<FilterBar dispatch={dispatch} crossFilter={patterns.crossFilter} />
 			</div>
 			<div className={ collectionClass }>
-				<PatternCollection {...this.props}/>
+				<PatternCollection {...this.props} />
 			</div>
 		</div>);
 	}
@@ -63,10 +66,10 @@ PatternContainer.propTypes = propTypes;
 PatternContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const {layout, patterns, filter} = state;
+	const {layout, patterns, filter, sort} = state;
 	const {stockView, patternSmallView, waitingForPatterns} = layout;
 	//const {crossFilter,rawData} = patterns;
-	return {fullView: !stockView, patternSmallView, patterns, filter, waitingForPatterns};
+	return {fullView: !stockView, patternSmallView, patterns, filter, waitingForPatterns, sort};
 };
 
 export default connect(stateToProps)(PatternContainer);

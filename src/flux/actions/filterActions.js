@@ -19,8 +19,17 @@ let setFilterYieldRange = function(yieldRange) {
 
 }
 
+let setFilterSymbol = function(symbol) {
+
+	return {
+		type: types.SET_FILTER_SYMBOL,
+		symbol,
+	};
+
+}
 
 module.exports = {
 	setFilterIndustry,
 	setFilterYieldRange,
+	setFilterSymbol,
 }
