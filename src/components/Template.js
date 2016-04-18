@@ -34,7 +34,7 @@ class Template extends React.Component {
 
 	render(){
 		return (
-      <div className=""></div>
+      <div className="">/</div>
     );
 	}
 }
