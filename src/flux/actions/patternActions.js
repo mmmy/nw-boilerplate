@@ -20,7 +20,8 @@ let getPatterns = (symbol, dateRange, cb) => {
 			(res) => {
 				let patterns = JSON.parse(res);
 				patterns.crossFilter = crossfilter(patterns.rawData);
-				dispacth({type: types.CHANGE_PATTERNS, patterns});
+				let searchTimeSpent = 100;
+				dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 				cb && cb();
 			},
 

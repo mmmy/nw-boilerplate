@@ -13,9 +13,51 @@
 .container-toggle{
 	position: absolute;
 	width: 100%;
-	top: -10px;
+	//top: -10px;
+	//暂时不需要效果
 	&.full{
 		top: 0;
+	}
+
+	.btn-container{
+		position: relative;
+		width: 200px;
+		height: 100%;
+		margin: auto;
+		background: url(@logo_url) no-repeat;
+		background-position: 0 5px;
+
+		.item{
+			height: 100%;
+			display: inline-block;
+		}
+		
+		.title{
+			margin-left: 40px;
+			//padding: 5px;
+			font-size: 110%;
+			color: #333;
+		}
+
+		.timespent{
+			margin-left: 10px;
+			color: #777;
+			font-size: 90%;
+		}
+
+		.btn-toggle{
+			font-size: 130%;
+			margin-left: 10px;
+			.transition-all();
+			.transition-delay();
+			&:hover{
+				cursor: pointer;
+			}
+
+			&.rotate{
+				transform: rotate(180deg);
+			}
+		}
 	}
 }
 

@@ -50,7 +50,7 @@ class PatternContainer extends React.Component {
 
 		return (<div className={ className }>
 			<div className={ toolbarClass }>
-
+				
 			</div>
 			<div className={ collectionClass }>
 				<PatternCollection {...this.props}/>

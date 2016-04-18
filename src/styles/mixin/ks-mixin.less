@@ -7,6 +7,10 @@
 	transition-delay: 0s;
 }
 
+.transition-delay(@delay:0.4s){
+	transition-delay: @delay;
+}
+
 .transition-delay2 {
 	transition-delay: 0.5s;
 }
@@ -25,8 +29,10 @@
 
 .flex-container{
 	display: flex;
-	justify-content: center;
+	justify-content: space-around;
 	text-align: center;
+	height: 100%;
+	align-items: center
 }
 
 .chart-container{

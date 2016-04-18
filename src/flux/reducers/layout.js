@@ -8,6 +8,7 @@ const initalState = {
 	stockView: true, 							//主stock view 视图
 	patternSmallView: getPatternSmallView(),    //patterns 一列 or 两列 视图
 	waitingForPatterns: false, 					//等待 getPatterns 返回结果
+	searchTimeSpent: 0, 						//毫秒
 }
 
 export default function layout(state = initalState, action) {
@@ -35,9 +36,11 @@ export default function layout(state = initalState, action) {
 			};
 
 		case types.CHANGE_PATTERNS:    //搜索结束
+			let {searchTimeSpent} = action;
 			return {
 				...state,
 				waitingForPatterns: false,
+				searchTimeSpent,
 			};
 
 		case types.GET_PATTERNS_ERROR: //搜索错误

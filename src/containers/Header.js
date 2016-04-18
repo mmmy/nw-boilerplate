@@ -29,7 +29,7 @@ class Component extends React.Component {
 	}
 	
 	render(){
-		return <div className="container-header">拱石</div>;
+		return <div className="container-header"></div>;
 	}
 }
 

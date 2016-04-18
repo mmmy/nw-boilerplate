@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Comparator from './Comparator';
 import SearchDetail from './SearchDetail';
-import { layoutActions, patternActions } from '../flux/actions';
+import { patternActions } from '../flux/actions';
 import classNames from 'classnames';
+import ToggleBar from '../components/ToggleBar';
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
@@ -40,9 +41,9 @@ class SearchReport extends React.Component {
 
 	}
 
-  toggleView(){
-    this.props.dispatch(layoutActions.toggleStockView());
-  }
+	toggleView(){
+	this.props.dispatch(layoutActions.toggleStockView());
+	}
 
 	render(){
 		const { fullView, statisticsLarger} = this.props;
@@ -52,33 +53,17 @@ class SearchReport extends React.Component {
 		const toggleClass = classNames('container-toggle', {
 			'full': fullView
 		});
-    return (
-      <div className={ className }>
-        <div className={toggleClass}>
-          <button
-            style={{'marginLeft':'48%'}}
-            className="btn btn-default btn-sm"
-            onClick={this.toggleView.bind(this)}>云搜索</button>
-          <button
-            className="btn btn-default btn-sm"
-            onClick={this.getPatterns.bind(this)}>获取数据
-          </button>
-        </div>
-        <div className="inner-searchreport">
-          <Comparator />
-          <SearchDetail />
-        </div>
-      </div>
-    );
+	    return (
+	      <div className={ className }>
+	        <ToggleBar {...this.props} />
+	        <div className="inner-searchreport">
+	          <Comparator />
+	          <SearchDetail />
+	        </div>
+	      </div>
+	    );
 	}
 
-	toggleView() {
-		this.props.dispatch(layoutActions.toggleStockView());
-	}
-
-	getPatterns() {
-		this.props.dispatch(patternActions.getPatterns());
-	}
 }
 
 SearchReport.propTypes = propTypes;
@@ -86,9 +71,10 @@ SearchReport.defaultProps = defaultProps;
 
 let stateToProps = function(state){
 	const {layout} = state;
-	const {stockView} = layout;
+	const {stockView, searchTimeSpent} = layout;
 	return {
-		fullView: !stockView
+		fullView: !stockView,
+		searchTimeSpent,
 	}
 };
 
