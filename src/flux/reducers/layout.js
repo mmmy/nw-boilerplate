@@ -4,14 +4,14 @@ let getPatternSmallView = function() {
 	return window.innerWidth < 1000;
 }
 
-const initalState = {
+const initialState = {
 	stockView: true, 							               //主stock view 视图
 	patternSmallView: getPatternSmallView(),     //patterns 一列 or 两列 视图
 	waitingForPatterns: false, 					         //等待 getPatterns 返回结果
   isPredictionShow: true,                      // 走势预测面板显示
 }
 
-export default function layout(state = initalState, action) {
+export default function layout(state = initialState, action) {
 
 	switch (action.type) {
 
