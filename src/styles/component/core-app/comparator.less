@@ -1,0 +1,41 @@
+
+.container-comparator{
+  position: relative;
+  float: left;
+  border: 1px solid @ks-color-gray-8;
+  border-right: none;
+  width: @comparator_W;
+  height: @comparator_H;
+}
+
+.container-comparator-stretch{
+  width: @comparatorStretch_W;
+  height: @comparatorStretch_H;
+}
+
+// comparator-chart-static
+
+.comparator-chart-static{
+  position: absolute;
+  width: @comparatorStretch_W;
+  height: @comparatorStretch_H;
+  top: 31px;
+}
+
+.comparator-chart-static-show{
+  z-index: 100;
+  .ks-show();
+  .ks-fade-in();
+}
+
+.comparator-chart-static-hide{
+  .ks-hidden();
+}
+
+// comparator-chart-screenshot
+
+.comparator-chart-screenshot{
+  position: absolute;
+  width: 100%;
+  top: 0;
+}

@@ -1,14 +1,26 @@
 
-var initJquery = () => {
+let initJquery = () => {
 	let $ = require('jquery');
 	window.jQeury = window.$ = $;
 	global.jQeury = global.$ = $;
-	let TradingView = require('../../tradingview/charting_library/charting_library');
-	let Datafeed = require('../../tradingview/charting_library/datafeed/udf/datafeed');
+	/*let TradingView =*/ require('../../tradingview/charting_library/charting_library');
+	/*let Datafeed =*/ require('../../tradingview/charting_library/datafeed/udf/datafeed');
 };
 
-var loadChartLib = () => {
+let loadChartLib = () => {
 
+};
+
+let initAssert = () => {
+	window.Assert = (condition, message) => {
+		if (!condition) {
+			let msg = message || "Assertion failed 请检查代码!";
+	        if (typeof Error !== "undefined") {
+	            throw new Error(msg);
+	        }
+	        throw message; // Fallback
+		}
+	};
 };
 
 module.exports = () => {
@@ -30,4 +42,5 @@ module.exports = () => {
  //    }
 
  	initJquery();
+ 	initAssert();
 };

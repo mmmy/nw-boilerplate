@@ -1,0 +1,42 @@
+
+.transition-all{
+	//transition: all 0.2s 0 ease-out;
+	transition-property: all;
+	transition-duration: 0.3s;
+	transition-timing-function: ease-out;
+	transition-delay: 0s;
+}
+
+.transition-delay(@delay:0.4s){
+	transition-delay: @delay;
+}
+
+.transition-delay2 {
+	transition-delay: 0.5s;
+}
+
+.ks-hidden{
+  opacity: 0;
+}
+
+.ks-show{
+  opacity: 1;
+}
+
+.ks-fade-in{
+  transition: opacity 1.5s ease 1.5s;
+}
+
+.flex-container{
+	display: flex;
+	justify-content: space-around;
+	text-align: center;
+	height: 100%;
+	align-items: center
+}
+
+.chart-container{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}

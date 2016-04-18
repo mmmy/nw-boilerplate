@@ -1,0 +1,31 @@
+@reportContainer_H: 100px;
+
+
+.statistics-container{
+	float: left;
+	width: @statisticsContainer_W;
+	height: @statisticsContainer_H;
+	border-top: 1px solid @ks-color-gray-8;
+	&.full{
+		width: @statisticsContainerStretch_W;
+		height: @statisticsContainerStretch_H;
+	}
+
+	&.larger{
+		width: @statisticsContainerLarger_W;
+	}
+}
+
+.report-container-wrap {
+	height: @reportContainer_H;
+	//border: 1px solid green;
+	margin: 0;
+	&.stretch{
+		height: calc(@searchResultWrap_H~" - 33px");
+		//margin: 5px;
+	}
+}
+
+.crossfilter-container-wrap {
+	height: calc(~'100% - '@reportContainer_H*3);
+}
