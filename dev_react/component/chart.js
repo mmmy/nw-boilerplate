@@ -475,8 +475,8 @@ export default React.createClass({
 			<div style={{overFlow:'scroll'}} >
 				{patterns.map((e, i) => {
 					return (<div style={{float:'left'}} key={i}>
-						<div ref={'echart_'+ i} style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #aaa'}}></div>
-						<div ref={'echart1_'+i} style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #aaa'}}></div>						
+						<div ref={'echart_'+ i} style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #fff'}}></div>
+						<div ref={'echart1_'+i} style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #fff'}}></div>						
 					</div>);
 				})}
 			</div>

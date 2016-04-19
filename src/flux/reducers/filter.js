@@ -3,7 +3,8 @@ import * as types from '../constants/ActionTypes';
 const initialState = {
 	industrys: [],
 	yieldRange: [], //收益率
-
+	symbol: '',
+	similarity: {min:0, max:100},
 };
 
 export default function filter(state = initialState, actions) {
@@ -32,6 +33,24 @@ export default function filter(state = initialState, actions) {
 			return {
 				...state,
 				yieldRange,
+			};
+
+		case types.SET_FILTER_SYMBOL:
+
+			let { symbol } = actions;
+
+			return {
+				...state,
+				symbol,
+			};
+
+		case types.SET_FILTER_SIMILARITY:
+
+			let { similarity } = actions;
+
+			return {
+				...state,
+				similarity,
 			};
 
 		default:

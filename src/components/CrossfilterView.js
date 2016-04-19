@@ -26,7 +26,12 @@ class CrossfilterView extends React.Component {
 	}
 
 	componentDidMount() {
+
 		this.drawDc();
+
+		this.bindResizeFunc = this.handleResize.bind(this);
+
+		window.addEventListener('resize', this.bindResizeFunc);
 	}
 
 	componentWillReceiveProps(){
@@ -39,6 +44,45 @@ class CrossfilterView extends React.Component {
 	}
 
 	componentWillUnmount(){
+		window.removeEventListener('resize', this.bindResizeFunc);
+	}
+
+	//响应resize事件
+	handleResize(e){
+		
+		console.log(e);
+		if(!this.props.stretchView) { return }
+
+		let {position_bubble_chart, industry_quarter_chart, yield_count_chart} = this.refs;
+
+		let bubbleChartW = position_bubble_chart.clientWidth,
+			bubbleChartH = position_bubble_chart.clientHeight,
+
+			pieChartW = industry_quarter_chart.clientWidth,
+			pieChartH = industry_quarter_chart.clientHeight,
+			pieChartR = Math.min(pieChartW,pieChartH)/2 - 10,
+
+			yieldChartW = yield_count_chart.clientWidth,
+			yieldChartH = yield_count_chart.clientHeight;
+
+		if (bubbleChartW != this.bubbleChartW || bubbleChartH != this.bubbleChartH) { //区域发生了变化
+			this.positionBubbleChart && this.positionBubbleChart.width(bubbleChartW).height(bubbleChartH).render();
+			this.bubbleChartW = bubbleChartW;
+			this.bubbleChartH = bubbleChartH;
+		}
+
+		if (pieChartR != this.pieChartR) {
+			this.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).render();
+			this.pieChartR = pieChartR;
+			this.pieChartW = pieChartW;
+			this.pieChartH = pieChartH;
+		}
+
+		if (yieldChartW != this.yieldChartW || yieldChartH != this.yieldChartH) {
+			this.yieldDimCountChart.width(yieldChartW).height(yieldChartH).render();
+			this.yieldChartW = yieldChartW;
+			this.yieldChartH = yieldChartH;
+		}
 
 	}
 
@@ -56,9 +100,13 @@ class CrossfilterView extends React.Component {
 
 		return (
 		  <div className={ className }>
-		    <div ref='position_bubble_chart'></div>
-		    <div ref='industry_quarter_chart'></div>
-		    <div ref='yield_count_chart'></div>
+		  	<div className="dc-chart-row">
+		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
+		    </div>
+		    <div className="dc-chart-row">
+		    	<div ref='industry_quarter_chart' className="industry-quarter-chart"></div>
+		    	<div ref='yield_count_chart' className="yield-count-chart"></div>
+		    </div>
 		  </div>
 		);
 	}
@@ -138,9 +186,17 @@ class CrossfilterView extends React.Component {
 	drawPositionBubbleChart(){
 
 		let {position_bubble_chart} = this.refs;
+		let width = position_bubble_chart.clientWidth,
+			height = position_bubble_chart.clientHeight;
 
+		//缓存
+		this.bubbleChartW = width;
+		this.bubbleChartH = height;
+
+		//
 		let positionBubbleChart = DC.bubbleChart(position_bubble_chart)
-			.width(500)
+			.width(width)
+			.height(height)
 			.dimension(this.idDim)
 			.group(this.idGroup)
 			.keyAccessor((p) => { return p.value.year; })
@@ -152,23 +208,33 @@ class CrossfilterView extends React.Component {
 			.elasticY(true)
 			.elasticX(true)
 			.renderTitle(true)
-			.title(()=>{return '历史时间分布';})
-			.yAxis().tickFormat((v) => { return v+'%';});
+			.title(()=>{return '历史时间分布';});
+		
+		positionBubbleChart.yAxis().tickFormat((v) => { return v+'%';});
 		window.positionBubbleChart = positionBubbleChart;
 		//positionBubbleChart.on('filtered', this.onChartFiltered.bind(this));
+		this.positionBubbleChart = positionBubbleChart;
 	}
 
 	drawIndustryPieChart() {
 
 		let {industry_quarter_chart} = this.refs;
+		let width = industry_quarter_chart.clientWidth,
+			height = industry_quarter_chart.clientHeight,
+			radius = Math.min(width, height)/2 - 10;
+
+		//缓存
+		this.pieChartW = width;
+		this.pieChartH = height;
+		this.pieChartR = radius;
 
 		let industryPieChart = this.industryPieChart || DC.pieChart(industry_quarter_chart);
 
 			industryPieChart
-			.width(170)
-			.height(170)
-			.radius(80)
-			.innerRadius(50)
+			.width(width)
+			.height(height)
+			.radius(radius)
+			.innerRadius(0)
 			.dimension(this.industryDim)
 			.group(this.industryGroup);
 
@@ -179,12 +245,17 @@ class CrossfilterView extends React.Component {
 	drawYieldDimCountChart() {
 
 		let {yield_count_chart} = this.refs;
+		let width = yield_count_chart.clientWidth,
+			height = yield_count_chart.clientHeight;
+
+		this.yieldChartW = width;
+		this.yieldChartH = height;
 
 		//收益率统计
 		let yieldDimCountChart = DC.barChart(yield_count_chart);
 		yieldDimCountChart
-			//.width(420)
-			//.height(200)
+			.width(width)
+			.height(height)
 			.dimension(this.yieldDim)
 			.group(this.yieldGroup)
 			.elasticY(true)
@@ -195,6 +266,7 @@ class CrossfilterView extends React.Component {
 		//yield.yAxis().tickFromat((v) => {return v+'%'});
 		yieldDimCountChart.on('filtered', this.onChartFiltered.bind(this));
 		window.yieldDimCountChart = yieldDimCountChart;
+		this.yieldDimCountChart = yieldDimCountChart;
 	}
 
 	onChartFiltered(chart, filter) {

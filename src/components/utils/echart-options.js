@@ -20,7 +20,7 @@ var factorCandleOption=function(){
 		        data: [],
 		        scale: true,
 		        boundaryGap : false,
-		        axisLine: {onZero: false},
+		        axisLine: {show: false},
 		        splitLine: {show: false},
 		        axisTick: {
 		        	show: false
@@ -91,7 +91,7 @@ var factorLineOption = function(){
 		        type: 'value',
 		        scale: true,
 		        boundaryGap : false,
-		        axisLine: {onZero: false},
+		        axisLine: {show: false},
 		        splitLine: {show: false},
 		        axisTick: {
 		        	show: false

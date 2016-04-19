@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { sortActions } from '../flux/actions';
+import * as sortTypes from '../flux/constants/sortTypes';
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
@@ -34,10 +35,36 @@ class SortBar extends React.Component {
 
 	}
 
+	renderSortIcon() {
+		let { sortType } = this.props.sort;
+		let asc = false, desc=false;
+		console.log(sortType);
+		switch (sortType) {
+			case sortTypes.DATE:            //日期升序
+				asc = true;
+				break;
+			case sortTypes.DATE_R:         //日期降序
+				desc = true;
+				break;
+			default:
+				break;
+		}
+
+		let ascClass=classNames({'active':asc});
+		let descClass=classNames({'active':desc});
+		let icons = (<span className='sorticons-container'>
+						<span className={ascClass}><i className='fa fa-sort-asc'></i></span>
+						<span className={descClass}><i className='fa fa-sort-desc'></i></span>
+					</span>);
+
+		return (<div className='sort-wrapper' onClick={this.handleSort.bind(this)}>排序 {icons}</div>);
+	}
+
 	render(){
 		//let {sort} = this.props;
 		return (<div className="sortbar-container">
-				{<button onClick={this.handleSort.bind(this)}>sort</button>}
+				<div className='toolbar-item'><h5>匹配图形</h5></div>
+				<div className='toolbar-item'>{this.renderSortIcon()}</div>
 			</div>);
 	}
 

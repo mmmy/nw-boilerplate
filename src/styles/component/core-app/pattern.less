@@ -1,4 +1,4 @@
-@patternToolbar_H: 60px;
+@patternToolbar_H: 80px;
 @patternView_W: @patternContainerStretch_W/2 - 13px;
 
 .pattern-container{
@@ -6,7 +6,10 @@
 	right: 0;
 	width: @patternContainer_W;
 	height: @patternContainer_H;
-	border: 1px solid rebeccapurple;
+	border-top: 1px solid @ks-color-gray-8;
+	border-bottom: 1px solid @ks-color-gray-8;
+
+	background-color: lighten(@ks-color-gray-8, 18%);
 
 	&.full{
 		width: @patternContainerStretch_W;
@@ -20,16 +23,71 @@
 
 .pattern-toolbar-container{
 	height: @patternToolbar_H;
-	background-color: white;
-	
+	//background-color: white;
+	border-bottom: 1px solid @ks-color-gray-8;
 	&.hide{
 		height: 0;
+	}
+
+	.sortbar-container{
+		height: 50%;
+	}
+
+	.filterbar-container{
+		height: 50%
+	}
+
+	.toolbar-item{
+		position: relative;
+		float: left;
+		display: inline-block;
+		width: 50%;
+		height: 100%;
+		padding-left: 7px;
+	}
+
+	//range slider container
+	.inputrange-container{
+		background-color: white;
+		height: 37px;
+		position: absolute;
+		top: 30px;
+		left: 7px;
+		width: 120px;
+		z-index: 10;
+
+		padding: 12px 8px;
+
+		border: 1px solid @ks-color-gray-8;
+		border-top: none;
+	}	
+}
+
+
+//排序
+.sort-wrapper{
+	text-align: right;
+	padding: 10px 10px;
+	font-size: 0.85em;
+	cursor: pointer;
+	.sorticons-container{
+
+		color: @ks-color-gray-8;
+		
+		.fa-sort-desc{
+			position: relative;
+			left: -6.5px;
+		}
+
+		.active {
+			color: @ks-color-gray-2;
+		}
 	}
 }
 
 .pattern-collection-container{
 	position: relative;
-	border: 1px dotted #aaa;
+	//border: 1px dotted #aaa;
 	height: calc(~'100% - '@patternToolbar_H);
 
 	&.stretch{
@@ -47,19 +105,66 @@
 }
 
 .pattern-view{
+	position: relative;
 	float: left;
 	margin: 3px;
 	width: @patternView_W;
 	height: @patternView_W * 1.4;
 	background-color: #fff;
-	border: 1px solid #bbb;
+	border: 1px solid @ks-color-gray-8;
+	overflow: hidden;
 
 	&.hide{
 		height: 0;
 	}
+
+	&:hover {
+		border: 1px solid RGBA(151, 165, 178, 1.00);
+	}
+
+	&:focus {
+		background-color: red;
+	}
+
+	.symbol-container{
+		transition: top 0.1s ease-out;
+		color: white;
+		height: 30px;
+		width: 100%;
+		padding-top: 5px;
+		padding-left: 10px;
+		background-color: RGBA(151, 165, 178, 1.00);
+		position: absolute;
+		top: 0;
+		opacity: 0.8;
+		&.hide-symbol{
+			top: -30px;
+		}
+	}
 }
 
+
+//
 .echart{
 	width: @patternView_W;
 	height: @patternView_W;
+	cursor: pointer;
+}
+
+.pattern-info-container {
+	height: @patternView_W*0.4;
+	width: 100%;
+	//border-top: 1px solid @ks-color-gray-8;
+	h5{
+		color: @ks-color-gray-7;
+		font-size: 0.9em;
+		padding-top: 10px;
+		margin: 0;
+	}
+
+	p{
+		color: @ks-color-gray-4;
+		font-size: 0.9em;
+		padding-top: 3px;
+	}
 }

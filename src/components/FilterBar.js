@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { filterActions } from '../flux/actions';
 import DC from 'dc';
+import ReactInputRange from 'react-input-range';
 
 
 const propTypes = {
@@ -17,7 +18,7 @@ class FilterBar extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {showRange:false, values:{min:0, max:100}};
 	}
 
 	componentDidMount() {
@@ -37,17 +38,39 @@ class FilterBar extends React.Component {
 	}
 
 	render(){
+		let rangeClass = classNames('inputrange-container', {'hide': !this.state.showRange});
+		let {min, max} = this.state.values;
 		return (<div className="filterbar-container">
-				<div className='input-group'>
-					<input type='text' ref='symbol' className='form-control input-sm' />
-					<span className='input-group-btn'>
-						<button className="btn btn-default" type="button" onClick={this.handleFilter.bind(this)}>Go!</button>
-					</span> 
+				<div className='toolbar-item'>
+					<div className='input-group'>
+						<input type='text' ref='symbol' className='form-control input-sm' onFocus={()=>{console.log('input onFocus')}} onBlur={e=>{console.log('input onBlur')}}/>
+						<span className='input-group-btn'>
+							<button className="btn btn-default btn-sm" type="button" onClick={this.handleFilterSymbol.bind(this)} onFocus={()=>{console.log('btn onFocus')}} onBlur={e=>{console.log('btn onBlur')}}><i className='fa fa-search'></i></button>
+						</span> 
+					</div>
+				</div>
+				<div className='toolbar-item'>
+					{/*<span style={{fontSize:'0.6em'}}>相似度:</span>*/}
+					<button className="btn btn-default btn-sm" onFocus={this.showRange.bind(this)} onBlur={this.hideRange.bind(this)}>
+						{`相似度${min}%-${max}%`}
+						<span className='caret'></span>
+						<div className={rangeClass}><div className='wrapper'><ReactInputRange maxValue={100} minValue={0} value={this.state.values} onChange={this.rangeChange.bind(this)} onChangeComplete={this.rangeChangeComplete.bind(this)}/></div></div>
+					</button>
 				</div>
 			</div>);
 	}
 
-	handleFilter() {
+	initDimensions() {
+
+		let {crossFilter} = this.props;
+		if(this.oldCrossFilter !== crossFilter) {
+			this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
+			this.similarityDim = crossFilter.dimension(function(d) {return Math.round(d.similarity*100); });
+			this.oldCrossFilter = crossFilter;
+		}
+	}
+
+	handleFilterSymbol() {
 
 		let symbol=this.refs.symbol.value;
 
@@ -58,17 +81,46 @@ class FilterBar extends React.Component {
 
 	filterSymbol(symbol){
 
-		let {crossFilter} = this.props;
-
-		if(this.oldCrossFilter !== crossFilter) {
-			this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
-			this.oldCrossFilter = crossFilter;
-		}
+		this.initDimensions();
 
 		this.symbolDim.filter(function(d){ return d.indexOf(symbol) >=0; });
 
 		DC.redrawAll();
 	}
+
+	handleFilterSimilarity() {
+
+		this.filterSimilarity(this.state.values);
+		this.props.dispatch(filterActions.setFilterSimilarity(this.state.values));
+	
+	}
+
+	filterSimilarity({min, max}) {
+
+		this.initDimensions();
+
+		this.similarityDim.filter([min, max]);
+
+		DC.redrawAll();
+	}
+
+	showRange() {
+		this.setState({showRange: true});
+	}
+
+	hideRange() {
+		this.setState({showRange: false});
+	}
+
+	rangeChange(component, values){
+		this.setState({values:values});
+	}
+
+	rangeChangeComplete(component, values){
+		console.log('rangeChangeComplete');
+		this.handleFilterSimilarity();
+	}
+
 }
 
 FilterBar.propTypes = propTypes;

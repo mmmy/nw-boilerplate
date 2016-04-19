@@ -26,6 +26,12 @@
 	}
 }
 
+.reporttype-container-wrap {
+	height: @reportContainer_H*0.9;
+}
+
 .crossfilter-container-wrap {
-	height: calc(~'100% - '@reportContainer_H*3);
+	height: calc(~'100% - '@reportContainer_H*2~' - '@reportContainer_H*0.9);
+	border-left: 1px solid @ks-color-gray-8;
+	border-right: 1px solid @ks-color-gray-8;
 }

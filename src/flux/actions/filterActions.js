@@ -28,8 +28,17 @@ let setFilterSymbol = function(symbol) {
 
 }
 
+let setFilterSimilarity = function(similarity) {
+
+	return {
+		type: types.SET_FILTER_SIMILARITY,
+		similarity,
+	}
+}
+
 module.exports = {
 	setFilterIndustry,
 	setFilterYieldRange,
 	setFilterSymbol,
+	setFilterSimilarity,
 }

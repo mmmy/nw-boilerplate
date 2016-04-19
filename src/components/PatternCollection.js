@@ -1,11 +1,14 @@
 import React, { PropTypes } from 'react';
 import PatternView from './PatternView';
+import * as sortTypes from '../flux/constants/sortTypes';
 import _ from 'underscore';
+
 const propTypes = {
 	patterns: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
 	fullView: PropTypes.bool.isRequired,
-	waitingForPatterns: PropTypes.bool.isRequired
+	waitingForPatterns: PropTypes.bool.isRequired,
+	sort: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -41,10 +44,44 @@ class PatternCollection extends React.Component {
 		console.log('patterns collections view  did update', new Date() - this.renderDate);
 	}
 
+	sortData(rawData){
+
+		let { sortType } = this.props.sort;
+		//如果 sortType 没有变化那么不需要重新排序
+		if(this.oldSortType === sortType) {
+			return this.sortedData;
+		}
+		//排序
+		let sortedData = rawData.concat([]) || [];
+
+		if(sortType == '') {
+			return sortedData;
+		}
+
+		sortedData = sortedData.sort((a,b) => { 
+			switch (sortType) {
+				case sortTypes.DATE:
+					console.log('sort date');
+					return a.similarity - b.similarity;
+				case sortTypes.DATE_R:
+					return b.similarity - a.similarity;
+				default:
+				 	return false;
+			}
+		});
+
+		//缓存
+		this.oldSortType = sortType;
+		this.sortedData = sortedData;
+		return this.sortedData;
+	}
+
 	getPatternNodes() {
 		
 		let { dispatch, waitingForPatterns } = this.props;
 		let { crossFilter, rawData , error} = this.props.patterns;
+
+		let sortedData = this.sortData(rawData);
 
 		let nodes = null;
 
@@ -73,9 +110,9 @@ class PatternCollection extends React.Component {
 			let filteredData = this.symbolDim.top(Infinity),
 				idArr = _.pluck(filteredData, 'id');
 			
-			nodes = rawData.map((e, i) => {
+			nodes = sortedData.map((e, i) => {
 				let show = idArr.indexOf(e.id) !== -1;
-				return <PatternView show={show} pattern={e} key={i} index={i} dispatch={dispatch}/>
+				return <PatternView show={show} pattern={e} key={e.id} index={i} dispatch={dispatch}/>
 			});
 
 		}
