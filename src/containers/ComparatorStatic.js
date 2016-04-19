@@ -22,17 +22,6 @@ class ComparatorStatic extends React.Component {
 	}
 
 	componentDidMount() {
-    // let setChartLayout = () => {
-    //   setTimeout(() => {
-    //     let tv = window.document[window.document.getElementsByTagName('iframe')[0].id];
-    //     if (!tv.Q5) {
-    //       setChartLayout();
-    //     } else {
-    //       let tv = window.document[window.document.getElementsByTagName('iframe')[0].id];
-    //       tv.W76.setChartLayout(tv.Q5, '2v');
-    //     }
-    //   }, 15E3)
-    // }
 	}
 
 	componentWillReceiveProps(){

@@ -28,15 +28,18 @@ const setChartLayout = () => {
 
 
 const getComparatorSize = () => {
-  // setTimeout(() => {
-  //   let chart = getChart('comparator');
-  //   if (!chart.Q2) {
-  //     getComparatorSize();
-  //   } else {
-  //     chart = getChart('comparator');
-  //     return chart.Q2._jqMainDiv;
-  //   }
-  // }, 1E3)
+  setTimeout(() => {
+    let chart = getChart('comparator');
+    if (!chart.Q2) {
+      getComparatorSize();
+    } else {
+      chart = getChart('comparator');
+      return {
+        h: chart.Q2._jqMainDiv.context.clientHeight,
+        w: chart.Q2._jqMainDiv.context.clientWidth
+      }
+    }
+  }, 1E3)
 }
 
 module.exports = {

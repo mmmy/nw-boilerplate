@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { setChartLayout } from '../flux/util/tradingViewWidget';
+import { setChartLayout, getComparatorSize } from '../flux/util/tradingViewWidget';
 
 const propTypes = {
 	viewId: PropTypes.string.isRequired,
@@ -32,6 +32,7 @@ class ReactTradingView extends React.Component {
 
     if (this.props.viewId === 'comparator-chart') {
       setChartLayout();
+      console.log(getComparatorSize());
     }
   }
 
