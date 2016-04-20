@@ -5,6 +5,7 @@ const initialState = {
 	yieldRange: [], //收益率
 	symbol: '',
 	similarity: {min:0, max:100},
+	yieldDateRange: [[],[]],
 };
 
 export default function filter(state = initialState, actions) {
@@ -51,6 +52,15 @@ export default function filter(state = initialState, actions) {
 			return {
 				...state,
 				similarity,
+			};
+
+		case types.SET_FILTER_YIELDDATERANGE:
+
+			let { yieldDateRange } = actions;
+
+			return {
+				...state,
+				yieldDateRange,
 			};
 
 		default:

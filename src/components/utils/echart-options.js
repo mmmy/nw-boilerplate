@@ -1,3 +1,4 @@
+import echarts from 'echarts';
 var factorCandleOption=function(){
 	let option = {
 			animation: false,
@@ -57,7 +58,9 @@ var factorCandleOption=function(){
 		            data: [],
 		            itemStyle: {
 		            	normal: {
-		            		borderWidth: '0.5'
+		            		borderWidth: '0.7',
+		            		color0: 'green',
+		            		borderColor0: 'green',
 		            	},
 		            	emphasis: {
 		            		borderWidth: '1'
@@ -116,16 +119,31 @@ var factorLineOption = function(){
 		        },
 		        splitArea: {
 		            show: false
-		        }
+		        },
 		    },
 		    series: [
 		        {
 		            name: '指数',
 		            type: 'line',
+		            smooth: true,
 		            data: [],
+		            symbol: 'none',
+            		sampling: 'average',
 		            showSymbol: false,
-		        }
-		    ]
+		            areaStyle: {
+		                normal: {
+		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+		                        offset: 0,
+		                        color: 'rgb(255, 158, 68)'
+		                    }, {
+		                        offset: 1,
+		                        color: 'rgb(255, 70, 131)'
+		                    }])
+                		}
+           		 	},
+           		 }
+		    ],
+			
 		};
 	return lineOption;
 }

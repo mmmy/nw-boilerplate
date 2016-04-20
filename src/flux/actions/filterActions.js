@@ -36,6 +36,14 @@ let setFilterSimilarity = function(similarity) {
 	}
 }
 
+let setFilterYieldDateRange = function(yieldDaterange) {
+
+	return {
+		type: types.SET_FILTER_YIELDDATERANGE,
+		yieldDaterange,
+	}
+}
+
 module.exports = {
 	setFilterIndustry,
 	setFilterYieldRange,

@@ -1,4 +1,4 @@
-
+@chartTitleH: 30px;
 
 .crossfilter-container{
 	position: relative;
@@ -20,19 +20,32 @@
 	width: 100%;
 	height: 50%;
 	//border: 1px solid #ddd;
+	
+	strong{
+		padding-left: 10px;
+		display: block;
+		height: @chartTitleH;
+	}
+
+	.inline-chart-wrapper {
+		display: inline-block;
+		width: 50%;
+		height: 100%;
+	}
+
 }
 
 .position-bubble-chart{
 	width: 100%;
-	height: 100%;
+	height: calc(~"100% - "@chartTitleH);
 }
 
 .industry-quarter-chart{
-	height: 100%;
-	width: 50%;
+	height: calc(~"100% - "@chartTitleH);
+	width: 100%;
 }
 
 .yield-count-chart{
-	height: 100%;
-	width: 50%;
+	height: calc(~"100% - "@chartTitleH);
+	width: 100%;
 }

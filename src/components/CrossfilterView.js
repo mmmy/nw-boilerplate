@@ -15,6 +15,8 @@ const defaultProps = {
 
 };
 
+const barChartBars = 30;
+const transitionDuration = 100;   //过滤动画毫秒数
 //node 重要: 一个crossfilter不能 生成超过128个dimentsion, 所以注意缓存dimentsion !
 
 class CrossfilterView extends React.Component {
@@ -65,21 +67,34 @@ class CrossfilterView extends React.Component {
 			yieldChartW = yield_count_chart.clientWidth,
 			yieldChartH = yield_count_chart.clientHeight;
 
-		if (bubbleChartW != this.bubbleChartW || bubbleChartH != this.bubbleChartH) { //区域发生了变化
-			this.positionBubbleChart && this.positionBubbleChart.width(bubbleChartW).height(bubbleChartH).render();
-			this.bubbleChartW = bubbleChartW;
-			this.bubbleChartH = bubbleChartH;
+		// if (bubbleChartW != this.bubbleChartW || bubbleChartH != this.bubbleChartH) { //区域发生了变化
+		// 	this.positionBubbleChart && this.positionBubbleChart.width(bubbleChartW).height(bubbleChartH).render();
+		// 	this.bubbleChartW = bubbleChartW;
+		// 	this.bubbleChartH = bubbleChartH;
+		// }
+		let that = this;
+		if (bubbleChartW != this.scatterChartW || bubbleChartH != this.scatterChartH) {
+			//this.yieldDateScatterChart 
+			setTimeout(() => {that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH).redraw(); });
+			setTimeout(()=> {that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart) })
+			setTimeout(() => {that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart) });
+			this.scatterChartW = bubbleChartW;
+			this.scatterChartH = bubbleChartH;
 		}
 
 		if (pieChartR != this.pieChartR) {
-			this.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).render();
+			setTimeout(() => { that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).redraw(); });
+			//setTimeout(()=> { that.industryPieChart.renderYAxis(that.industryPieChart) });
+			//setTimeout(() => { that.industryPieChart.renderXAxis(that.industryPieChart) });
 			this.pieChartR = pieChartR;
 			this.pieChartW = pieChartW;
 			this.pieChartH = pieChartH;
 		}
 
 		if (yieldChartW != this.yieldChartW || yieldChartH != this.yieldChartH) {
-			this.yieldDimCountChart.width(yieldChartW).height(yieldChartH).render();
+			setTimeout(() => {that.yieldDimCountChart.width(yieldChartW).height(yieldChartH).redraw(); });
+			setTimeout(()=> {that.yieldDimCountChart.renderYAxis(that.yieldDimCountChart) });
+			setTimeout(() => {that.yieldDimCountChart.renderXAxis(that.yieldDimCountChart) });
 			this.yieldChartW = yieldChartW;
 			this.yieldChartH = yieldChartH;
 		}
@@ -101,11 +116,12 @@ class CrossfilterView extends React.Component {
 		return (
 		  <div className={ className }>
 		  	<div className="dc-chart-row">
+		  		<strong>历史时间分布</strong>
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
 		    <div className="dc-chart-row">
-		    	<div ref='industry_quarter_chart' className="industry-quarter-chart"></div>
-		    	<div ref='yield_count_chart' className="yield-count-chart"></div>
+		    	<div className='inline-chart-wrapper'><strong>饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"></div></div>
+		    	<div className='inline-chart-wrapper'><strong>收益率统计</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>
 		  </div>
 		);
@@ -122,40 +138,58 @@ class CrossfilterView extends React.Component {
 			
 			this.oldCrossFilter = crossFilter;
 
-			this.idDim = crossFilter.dimension((data) => { return data.id; });
+			// this.idDim = crossFilter.dimension((data) => { return data.id; });
 
-			this.idGroup = this.idDim.group().reduce(
-					(p, v)=>{
-						try{
-							let lastBar = v.kLine[v.kLine.length - 1];
-							p.year = new Date(lastBar[0]).getFullYear();
-							p.yield100 = Math.round(v.yield*100);
-							p.show = true;
-							return p;
-						} catch (e) {
-							console.error(e);
-							return p;
-						}
-					},
-					(p)=>{
-						p.show = false;
-						return p;
-					},
-					()=>{
-						return {
-							year: 1990,
-							yield100: 0,
-							show: true,
-						};
-					}
-				);
+			// this.idGroup = this.idDim.group().reduce(
+			// 		(p, v)=>{
+			// 			try{
+			// 				let lastBar = v.kLine[v.kLine.length - 1];
+			// 				p.year = new Date(lastBar[0]).getFullYear();
+			// 				p.yield100 = Math.round(v.yield*100);
+			// 				p.show = true;
+			// 				return p;
+			// 			} catch (e) {
+			// 				console.error(e);
+			// 				return p;
+			// 			}
+			// 		},
+			// 		(p)=>{
+			// 			p.show = false;
+			// 			return p;
+			// 		},
+			// 		()=>{
+			// 			return {
+			// 				year: 1990,
+			// 				yield100: 0,
+			// 				show: true,
+			// 			};
+			// 		}
+			// 	);
+			let yearArr = [], yield100Arr=[], that=this ;
 
-			this.yieldDim = crossFilter.dimension((data) => { return Math.round(data.yield*10/1.5); });
+			this.yieldDateDim = crossFilter.dimension((data) => {
 
+				let lastBar = data.kLine[data.kLine.length - 1];
+				let year = new Date(lastBar[0]).getFullYear();
+				let yield100 = Math.round(data.yield*100);
+				//缓存所有数据的年份范围 和 收益率范围
+				yearArr.push(year);
+				yield100Arr.push(yield100);
+				return [year, yield100]; 
+			});
+			//console.log(yearArr);
+			this.yearRange = [Math.min.apply(null, yearArr) || 1990, Math.max.apply(null, yearArr) || new Date().getFullYear()];     //年份的最大最小值
+			this.yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)]; //收益率的最大最小值
+			let rangeInterval = ( this.yield100Range[1] -  this.yield100Range[0] ) / barChartBars;
+
+			console.assert(this.yearRange[1] > this.yearRange[0], this.yearRange);
+			console.assert(this.yield100Range[1] > this.yield100Range[0]);
+			this.yieldDateGroup = this.yieldDateDim.group();
+
+			this.yieldDim = crossFilter.dimension((data) => { return Math.round((Math.round(data.yield*100) - that.yield100Range[0]) / rangeInterval); }); //转换到 0 - (barChartBars - 1)
 			this.yieldGroup = this.yieldDim.group();
 
 			this.industryDim = crossFilter.dimension((data) => { return data.industry; });
-
 			this.industryGroup = this.industryDim.group();
 
 			return true;
@@ -174,13 +208,59 @@ class CrossfilterView extends React.Component {
 		// !! note: 如果crossFilter 没有变化那么不需要重新调用DC render 各个chart, it's expensive ! 
 		if (this.initDimensions()) {
 
-			this.drawPositionBubbleChart();
-			this.drawYieldDimCountChart();
+			//this.drawPositionBubbleChart();
+			this.drawYieldDateScatterChart();
 			this.drawIndustryPieChart();
+			this.drawYieldDimCountChart();
 
 			DC.renderAll();
 		}
 
+	}
+
+	drawYieldDateScatterChart(){
+		let {position_bubble_chart} = this.refs;
+		let width = position_bubble_chart.clientWidth,
+			height = position_bubble_chart.clientHeight;
+
+		this.scatterChartW = width;
+		this.scatterChartH = height;
+
+		let yieldDateScatterChart = DC.scatterPlot(position_bubble_chart);
+		this.yieldDateScatterChart = yieldDateScatterChart;
+
+		yieldDateScatterChart
+			.width(width)
+			.height(height)
+			.margins({top:5, right:20, bottom:20, left:40})
+		    .x(d3.scale.linear().domain([this.yearRange[0]-1, this.yearRange[1]+1]))
+		    .y(d3.scale.linear().domain([ Math.floor(this.yield100Range[0]/50)*50 - 50, Math.ceil(this.yield100Range[1]/50)*50 + 50 ]))  //设置为50的整数倍,上下延长50
+		    //.yAxisLabel("y")
+		    // .xAxisLabel("x")
+		    //.clipPadding(16)
+			.transitionDuration(transitionDuration)
+		    .colors('#3F5C76')
+		    .symbolSize(15)
+		    .excludedSize(14)
+		    .excludedColor('#1F77B4')
+		    .excludedOpacity(0.2)
+		    .renderHorizontalGridLines(true)
+		    .renderVerticalGridLines(true)
+
+		    .dimension(this.yieldDateDim)
+		    //.excludedOpacity(0.5)
+		    .group(this.yieldDateGroup);
+		    //.yAxisMin(-400);
+		    // .compose([
+		    // 	DC.scatterPlot(yieldDateScatterChart)
+      //           .group(this.yieldDateGroup, "Blue Group")
+      //           .colors("blue"),
+		    // ]);
+		 yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(3);
+		 yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(3).ticks(7);
+
+		 window.yieldDateScatterChart= yieldDateScatterChart;
+		 yieldDateScatterChart.on('filtered', this.onChartFiltered.bind(this));
 	}
 
 	drawPositionBubbleChart(){
@@ -205,14 +285,17 @@ class CrossfilterView extends React.Component {
 			.x(d3.scale.linear().domain([1990, 2016]))
 			.y(d3.scale.linear().domain([-150, 150]))
 			.r(d3.scale.linear().domain([0, 100]))
-			.elasticY(true)
-			.elasticX(true)
-			.renderTitle(true)
+			//.elasticY(true)
+			//.elasticX(true)
+			.renderTitle(false)
+			.brushOn(true)
 			.title(()=>{return '历史时间分布';});
 		
 		positionBubbleChart.yAxis().tickFormat((v) => { return v+'%';});
+
+		positionBubbleChart.on('filtered', this.onChartFiltered.bind(this));
 		window.positionBubbleChart = positionBubbleChart;
-		//positionBubbleChart.on('filtered', this.onChartFiltered.bind(this));
+
 		this.positionBubbleChart = positionBubbleChart;
 	}
 
@@ -234,9 +317,18 @@ class CrossfilterView extends React.Component {
 			.width(width)
 			.height(height)
 			.radius(radius)
+			.transitionDuration(transitionDuration)
 			.innerRadius(0)
+			.renderLabel(false)
 			.dimension(this.industryDim)
-			.group(this.industryGroup);
+			.group(this.industryGroup)
+			//.colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
+			//.colors(['#0f0'])
+			//.linearColors(['#7CB2E0','#2F4C66'])
+			//.linearColors(['#ddd','#333'])
+			//.colorDomain([0, 4])
+			//.colorAccessor(function(d, i){ console.log(d,i,'-------'); return i;})
+			//.title(() => {return 'pieChart'});
 
 		industryPieChart.on('filtered', this.onChartFiltered.bind(this));
 		this.industryPieChart = industryPieChart;
@@ -256,13 +348,21 @@ class CrossfilterView extends React.Component {
 		yieldDimCountChart
 			.width(width)
 			.height(height)
+			.transitionDuration(transitionDuration)
+			.margins({top:10, right:20, bottom:30, left:20})
 			.dimension(this.yieldDim)
 			.group(this.yieldGroup)
-			.elasticY(true)
+			.renderHorizontalGridLines(true)
+			//.elasticY(true)
 			//.centerBar(true)
 			.gap(1)
-			.x(d3.scale.linear().domain([-10, 10]));
-		yieldDimCountChart.xAxis().tickFormat((v) => {return v*15+'%'}).ticks(5);
+			.x(d3.scale.linear().domain([0, barChartBars - 1]));
+
+		let rangeInterval = (this.yield100Range[1] - this.yield100Range[0]) / barChartBars ,
+		    minYield100 = this.yield100Range[0];
+
+		yieldDimCountChart.xAxis().tickFormat((v) => {return (v * rangeInterval + minYield100 ).toFixed(0) + '%'; }).ticks(5).innerTickSize(3);
+		yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(3);
 		//yield.yAxis().tickFromat((v) => {return v+'%'});
 		yieldDimCountChart.on('filtered', this.onChartFiltered.bind(this));
 		window.yieldDimCountChart = yieldDimCountChart;
@@ -276,11 +376,14 @@ class CrossfilterView extends React.Component {
 		let { dispatch } = this.props;
 
 		switch (typeof filter) {
-			case 'string':
+			case 'string': 			//行业过滤
 				dispatch(filterActions.setFilterIndustry(filter));
-				break;
-			case 'object':
+				break; 				
+			case 'object': 			//收益率
 				dispatch(filterActions.setFilterYieldRange(filter));
+				break;
+			case 'array':
+				dispatch(filterActions.setFilterYieldDateRange([filter[0], filter[1]]));
 				break;
 			default:
 				break;
