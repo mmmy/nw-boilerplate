@@ -4,6 +4,7 @@ window.$ = require('jquery');
 
 let tabsArr = [
 	{title:'chart',component:'./component/chart'},
+	{title:'chart',component:'./component/transition'},
 	];
 
 

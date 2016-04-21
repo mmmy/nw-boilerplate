@@ -58,7 +58,7 @@ var factorCandleOption=function(){
 		            data: [],
 		            itemStyle: {
 		            	normal: {
-		            		borderWidth: '0.7',
+		            		borderWidth: '0',
 		            		color0: 'green',
 		            		borderColor0: 'green',
 		            	},
@@ -130,6 +130,11 @@ var factorLineOption = function(){
 		            symbol: 'none',
             		sampling: 'average',
 		            showSymbol: false,
+		            lineStyle: {
+		            	normal: {
+		            		width: '1',
+		            	}
+		            },
 		            areaStyle: {
 		                normal: {
 		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{

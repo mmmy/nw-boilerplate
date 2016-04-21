@@ -16,7 +16,7 @@ const defaultProps = {
 };
 
 const barChartBars = 30;
-const transitionDuration = 100;   //过滤动画毫秒数
+const transitionDuration = 400;   //过滤动画毫秒数
 //node 重要: 一个crossfilter不能 生成超过128个dimentsion, 所以注意缓存dimentsion !
 
 class CrossfilterView extends React.Component {
@@ -51,7 +51,7 @@ class CrossfilterView extends React.Component {
 
 	//响应resize事件
 	handleResize(e){
-		
+
 		console.log(e);
 		if(!this.props.stretchView) { return }
 

@@ -55,11 +55,25 @@ class Template extends React.Component {
 			'stretch': !fullView
 		});
 		
+		const reportClass2 = classNames('report-container-wrap', {
+			'ks-hidden': !fullView,
+			//'transition-delay0': !fullView,
+			'ks-fade-in': fullView,
+			'ks-show': fullView
+		});
+
+		const reportClass3 = classNames('reporttype-container-wrap', {
+			'ks-hidden': !fullView,
+			//'transition-delay0': !fullView,
+			'ks-fade-in': fullView,
+			'ks-show': fullView
+		});
+
 	    return (
 	      <div className={ className }>
-	        <div className={fistReportClass}><ReportDetailView report={report} /></div>
-	        <div className={'report-container-wrap'}><ReportDetailView report={report} /></div>
-	        <div className={'reporttype-container-wrap'}><ReportTypeView report={report} /></div>
+	        <div className={fistReportClass}><ReportDetailView report={report} fullView={fullView}/></div>
+	        <div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>
+	        <div className={reportClass3}><ReportTypeView report={report} /></div>
 	        <div className={'crossfilter-container-wrap'}>
 	          <CrossfilterView
 	            dispatch={dispatch}

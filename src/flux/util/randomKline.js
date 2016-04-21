@@ -7,7 +7,7 @@ let industrys = ['行业1','行业2','行业3','行业4','行业5'];
 
 var randomKline = function(){
 	let start = Math.round(Math.random() * maxIndex);
-	let dataLen = 50 + Math.round(Math.random() * 360);
+	let dataLen = 20 + Math.round(Math.random() * 280);
 	return data.slice(start, start + dataLen);
 };
 

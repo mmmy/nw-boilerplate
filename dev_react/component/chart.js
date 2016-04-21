@@ -229,13 +229,21 @@ var data0 = splitData(data);
 function splitData(rawData) {
     var categoryData = [];
     var values = [];
+
+    var lowArr = [], highArr = [];
+
     for (var i = 0; i < rawData.length; i++) {
         categoryData.push(rawData[i].splice(0, 1)[0]);
-        values.push(rawData[i])
+        values.push(rawData[i]);
+        lowArr.push(isNaN(+rawData[i][2]) ? Infinity : +rawData[i][2]);
+        highArr.push(isNaN(+rawData[i][3]) ? -Infinity : +rawData[i][3]);
     }
+    console.log(highArr);
     return {
         categoryData: categoryData,
-        values: values
+        values: values,
+        yMin: Math.min.apply(null, lowArr),
+        yMax: Math.max.apply(null, highArr),
     };
 }
 function formatDate(data) {
@@ -416,7 +424,9 @@ patterns.forEach((e, i) => {
 	let candleData = splitData(e.kLine);
 	candleOption.xAxis.data = candleData.categoryData;
 	candleOption.series[0].data = candleData.values;
-
+	candleOption.yAxis.min = candleData.yMin;
+	candleOption.yAxis.max = candleData.yMax;
+	console.log(candleData);
 	let lineOption = factorLineOption();
 	lineOption.series[0].data = e.kLine.map((e,i) => {
 		return {name: e[0],
@@ -475,7 +485,7 @@ export default React.createClass({
 			<div style={{overFlow:'scroll'}} >
 				{patterns.map((e, i) => {
 					return (<div style={{float:'left'}} key={i}>
-						<div ref={'echart_'+ i} style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #fff'}}></div>
+						<div ref={'echart_'+ i} style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #aaa'}}></div>
 						<div ref={'echart1_'+i} style={{width:(this.state.width+'px'),height:(this.state.height+'px'), border:'1px solid #fff'}}></div>						
 					</div>);
 				})}

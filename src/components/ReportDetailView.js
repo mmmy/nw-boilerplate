@@ -3,10 +3,11 @@ import classNames from 'classnames';
 
 const propTypes = {
 	report: PropTypes.object.isRequired,
+	fullView: PropTypes.bool
 };
 
 const defaultProps = {
-  
+  	fullView: true
 };
 
 class ReportDetailView extends React.Component {
@@ -33,9 +34,15 @@ class ReportDetailView extends React.Component {
 	}
 
 	generateItem({title, items}){
+
+		let {fullView} = this.props;
+
+		const titleClass = classNames('item-title', 'transition-all', { 's2': !fullView});
+		const bodyClass = classNames('flex-container', 'body-container', 'transition-all', { 's2': !fullView});
+
 		return (<div className='item-container'>
-			{ title ? <h5 className='item-title'>{title}</h5> : '' }
-			<div className='flex-container body-container'>
+			{ title ? <h5 className={titleClass}>{title}</h5> : '' }
+			<div className={bodyClass}>
 				{items.map((e, i) => {
 					let color = e.redColor === undefined ? '' : (e.redColor===true ? 'red':'green');
 					return (<div className='item-body' key={i}>
