@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { getChart, getComparatorSize } from '../flux/util/tradingViewWidget';
 import { layoutActions } from '../flux/actions';
 
 const propTypes = {
@@ -20,7 +19,6 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentDidMount() {
-    let tv = getChart('comparator');
     // console.log(tv.canvas.style.height);
     // console.log(tv.canvas.style.width);
   }
@@ -42,7 +40,6 @@ class ComparatorPrediction extends React.Component {
   }
 
   render(){
-    let chartSize = getComparatorSize();
     let className = classNames('comparator-prediction', {
       // 'comparator-prediction-hide': !this.props.isPredictionShow
     });

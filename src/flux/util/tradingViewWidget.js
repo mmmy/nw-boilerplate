@@ -15,15 +15,13 @@ const getChart = (type) => {
 }
 
 const setChartLayout = () => {
-  setTimeout(() => {
-    let chart = getChart('comparator');
-    if (!chart.W76 || !chart.Q5) {
+  setInterval(() => {
+    let chart = document[window.document.getElementsByTagName('iframe')[0].id]
+    if (chart.W76 && chart.Q5) {
       setChartLayout();
-    } else {
-      let chart = getChart('comparator');
       chart.W76.setChartLayout(chart.Q5, '2v');
     }
-  }, 1E3);
+  }, 0);
 }
 
 
