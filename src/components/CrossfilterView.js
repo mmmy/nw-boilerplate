@@ -103,6 +103,10 @@ class CrossfilterView extends React.Component {
 
 	componentDidUpdate() {
 		this.drawDc();
+
+		//解决第一transition 动画的之后布局	 bug
+		let that = this;
+		setTimeout(this.handleResize.bind(this), 300);
 		console.log('crossFilter view did update', new Date() - this.renderDate);
 	}
 

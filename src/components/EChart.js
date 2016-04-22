@@ -33,6 +33,7 @@ function splitData(rawData) {
 const propTypes = {
 	pattern: PropTypes.object.isRequired,
 	index: PropTypes.number.isRequired,
+	fullView: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
@@ -104,9 +105,16 @@ class EChart extends React.Component {
 	}
 
 	render(){
+
+		let { fullView, index } = this.props;
 		//console.log('index', this.props.index);
-		const className = classNames('echart');
+		const className = classNames('echart', 'transition-all', {
+			'larger': !fullView && index === 0,
+			'smaller': !fullView && index > 0 && index < 5,
+		});
+
 		return <div ref={'echart'+this.props.index} className={className} ></div>;
+
 	}
 }
 

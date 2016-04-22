@@ -1,10 +1,12 @@
+@transition-duration: .2s;
+@transition-duration2: 0.5s;
 
 .transition-all{
 	//transition: all 0.2s 0 ease-out;
-	will-change: transform;
+	will-change: transition;
 	transition-property: all;
-	transition-duration: 0.1s;
-	transition-timing-function: ease-in;
+	transition-duration: @transition-duration;
+	transition-timing-function: ease;
 	transition-delay: 0s;
 }
 
@@ -29,7 +31,12 @@
 }
 
 .ks-fade-in{
-  transition: opacity 0.3s ease 0.5s;
+  transition: opacity @transition-duration2 ease @transition-duration + 0.3s;
+}
+
+.ks-transition-height-opacity{
+	transition: height @transition-duration ease, 
+				opacity @transition-duration2 ease @transition-duration + 0.3;
 }
 
 .flex-container{
@@ -37,7 +44,11 @@
 	justify-content: space-around;
 	text-align: center;
 	height: 100%;
-	align-items: center
+	align-items: center;
+
+	&.column {
+		flex-direction: column;
+	}
 }
 
 .chart-container{
@@ -57,4 +68,34 @@
 
 .height100{
 	height: 100%;
+}
+
+//
+//track
+.scrollbar-track(@box-shadow:none;@border-radius:0;@background-color:#fff; @border:none){
+	&::-webkit-scrollbar-track
+	{
+		-webkit-box-shadow:@box-shadow;
+		border-radius: @border-radius;
+		background-color: @background-color;
+		border: @border;
+	}
+}
+// 水平的width, 垂直的hieght
+.scrollbar(@width:6px;@height:6px){
+	&::-webkit-scrollbar {
+	    -webkit-appearance: none;
+	    width: @width;
+	    height: @height;
+	}
+}
+// thumb
+.scrollbar-thumb(@background-color:@ks-color-blue-dark;@box-shadow:none;@border-radius:3px; @border:none){
+	&::-webkit-scrollbar-thumb {
+		border: @border;
+	    border-radius: @border-radius;
+	    background-color: @background-color;
+	    -webkit-box-shadow: @box-shadow;
+	    cursor: pointer;
+	}
 }

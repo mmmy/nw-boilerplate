@@ -43,9 +43,9 @@ class PatternContainer extends React.Component {
 			'full': fullView,
 			'smaller': patternSmallView,
 		});
-		const toolbarClass = classNames('transition-all', 'pattern-toolbar-container', 'transition-all', {
+		const toolbarClass = classNames('transition-all', 'pattern-toolbar-container', {
 			'height0': !fullView,
-			'ks-fade-in': fullView,
+			'ks-transition-height-opacity': fullView,
 			'ks-show': fullView,
 			'ks-hidden': !fullView,
 		});

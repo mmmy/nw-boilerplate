@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import PatternView from './PatternView';
 import * as sortTypes from '../flux/constants/sortTypes';
 import _ from 'underscore';
+import classNames from 'classnames';
 
 const propTypes = {
 	patterns: PropTypes.object.isRequired,
@@ -78,7 +79,7 @@ class PatternCollection extends React.Component {
 
 	getPatternNodes() {
 		
-		let { dispatch, waitingForPatterns } = this.props;
+		let { dispatch, waitingForPatterns, fullView } = this.props;
 		let { crossFilter, rawData , error} = this.props.patterns;
 
 		let sortedData = this.sortData(rawData);
@@ -112,7 +113,7 @@ class PatternCollection extends React.Component {
 			
 			nodes = sortedData.map((e, i) => {
 				let show = idArr.indexOf(e.id) !== -1;
-				return <PatternView show={show} pattern={e} key={e.id} index={i} dispatch={dispatch}/>
+				return <PatternView show={show} pattern={e} key={e.id} index={i} dispatch={dispatch} fullView={fullView}/>
 			});
 
 		}
@@ -123,8 +124,9 @@ class PatternCollection extends React.Component {
 	render(){
 		
 		this.renderDate = new Date();
+		const className = classNames('pattern-collection', {'scroll-hidden': !this.props.fullView});
 
-		return (<div className="pattern-collection">
+		return (<div className={className}>
 			{ this.getPatternNodes() }
 		</div>);
 	}

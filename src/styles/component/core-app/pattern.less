@@ -1,6 +1,9 @@
 @patternToolbar_H: 80px;
 @patternView_W: @patternContainerStretch_W/2 - 13px;
 
+@larger: 1.3;
+@smaller: 0.62;
+
 .pattern-container{
 	float: left;
 	right: 0;
@@ -95,13 +98,18 @@
 	}
 }
 
-
-
 .pattern-collection{
 	//border: 1px solid green;
 	position: relative;
 	height: 100%;
 	overflow: scroll;
+	.scrollbar(@width:8px);
+	.scrollbar-track(@background-color:transparent);
+	.scrollbar-thumb();
+
+	&.scroll-hidden{
+		overflow: hidden;
+	}
 }
 
 .pattern-view{
@@ -112,7 +120,7 @@
 	height: @patternView_W * 1.4;
 	background-color: #fff;
 	border: 1px solid @ks-color-gray-8;
-	overflow: hidden;
+	overflow: scroll;
 
 	&.hide{
 		height: 0;
@@ -141,19 +149,78 @@
 			top: -30px;
 		}
 	}
+
+	&.column{
+		height: @patternView_W;
+		width: @patternView_W*1.4;
+
+		&.larger{
+			//transform: scale(1.5,1.5);
+			height: @patternView_W * 1.3;
+			width: @patternView_W * 1.4 * 1.3;
+		}
+
+		&.smaller{
+			//transform: scale(.5,.5);
+			height: @patternView_W * @smaller;
+			width: @patternView_W * 1.4 * @smaller * 1.2;
+		}
+	}
+
 }
 
+.echart-row-wrapper {
+	width: @patternView_W * 1.4;
+	height: @patternView_W;
 
+	&.larger{
+		width: @patternView_W * 1.4 * @larger;
+		height: @patternView_W * @larger;
+	}
+	&.smaller{
+		width: @patternView_W * 1.4 * @smaller * 1.2;
+		height: @patternView_W * @smaller;
+	}
+}
 //
 .echart{
+	float: left;
+	display: inline-block;
 	width: @patternView_W;
 	height: @patternView_W;
 	cursor: pointer;
+	transform-origin: left top;
+
+	&.larger{
+		//width: @patternView_W * @larger;
+		//height: @patternView_W * @larger;
+		transform: scale(@larger,@larger);
+		
+	}
+
+	&.smaller{
+		//width: @patternView_W * @smaller;
+		//height: @patternView_W * @smaller;
+		transform: scale(@smaller, @smaller);
+	}
 }
 
 .pattern-info-container {
+	position: relative;
 	height: @patternView_W*0.4;
 	width: 100%;
+
+	&.column {
+		height: 100%;
+		width: @patternView_W*0.4;
+		display: inline-block;
+		&.larger{
+			width: @patternView_W * 0.4 * @larger;
+		}
+		&.smaller{
+			width: @patternView_W * 0.4 * @smaller * 1.2;
+		}
+	}
 	//border-top: 1px solid @ks-color-gray-8;
 	h5{
 		color: @ks-color-gray-7;
