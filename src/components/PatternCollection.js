@@ -43,6 +43,10 @@ class PatternCollection extends React.Component {
 
 	componentDidUpdate() {
 		console.log('patterns collections view  did update', new Date() - this.renderDate);
+		if(!this.props.fullView) {
+			console.log('patternCollection did update');
+			this.refs.container.scrollTop = 0;
+		}
 	}
 
 	sortData(rawData){
@@ -126,7 +130,7 @@ class PatternCollection extends React.Component {
 		this.renderDate = new Date();
 		const className = classNames('pattern-collection', {'scroll-hidden': !this.props.fullView});
 
-		return (<div className={className}>
+		return (<div ref='container' className={className}>
 			{ this.getPatternNodes() }
 		</div>);
 	}

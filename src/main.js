@@ -2,16 +2,7 @@ import 'babel-polyfill';
 
 import init from './shared/Init';
 import actionsForIframe from './shared/actionsForIframe';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-
-
-import Root from './containers/Root';
-import GenerateStore from './flux/GenerateStore';
-
-let store = GenerateStore();
-window.store = store;
+import app from './app';
 
 let setChartLayout = () => {
   setTimeout(() => {
@@ -46,8 +37,7 @@ Promise.all([
     script.src = 'http://localhost:35729/livereload.js';
     head.appendChild(script);
   }
-  ReactDOM.render(<Provider store={store}><Root /></Provider>, document.getElementById('app'));
-
+  app();
 })
 .then(() => {
   if(process.env.yq !== 'yes') { setChartLayout(); }

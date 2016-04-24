@@ -100,10 +100,10 @@ class EChart extends React.Component {
 		let oldFullView = this.oldfullView;
 
 		if(fullView !== oldFullView && index >= 0 && index <= 5){
-			const transitionDuration = 500;
+			const transitionDuration = 2000;
 			let that = this;
 			console.log('hahah -----------------------');
-			for (let i=0; i<transitionDuration; i+=100){
+			for (let i=0; i<transitionDuration; i+=250){
 
 				setTimeout(() => {
 					try {
