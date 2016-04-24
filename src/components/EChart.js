@@ -51,7 +51,11 @@ class EChart extends React.Component {
 		let node = this.refs['echart'+this.props.index];
 		let chart = echarts.init(node);
 		const kLine = this.props.pattern.kLine;
-
+		let index = this.props.index;
+		this.chart = chart;
+		if(index===0){
+			window.chart = chart;
+		}
 		//candleChart
 		if (candleChart) {
 
@@ -89,11 +93,34 @@ class EChart extends React.Component {
 	}
 
 	componentDidUpdate() {
-		//this.drawChart();
+		//this.drawChart()
+		console.log('echart componentDidUpdate');
+
+		let { fullView, index }  = this.props;
+		let oldFullView = this.oldfullView;
+
+		if(fullView !== oldFullView && index >= 0 && index <= 5){
+			const transitionDuration = 500;
+			let that = this;
+			console.log('hahah -----------------------');
+			for (let i=0; i<transitionDuration; i+=100){
+
+				setTimeout(() => {
+					try {
+						that.chart.resize();
+					}catch(e){
+						console.log(e);
+					}
+
+				}, i);
+			}
+		}
+
+		this.oldfullView = fullView;
 	}
 
-	componentWillReceiveProps(){
-
+	componentWillReceiveProps(newProps){
+		
 	}
 
 	shouldComponentUpdate(){

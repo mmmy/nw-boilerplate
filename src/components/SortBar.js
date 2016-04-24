@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { sortActions } from '../flux/actions';
-import * as sortTypes from '../flux/constants/sortTypes';
+import * as sortTypes from '../flux/constants/SortTypes';
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,

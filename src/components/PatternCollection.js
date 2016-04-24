@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import PatternView from './PatternView';
-import * as sortTypes from '../flux/constants/sortTypes';
+import * as sortTypes from '../flux/constants/SortTypes';
 import _ from 'underscore';
 import classNames from 'classnames';
 

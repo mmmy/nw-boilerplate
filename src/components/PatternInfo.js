@@ -54,7 +54,7 @@ class PatternInfo extends React.Component {
 		});
 
 		let flexClass = classNames('flex-container', { 'column':  column});
-		console.log(column,smaller, index);
+		// console.log(column,smaller, index);
 		return (<div className = {containerClass}>
 			<div className = {flexClass}>
 				<div>

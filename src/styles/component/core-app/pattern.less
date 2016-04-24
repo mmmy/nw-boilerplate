@@ -120,7 +120,7 @@
 	height: @patternView_W * 1.4;
 	background-color: #fff;
 	border: 1px solid @ks-color-gray-8;
-	overflow: scroll;
+	overflow: hidden;
 
 	&.hide{
 		height: 0;
@@ -190,18 +190,28 @@
 	height: @patternView_W;
 	cursor: pointer;
 	transform-origin: left top;
+	transform: scale(1,1);
+	@keyframes larger {
+		from {transform: scale(1,1);} to {transform: scale(@larger, @larger);}
+	}
+	@keyframes smaller {
+		from {transform: scale(1,1);} to {transform: scale(@smaller, @smaller);}
+	}
 
 	&.larger{
-		//width: @patternView_W * @larger;
-		//height: @patternView_W * @larger;
-		transform: scale(@larger,@larger);
-		
+		width: @patternView_W * @larger;
+		height: @patternView_W * @larger;
+		//transform: scale(@larger,@larger);
+		//transition-duration: 2s;
+		//animation: .3s larger;
 	}
 
 	&.smaller{
-		//width: @patternView_W * @smaller;
-		//height: @patternView_W * @smaller;
-		transform: scale(@smaller, @smaller);
+		width: @patternView_W * @smaller;
+		height: @patternView_W * @smaller;
+		//transform: scale(@smaller, @smaller);
+		//transition-duration: 2s;
+		//animation: .3s smaller;
 	}
 }
 
