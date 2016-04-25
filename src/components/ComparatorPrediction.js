@@ -45,17 +45,21 @@ class ComparatorPrediction extends React.Component {
   initEchart() {
     const dom = ReactDOM.findDOMNode(this.refs['eChart']);
     window.eChart = echarts.init(dom);
-
+    window.onresize = window.eChart.resize;
     let option = {
       title: {
         show: false,
       },
       animation: 'false',
       animationDuration: '0',
-      color: ['#ccc', '#c23531', '#ccc'],
+      // color: ['#ccc', '#c23531', '#ccc'],
+      color: ['#ccc'],
       backgroundColor: 'RGBA(250, 251, 252, 1.00)',
       grid: {
-        show: false,
+        x: 0,
+        x2: 0,
+        y: 14,
+        y2: 15
       },
       tooltip: {
         show: false,
@@ -71,11 +75,13 @@ class ComparatorPrediction extends React.Component {
       },
       xAxis: {
         type: 'time',
+        show: false,
         splitLine: {
           show: false
         },
       },
       yAxis: {
+        show: false,
         position: 'right',
         type: 'value',
         boundaryGap: [0, '100%'],

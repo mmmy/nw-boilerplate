@@ -32,13 +32,13 @@ function randomData(fromDay, closePrice, daysCount) {
   for (let i = 0; i < daysCount; i++ ) {
     date = new Date(date + ONE_DAY);
     let posNag = Math.round(Math.random()) > 0 ? 1 : -1;
-    let increment = value * 0.1 * posNag;
+    let increment = value * Math.random() / 10 * posNag;
     value = value + increment;
     data.push({
       name: date,
       value: [
         [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-'),
-        Math.round(value)
+        Math.round(value * 100) / 100
       ]
     });
     date = +new Date(date);
@@ -49,7 +49,7 @@ function randomData(fromDay, closePrice, daysCount) {
 
 export function predictionRandomData(linesCount, fromDay, closePrice, daysCount) {
   /// demo
-  linesCount = 3;
+  linesCount = 100;
   fromDay = +new Date();
   closePrice = CLOSE_PRICE;
   daysCount = 30;
@@ -63,7 +63,14 @@ export function predictionRandomData(linesCount, fromDay, closePrice, daysCount)
       type: 'line',
       showSymbol: false,
       hoverAnimation: false,
-      data: randomData(fromDay, closePrice, daysCount)
+      lineStyle: {
+        normal: {
+          color: i == 5 ? '#c23531' : '#ccc',
+          width: 0.8
+        }
+      },
+      data: randomData(fromDay, closePrice, daysCount),
+      // zlevel: i === 5 ? 6 : 5
     });
   }
 
