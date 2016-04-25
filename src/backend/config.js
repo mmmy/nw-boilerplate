@@ -3,7 +3,8 @@
 
 export default {
 
-	HOST: 'www.xxxx.com',
-	PORT: 80,
-	PATTERN_PATH: '',
+	host: 'www.xxxx.com',
+	port: 80,
+	patternSearchPath: 'patterns',
+	protocol: 'http',
 }

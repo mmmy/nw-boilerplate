@@ -1,10 +1,11 @@
 import $ from 'jquery';
 import http from 'http';
+import url from 'url';
 import config from './config';
 import { randomPartterns } from '../flux/util/randomKline';
 
 /**
- * args: {symbol, dateRange}
+ * args: {symbol, dateRange:[]}
  */
 
 let getPatterns = (args, cb, errorCb) => { 

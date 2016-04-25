@@ -48,7 +48,10 @@ class EChart extends React.Component {
 	}
 
 	drawChart() {
-		let node = this.refs['echart'+this.props.index];
+		// let node = this.refs['echart'+this.props.index];
+		let node = window.document.createElement('canvas');
+			node.height = 200;
+			node.width = 200;
 		let chart = echarts.init(node);
 		const kLine = this.props.pattern.kLine;
 		let index = this.props.index;
@@ -66,9 +69,12 @@ class EChart extends React.Component {
 			candleOption.yAxis.min = data0.yMin;
 			candleOption.yAxis.max = data0.yMax;
 			//console.log(data0.values[0]);
-			setTimeout(function(){
-	        	chart.setOption(candleOption);	
-			},0);
+			//setTimeout(function(){
+	        	chart.setOption(candleOption);
+	        	let imgUrl = chart.getDataURL();
+	        	this.refs['echart'+this.props.index].firstChild.src = imgUrl;
+			//debugger;
+			//},0);
 
 		} else {
 
@@ -95,7 +101,7 @@ class EChart extends React.Component {
 	componentDidUpdate() {
 		//this.drawChart()
 		console.log('echart componentDidUpdate');
-
+		/*******************************************
 		let { fullView, index }  = this.props;
 		let oldFullView = this.oldfullView;
 
@@ -117,6 +123,7 @@ class EChart extends React.Component {
 		}
 
 		this.oldfullView = fullView;
+		*********************************/
 	}
 
 	componentWillReceiveProps(newProps){
@@ -140,7 +147,7 @@ class EChart extends React.Component {
 			'smaller': !fullView && index > 0 && index < 5,
 		});
 
-		return <div ref={'echart'+this.props.index} className={className} ></div>;
+		return <div ref={'echart'+this.props.index} className={className} ><img src='' /></div>;
 
 	}
 }
