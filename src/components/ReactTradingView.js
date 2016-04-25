@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { setChartLayout, getComparatorSize } from '../flux/util/tradingViewWidget';
 
 const propTypes = {
 	viewId: PropTypes.string.isRequired,

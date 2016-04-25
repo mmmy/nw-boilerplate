@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import ReactTradingView from '../components/ReactTradingView';
+import ComparatorPrediction from '../components/ComparatorPrediction';
 
 const propTypes = {
 
@@ -73,6 +74,7 @@ class ComparatorStatic extends React.Component {
         <ReactTradingView
           viewId={ STOCK_VIEW }
           options={ options } />
+        <ComparatorPrediction />
       </div>
     );
 	}

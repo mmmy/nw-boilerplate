@@ -50,7 +50,6 @@ class Component extends React.Component {
 		return (
       <div className={ containerClassName } >
         <img src={ screenshotPrediction } className={ screenshotPredictionClassName }/>
-        <ComparatorPrediction />
       </div>
     );
 	}
