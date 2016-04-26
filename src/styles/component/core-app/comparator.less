@@ -45,7 +45,8 @@
   height: calc(~'50% - 24px -' @header_H);
   // height: calc(~'50% - 10px');
   width: 30%;
-  right: 41px;
+  // offset 45px
+  right: calc(~'45px + 8px');
   top: 7px;
   background-color: #FAFBFC;
   z-index: 100;
@@ -66,18 +67,20 @@
     width: 90%;
     display: inline-block;
   }
-
-  // .comparator-prediction-panel{
-  //   width: 20px;
-  //   height: 100%;
-  //   background-color: gray;
-  //   top: -30px;
-  //   right: 0;
-  // }
 }
 
 .comparator-prediction-hide{
   right: -30%;
   z-index: -1;
   transition: right .3s ease-out 0, z-index 0 ease .3s;
+}
+
+.comparator-heatmap{
+  position: absolute;
+  right: 40px;
+  height: calc(~'50% - 24px -' @header_H);
+  top: 7px;
+  width: 13px;
+  background-color: RGBA(221, 88, 106, 1.00);
+  z-index: 100;
 }

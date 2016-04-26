@@ -1,7 +1,7 @@
 const ONE_DAY = 24 * 3600 * 1000;
 const NOW = +new Date();
 const YESTERDAY = new Date(NOW - ONE_DAY);
-const CLOSE_PRICE = 10.4;   // close price
+const CLOSE_PRICE = 10.2;   // close price
 
 // var data0 = [];
 // var data1 = [];
@@ -49,7 +49,7 @@ function randomData(fromDay, closePrice, daysCount) {
 
 export function predictionRandomData(linesCount, fromDay, closePrice, daysCount) {
   /// demo
-  linesCount = 100;
+  linesCount = 10;
   fromDay = +new Date();
   closePrice = CLOSE_PRICE;
   daysCount = 30;
@@ -70,7 +70,7 @@ export function predictionRandomData(linesCount, fromDay, closePrice, daysCount)
         }
       },
       data: randomData(fromDay, closePrice, daysCount),
-      z: i === 5 ? 9999 : 2 
+      z: i === 5 ? 9999 : 2
     });
   }
 

@@ -43,7 +43,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   initEchart() {
-    const dom = ReactDOM.findDOMNode(this.refs['eChart']);
+    const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionLine']);
     window.eChart = echarts.init(dom);
     window.onresize = window.eChart.resize;
     let option = {
@@ -118,7 +118,7 @@ class ComparatorPrediction extends React.Component {
       left: 0
     };
     return (
-      <div ref='eChart' className={ className }>
+      <div ref='eChartPredictionLine' className={ className }>
         {/*<div className='comparator-prediction-header'>
           <span className='header'>走势预测</span>
           <i className="fa fa-chevron-right"
