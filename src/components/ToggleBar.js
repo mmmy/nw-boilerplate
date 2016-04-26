@@ -49,7 +49,7 @@ class ToggleBar extends React.Component {
 		const time = (searchTimeSpent/1000).toFixed(3);
 
 		return (<div className={toggleClass}>
-					<div className="btn-container">
+					<div className="btn-container font-msyh">
 						<div className="item title">云搜索</div>
 						<div className="item timespent">{ `用时:${time}秒` }</div>
 						<div className={btnClass} onClick={this.toggleView.bind(this)}><i className="fa fa-angle-up"></i></div>

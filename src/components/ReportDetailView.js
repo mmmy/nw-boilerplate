@@ -47,7 +47,7 @@ class ReportDetailView extends React.Component {
 					let color = e.redColor === undefined ? '' : (e.redColor===true ? 'red':'green');
 					return (<div className='item-body' key={i}>
 							<div className='item-name'>{e.name}</div>
-							<div className='item-data' style={{color:color}}>{e.content}</div>
+							<div className='item-data font-number' style={{color:color}}>{e.content}</div>
 						</div>);
 				})}
 			</div>
