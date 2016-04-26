@@ -22,7 +22,7 @@ let request = (options, cb, errorCb, postData) => {
 	let req = http.request(options, (res) => {
 
 		res.on('data', (chunk) => {
-			chunkAll += chunkAll.toString();
+			chunkAll += chunk.toString();
 		});
 
 		res.on('end', () => {

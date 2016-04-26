@@ -6,7 +6,7 @@ export default {
 	searchOptions: {
 		host: 'localhost',
 		port: 3000,
-		path: '/search_patterns',
+		path: '/search_pattern',
 		method: 'GET',
 	},
 
@@ -14,10 +14,10 @@ export default {
 		host: 'localhost',
 		port: 3000,
 		path: '/get_patterns',
-		method: 'PSOT',
+		method: 'POST',
 	},
 
-	patternOptions: {
+	fileChunkOptions: {
 		host: 'localhost',
 		port: 3000,
 		path: '/file_chunk',
