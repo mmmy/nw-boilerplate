@@ -24,6 +24,7 @@ class ComparatorPrediction extends React.Component {
 
   componentDidMount() {
     this.initEchart()
+    window.addEventListener('resize', this.handleResize);
   }
 
   componentWillReceiveProps(){
@@ -35,13 +36,16 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentWillUnmount(){
+    window.removeEventListener('resize', this.handleResize);
+  }
 
+  handleResize() {
+    window.onresize = setTimeout(window.eChart.resize, 0);
   }
 
   initEchart() {
     const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionLine']);
     window.eChart = echarts.init(dom);
-    window.onresize = window.eChart.resize;
     let option = {
       title: {
         show: false,
@@ -103,11 +107,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   render(){
-    let className = classNames('comparator-prediction-chart',
-    // {
-    //   'comparator-prediction-hide': !this.props.isPredictionShow
-    // }
-  );
+    let className = classNames('comparator-prediction-chart');
 
     return (
       <div ref='eChartPredictionLine' className={ className }></div>

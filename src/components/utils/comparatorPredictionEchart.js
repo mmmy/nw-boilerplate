@@ -3,22 +3,6 @@ const NOW = +new Date();
 const YESTERDAY = new Date(NOW - ONE_DAY);
 const CLOSE_PRICE = 10.2;   // close price
 
-// var data0 = [];
-// var data1 = [];
-// var data2 = [];
-// var data0, data1, data2 = [
-//   {
-//     name: YESTERDAY,
-//     value: [
-//       [YESTERDAY.toString().getFullYear(),
-//         YESTERDAY.toString().getMonth() + 1,
-//         YESTERDAY.toString().getDate()
-//       ].join('-'),
-//       CLOSE_PRICE
-//     ]
-//   }
-// ];
-
 function randomData(fromDay, closePrice, daysCount) {
   fromDay = new Date();
   let value = closePrice;

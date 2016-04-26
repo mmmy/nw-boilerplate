@@ -100,6 +100,7 @@ class ComparatorStatic extends React.Component {
               onClick={ this.togglePredictionPanel.bind(this) }>
               <i className="fa fa-caret-right"></i>
             </button>
+
             <ComparatorHeatmap />
           </div>
 
