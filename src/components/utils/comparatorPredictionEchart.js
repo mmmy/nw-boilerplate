@@ -65,12 +65,12 @@ export function predictionRandomData(linesCount, fromDay, closePrice, daysCount)
       hoverAnimation: false,
       lineStyle: {
         normal: {
-          color: i == 5 ? '#c23531' : '#ccc',
+          color: i === 5 ? '#c23531' : '#ccc',
           width: 0.8
         }
       },
       data: randomData(fromDay, closePrice, daysCount),
-      // zlevel: i === 5 ? 6 : 5
+      z: i === 5 ? 9999 : 2 
     });
   }
 
