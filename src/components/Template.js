@@ -6,7 +6,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  
+
 };
 
 class Template extends React.Component {
@@ -33,7 +33,9 @@ class Template extends React.Component {
 	}
 
 	render(){
-		return (<div className=""></div>);
+		return (
+      <div className="">/</div>
+    );
 	}
 }
 

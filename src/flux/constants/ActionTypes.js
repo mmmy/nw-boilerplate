@@ -1,4 +1,5 @@
 export const TOGGLE_STOCK_VIEW = 'TOGGLE_STOCK_VIEW';
+export const TOGGLE_PREDICTION_PANEL = 'TOGGLE_PREDICTION_PANEL';
 export const RE_LAYOUT = 'RE_LAYOUT';
 
 export const WAITING_PATTERNS = 'WAITING_PATTERNS';        //开始等待后台返回结果

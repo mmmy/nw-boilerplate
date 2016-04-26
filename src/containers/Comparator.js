@@ -1,15 +1,15 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
-//import ReactTradingView from '../components/ReactTradingView';
 import path from 'path';
+import ComparatorPrediction from '../components/ComparatorPrediction';
 
 const propTypes = {
 	stretchView: PropTypes.bool
 };
 
 const defaultProps = {
- 
+
 };
 
 class Component extends React.Component {

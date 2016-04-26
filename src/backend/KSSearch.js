@@ -17,7 +17,7 @@ let searchPatterns = (args, cb, errorCb) => {
 		
 		protocol,
 		host,
-		pathname: patternSearchPath;
+		pathname: patternSearchPath,
 		query: {
 			'symbol': 	symbol,
 			'from': 	dateRange[0],

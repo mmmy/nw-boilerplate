@@ -5,6 +5,7 @@ import patterns from './patterns';
 import report from './report';
 import filter from './filter';
 import sort from './sort';
+import comparatorTv from './comparatorTv';
 
 
 export default combineReducers({
@@ -14,4 +15,5 @@ export default combineReducers({
 	report,
 	filter,
 	sort,
+  comparatorTv,
 });
