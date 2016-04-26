@@ -40,33 +40,56 @@
   top: 0;
 }
 
-.comparator-prediction{
+.comparator-prediction-container{
   position: absolute;
   height: calc(~'50% - 24px -' @header_H);
-  // height: calc(~'50% - 10px');
-  width: 30%;
-  // offset 45px
+  width: 25%;
   right: calc(~'45px + 8px');
   top: 7px;
   background-color: #FAFBFC;
-  z-index: 100;
   box-shadow: inset 0 0 20px #ccc;
+}
 
-  .comparator-prediction-header{
-    height: @header_H;
-    font-size: 14px;
-    background-color: #F2F3F4;
-    box-shadow: inset 0 0 20px #ccc;
-  }
+.comparator-header{
+  position: absolute;
+  height: 30px;
+  width: 100%;
+  background-color: #4B86A8;
+  top: 0;
+  right: 0;
+  z-index: 999;
+  color: #FEFFFF;
 
   span{
-    // height: @header_H;
-    line-height: 30px;
-    white-space: nowrap;
-    padding: 0px 5px;
-    width: 90%;
-    display: inline-block;
+    font-size: 13px;
+    line-height: 2;
+    padding-left: 10px;
   }
+
+  .prediction-toggle{
+    position: absolute;
+    width: 13px;
+    height: 100%;
+    right: -13px;
+    border: none;
+    outline: 0;
+    z-index: 999;
+    background-color: #4A5A75;
+
+    i{
+      text-align: center;
+      position: absolute;
+      top: 7px;
+      right: 4px;
+    }
+  }
+}
+
+.comparator-prediction{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  box-shadow: inset 0 0 20px #ccc;
 }
 
 .comparator-prediction-hide{
@@ -77,10 +100,9 @@
 
 .comparator-heatmap{
   position: absolute;
-  right: 40px;
-  height: calc(~'50% - 24px -' @header_H);
-  top: 7px;
+  right: -13px;
+  top: 30px;
+  height: calc(~'100% - 29px');
   width: 13px;
   background-color: RGBA(221, 88, 106, 1.00);
-  z-index: 100;
 }

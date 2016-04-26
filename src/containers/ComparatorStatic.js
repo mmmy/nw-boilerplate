@@ -75,7 +75,11 @@ class ComparatorStatic extends React.Component {
         <ReactTradingView
           viewId={ STOCK_VIEW }
           options={ options } />
-        <div className={ 'prediction-container' }>
+        <div className={ 'comparator-prediction-container' }>
+          <div className={ 'comparator-header' }>
+            <span>走势预测</span>
+            <button className={ 'prediction-toggle' }><i className="fa fa-caret-right"></i></button>
+          </div>
           <ComparatorPrediction />
           <ComparatorHeatmap />
         </div>
