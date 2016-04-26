@@ -38,10 +38,6 @@ class ComparatorPrediction extends React.Component {
 
   }
 
-  togglePredictionPanel() {
-    this.props.dispatch(layoutActions.togglePredictionPanel());
-  }
-
   initEchart() {
     const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionLine']);
     window.eChart = echarts.init(dom);
@@ -107,29 +103,14 @@ class ComparatorPrediction extends React.Component {
   }
 
   render(){
-    let className = classNames('comparator-prediction', {
-      // 'comparator-prediction-hide': !this.props.isPredictionShow
-    });
-    let echartStyle = {
-      height: '500px',
-      width: '500px',
-      position: 'absolute',
-      top: 0,
-      left: 0
-    };
+    let className = classNames('comparator-prediction-chart',
+    // {
+    //   'comparator-prediction-hide': !this.props.isPredictionShow
+    // }
+  );
+
     return (
-      <div ref='eChartPredictionLine' className={ className }>
-        {/*<div className='comparator-prediction-header'>
-          <span className='header'>走势预测</span>
-          <i className="fa fa-chevron-right"
-            aria-hidden="true"
-            style={ { "top": "5px" } }
-            onClick={ this.togglePredictionPanel.bind(this) }>
-          </i>
-        </div>
-        <div className='comparator-prediction-panel'>
-        </div>*/}
-      </div>
+      <div ref='eChartPredictionLine' className={ className }></div>
     );
   }
 }

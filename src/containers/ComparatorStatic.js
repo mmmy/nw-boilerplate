@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import ReactTradingView from '../components/ReactTradingView';
 import ComparatorPrediction from '../components/ComparatorPrediction';
 import ComparatorHeatmap from '../components/ComparatorHeatmap';
+import { layoutActions } from '../flux/actions';
 
 const propTypes = {
 
@@ -38,11 +39,20 @@ class ComparatorStatic extends React.Component {
 
 	}
 
+
+  togglePredictionPanel() {
+    this.props.dispatch(layoutActions.togglePredictionPanel());
+  }
+
 	render() {
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
       'comparator-chart-static-show': this.props.stretchView,
       'comparator-chart-static-hide': !this.props.stretchView,
+    });
+
+    let predictionMainClassName = classNames('prediction-main', {
+      'comparator-prediction-hide': !this.props.isPredictionShow
     });
 
     const STOCK_VIEW = 'comparator-chart';
@@ -70,18 +80,29 @@ class ComparatorStatic extends React.Component {
       // width: 300,
     }
 
-		return (
+    return (
       <div className={ comparatorChartClassName }>
         <ReactTradingView
           viewId={ STOCK_VIEW }
           options={ options } />
         <div className={ 'comparator-prediction-container' }>
-          <div className={ 'comparator-header' }>
-            <span>走势预测</span>
-            <button className={ 'prediction-toggle' }><i className="fa fa-caret-right"></i></button>
+
+          <div className={ predictionMainClassName }>
+            <div className={ 'comparator-header' }>
+              <span>走势预测</span>
+            </div>
+            <ComparatorPrediction />
           </div>
-          <ComparatorPrediction />
-          <ComparatorHeatmap />
+
+          <div className={'prediction-panel'}>
+            <button
+              className={ 'prediction-toggle' }
+              onClick={ this.togglePredictionPanel.bind(this) }>
+              <i className="fa fa-caret-right"></i>
+            </button>
+            <ComparatorHeatmap />
+          </div>
+
         </div>
       </div>
     );
@@ -93,9 +114,10 @@ ComparatorStatic.defaultProps = defaultProps;
 
 var stateToProps = function(state) {
 	const {layout} = state;
-	const {stockView} = layout;
+	const {stockView, isPredictionShow} = layout;
 	return {
 		stretchView: !stockView,
+    isPredictionShow: isPredictionShow
 	};
 };
 export default connect(stateToProps)(ComparatorStatic);

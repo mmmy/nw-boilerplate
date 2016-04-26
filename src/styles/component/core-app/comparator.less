@@ -42,67 +42,82 @@
 
 .comparator-prediction-container{
   position: absolute;
-  height: calc(~'50% - 24px -' @header_H);
   width: 25%;
-  right: calc(~'45px + 8px');
+  height: calc(~'50% - 24px -' @header_H);
   top: 7px;
-  background-color: #FAFBFC;
-  box-shadow: inset 0 0 20px #ccc;
-}
+  // right: calc(~'45px + 8px');
+  right: 41px;
 
-.comparator-header{
-  position: absolute;
-  height: 30px;
-  width: 100%;
-  background-color: #4B86A8;
-  top: 0;
-  right: 0;
-  z-index: 999;
-  color: #FEFFFF;
-
-  span{
-    font-size: 13px;
-    line-height: 2;
-    padding-left: 10px;
-  }
-
-  .prediction-toggle{
+  .prediction-main{
     position: absolute;
-    width: 13px;
     height: 100%;
-    right: -13px;
-    border: none;
-    outline: 0;
-    z-index: 999;
-    background-color: #4A5A75;
+    width: calc(~'100% - 9px');
 
-    i{
-      text-align: center;
+    .comparator-header{
       position: absolute;
-      top: 7px;
-      right: 4px;
+      height: 30px;
+      width: 100%;
+      background-color: #4B86A8;
+      top: 0;
+      right: 0;
+      z-index: 999;
+      color: #FEFFFF;
+
+      span{
+        font-size: 13px;
+        line-height: 2;
+        padding-left: 10px;
+      }
+    }
+
+    .comparator-prediction-chart{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      box-shadow: inset 0 0 20px #ccc;
     }
   }
-}
 
-.comparator-prediction{
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  box-shadow: inset 0 0 20px #ccc;
+  .prediction-panel{
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    right: 0;
+    color: #FEFFFF;
+
+    .prediction-toggle{
+      position: absolute;
+      width: 100%;
+      height: 30px;
+      top: 0;
+      padding: 0;
+      margin: 0;
+      border: none;
+      outline: 0;
+      z-index: 999;
+      background-color: #4A5A75;
+
+      i{
+        text-align: center;
+        position: absolute;
+        top: 8px;
+        right: 2px;
+        font-size: 10px;
+      }
+
+    }
+    .comparator-heatmap{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: RGBA(221, 88, 106, 1.00);
+    }
+  }
 }
 
 .comparator-prediction-hide{
   right: -30%;
   z-index: -1;
   transition: right .3s ease-out 0, z-index 0 ease .3s;
-}
-
-.comparator-heatmap{
-  position: absolute;
-  right: -13px;
-  top: 30px;
-  height: calc(~'100% - 29px');
-  width: 13px;
-  background-color: RGBA(221, 88, 106, 1.00);
 }
