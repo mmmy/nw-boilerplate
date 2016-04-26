@@ -1,47 +1,30 @@
-import $ from 'jquery';
-import http from 'http';
-import url from 'url';
+import request from './request';
+import querystring from 'querystring'
 import config from './config';
 
+let {searchOptions} = config;
 /**
+ * 搜索匹配结果metadata
  * args: {symbol, dateRange:[]}
  */
 
-const { host, protocol, patternSearchPath } = config;
-
 let searchPatterns = (args, cb, errorCb) => {
-
+	console.log(searchOptions, config);
 	const { symbol, dateRange } = args;
+	let { path } = searchOptions;
 
-	let searchUrl = url.format({               // http://www.xxx.com/patterns?symbol=000001.ss&from=2341412348&to=2341234123
-		
-		protocol,
-		host,
-		pathname: patternSearchPath,
-		query: {
-			'symbol': 	symbol,
-			'from': 	dateRange[0],
-			'to': 		dateRange[1],
-		},
-
+	path = path + querystring.stringify({
+		'symbol': 	symbol,
+		'from': 	dateRange[0],
+		'to': 		dateRange[1],
 	});
+	
+	let options = {              
+		...searchOptions,
+		path
+	};
 
-	http.get(searchUrl, (res) => {
-
-		res.on('data', (chunck) => {
-			responseString += chunck.toString();
-		});
-
-		res.on('error', (e) => {
-			errorCb && errorCb(e);
-		});
-
-		res.on('end', () => {
-			cb && cb(responseString);
-		});
-
-	});
-
+	request(options, cb, errorCb);
 }
 
 module.exports = {

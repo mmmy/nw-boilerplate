@@ -1,49 +1,48 @@
-import $ from 'jquery';
-import http from 'http';
-import url from 'url';
+import request from './request';
 import config from './config';
+import KSChunk from './KSChunk';
+
+let { patternOptions} = config;
 
 /**
+ * 获取股票具体数据
  * args: {symbol, dateRange:[]}
  */
 
-const { host, protocol, patternSearchPath } = config;
+const { dataHost, dataPort, protocol, patternSearchPath } = config;
 
-let searchPatterns = (args, cb, errorCb) => {
+let postSymbolData = (args, cb, errorCb) => {
 
 	const { symbol, dateRange } = args;
 
-	let searchUrl = url.format({               // http://www.xxx.com/patterns?symbol=000001.ss&from=2341412348&to=2341234123
+	let options = {           		
+		...patternOptions
+	};
+
+	let postData = querystring.stringify({
+		'symbol': symbol,
+		'from':   dateRange[0],
+		'to': 	  dateRange[1],
+	});
+
+	let dataCb = (resStr) => {
 		
-		protocol,
-		host,
-		pathname: patternSearchPath,
-		query: {
-			'symbol': 	symbol,
-			'from': 	dateRange[0],
-			'to': 		dateRange[1],
-		},
+		try {
+			
+			let resObj = JSON.parse();
+			//TODO:获取文件chunk, 并合并数据
+			let data = {};
+			cb && cb(data);
 
-	});
+		} catch (e) {
+			errorCb(e);
+		}
 
-	http.get(searchUrl, (res) => {
+	};
 
-		res.on('data', (chunck) => {
-			responseString += chunck.toString();
-		});
-
-		res.on('error', (e) => {
-			errorCb && errorCb(e);
-		});
-
-		res.on('end', () => {
-			cb && cb(responseString);
-		});
-
-	});
-
+	request(options, cb, errorCb, postData);
 }
 
 module.exports = {
-	searchPatterns,
+	postSymbolData,
 };
