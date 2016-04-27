@@ -1,0 +1,85 @@
+
+
+.container-searchreport{
+	background-color: @ks-color-gray-middle;
+	border: 1px solid @ks-color-gray-light;
+	position: absolute;
+	top: @searchResultWrap_T;
+	width: 100%;
+	height: @searchResultWrap_H;
+  background-color: white;
+}
+
+.container-toggle{
+	position: absolute;
+	width: 100%;
+	//top: -10px;
+	//暂时不需要效果
+	&.full{
+		top: 0;
+	}
+
+	.btn-container{
+		position: relative;
+		width: 200px;
+		height: 100%;
+		margin: auto;
+		background: url(@logo_url) no-repeat;
+		background-position: 0 5px;
+
+		.item{
+			height: 100%;
+			display: inline-block;
+		}
+		
+		.title{
+			margin-left: 40px;
+			//padding: 5px;
+			font-size: 110%;
+			color: #333;
+		}
+
+		.timespent{
+			margin-left: 10px;
+			color: #777;
+			font-size: 90%;
+		}
+
+		.btn-toggle{
+			font-size: 130%;
+			margin-left: 10px;
+			.transition-all();
+			.transition-delay();
+			&:hover{
+				cursor: pointer;
+			}
+
+			&.rotate{
+				transform: rotate(180deg);
+			}
+		}
+	}
+}
+
+.inner-searchreport{
+	position: absolute;
+	top: 30px;
+	height: calc(~'100% - 30px');
+	width: calc(~'100%');
+	//padding: 20px 5px 10px 5px;
+	//border: 1px solid red;
+	//margin: 10px 5px 5px 5px;
+}
+
+.searchreport-full{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+}
+
+.search-button{
+  position: absolute;
+  top: -15px;
+  margin-left: 50%;
+}

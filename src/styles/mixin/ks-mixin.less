@@ -1,0 +1,127 @@
+@transition-duration: .2s;
+@transition-duration2: 0.5s;
+
+.transition-all{
+	//transition: all 0.2s 0 ease-out;
+	will-change: transition;
+	transition-property: all;
+	transition-duration: @transition-duration;
+	transition-timing-function: ease;
+	transition-delay: 0s;
+}
+
+.transition-delay(@delay:0.4s){
+	transition-delay: @delay;
+}
+
+.transition-delay0 {
+	transition-delay: 0s;
+}
+
+.transition-delay2 {
+	transition-delay: 0s;
+}
+
+.ks-hidden{
+  opacity: 0;
+}
+
+.ks-show{
+  opacity: 1;
+}
+
+.ks-fade-in{
+  transition: opacity @transition-duration2 ease @transition-duration + 0.3s;
+}
+
+.ks-transition-height-opacity{
+	transition: height @transition-duration ease, 
+				opacity @transition-duration2 ease @transition-duration + 0.3;
+}
+
+.flex-container{
+	display: flex;
+	justify-content: space-around;
+	text-align: center;
+	height: 100%;
+	align-items: center;
+
+	&.column {
+		flex-direction: column;
+	}
+}
+
+.chart-container{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+.hide{
+	display: none;
+}
+
+.height0{
+	height: 0 !important;
+	overflow: hidden;
+}
+
+.height100{
+	height: 100%;
+}
+
+//
+//track
+.scrollbar-track(@box-shadow:none;@border-radius:0;@background-color:#fff; @border:none){
+	&::-webkit-scrollbar-track
+	{
+		-webkit-box-shadow:@box-shadow;
+		border-radius: @border-radius;
+		background-color: @background-color;
+		border: @border;
+	}
+}
+// 水平的width, 垂直的hieght
+.scrollbar(@width:6px;@height:6px){
+	&::-webkit-scrollbar {
+	    -webkit-appearance: none;
+	    width: @width;
+	    height: @height;
+	}
+}
+// thumb
+.scrollbar-thumb(@background-color:@ks-color-blue-dark;@box-shadow:none;@border-radius:3px; @border:none){
+	&::-webkit-scrollbar-thumb {
+		border: @border;
+	    border-radius: @border-radius;
+	    background-color: @background-color;
+	    -webkit-box-shadow: @box-shadow;
+	    cursor: pointer;
+	}
+}
+
+
+
+//font
+//微软雅黑
+@font-face {
+  font-family: 'msyh';
+  src: url('./fonts/msyh.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'AvantGarde';
+  src: url('./fonts/texgyreadventor-regular.otf') format('opentype');
+}
+
+// Catchall baseclass
+.font-msyh {
+  font-family: 'msyh';
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-number {
+  font-family: 'AvantGarde';
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: grayscale;
+}
