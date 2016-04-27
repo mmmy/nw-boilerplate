@@ -7,8 +7,8 @@ import echarts from 'echarts';
 import { predictionRandomData } from './utils/comparatorPredictionEchart';
 
 const propTypes = {
-  // series: PropTypes.array.isRequired,
-
+  patterns: PropTypes.object.isRequired,
+  filter: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -27,8 +27,8 @@ class ComparatorPrediction extends React.Component {
     window.addEventListener('resize', this.handleResize);
   }
 
-  componentWillReceiveProps(){
-
+  componentWillReceiveProps(nextProps){
+    console.log(nextProps);
   }
 
   shouldComponentUpdate(){
@@ -43,7 +43,47 @@ class ComparatorPrediction extends React.Component {
     window.onresize = setTimeout(window.eChart.resize, 0);
   }
 
+  initDimensions() {
+		let { crossFilter } = this.props.patterns;
+		if(this.oldCrossFilter !== crossFilter) {
+			this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
+			// this.similarityDim = crossFilter.dimension(function(d) {return Math.round(d.similarity*100); });
+			this.oldCrossFilter = crossFilter;
+		}
+	}
+
+  splitData(kLine) {
+    let data = [];
+    kLine.forEach((e) => {
+      data.push(e[2]);
+    });
+    return data;
+  }
+
   initEchart() {
+    this.initDimensions();
+    this.eChartSeriesData = [];
+    let xAxisData = [];
+    for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { xAxisData.push(i); }
+
+    // demo
+    this.symbolDim.top(Infinity).forEach((e, i) => {
+      this.eChartSeriesData.push({
+        data: this.splitData(e.kLine),
+        name: '模拟数据',
+        type: 'line',
+        showSymbol: false,
+        hoverAnimation: false,
+        lineStyle: {
+          normal: {
+            color: i === 5 ? '#c23531' : '#ccc',
+            width: 0.8
+          }
+        },
+        z: i === 5 ? 9999 : 2
+      });
+    });
+
     const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionLine']);
     window.eChart = echarts.init(dom);
     let option = {
@@ -64,21 +104,22 @@ class ComparatorPrediction extends React.Component {
       tooltip: {
         show: false,
         trigger: 'axis',
-        formatter: function (params) {
-          params = params[0];
-          var date = new Date(params.name);
-          return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
-        },
+        // formatter: function (params) {
+        //   params = params[0];
+        //   var date = new Date(params.name);
+        //   return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+        // },
         axisPointer: {
           animation: false
         }
       },
       xAxis: {
-        type: 'time',
+        type: 'category',
         show: false,
         splitLine: {
           show: false
         },
+        data: xAxisData
       },
       yAxis: {
         show: false,
@@ -93,7 +134,8 @@ class ComparatorPrediction extends React.Component {
         max: 'maxData',
         min: 5.5
       },
-      series: predictionRandomData()
+      series: this.eChartSeriesData
+      // series: predictionRandomData()
     };
 
 

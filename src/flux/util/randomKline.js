@@ -8,7 +8,7 @@ let industrys = ['行业1','行业2','行业3','行业4','行业5'];
 var randomKline = function(){
 	let start = Math.round(Math.random() * maxIndex);
 	let dataLen = 20 + Math.round(Math.random() * 280);
-	return data.slice(start, start + dataLen);
+	return data.slice(start, start + 100); // 返回 100 天数据
 };
 
 var randomPartterns = function(n) {

@@ -45,6 +45,7 @@ class ComparatorStatic extends React.Component {
   }
 
 	render() {
+    const { patterns, filter } = this.props;
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
       'comparator-chart-static-show': this.props.stretchView,
@@ -91,7 +92,7 @@ class ComparatorStatic extends React.Component {
             <div className={ 'comparator-header' }>
               <span>走势预测</span>
             </div>
-            <ComparatorPrediction />
+            <ComparatorPrediction filter={ filter } patterns={ patterns }/>
           </div>
 
           <div className={'prediction-panel'}>
@@ -114,11 +115,13 @@ ComparatorStatic.propTypes = propTypes;
 ComparatorStatic.defaultProps = defaultProps;
 
 var stateToProps = function(state) {
-	const {layout} = state;
+	const {layout, patterns, filter} = state;
 	const {stockView, isPredictionShow} = layout;
 	return {
 		stretchView: !stockView,
-    isPredictionShow: isPredictionShow
+    isPredictionShow: isPredictionShow,
+    patterns: patterns,
+    filter, filter
 	};
 };
 export default connect(stateToProps)(ComparatorStatic);
