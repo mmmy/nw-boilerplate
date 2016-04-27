@@ -47,6 +47,29 @@
 		width: 50%;
 		height: 100%;
 		padding-left: 7px;
+
+		&.item0 {
+			width: 40%;
+		}
+
+		&.item1 {
+			width: 60%;
+		}
+	}
+
+	.title-left {
+		display: inline-block;
+		//width: px;
+		font-size: 0.85em;
+		color: @ks-color-gray-6;
+		padding: 5px 0;
+	}
+
+	.slider-container{
+		display: inline-block;
+		width: 110px;
+		padding-left: 10px;
+		//padding: 8px;
 	}
 
 	//range slider container
@@ -66,18 +89,48 @@
 	}	
 }
 
+.sort-trigger-btn {
+	position: relative;
+	float: right;
+	margin: 10px 20px;
+	font-size: 12px;
+	background-color: transparent;
+	border: none;
 
-//排序
-.sort-wrapper{
-	text-align: right;
-	padding: 10px 10px;
-	font-size: 0.85em;
+	&:focus {
+		border: none;
+		box-shadow: none;
+		outline: none;
+	}
+
+	.sort-panel-container {
+		position: absolute;
+		width: 90px;
+		height: 90px;
+		border: 1px solid #ddd;
+		left: -50px;
+		top: 30px;
+		z-index: 10;
+		background-color: white;
+
+		box-shadow: 0 0 20px 0 #aaa;
+	}
+}
+
+//排序item btn
+.sort-btn {
+	text-align: left;
+	display: block;
+	//padding: 10px 10px;
+	margin-top: 10px;
+	padding-left: 13px;
+	font-size: 0.95em;
 	cursor: pointer;
-	.sorticons-container{
+	.sorticons-container {
 
 		color: @ks-color-gray-8;
 		
-		.fa-sort-desc{
+		.fa-sort-desc {
 			position: relative;
 			left: -6.5px;
 		}
@@ -85,6 +138,19 @@
 		.active {
 			color: @ks-color-gray-2;
 		}
+	}
+
+	.sort-icon {
+		float: right;
+		margin-right: 8px;
+	}
+
+	&:hover {
+		text-decoration: none;
+	}
+
+	&.active {
+		color: #E00028;
 	}
 }
 

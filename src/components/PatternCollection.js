@@ -44,7 +44,7 @@ class PatternCollection extends React.Component {
 	componentDidUpdate() {
 		console.log('patterns collections view  did update', new Date() - this.renderDate);
 		if(!this.props.fullView) {
-			console.log('patternCollection did update');
+			//console.log('patternCollection did update');
 			this.refs.container.scrollTop = 0;
 		}
 	}
@@ -59,17 +59,28 @@ class PatternCollection extends React.Component {
 		//排序
 		let sortedData = rawData.concat([]) || [];
 
-		if(sortType == '') {
+		if(sortType === '') {
 			return sortedData;
 		}
 
+		let getLastDate = (pattern) => {
+			return new Date(pattern.kLine[pattern.kLine.length - 1][0]);
+		};
+
 		sortedData = sortedData.sort((a,b) => { 
 			switch (sortType) {
+				case sortTypes.SIMILARITY:
+					return  a.similarity - b.similarity;
+				case sortTypes.SIMILARITY_R:
+					return  b.similarity - a.similarity;
 				case sortTypes.DATE:
-					console.log('sort date');
-					return a.similarity - b.similarity;
+					return  getLastDate(a) - getLastDate(b);
 				case sortTypes.DATE_R:
-					return b.similarity - a.similarity;
+					return  getLastDate(b) - getLastDate(a);
+				case sortTypes.YIELD:
+					return  a.yield - b.yield;
+				case sortTypes.YIELD_R:
+					return  b.yield - a.yield;
 				default:
 				 	return false;
 			}

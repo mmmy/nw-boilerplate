@@ -5,7 +5,7 @@ let getPatternSmallView = function() {
 }
 
 const initalState = {
-	stockView: true, 							//主stock view 视图
+	stockView: false, 							//主stock view 视图
 	patternSmallView: getPatternSmallView(),    //patterns 一列 or 两列 视图
 	waitingForPatterns: false, 					//等待 getPatterns 返回结果
 	searchTimeSpent: 0, 						//毫秒

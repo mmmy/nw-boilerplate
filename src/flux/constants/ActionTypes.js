@@ -21,3 +21,5 @@ export const GET_PATTERNS_ERROR = 'GET_PATTERNS_ERROR';          //获取pattern
 
 //sort
 export const SORT_BY_DATE = 'SORT_BY_DATE';
+export const SORT_BY_SIMILARITY = 'SORT_BY_SIMILARITY';
+export const SORT_BY_YIELD = 'SORT_BY_YIELD';
