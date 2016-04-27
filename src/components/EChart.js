@@ -100,7 +100,7 @@ class EChart extends React.Component {
 
 	componentDidUpdate() {
 		//this.drawChart()
-		console.log('echart componentDidUpdate');
+		//console.log('echart componentDidUpdate');
 		/*******************************************
 		let { fullView, index }  = this.props;
 		let oldFullView = this.oldfullView;
