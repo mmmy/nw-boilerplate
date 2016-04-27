@@ -98,7 +98,7 @@ class ComparatorStatic extends React.Component {
             <button
               className={ 'prediction-toggle' }
               onClick={ this.togglePredictionPanel.bind(this) }>
-              <i className="fa fa-caret-right"></i>
+              <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
             </button>
 
             <ComparatorHeatmap />
