@@ -28,7 +28,9 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    console.log(nextProps);
+    let option = window.eChart.getOption();
+    option.series = this.generateSeriesData();
+    window.eChart.setOption(option, true);
   }
 
   shouldComponentUpdate(){
@@ -47,9 +49,10 @@ class ComparatorPrediction extends React.Component {
 		let { crossFilter } = this.props.patterns;
 		if(this.oldCrossFilter !== crossFilter) {
 			this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
-			// this.similarityDim = crossFilter.dimension(function(d) {return Math.round(d.similarity*100); });
 			this.oldCrossFilter = crossFilter;
 		}
+    this.xAxisData = [];
+    for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
 	}
 
   splitData(kLine) {
@@ -60,15 +63,12 @@ class ComparatorPrediction extends React.Component {
     return data;
   }
 
-  initEchart() {
+  generateSeriesData() {
     this.initDimensions();
-    this.eChartSeriesData = [];
-    let xAxisData = [];
-    for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { xAxisData.push(i); }
-
+    let eChartSeriesData = [];
     // demo
     this.symbolDim.top(Infinity).forEach((e, i) => {
-      this.eChartSeriesData.push({
+      eChartSeriesData.push({
         data: this.splitData(e.kLine),
         name: '模拟数据',
         type: 'line',
@@ -83,7 +83,10 @@ class ComparatorPrediction extends React.Component {
         z: i === 5 ? 9999 : 2
       });
     });
+    return eChartSeriesData;
+  }
 
+  initEchart() {
     const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionLine']);
     window.eChart = echarts.init(dom);
     let option = {
@@ -119,7 +122,7 @@ class ComparatorPrediction extends React.Component {
         splitLine: {
           show: false
         },
-        data: xAxisData
+        // data: this.xAxisData
       },
       yAxis: {
         show: false,
@@ -134,7 +137,7 @@ class ComparatorPrediction extends React.Component {
         max: 'maxData',
         min: 5.5
       },
-      series: this.eChartSeriesData
+      series: this.generateSeriesData()
       // series: predictionRandomData()
     };
 
