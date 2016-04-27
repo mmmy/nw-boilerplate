@@ -39,21 +39,20 @@ class ComparatorStatic extends React.Component {
 
 	}
 
-
   togglePredictionPanel() {
     this.props.dispatch(layoutActions.togglePredictionPanel());
   }
 
 	render() {
-    const { patterns, filter } = this.props;
+    const { patterns, filter, isPredictionShow } = this.props;
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
       'comparator-chart-static-show': this.props.stretchView,
       'comparator-chart-static-hide': !this.props.stretchView,
     });
 
-    let predictionMainClassName = classNames('prediction-main', {
-      'comparator-prediction-hide': !this.props.isPredictionShow
+    const predictionMainClassName = classNames('prediction-main', {
+      'comparator-prediction-hide': !isPredictionShow
     });
 
     const STOCK_VIEW = 'comparator-chart';
@@ -80,6 +79,10 @@ class ComparatorStatic extends React.Component {
       // height: 300,
       // width: 300,
     }
+
+    const comparatorPredictionContainerClass = classNames('comparator-prediction-container',{
+      'comparator-prediction-hide': !isPredictionShow
+    });
 
     return (
       <div className={ comparatorChartClassName }>

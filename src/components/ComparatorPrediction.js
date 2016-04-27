@@ -163,13 +163,4 @@ class ComparatorPrediction extends React.Component {
 ComparatorPrediction.propTypes = propTypes;
 ComparatorPrediction.defaultProps = defaultProps;
 
-var stateToProps = function(state){
-  const { layout } = state;
-  const { stockView, isPredictionShow } = layout;
-  return {
-    fullView: !stockView,
-    isPredictionShow: isPredictionShow
-  }
-};
-
-export default connect(stateToProps)(ComparatorPrediction);
+export default ComparatorPrediction;
