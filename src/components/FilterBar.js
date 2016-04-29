@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { filterActions } from '../flux/actions';
 import DC from 'dc';
 import ReactInputRange from 'react-input-range';
-
+import RCSlider from 'rc-slider';
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
@@ -41,21 +41,34 @@ class FilterBar extends React.Component {
 		let rangeClass = classNames('inputrange-container', {'hide': !this.state.showRange});
 		let {min, max} = this.state.values;
 		return (<div className="filterbar-container">
-				<div className='toolbar-item'>
-					<div className='input-group'>
+				<div className='toolbar-item item0'>
+					<div className='input-group input-group-flatten'>
 						<input type='text' ref='symbol' className='form-control input-sm' onFocus={()=>{console.log('input onFocus')}} onBlur={e=>{console.log('input onBlur')}}/>
 						<span className='input-group-btn'>
 							<button className="btn btn-default btn-sm" type="button" onClick={this.handleFilterSymbol.bind(this)} onFocus={()=>{console.log('btn onFocus')}} onBlur={e=>{console.log('btn onBlur')}}><i className='fa fa-search'></i></button>
 						</span> 
 					</div>
 				</div>
-				<div className='toolbar-item'>
-					{/*<span style={{fontSize:'0.6em'}}>相似度:</span>*/}
-					<button className="btn btn-default btn-sm" onFocus={this.showRange.bind(this)} onBlur={this.hideRange.bind(this)}>
+				<div className='toolbar-item item1'>
+					{<span className='title-left' >相似度:</span>}
+					{/*<div className='wrapper'><ReactInputRange maxValue={100} minValue={0} value={this.state.values} onChange={this.rangeChange.bind(this)} onChangeComplete={this.rangeChangeComplete.bind(this)}/></div>*/}
+					<div className='slider-container'>
+						<RCSlider 
+							className='slider-appearance' 
+							min={0} 
+							max={100} 
+							range 
+							value={[min, max]} 
+							onChange={this.rangeChange.bind(this)} 
+							onAfterChange={this.rangeChangeComplete.bind(this)} 
+							tipFormatter={ function(d) {return d+'%';} }
+						/>
+					</div>
+					{/*<button className="btn btn-default btn-sm" onFocus={this.showRange.bind(this)} onBlur={this.hideRange.bind(this)}>
 						{`相似度${min}%-${max}%`}
 						<span className='caret'></span>
 						<div className={rangeClass}><div className='wrapper'><ReactInputRange maxValue={100} minValue={0} value={this.state.values} onChange={this.rangeChange.bind(this)} onChangeComplete={this.rangeChangeComplete.bind(this)}/></div></div>
-					</button>
+					</button>*/}
 				</div>
 			</div>);
 	}
@@ -112,11 +125,11 @@ class FilterBar extends React.Component {
 		this.setState({showRange: false});
 	}
 
-	rangeChange(component, values){
-		this.setState({values:values});
+	rangeChange(range){
+		this.setState({values:{min:range[0], max:range[1]}});
 	}
 
-	rangeChangeComplete(component, values){
+	rangeChangeComplete(range){
 		console.log('rangeChangeComplete');
 		this.handleFilterSimilarity();
 	}

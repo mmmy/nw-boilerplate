@@ -38,7 +38,7 @@ class ToggleBar extends React.Component {
 
 		let {fullView, searchTimeSpent} = this.props;
 		
-		const toggleClass = classNames('container-toggle', {
+		const toggleClass = classNames('container-toggle','transition-all', {
 			'full': fullView
 		});
 

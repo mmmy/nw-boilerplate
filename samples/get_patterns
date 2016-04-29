@@ -1,0 +1,115 @@
+{
+    "code": 0,
+    "desc": "success",
+    "batchdataset": [
+        {
+            "metaData":
+            {
+                "dataCategory": "cs",
+                "dataTimeUnit": "d",
+                "id": "ss600000",
+                "begin": "2012-12-30T00:00:00Z",
+                "end": "2012-12-31T00:00:00Z"
+            },
+            "chunks": [                    
+                {
+                    "type": "RecordChunk",
+                    "begin": "2012-12-30T00:00:00Z",
+                    "end": "2012-12-31T00:00:00Z",
+                    "records": [
+                        {
+                            "datetime": "1991-12-30 00:00:00",
+                            "exchangecd": "SZ",
+                            "close": 1.40244,
+                            "high": 1.4182,
+                            "low": 1.34256,
+                            "open": 1.36567,
+                            "pre_close": 1.33205,
+                            "volume": 649600,
+                            "openinterest": "0.64222"
+                        },
+                        {
+                            "datetime": "1991-12-31 00:00:00",
+                            "exchangecd": "SZ",
+                            "close": 1.40244,
+                            "high": 1.4182,
+                            "low": 1.34256,
+                            "open": 1.36567,
+                            "pre_close": 1.33205,
+                            "volume": 649600,
+                            "openinterest": "0.64222"
+                        }                          
+                        
+                    ]                        
+
+                },
+                {
+                    "type": "LocalFileChunk",
+                    "begin": "1992-01-01T00:00:00Z",
+                    "end": "1992-01-01T00:00:00Z",
+                    "filename": "ss600000-1992",
+                    "sha256sum": "686362a04233ce11b446c6446a4b6ce735349ca3d0d967c835dc47d49dcf8e45"
+
+                },
+                {
+                    "type": "LocalFileChunk",                    
+                    "begin": "1993-01-01T00:00:00Z",
+                    "end": "1993-01-01T00:00:00Z",
+                    "filename": "ss600000-1993",
+                    "sha256sum": "686362a04233ce11b446c6446a4b6ce735349ca3d0d967c835dc47d49dcf8e45"
+
+                },
+                {
+                    "type": "RecordChunk",
+                    "begin": "2015-01-01T00:00:00Z",
+                    "end": "2016-01-01T00:00:00Z",
+                    "records": [
+                        {
+                            "datetime": "1994-01-01 00:00:00",
+                            "exchangecd": "SZ",
+                            "close": 1.40244,
+                            "high": 1.4182,
+                            "low": 1.34256,
+                            "open": 1.36567,
+                            "pre_close": 1.33205,
+                            "volume": 649600,
+                            "openinterest": "0.64222"
+                        }
+                    ]
+                }
+                
+            ]
+
+        },
+        {
+            "metaData":
+            {
+                "dataCategory": "cs",
+                "dataTimeUnit": "d",
+                "id": "ss600000",
+                "begin": "2013-01-01T00:00:00Z",
+                "end": "2014-01-01T00:00:00Z"
+            },
+            "chunks": [
+                {
+                    "type": "RecordChunk",
+                    "begin": "2015-01-01T00:00:00Z",
+                    "end": "2016-01-01T00:00:00Z",
+                    "records": [
+                        {
+                            "datetime": "2015-01-01 00:00:00",
+                            "exchangecd": "SZ",
+                            "close": 1.40244,
+                            "high": 1.4182,
+                            "low": 1.34256,
+                            "open": 1.36567,
+                            "pre_close": 1.33205,
+                            "volume": 649600,
+                            "openinterest": "0.64222"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

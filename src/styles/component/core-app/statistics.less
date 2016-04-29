@@ -5,7 +5,8 @@
 	float: left;
 	width: @statisticsContainer_W;
 	height: @statisticsContainer_H;
-	border-top: 1px solid @ks-color-gray-8;
+	//border-top: 1px solid @ks-color-gray-8;
+	padding: 0 5%;
 	&.full{
 		width: @statisticsContainerStretch_W;
 		height: @statisticsContainerStretch_H;
@@ -18,7 +19,6 @@
 
 .report-container-wrap {
 	height: @reportContainer_H;
-	//border: 1px solid green;
 	margin: 0;
 	&.stretch{
 		height: calc(@searchResultWrap_H~" - 33px");
@@ -32,6 +32,6 @@
 
 .crossfilter-container-wrap {
 	height: calc(~'100% - '@reportContainer_H*2~' - '@reportContainer_H*0.9);
-	border-left: 1px solid @ks-color-gray-8;
-	border-right: 1px solid @ks-color-gray-8;
+	//border-left: 1px solid @ks-color-gray-8;
+	//border-right: 1px solid @ks-color-gray-8;
 }

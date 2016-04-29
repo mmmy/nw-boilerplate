@@ -18,9 +18,10 @@ var randomPartterns = function(n) {
 			id: i,
 			symbol: '000001',
 			similarity: Math.random(),
+			baseBars: 50,
 			kLine: randomKline(),
 			yield: Math.random()*3 - 1.2,  //-150% ~ 150%
-			industry: industrys[Math.round((Math.random()*industrys.length))]
+			industry: industrys[Math.round((Math.random()*industrys.length))],
 		});
 	}
 	return partterns;
