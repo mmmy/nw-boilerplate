@@ -9,6 +9,7 @@ import { predictionRandomData } from './utils/comparatorPredictionEchart';
 const propTypes = {
   patterns: PropTypes.object.isRequired,
   filter: PropTypes.object.isRequired,
+  lastClosePrice: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
@@ -23,7 +24,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentDidMount() {
-    this.initEchart()
+    this.initEchart();
     window.addEventListener('resize', this.handleResize);
   }
 
@@ -39,6 +40,10 @@ class ComparatorPrediction extends React.Component {
 
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
+  }
+
+  getLastValueData() {
+  // TODO
   }
 
   handleResize() {
@@ -57,8 +62,10 @@ class ComparatorPrediction extends React.Component {
 
   splitData(kLine) {
     let data = [];
-    kLine.forEach((e) => {
-      data.push(e[2]);
+    let percentage = 0;
+    kLine.forEach((e, i) => {
+      if (i === 0) percentage = this.props.lastClosePrice / e[2];
+      data.push(e[2] * percentage);
     });
     return data;
   }

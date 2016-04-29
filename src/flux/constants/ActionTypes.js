@@ -25,3 +25,4 @@ export const SORT_BY_DATE = 'SORT_BY_DATE';
 export const SORT_BY_SIMILARITY = 'SORT_BY_SIMILARITY';
 export const SORT_BY_YIELD = 'SORT_BY_YIELD';
 
+export const GET_LAST_CLOSE_PRICE = 'GET_LAST_CLOSE_PRICE';

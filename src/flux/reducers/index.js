@@ -6,6 +6,7 @@ import report from './report';
 import filter from './filter';
 import sort from './sort';
 import comparatorTv from './comparatorTv';
+import prediction from './prediction';
 
 
 export default combineReducers({
@@ -16,4 +17,5 @@ export default combineReducers({
 	filter,
 	sort,
   comparatorTv,
+  prediction,
 });
