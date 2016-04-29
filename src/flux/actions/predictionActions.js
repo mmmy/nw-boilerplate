@@ -9,7 +9,7 @@ const getLastClosePrice = function(lastClosePrice) {
   }
 }
 
-const getAllPredictionLastClosePrices = function() {
+const getAllPredictionLastClosePrices = function(predictionLastClosePrices) {
   return (dispatch) => {
     dispatch({
       type: types.GET_ALL_PREDICTION_LAST_CLOSE_PRICES,
@@ -18,6 +18,16 @@ const getAllPredictionLastClosePrices = function() {
   }
 }
 
+const getPredictionPriceScaleMarks = function(predictionPriceScaleMarks) {
+  return (dispatch) => {
+    dispatch({
+      type: types.GET_PREDICTION_PRICE_SCALE_MARKS,
+      predictionPriceScaleMarks: predictionPriceScaleMarks
+    })
+  }
+}
+
 module.exports = {
   getLastClosePrice,
+  getPredictionPriceScaleMarks
 }
