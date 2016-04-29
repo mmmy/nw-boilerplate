@@ -10,7 +10,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 	const { symbol, bars, dateRange, additionDate } = args;
 
-	let searchArgs = { symbol, dateRange };
+	let searchArgs = { symbol, dateRange, bars };
 
 	let searchCb = (resObj) => {
 
@@ -28,6 +28,7 @@ let searchPattern = (args, cb, errorCb) => {
 				end: end.time,
 				industry,
 				type,
+				baseBars: bars,
 				kLine,
 				'yield': 0	
 			};

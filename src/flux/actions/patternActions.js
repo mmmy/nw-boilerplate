@@ -13,8 +13,8 @@ import crossfilter from 'crossfilter';
 
 const devLocal = false;
 
-let getPatterns = (symbol, dateRange, cb) => {
-	console.log('patternActions: getPatterns',symbol, dateRange);
+let getPatterns = ({symbol, dateRange, bars}, cb) => {
+	//console.log('patternActions: getPatterns',symbol, dateRange);
 	return (dispacth) => {
 
 		if (devLocal) {
@@ -40,7 +40,7 @@ let getPatterns = (symbol, dateRange, cb) => {
 
 		} else {
 
-			backend.searchPattern({symbol, dateRange, bars: 20}, 
+			backend.searchPattern({symbol, dateRange, bars}, 
 
 				(resArr) => {
 

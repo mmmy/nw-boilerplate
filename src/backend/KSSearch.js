@@ -27,9 +27,16 @@ let {searchOptions} = config;
 
 ******************/
 
-let searchPattern = (args, cb, errorCb) => {
-	console.log(searchOptions, config);
-	const { symbol, dateRange } = args;
+//symbol:'Shenzhen:000001.SZ';
+let searchPattern = ({ symbol, dateRange, bars}, cb, errorCb) => {
+	
+	let exchangeReg = /.*\:/ ; //匹配开始到冒号的所有字符, 
+	let id = parseInt(symbol.replace(exchangeReg, '')); //去掉交易所字符
+	
+	console.assert(!isNaN(id), 'error: 股票id  为NaN');
+	console.assert(dateRange.length == 2);
+	console.assert(bars > 0);
+	//console.log(searchOptions, config);
 	// let { path } = searchOptions;
 
 	// path = url.format({
@@ -60,10 +67,10 @@ let searchPattern = (args, cb, errorCb) => {
 	let postObj = {
 		mid:"test example",
 		pattern:{
-			id:"1", 
+			id: id + '',     //后台要求是字符串 
 			begin:{time: new Date(dateRange[0]).toISOString()},
 			end:{time: new Date(dateRange[1]).toISOString()},
-			len:20
+			len:bars
 		},
 		samples:[]
 	};

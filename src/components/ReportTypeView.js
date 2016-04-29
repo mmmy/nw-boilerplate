@@ -6,10 +6,10 @@ const propTypes = {
 };
 
 const defaultProps = {
-  
+
 };
 
-class Template extends React.Component {
+class ReportTypeView extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -34,7 +34,7 @@ class Template extends React.Component {
 
 	render(){
 
-		const {searchSpace, searchDate, spaceDefinition, patternType} = this.props.report	
+		const {searchSpace, searchDate, spaceDefinition, patternType} = this.props.report
 
 		const startDate = searchDate[0] ? moment(searchDate[0]).format('YYYY.MM.DD') : '--';
 		const endDate = searchDate[1] ? moment(searchDate[1]).format('YYYY.MM.DD') : '--';
@@ -48,7 +48,7 @@ class Template extends React.Component {
 	}
 }
 
-Template.propTypes = propTypes;
-Template.defaultProps = defaultProps;
+ReportTypeView.propTypes = propTypes;
+ReportTypeView.defaultProps = defaultProps;
 
-export default Template;
+export default ReportTypeView;

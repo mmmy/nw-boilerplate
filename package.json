@@ -57,7 +57,7 @@
     "rc-slider": "^3.6.0",
     "react": "^0.14.7",
     "react-bootstrap": "^0.28.4",
-    "react-dom": "^0.14.7",
+    "react-dom": "^0.14.8",
     "react-input-range": "^0.6.2",
     "react-redux": "^4.4.1",
     "redux": "^3.3.1",

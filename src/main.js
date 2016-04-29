@@ -4,18 +4,6 @@ import init from './shared/Init';
 import actionsForIframe from './shared/actionsForIframe';
 import app from './app';
 
-let setChartLayout = () => {
-  setTimeout(() => {
-    let tv = document[window.document.getElementsByTagName('iframe')[0].id];
-    if (!tv.Q5) {
-      setChartLayout();
-    } else {
-      //const tv = window.document[window.document.getElementsByTagName('iframe')[0].id];
-      tv.W76.setChartLayout(tv.Q5, '2v');
-    }
-  }, 6E3)
-}
-
 Promise.all([
   new Promise((resolve) => {
     if(window.addEventListener) {
@@ -25,7 +13,7 @@ Promise.all([
     }
   })
 ]).then(() => {
-  
+
   init();
 
   actionsForIframe(store);
@@ -38,7 +26,4 @@ Promise.all([
     head.appendChild(script);
   }
   app();
-})
-.then(() => {
-  if(process.env.yq !== 'yes') { setChartLayout(); }
 });
