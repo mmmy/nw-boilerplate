@@ -42,7 +42,7 @@ class FilterBar extends React.Component {
 		let {min, max} = this.state.values;
 		return (<div className="filterbar-container">
 				<div className='toolbar-item item0'>
-					<div className='input-group'>
+					<div className='input-group input-group-flatten'>
 						<input type='text' ref='symbol' className='form-control input-sm' onFocus={()=>{console.log('input onFocus')}} onBlur={e=>{console.log('input onBlur')}}/>
 						<span className='input-group-btn'>
 							<button className="btn btn-default btn-sm" type="button" onClick={this.handleFilterSymbol.bind(this)} onFocus={()=>{console.log('btn onFocus')}} onBlur={e=>{console.log('btn onBlur')}}><i className='fa fa-search'></i></button>

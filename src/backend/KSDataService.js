@@ -1,8 +1,13 @@
 import request from './request';
 import config from './config';
-import KSChunk from './KSChunk';
+import KSFileService from './KSFileService';
 import querystring from 'querystring';
 import path from 'path';
+import moment from 'moment';
+import { calcYieldRate } from './utils';
+
+let { patternOptions } = config;
+
 /**
  * 将获取文件后的chunk整合为kline数据
  * @param  {[type]} chunks [description]
@@ -17,7 +22,7 @@ let chunksToKline = (chunks) => {
 		let type = chunk.type;
 		let chunkKline = [];
 
-		if(type === 'RecordChunk') {
+		if(type === 'RecordChunk' || type === undefined) {
 			
 			chunkKline = chunk.records.map((record) => {
 				let { datetime, open, close, low, high } = record;
@@ -37,8 +42,6 @@ let chunksToKline = (chunks) => {
 
 };
 
-let { patternOptions } = config;
-
 /**
  * 获取股票具体数据
  * args: [{symbol, dateRange:[]},]
@@ -46,13 +49,31 @@ let { patternOptions } = config;
 
 let postSymbolData = (args, cb, errorCb) => {
 
+	const { bars } = args;
+
 	let options = {           		
 		...patternOptions
 	};
 
-	let postData = querystring.stringify({
-		'pt': args.map(({symbol, dateRange}) => { return path.join('/', symbol, ''+dateRange[0], ''+dateRange[1]); })
+	let batchCondition = args.map(({symbol, dateRange, timeUnit='d', category='cs', additionDate = { type:'days', value: 10 } }) => {
+		
+		return {
+			dataCategory: category,
+			dataTimeUnit: timeUnit,
+			id: symbol,
+			begin: moment.utc(dateRange[0]).toISOString(),
+	        end: moment.utc(dateRange[1]).add(additionDate.value, additionDate.type).toISOString()
+		};
 	});
+
+	let postObj = {
+		batchCondition
+	};
+
+	// let postData = querystring.stringify({
+	// 	'pt': args.map(({symbol, dateRange}) => { return path.join('/', symbol, ''+dateRange[0], ''+dateRange[1]); })
+	// });
+	let postData = JSON.stringify(postObj);
 	console.log(postData);
 
 	let dataCb = (resStr) => {
@@ -60,18 +81,20 @@ let postSymbolData = (args, cb, errorCb) => {
 		try {
 			
 			let resObj = JSON.parse(resStr);
-			let batchdataset = resObj.batchdataset;
-			const dataSetLen = batchdataset.length;
+			let batchDataSet = resObj.batchDataSet;
+			const dataSetLen = batchDataSet.length;
 
 			let mergeData = () => {
 
-				let klineArr = resObj.batchdataset.map(({metaData, chunks}) => {
+				let klineArr = resObj.batchDataSet.map(({metaData, chunks}) => {
 
-					let data = chunksToKline(chunks);
+					let kLine = chunksToKline(chunks);  //k线数据
+					let yieldRate = calcYieldRate(kLine, bars);
 
 					return {
 						metaData,
-						data
+						kLine,
+						yieldRate,
 					};
 
 				});
@@ -80,12 +103,12 @@ let postSymbolData = (args, cb, errorCb) => {
 			};
 			//TODO:获取文件chunk, 并合并数据
 			let fileChunkCount = 0;
-			batchdataset.forEach((e, i) => {
+			batchDataSet.forEach((e, i) => {
 				e.chunks.forEach((chunkObj, j) => {
 					if (chunkObj.type === 'LocalFileChunk') {
 						fileChunkCount += 1;
 						let { filename } = chunkObj;
-						KSChunk.getFileChunk(filename, (data) => {
+						KSFileService.getFileChunk(filename, (data) => {
 							chunkObj.data = data;
 							fileChunkCount -= 1;
 							if(fileChunkCount === 0) {
@@ -96,7 +119,9 @@ let postSymbolData = (args, cb, errorCb) => {
 					}
 				});
 			});	
-					
+			if (fileChunkCount === 0) {
+				mergeData();
+			}
 			//let data = resObj;
 			//cb && cb(data);
 

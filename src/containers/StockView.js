@@ -36,11 +36,12 @@ class StockView extends React.Component {
 	render() {
 		let { stockView } = this.props;
 		let options = {
-				symbol: 'AA',
+				symbol: '000001.SZ',
 				interval: 'D',
 				container_id: STOCK_VIEW,
 				//	BEWARE: no trailing slash is expected in feed URL
-				datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
+				//datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
+				datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
 				library_path: "charting_library/",
 				locale: "zh",
       			theme: "Black",

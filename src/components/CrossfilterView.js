@@ -107,7 +107,7 @@ class CrossfilterView extends React.Component {
 		//解决第一transition 动画的之后布局	 bug
 		let that = this;
 		setTimeout(this.handleResize.bind(this), 300);
-		console.log('crossFilter view did update', new Date() - this.renderDate);
+		console.log('^-^crossFilter view did update', new Date() - this.renderDate);
 	}
 
 	render() {
@@ -116,7 +116,7 @@ class CrossfilterView extends React.Component {
 		  'crossfilter-container-stretch': this.props.stretchView,
 		  'crossfilter-container-shrink': !this.props.stretchView
 		});
-
+		console.log('crossFilter view render');
 		return (
 		  <div className={ className }>
 		  	<div className="dc-chart-row">
@@ -138,7 +138,7 @@ class CrossfilterView extends React.Component {
 		//crossFilter 如果改变或者不存在 那么重新生成dimentsions !!
 		if(this.oldCrossFilter !== crossFilter) {
 
-			console.info('crossfilter changed !');
+			console.info('-_-CrossfilterView crossfilter changed !');
 			
 			this.oldCrossFilter = crossFilter;
 
@@ -174,7 +174,7 @@ class CrossfilterView extends React.Component {
 			this.yieldDateDim = crossFilter.dimension((data) => {
 
 				let lastBar = data.kLine[data.kLine.length - 1];
-				let year = new Date(lastBar[0]).getFullYear();
+				let year = lastBar ? new Date(lastBar[0]).getFullYear() : 0;
 				let yield100 = Math.round(data.yield*100);
 				//缓存所有数据的年份范围 和 收益率范围
 				yearArr.push(year);
