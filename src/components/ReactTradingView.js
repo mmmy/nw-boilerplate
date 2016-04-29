@@ -12,7 +12,7 @@ const defaultProps = {
 class ReactTradingView extends React.Component {
 	constructor(props) {
 		super(props);
-    
+
 	}
 
   componentDidMount() {
@@ -25,13 +25,33 @@ class ReactTradingView extends React.Component {
     // };
 
     let options = window.$.extend(this.props.options, {container_id: this.props.viewId});
-    if (process.env.yq === 'yes') { return; }
-    /*var widget = */new window.TradingView.widget(options);
+    if (process.env.yq == 'yes') return;
+
+    let widget = new window.TradingView.widget(options);
+
+    if (this.props.viewId === 'comparator-chart') {
+      this.setChartLayout();
+    }
+  }
+
+  getChartDom() {
+    return document[window.document.getElementsByTagName('iframe')[0].id];
+  }
+
+  setChartLayout() {
+    setTimeout(() => {
+      let chart = this.getChartDom();
+      if ( chart && chart.W76 && chart.Q5 && chart.Q15.studyCounter > 0) {
+        chart.W76.setChartLayout(chart.Q5, '2v');
+      } else {
+        this.setChartLayout();
+      }
+    }, 0)
   }
 
 	render(){
 		return (
-    <div className={ "chart-container" } id={ this.props.viewId } />
+    <div className={ "chart-container" } ref={ this.props.viewId } id={ this.props.viewId } />
     )
 	}
 }

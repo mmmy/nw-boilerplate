@@ -3,26 +3,34 @@ import KSDataService from './KSDataService';
 
 let __data = [];
 /**
- * args: {symbol:, {from: , to: }}
+ * args: {symbol: , bars: , dateRange:{from: , to: }, additionDate:{type:'days', value: 30} }
  */
 
 let searchPattern = (args, cb, errorCb) => {
 
+	const { symbol, bars, dateRange, additionDate } = args;
+
+	let searchArgs = { symbol, dateRange, bars };
+
 	let searchCb = (resObj) => {
 
-		__data = resObj.patterns.map((pattern) => {
+		__data = resObj.results.map((pattern, i) => {
 
-			const {symbol, similarity, begin, end, industry, type} = pattern;
-			let kline = {};
-			
+			const {id, similarity=0.2, begin, end, industry='1', type='D'} = pattern;
+			let kLine = {};
+			//let id = i;
+
 			return {
-				symbol,
+				id: i,
+				symbol: id,
 				similarity,
-				begin,
-				end,
+				begin: begin.time,
+				end: end.time,
 				industry,
 				type,
-				kline	
+				baseBars: bars,
+				kLine,
+				'yield': 0	
 			};
 
 		});
@@ -30,25 +38,32 @@ let searchPattern = (args, cb, errorCb) => {
 		//获取kline具体数据
 		let dataCb = (klineArr) => {
 
-			klineArr.forEach((kline, i) => {
-				__data[i].kline = kline;
+			klineArr.forEach(({ metaData, kLine, yieldRate }, i) => {
+				__data[i].kLine = kLine;
+				__data[i].metaData = metaData;
+				__data[i].yield = yieldRate;
 			});
 
 			cb && cb(__data);
 		};
 
 		//let args = [{'symbol':'ss600000',dateRange:[3, 5]}, {'symbol':'ss600000', dateRange:[7, 8]}];
-		let args = resObj.patterns.map((pattern) => {
+		let args = resObj.results.map((pattern) => {
+			
+			const {id, begin, end} = pattern;
+
 			return {
-				'symbol': pattern.symbol,
-				'dateRange': [pattern.begin, pattern.end]
+				'symbol':id,
+				'dateRange': [begin.time, end.time],
+				'additionDate': additionDate,
+				'bars': bars,
 			};
 		});
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
 		KSDataService.postSymbolData(args, dataCb, errorCb);
 	};
 	//获取搜索结果
-	KSSearch.searchPattern(args, searchCb, errorCb);
+	KSSearch.searchPattern(searchArgs, searchCb, errorCb);
 
 };
 //TODO: 获取新数据 类似push

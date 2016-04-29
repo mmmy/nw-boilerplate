@@ -2,7 +2,7 @@
 
 .container-searchreport{
 	background-color: @ks-color-gray-middle;
-	border: 1px solid @ks-color-gray-light;
+	//border: 1px solid @ks-color-gray-light;
 	position: absolute;
 	top: @searchResultWrap_T;
 	width: 100%;
@@ -13,36 +13,44 @@
 .container-toggle{
 	position: absolute;
 	width: 100%;
+	z-index: 100;
+	//overflow: visible;
 	//top: -10px;
 	//暂时不需要效果
 	&.full{
-		top: 0;
+		top: -20px;
 	}
 
 	.btn-container{
 		position: relative;
-		width: 200px;
+		width: 220px;
 		height: 100%;
 		margin: auto;
 		background: url(@logo_url) no-repeat;
-		background-position: 0 5px;
+		background-position: 20px 7px;
+		background-size: 30px;
 
+		border: 1px solid @ks-color-gray-9;
+		box-shadow: 0 0 10px 0 @ks-color-gray-8;
+		padding: 0px 8px 5px 8px;
+
+		background-color: white;
 		.item{
 			height: 100%;
 			display: inline-block;
 		}
 		
 		.title{
-			margin-left: 40px;
+			margin-left: 50px;
 			//padding: 5px;
-			font-size: 110%;
+			font-size: 90%;
 			color: #333;
 		}
 
 		.timespent{
 			margin-left: 10px;
 			color: #777;
-			font-size: 90%;
+			font-size: 80%;
 		}
 
 		.btn-toggle{
@@ -57,6 +65,10 @@
 			&.rotate{
 				transform: rotate(180deg);
 			}
+		}
+
+		&.full {
+			top: -20px;
 		}
 	}
 }

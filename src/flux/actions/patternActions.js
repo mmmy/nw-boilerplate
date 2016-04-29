@@ -1,5 +1,6 @@
 import * as types from '../constants/ActionTypes';
 import ajaxData from '../../backend/ajaxData';
+import backend from '../../backend';
 import crossfilter from 'crossfilter';
 
 /**
@@ -9,27 +10,56 @@ import crossfilter from 'crossfilter';
  * @param  {Function} cb        [回调]
  * @return {[type]}             [description]
  */
-let getPatterns = (symbol, dateRange, cb) => {
-	console.log('patternActions: getPatterns',symbol, dateRange);
+
+const devLocal = false;
+
+let getPatterns = ({symbol, dateRange, bars}, cb) => {
+	//console.log('patternActions: getPatterns',symbol, dateRange);
 	return (dispacth) => {
 
-		ajaxData.getPatterns(
+		if (devLocal) {
 			
-			{symbol, dateRange}, 
-			
-			(res) => {
-				let patterns = JSON.parse(res);
-				patterns.crossFilter = crossfilter(patterns.rawData);
-				let searchTimeSpent = 100;
-				dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
-				cb && cb();
-			},
+			ajaxData.getPatterns(
+				
+				{symbol, dateRange}, 
+				
+				(res) => {
+					let patterns = JSON.parse(res);
+					patterns.crossFilter = crossfilter(patterns.rawData);
+					let searchTimeSpent = 100;
+					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
+					cb && cb();
+				},
 
-			(error) => {
-				//请求错误后的处理
-				console.error(error);
-				dispacth({type: types.GET_PATTERNS_ERROR, error: error});
-			});
+				(error) => {
+					//请求错误后的处理
+					console.error(error);
+					dispacth({type: types.GET_PATTERNS_ERROR, error: error});
+				}
+			);
+
+		} else {
+
+			backend.searchPattern({symbol, dateRange, bars}, 
+
+				(resArr) => {
+
+					let patterns = {
+						rawData: resArr,
+					};
+					patterns.crossFilter = crossfilter(patterns.rawData);
+					let searchTimeSpent = 200;
+					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
+					cb && cb();
+
+				}, (error) => {
+					//请求错误后的处理
+					console.error(error);
+					dispacth({type: types.GET_PATTERNS_ERROR, error: error});
+				}
+			);
+		}
+
 	};
 }
 

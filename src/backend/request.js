@@ -26,7 +26,16 @@ let request = (options, cb, errorCb, postData) => {
 		});
 
 		res.on('end', () => {
-			cb && cb(chunkAll);
+
+			setTimeout(() => {
+				try {
+
+					cb && cb(chunkAll);
+				} catch (e) {
+					console.error(e);
+				}
+			});
+
 		});
 
 		res.on('error', (e) => {

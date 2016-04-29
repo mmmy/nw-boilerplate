@@ -3,7 +3,7 @@ var url = require('url');
 var fs = require('fs');
 var querystring = require('querystring');
 
-var searchPatterns = '/search_pattern',
+var searchPatterns = '/match',
 	getPatterns = '/get_patterns',
 	fileChunk = '/file_chunk';
 
@@ -25,7 +25,7 @@ var server = http.createServer(function(req, res){
 			res.writeHead(200, {
                 'Content-Type': 'text/plain'
             });
-            var resStr = fs.readFileSync('./search_patterns', 'utf8');
+            var resStr = fs.readFileSync('./search_pattern', 'utf8');
             res.write(resStr);
             res.end();
             break;
