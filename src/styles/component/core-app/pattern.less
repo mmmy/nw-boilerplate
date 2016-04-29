@@ -1,7 +1,7 @@
 @patternToolbar_H: 80px;
-@patternView_W: @patternContainerStretch_W/2 - 13px;
+@patternView_W: @patternContainerStretch_W/2 - 13px - 8px;
 
-@patternView_flat_W: @patternView_W - 8px; //130px
+@patternView_flat_W: @patternView_W; //130px
 
 @larger: 1.3;
 @smaller: 0.62;
@@ -226,7 +226,7 @@
 	&.column{
 		height: @patternView_W;
 		width: @patternView_W*1.4;
-
+		margin-left: 0;
 		&.larger{
 			//transform: scale(1.5,1.5);
 			height: @patternView_W * 1.3;
