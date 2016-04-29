@@ -23,7 +23,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentDidMount() {
-    this.initEchart()
+    this.initEchart();
     window.addEventListener('resize', this.handleResize);
   }
 
@@ -39,6 +39,10 @@ class ComparatorPrediction extends React.Component {
 
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
+  }
+
+  getLastValueData() {
+  // TODO
   }
 
   handleResize() {

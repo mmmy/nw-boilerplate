@@ -3,6 +3,7 @@ import filterActions from './filterActions';
 import patternActions from './patternActions';
 import sortActions from './sortActions';
 import comparatorTvActions from './comparatorTvActions';
+import predictionActions from './predictionActions';
 
 module.exports = {
 	layoutActions,
@@ -10,4 +11,5 @@ module.exports = {
 	patternActions,
 	sortActions,
   comparatorTvActions,
+  predictionActions,
 }
