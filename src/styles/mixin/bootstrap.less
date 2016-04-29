@@ -1,0 +1,16 @@
+
+
+//btn mixin class
+@input-bg-color: #F5F5F5;
+
+.input-group-flatten {
+	input {
+		border: none;
+		box-shadow: none;
+		background-color: @input-bg-color;
+	}
+	button {
+		border-color: darken(@input-bg-color, 10%);
+		background-color: darken(@input-bg-color, 10%);
+	}
+}
