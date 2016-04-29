@@ -9,6 +9,15 @@ const getLastClosePrice = function(lastClosePrice) {
   }
 }
 
+const getAllPredictionLastClosePrices = function() {
+  return (dispatch) => {
+    dispatch({
+      type: types.GET_ALL_PREDICTION_LAST_CLOSE_PRICES,
+      predictionLastClosePrices: predictionLastClosePrices
+    })
+  }
+}
+
 module.exports = {
   getLastClosePrice,
 }

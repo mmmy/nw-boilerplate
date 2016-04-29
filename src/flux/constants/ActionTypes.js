@@ -23,4 +23,6 @@ export const GET_PATTERNS_ERROR = 'GET_PATTERNS_ERROR';          //获取pattern
 //sort
 export const SORT_BY_DATE = 'SORT_BY_DATE';
 
+ // 预测曲线
 export const GET_LAST_CLOSE_PRICE = 'GET_LAST_CLOSE_PRICE';
+export const GET_ALL_PREDICTION_LAST_CLOSE_PRICES = 'GET_ALL_PREDICTION_LAST_CLOSE_PRICES';
