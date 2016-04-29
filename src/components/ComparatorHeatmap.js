@@ -67,13 +67,13 @@ class ComparatorHeatmap extends React.Component {
       },
       animation: false,
       grid: {
-        // height: '100%',
+        height: '100%',
         // width: '10'
       },
       xAxis: {
         show: false,
         type: 'category',
-        data: ['']
+        data: ['0']
       },
       yAxis: {
         show: false,
@@ -83,12 +83,12 @@ class ComparatorHeatmap extends React.Component {
       visualMap: {
         show: false,
         min: 1,
-        max: 10,
+        max: 8,
         calculable: false,
         orient: 'vertical',
         left: 'center',
         bottom: '15%',
-        color: ['#F0AEB6', '#E9828E', '#E1586B', '#D72B44', '#CB0020']
+        color: ['#CB0020', '#D72B44', '#E1586B', '#E9828E', '#F0AEB6'] // 从大到小排列
       },
       series: [{
         name: 'Punch Card',
