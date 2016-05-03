@@ -113,7 +113,7 @@ class ComparatorPrediction extends React.Component {
       },
       tooltip: {
         show: false,
-        trigger: 'axis',
+        // trigger: 'axis',
         // formatter: function (params) {
         //   params = params[0];
         //   var date = new Date(params.name);

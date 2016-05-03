@@ -86,7 +86,7 @@ class ComparatorHeatmap extends React.Component {
     window.heatmap = echarts.init(dom);
 
     // const priceScale = [-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
-    const priceScale = [];
+    const priceScale = this.props.heatmapYAxis;
     const data = [];
     let option = {
       tooltip: {
@@ -96,7 +96,7 @@ class ComparatorHeatmap extends React.Component {
       animation: false,
       grid: {
         height: '100%',
-        y: '-10px'
+        y: '-5%'
         // width: '10'
       },
       xAxis: {
@@ -117,7 +117,7 @@ class ComparatorHeatmap extends React.Component {
         orient: 'vertical',
         left: 'center',
         bottom: '15%',
-        // color: ['#CB0020', '#D72B44', '#E1586B', '#E9828E', '#F0AEB6'] // 从大到小排列
+        color: ['#982C2F', '#C23433', '#E42329', '#F63A3B'] // 从大到小排列
       },
       series: [{
         name: 'Punch Card',
@@ -136,7 +136,6 @@ class ComparatorHeatmap extends React.Component {
         }
       }],
       backgroundColor: '#C6C7C8',
-
     };
 
     if (option && typeof option === "object") {
