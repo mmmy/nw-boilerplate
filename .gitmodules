@@ -1,4 +1,4 @@
 [submodule "tradingview"]
 	path = tradingview
-	url = https://github.com/onekeystone/charting_library.git
-	branch = dev-nw
+	url = git@gitlab.stone.io:onekeystone/tradingview.git
+	branch = master
