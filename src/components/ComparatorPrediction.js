@@ -108,8 +108,8 @@ class ComparatorPrediction extends React.Component {
       grid: {
         x: 0,
         x2: 0,
-        y: 14,
-        y2: 15
+        y: 9,
+        y2: 10
       },
       tooltip: {
         show: false,
@@ -147,7 +147,6 @@ class ComparatorPrediction extends React.Component {
       series: this.generateSeriesData()
       // series: predictionRandomData()
     };
-
 
     if (option && typeof option === "object") {
       var startTime = +new Date();
