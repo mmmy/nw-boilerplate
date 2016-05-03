@@ -25,6 +25,8 @@
 		position: relative;
 		width: 220px;
 		height: 100%;
+		top: 0;
+		left: 0;
 		margin: auto;
 		background: url(@logo_url) no-repeat;
 		background-position: 20px 7px;
@@ -51,11 +53,13 @@
 			margin-left: 10px;
 			color: #777;
 			font-size: 80%;
+			//opacity: 1;
 		}
 
 		.btn-toggle{
 			font-size: 130%;
 			margin-left: 10px;
+			//opacity: 1;
 			.transition-all();
 			.transition-delay();
 			&:hover{
@@ -69,6 +73,15 @@
 
 		&.full {
 			top: -20px;
+		}
+
+		//搜索状态
+		&.slide-center {
+			top: 100px;
+			left: 50px;
+			border-color: transparent;
+			box-shadow: none;
+			background-color: transparent;
 		}
 	}
 }
@@ -95,3 +108,16 @@
   top: -15px;
   margin-left: 50%;
 }
+
+.search-report-wrapper {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	background-color: #fff;
+	//.transition-delay(.2s);
+	&.slide-down {
+		top: 100%;
+	}
+}
+
