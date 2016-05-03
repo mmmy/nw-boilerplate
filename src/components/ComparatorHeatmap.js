@@ -117,7 +117,7 @@ class ComparatorHeatmap extends React.Component {
         orient: 'vertical',
         left: 'center',
         bottom: '15%',
-        color: ['#982C2F', '#C23433', '#E42329', '#F63A3B'] // 从大到小排列
+        // color: ['#CB0020', '#D72B44', '#E1586B', '#E9828E', '#F0AEB6'] // 从大到小排列
       },
       series: [{
         name: 'Punch Card',
