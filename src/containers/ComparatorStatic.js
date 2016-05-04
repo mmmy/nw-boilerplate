@@ -44,7 +44,12 @@ class ComparatorStatic extends React.Component {
   }
 
 	render() {
-    const { patterns, filter, isPredictionShow, lastClosePrice } = this.props;
+    const { patterns,
+      filter,
+      isPredictionShow,
+      lastClosePrice,
+      heatmapYAxis,
+      dispatch } = this.props;
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
       'comparator-chart-static-show': this.props.stretchView,
@@ -114,7 +119,7 @@ class ComparatorStatic extends React.Component {
             <div className={ 'comparator-header' }>
               <span>走势预测</span>
             </div>
-            <ComparatorPrediction filter={ filter } patterns={ patterns } lastClosePrice={ lastClosePrice }/>
+            <ComparatorPrediction dispatch={ dispatch } filter={ filter } patterns={ patterns } lastClosePrice={ lastClosePrice }/>
           </div>
 
           <div className={'prediction-panel'}>
@@ -124,7 +129,7 @@ class ComparatorStatic extends React.Component {
               <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
             </button>
 
-            <ComparatorHeatmap />
+            <ComparatorHeatmap lastClosePrice={ lastClosePrice } heatmapYAxis={ heatmapYAxis } filter={ filter } patterns={ patterns } />
           </div>
 
         </div>
@@ -139,14 +144,14 @@ ComparatorStatic.defaultProps = defaultProps;
 var stateToProps = function(state) {
 	const {layout, patterns, filter, prediction} = state;
 	const {stockView, isPredictionShow} = layout;
-  const {lastClosePrice} = prediction;
+  const {lastClosePrice, predictionpriceScaleMarks, predictionLastClosePrices, heatmapYAxis} = prediction;
 	return {
 		stretchView: !stockView,
     isPredictionShow: isPredictionShow,
     patterns: patterns,
-    filter, filter,
-    lastClosePrice, lastClosePrice
-
+    filter: filter,
+    lastClosePrice: lastClosePrice,
+    heatmapYAxis: heatmapYAxis
 	};
 };
 export default connect(stateToProps)(ComparatorStatic);
