@@ -65,9 +65,15 @@ class ComparatorPrediction extends React.Component {
     let percentage = this.props.lastClosePrice / kLine[0][2];
     data.push(kLine[0][2] * percentage);
 
-    kLine.slice(baseBars).forEach((e, i) => {
-      data.push(e[2] * percentage);
-    });
+    if (kLine.length > baseBars) {
+      kLine.slice(baseBars).forEach((e, i) => {
+        data.push(e[2] * percentage);
+      });
+    } else {
+      kLine.forEach((e, i) => {
+        data.push(e[2] * percentage);
+      });
+    }
     return data;
   }
 
