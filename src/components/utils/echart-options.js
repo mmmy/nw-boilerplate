@@ -58,9 +58,11 @@ var factorCandleOption=function(){
 		            data: [],
 		            itemStyle: {
 		            	normal: {
-		            		borderWidth: '0',
-		            		color0: 'green',
-		            		borderColor0: 'green',
+		            		borderWidth: '1',
+		            		color: 'transparent',
+		            		color0: 'transparent',
+		            		borderColor: '#aE0000',
+		            		borderColor0: '#5A5A5A',
 		            	},
 		            	emphasis: {
 		            		borderWidth: '1'

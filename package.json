@@ -68,6 +68,7 @@
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.0.1",
     "run-sequence": "^1.1.5",
+    "sine-waves": "git+https://github.com/isuttell/sine-waves.git",
     "underscore": "^1.8.3"
   }
 }

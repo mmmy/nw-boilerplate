@@ -17,6 +17,8 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 	//console.log('patternActions: getPatterns',symbol, dateRange);
 	return (dispacth) => {
 
+		const startTime = new Date();
+
 		if (devLocal) {
 			
 			ajaxData.getPatterns(
@@ -48,7 +50,7 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 						rawData: resArr,
 					};
 					patterns.crossFilter = crossfilter(patterns.rawData);
-					let searchTimeSpent = 200;
+					let searchTimeSpent = new Date() - startTime;
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 					cb && cb();
 

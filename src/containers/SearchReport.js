@@ -5,6 +5,7 @@ import SearchDetail from './SearchDetail';
 import { patternActions } from '../flux/actions';
 import classNames from 'classnames';
 import ToggleBar from '../components/ToggleBar';
+import SearchWaitingWaves from '../components/SearchWaitingWaves';
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
@@ -57,11 +58,37 @@ class SearchReport extends React.Component {
 	      <div className={ className }>
 	        <ToggleBar {...this.props} />
 	        <div className="inner-searchreport">
-	          <Comparator />
-	          <SearchDetail />
+	          { this.renderWaitingPanel() }
+	          { this.renderDataPanels() }
 	        </div>
 	      </div>
 	    );
+	}
+
+	renderWaitingPanel() {
+	
+		let { waitingForPatterns } = this.props;
+		let node = waitingForPatterns ? <SearchWaitingWaves /> : '';
+
+		let wavesContainer = classNames('waves-container');
+
+		return (<div className = { wavesContainer } >
+			{ node }
+		</div>);
+
+	}
+
+	renderDataPanels() {
+
+		let dataPanelClass = classNames('search-report-wrapper', 'transition-top', 'transition-duration2', {
+			'slide-down': this.props.waitingForPatterns
+		});
+
+		return (<div className={dataPanelClass} >
+			<Comparator />
+			<SearchDetail />
+		</div>);
+
 	}
 
 }
@@ -71,10 +98,11 @@ SearchReport.defaultProps = defaultProps;
 
 let stateToProps = function(state){
 	const {layout} = state;
-	const {stockView, searchTimeSpent} = layout;
+	const {stockView, searchTimeSpent, waitingForPatterns} = layout;
 	return {
 		fullView: !stockView,
 		searchTimeSpent,
+		waitingForPatterns,
 	}
 };
 

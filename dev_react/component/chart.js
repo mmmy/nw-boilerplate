@@ -471,7 +471,7 @@ export default React.createClass({
 		this.drawChart();
 	},
 	getInitialState(){
-		return {height: 200, width: 600};
+		return {height: 130, width: 130};
 	},
 	componentDidUpdate(){
 		setTimeout((e) => {

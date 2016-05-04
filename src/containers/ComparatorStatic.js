@@ -81,6 +81,25 @@ class ComparatorStatic extends React.Component {
       user_id: 'public_user_id',
       autosize: true,
       fullscreen: false,
+      overrides: {
+          //"paneProperties.background": "#191919",
+           //"paneProperties.vertGridProperties.color": "#191919",
+           //"paneProperties.horzGridProperties.color": "#191919",
+          //"symbolWatermarkProperties.transparency": 90,
+          //"scalesProperties.textColor" : "#AAA",
+
+          "mainSeriesProperties.candleStyle.upColor": "#fff",
+          "mainSeriesProperties.candleStyle.downColor": "#fff",
+          "mainSeriesProperties.candleStyle.drawWick": true,
+          "mainSeriesProperties.candleStyle.drawBorder": true,
+          "mainSeriesProperties.candleStyle.borderColor": "#378658",
+          "mainSeriesProperties.candleStyle.borderUpColor": "#8E0000",
+          "mainSeriesProperties.candleStyle.borderDownColor": "#6A6A6A",
+          "mainSeriesProperties.candleStyle.wickUpColor": '#8E0000',
+          "mainSeriesProperties.candleStyle.wickDownColor": '#6A6A6A',
+          "mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
+
+      },
       // height: 300,
       // width: 300,
     }

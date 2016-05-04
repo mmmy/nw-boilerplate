@@ -9,6 +9,23 @@
 	transition-timing-function: ease;
 	transition-delay: 0s;
 }
+.transition-top{
+	transition-property: top;
+	transition-timing-function: ease;
+	transition-delay: 0s;
+	transition-duration: @transition-duration;
+}
+
+.transition-opacity {
+	transition-property: opacity;
+}
+
+.transition-postion{
+	transition-property: top, left, right, bottom;
+	transition-timing-function: ease;
+	transition-delay: 0s;
+	transition-duration: @transition-duration;
+}
 
 .transition-delay(@delay:0.4s){
 	transition-delay: @delay;
@@ -20,6 +37,10 @@
 
 .transition-delay2 {
 	transition-delay: 0s;
+}
+
+.transition-duration2 {
+	transition-duration: .3s;
 }
 
 .ks-hidden{
@@ -37,6 +58,10 @@
 .ks-transition-height-opacity{
 	transition: height @transition-duration ease, 
 				opacity @transition-duration2 ease @transition-duration + 0.3;
+}
+
+.ks-no-transition {
+	transition-property: none !important;
 }
 
 .flex-container{

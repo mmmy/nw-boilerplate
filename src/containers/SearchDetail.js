@@ -12,7 +12,7 @@ const defaultProps = {
   
 };
 
-class Component extends React.Component {
+class SearchDetail extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -47,10 +47,11 @@ class Component extends React.Component {
 			<PatternContainer />
 		</div>);
 	}
+
 }
 
-Component.propTypes = propTypes;
-Component.defaultProps = defaultProps;
+SearchDetail.propTypes = propTypes;
+SearchDetail.defaultProps = defaultProps;
 
 
 let stateToProps = function(state) {
@@ -61,4 +62,4 @@ let stateToProps = function(state) {
 	};
 };
 
-export default connect(stateToProps)(Component);
+export default connect(stateToProps)(SearchDetail);

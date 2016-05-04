@@ -101,18 +101,18 @@ class PatternCollection extends React.Component {
 
 		let nodes = null;
 
-		if (waitingForPatterns) {		//正在请求
+		// if (waitingForPatterns) {		//正在请求
 
-			nodes = (<div><i className='fa fa-circle-o-notch fa-spin'></i>正在获取数据...</div>);
+		// 	nodes = (<div><i className='fa fa-circle-o-notch fa-spin'></i>正在获取数据...</div>);
 
-		} else if(error) { 					//请求错误
+		// } else if(error) { 					//请求错误
 
-			nodes = (<div>
-						<h4>请求数据错误</h4>
-						<p>{ '' + error }</p>
-					</div>);
+		// 	nodes = (<div>
+		// 				<h4>请求数据错误</h4>
+		// 				<p>{ '' + error }</p>
+		// 			</div>);
 
-		} else {                        //请求成功
+		// } else {                        //请求成功
 
 			//如果crossFilter 是新来的
 			if(this.oldCrossFilter !== crossFilter) {
@@ -131,7 +131,7 @@ class PatternCollection extends React.Component {
 				return <PatternView show={show} pattern={e} key={e.id} index={i} dispatch={dispatch} fullView={fullView}/>
 			});
 
-		}
+		//}
 
 		return nodes;
 	}

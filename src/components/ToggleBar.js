@@ -5,6 +5,7 @@ import { layoutActions, patternActions } from '../flux/actions';
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
 	fullView: PropTypes.bool,
+	waitingForPatterns: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -36,22 +37,32 @@ class ToggleBar extends React.Component {
 
 	render(){
 
-		let {fullView, searchTimeSpent} = this.props;
+		let {fullView, searchTimeSpent, waitingForPatterns} = this.props;
 		
 		const toggleClass = classNames('container-toggle','transition-all', {
-			'full': fullView
+			'full': fullView,
+		});
+
+		const btnWrapper = classNames('btn-container','transition-all','transition-duration2', {
+			'slide-center': waitingForPatterns,
+		});
+
+		const timespentClass = classNames('item', 'timespent', {
+			'ks-hidden': waitingForPatterns
 		});
 
 		const btnClass = classNames('item', 'btn-toggle', {
-			'rotate': fullView
+			'rotate': fullView,
+			'ks-hidden': waitingForPatterns,
+			'ks-no-transition': waitingForPatterns,
 		});
 
 		const time = (searchTimeSpent/1000).toFixed(3);
 
 		return (<div className={toggleClass}>
-					<div className="btn-container font-msyh">
+					<div className={btnWrapper}>
 						<div className="item title">云搜索</div>
-						<div className="item timespent">{ `用时:${time}秒` }</div>
+						<div className={timespentClass}>{ `用时:${time}秒` }</div>
 						<div className={btnClass} onClick={this.toggleView.bind(this)}><i className="fa fa-angle-up"></i></div>
 					</div>
 		          {/*<button

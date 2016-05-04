@@ -3,8 +3,8 @@
 export default {
 
 	searchOptions: {
-		host: '192.168.0.20',
-		port: 30020,
+		host: 'localhost',//'192.168.0.20',
+		port: 3000,
 		path: '/match',
 		method: 'POST',
 	},
