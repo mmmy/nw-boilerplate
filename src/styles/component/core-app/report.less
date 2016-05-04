@@ -7,12 +7,12 @@
 .reportdetail-container {
 	position: relative;
 	height: 100%;
-	background-color: #F7F7F7;
+	//background-color: #F7F7F7;
 }
 
 .report-item {
-	height: 100%;
-	float: left;
+	height: 50%;
+	//float: left;
 	//border: 1px solid @ks-color-gray-8;
 	//border-top: none;
 	.item-container{
@@ -20,11 +20,11 @@
 	}
 
 	.item-title{
-		font-size: 0.95em;
+		font-size: 0.7em;
 		color: @ks-color-gray-4;
 		text-align: center;
 		height: @title_H;
-		padding: 5px;
+		padding-top: 10px;
 		margin: 0;
 		//border-bottom: 1px solid @ks-color-gray-8;
 
@@ -40,20 +40,20 @@
 		height: calc(~"100% - "@title_H);
 		&.s2 {
 			height: 65%;
-			font-size: 1.1em;
+			font-size: 0.75em;
 		}
 
 		.item-body{
-			font-size: 0.9em;
+			font-size: 0.75em;
 		}
 
 		.item-name{
-			color: @ks-color-gray-6;
-			padding-bottom: 5px;
+			color: @ks-color-gray-7;
+			padding-bottom: 2px;
 		}
 
 		.item-data{
-
+			color: @ks-color-gray-1;
 		}
 
 	}
@@ -73,20 +73,157 @@
 	margin-left: -1px;
 }
 
+.result-item-righttop {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 65%;
+}
+
+.result-item-rightbottom {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 65%;
+}
 
 //搜索空间  等信息
 .reporttype-container{
-	padding-top: 10px;
+	padding-top: 30px;
 	height: 100%;
+	font-size: 0.85em;
 	//border-left: 1px solid @ks-color-gray-8;
 	//border-right: 1px solid @ks-color-gray-8;
 	.type-item-container{
 		padding-left: 10px;
-		padding-top: 10px;
+		padding-top: 5px;
 		font-size: 0.9em;
-		color: @ks-color-gray-3;
+		color: @ks-color-gray-5;
 		width: 49%;
 		float: left;
 	}
 }
 
+
+
+//动画效果要人命 >__<
+@font-size-ww: 0.8em;
+@font-size-mama: @font-size-ww * 2.2;
+@width-bala: 30%;
+@mama-top1: 35%;
+@mama-top2: 50%;
+@mama-width: 25%; 
+
+.reportdetail-container {
+
+	.days {
+		//display: none;
+		opacity: 0;
+		top: @mama-top1;
+		width: @mama-width;
+		font-size: @font-size-ww;
+		color: @ks-color-gray-6;
+		//left: @mama-width;
+		&.mama {
+			opacity: 1;
+		}
+	}
+
+	.days-value {
+		//display: none;
+		opacity: 0;
+		top: @mama-top2;
+		width: @mama-width;
+		font-size: @font-size-mama;
+		&.mama {
+			opacity: 1;
+		}
+	}
+
+	.shouyi {
+		left: 0;
+		top: 5%;
+		font-size: @font-size-ww;
+		width: @width-bala;
+		color: @ks-color-gray-4;
+	}
+
+	.up-rate {
+		left: 0;
+		top: 58%;
+		font-size: @font-size-ww;
+		width: @width-bala;
+		color: @ks-color-gray-4;
+		&.mama {
+			top: @mama-top1;
+			left: @mama-width * 3;
+			color: @ks-color-gray-6;
+			width: @mama-width;
+		}
+	}
+
+	.up-rate-value {
+		left: 0;
+		top: 70%;
+		font-size: @font-size-ww * 2.2;
+		width: @width-bala;
+		&.mama {
+			top: @mama-top2;
+			left: @mama-width * 3;
+			font-size:  @font-size-mama;
+			width: @mama-width;
+		}
+	}
+
+	.median {
+		left: 0;
+		top:23%;
+		font-size: @font-size-ww;
+		width: @width-bala * 0.5;
+		color: @ks-color-gray-7;
+		&.mama {
+			top: @mama-top1;
+			left: @mama-width;
+			width: @mama-width;
+		}
+	}
+
+	.median-value {
+		left: 0;
+		top: 36%;
+		font-size: @font-size-ww;
+		width: @width-bala * 0.5;
+		&.mama {
+			top: @mama-top2;
+			left: @mama-width;
+			font-size: @font-size-mama;
+			width: @mama-width;
+		}
+	}
+
+	.mean {
+		left: 15%;
+		top: 23%;	
+		font-size: @font-size-ww;	
+		width: @width-bala * 0.5;
+		color: @ks-color-gray-7;
+		&.mama {
+			top: @mama-top1;
+			left: @mama-width * 2;
+			width: @mama-width;
+		}
+	}
+
+	.mean-value {
+		left: 15%;
+		top: 36%;
+		font-size: @font-size-ww;
+		width: @width-bala * 0.5;
+		&.mama {
+			top: @mama-top2;
+			left: @mama-width * 2;
+			font-size: @font-size-mama;
+			width: @mama-width;
+		}
+	}
+}

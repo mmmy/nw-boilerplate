@@ -1,4 +1,5 @@
-@reportContainer_H: 100px;
+@reportContainer_H: 130px;
+@reportTypeContainer_H: 100px;
 
 
 .statistics-container{
@@ -27,11 +28,11 @@
 }
 
 .reporttype-container-wrap {
-	height: @reportContainer_H*0.9;
+	height: @reportTypeContainer_H;
 }
 
 .crossfilter-container-wrap {
-	height: calc(~'100% - '@reportContainer_H*2~' - '@reportContainer_H*0.9);
+	height: calc(~'100% - '@reportContainer_H~' - '@reportTypeContainer_H);
 	//border-left: 1px solid @ks-color-gray-8;
 	//border-right: 1px solid @ks-color-gray-8;
 }

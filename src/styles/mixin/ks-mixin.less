@@ -1,4 +1,4 @@
-@transition-duration: .2s;
+@transition-duration: 0.2s;
 @transition-duration2: 0.5s;
 
 .transition-all{
@@ -6,7 +6,7 @@
 	will-change: transition;
 	transition-property: all;
 	transition-duration: @transition-duration;
-	transition-timing-function: ease;
+	transition-timing-function: cubic-bezier(1, 0.02, 0, 0.95);
 	transition-delay: 0s;
 }
 .transition-top{
@@ -149,4 +149,14 @@
   font-family: 'AvantGarde';
   -webkit-font-smoothing: auto;
   -moz-osx-font-smoothing: grayscale;
+}
+
+//position
+
+.position-ab {
+	position: absolute;
+}
+
+.text-center {
+	text-align: center;
 }
