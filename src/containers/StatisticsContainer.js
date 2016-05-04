@@ -16,7 +16,7 @@ const defaultProps = {
 
 };
 
-class Template extends React.Component {
+class statisticsContainer extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -72,7 +72,7 @@ class Template extends React.Component {
 	    return (
 	      <div className={ className }>
 	        <div className={fistReportClass}><ReportDetailView report={report} fullView={fullView}/></div>
-	        <div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>
+	        {/*<div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>*/}
 	        <div className={reportClass3}><ReportTypeView report={report} /></div>
 	        <div className={'crossfilter-container-wrap'}>
 	          <CrossfilterView
@@ -85,8 +85,8 @@ class Template extends React.Component {
 	}
 }
 
-Template.propTypes = propTypes;
-Template.defaultProps = defaultProps;
+statisticsContainer.propTypes = propTypes;
+statisticsContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
 	const {layout, report, patterns} = state;
@@ -100,4 +100,4 @@ let stateToProps = function(state) {
 		};
 };
 
-export default connect(stateToProps)(Template);
+export default connect(stateToProps)(statisticsContainer);
