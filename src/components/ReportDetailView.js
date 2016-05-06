@@ -5,7 +5,7 @@ import statisticKline from './utils/statisticKline';
 const propTypes = {
 	crossFilter: PropTypes.object.isRequired,
 	//report: PropTypes.object.isRequired,
-	fullView: PropTypes.bool
+	fullView: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -49,7 +49,7 @@ class ReportDetailView extends React.Component {
 		}
 
 		let { fullView } = this.props;
-		
+
 		if (fullView) {
 			$('.__fadeIn').animateCss('fadeIn');
 		}

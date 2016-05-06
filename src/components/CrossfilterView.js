@@ -255,10 +255,10 @@ class CrossfilterView extends React.Component {
 		    // .xAxisLabel("x")
 		    //.clipPadding(16)
 			.transitionDuration(transitionDuration)
-		    .colors('#3F5C76')
+		    .colors('#757575')
 		    .symbolSize(15)
 		    .excludedSize(14)
-		    .excludedColor('#1F77B4')
+		    .excludedColor('#aFaFaF')
 		    .excludedOpacity(0.2)
 		    .renderHorizontalGridLines(true)
 		    .renderVerticalGridLines(true)
@@ -371,10 +371,10 @@ class CrossfilterView extends React.Component {
 			.drawPaths(false)
 			//.colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
 			//.colors(['#0f0'])
-			//.linearColors(['#7CB2E0','#2F4C66'])
+			.linearColors(['#4F4F4F','#ddd'])
 			//.linearColors(['#ddd','#333'])
-			//.colorDomain([0, 4])
-			//.colorAccessor(function(d, i){ console.log(d,i,'-------'); return i;})
+			.colorDomain([0, 5])
+			.colorAccessor(function(d, i){ console.log(d,i,'-------'); return i;})
 			//.label(() => { return 'aaa'; })
 			//.title((e) => { console.log('title', e); return e.key + e.value; })
 			.renderTitle(false);
@@ -416,10 +416,12 @@ class CrossfilterView extends React.Component {
 			.dimension(this.yieldDim)
 			.group(this.yieldGroup)
 			.renderHorizontalGridLines(true)
+			.colors('#4F4F4F')
+			//.excludedColor('#f00')
 			//.elasticY(true)
 			//.centerBar(true)
 			.gap(1)
-			.x(d3.scale.linear().domain([0, barChartBars - 1]));
+			.x(d3.scale.linear().domain([0, barChartBars+1]));
 
 		let rangeInterval = (this.yield100Range[1] - this.yield100Range[0]) / barChartBars ,
 		    minYield100 = this.yield100Range[0];

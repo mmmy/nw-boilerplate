@@ -4,6 +4,7 @@ import patternActions from './patternActions';
 import sortActions from './sortActions';
 import comparatorTvActions from './comparatorTvActions';
 import predictionActions from './predictionActions';
+import activeActions from './activeActions';
 
 module.exports = {
 	layoutActions,
@@ -12,4 +13,5 @@ module.exports = {
 	sortActions,
   comparatorTvActions,
   predictionActions,
+  activeActions,
 }
