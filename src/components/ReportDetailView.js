@@ -35,6 +35,26 @@ class ReportDetailView extends React.Component {
 
 	}
 
+	componentDidUpdate() {
+
+		if(!$.fn.animatedCss){
+			$.fn.extend({
+			    animateCss: function (animationName) {
+			        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+			        $(this).addClass('animated ' + animationName).one(animationEnd, function() {
+			            $(this).removeClass('animated ' + animationName);
+			        });
+			    }
+			});
+		}
+
+		let { fullView } = this.props;
+		
+		if (fullView) {
+			$('.__fadeIn').animateCss('fadeIn');
+		}
+	}
+
 	generateItem({title, items}){
 
 		let {fullView} = this.props;
@@ -49,7 +69,7 @@ class ReportDetailView extends React.Component {
 					let color = e.redColor === undefined ? '' : (e.redColor===true ? 'red':'green');
 					return (<div className='item-body' key={i}>
 							<div className='item-name'>{e.name}</div>
-							<div className='item-data font-number' style={{color:color}}>{e.content}</div>
+							<div className='__fadeIn item-data font-number' style={{color:color}}>{e.content}</div>
 						</div>);
 				})}
 			</div>
@@ -183,15 +203,15 @@ class ReportDetailView extends React.Component {
 		//上涨比例
 		const upRateClass = classNames('position-ab', 'text-center', 'transition-all', 'up-rate', {'mama': !fullView});
 		//上涨比例值
-		const upRateValueClass = classNames('position-ab', 'text-center', 'transition-all', 'up-rate-value', 'font-number', {'mama': !fullView});
+		const upRateValueClass = classNames('__fadeIn', 'position-ab', 'text-center', 'transition-all', 'up-rate-value', 'font-number', {'mama': !fullView});
 		//中位数
 		const medianClass = classNames('position-ab', 'text-center', 'transition-all', 'median', {'mama': !fullView});
 		//中位数值
-		const medianValueClass = classNames('position-ab', 'text-center', 'transition-all', 'median-value', 'font-number', {'mama': !fullView});
+		const medianValueClass = classNames('__fadeIn', 'position-ab', 'text-center', 'transition-all', 'median-value', 'font-number', {'mama': !fullView});
 		//平均数
 		const meanClass = classNames('position-ab', 'text-center', 'transition-all', 'mean', {'mama': !fullView});
 		//平均数值
-		const meanValueClass = classNames('position-ab', 'text-center', 'transition-all', 'mean-value', 'font-number', {'mama': !fullView});
+		const meanValueClass = classNames('__fadeIn', 'position-ab', 'text-center', 'transition-all', 'mean-value', 'font-number', {'mama': !fullView });
 
 		return [
 			<div className={daysClass}>统计天数</div>,

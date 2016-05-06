@@ -1,3 +1,15 @@
+   //   ___ __ 
+   //   _{___{__}\
+   //  {_}      `\)            
+   // {_}        `            _.-''''--.._
+   // {_}                    //'.--.  \___`.
+   //  { }__,_.--~~~-~~~-~~-::.---. `-.\  `.)
+   //   `-.{_{_{_{_{_{_{_{_//  -- 8;=- `
+   //      `-:,_.:,_:,_:,.`\\._ ..'=- , 
+   //          // // // //`-.`\`   .-'/
+   //   jgs   << << << <<    \ `--'  /----)
+   //          ^  ^  ^  ^     `-.....--'''
+
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 import DC from 'dc';
@@ -83,7 +95,7 @@ class CrossfilterView extends React.Component {
 		}
 
 		if (pieChartR != this.pieChartR) {
-			setTimeout(() => { that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).redraw(); });
+			setTimeout(() => { that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); });
 			//setTimeout(()=> { that.industryPieChart.renderYAxis(that.industryPieChart) });
 			//setTimeout(() => { that.industryPieChart.renderXAxis(that.industryPieChart) });
 			this.pieChartR = pieChartR;
@@ -124,7 +136,7 @@ class CrossfilterView extends React.Component {
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
 		    <div className="dc-chart-row">
-		    	<div className='inline-chart-wrapper'><strong>饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"></div></div>
+		    	<div className='inline-chart-wrapper'><strong>饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"><div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
 		    	<div className='inline-chart-wrapper'><strong>收益率统计</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>
 		  </div>
@@ -303,8 +315,37 @@ class CrossfilterView extends React.Component {
 		this.positionBubbleChart = positionBubbleChart;
 	}
 
+
+	//显示行业百分比信息
+	setIndustryInfo(show = true, event) {
+		//console.log(event);
+
+		if(!show) {
+			this.refs.industry_percent.innerHTML = '';
+			this.refs.industry_name.innerHTML = '';
+			return;
+		}
+
+		let { key, value } = event.data;
+
+		//计算百分比
+		let total = this.industryDim.top(Infinity).length;
+		let percent = (value * 100 / total).toFixed(1) + '%';
+
+		this.refs.industry_percent.innerHTML = `<div class='animated fadeIn'>${percent}</div>`;
+		this.refs.industry_name.innerHTML = `<div class='animated fadeIn'>${key}</div>`;
+
+		let baseWidth = 50;
+		let containerWidth = this.refs.industry_percent.clientWidth;
+
+		let fontSize = (containerWidth / baseWidth) * 100;
+		this.refs.industry_percent.style.fontSize = fontSize + '%';
+		this.refs.industry_name.style.fontSize = fontSize * 0.7 + '%';
+	}
+
 	drawIndustryPieChart() {
 
+		let that = this;
 		let {industry_quarter_chart} = this.refs;
 		let width = industry_quarter_chart.clientWidth,
 			height = industry_quarter_chart.clientHeight,
@@ -322,20 +363,38 @@ class CrossfilterView extends React.Component {
 			.height(height)
 			.radius(radius)
 			.transitionDuration(transitionDuration)
-			.innerRadius(0)
+			.innerRadius(radius / 1.8)
+			//.externalRadiusPadding(10)
 			.renderLabel(false)
 			.dimension(this.industryDim)
 			.group(this.industryGroup)
+			.drawPaths(false)
 			//.colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
 			//.colors(['#0f0'])
 			//.linearColors(['#7CB2E0','#2F4C66'])
 			//.linearColors(['#ddd','#333'])
 			//.colorDomain([0, 4])
 			//.colorAccessor(function(d, i){ console.log(d,i,'-------'); return i;})
-			//.title(() => {return 'pieChart'});
+			//.label(() => { return 'aaa'; })
+			//.title((e) => { console.log('title', e); return e.key + e.value; })
+			.renderTitle(false);
 
 		industryPieChart.on('filtered', this.onChartFiltered.bind(this));
+		industryPieChart.on('renderlet', (chart) => {
+			console.log(chart, '~~~~~~~~~~~~~~~~~~~');
+			// var pieSliceDoms = document.querySelectorAll('.pie-slice');
+			// pieSliceDoms && pieSliceDoms.forEach((pieSlice) => {
+			// 	//pieSlice.addEventListener('mouseenter', function(){console.log('111')});
+			// 	//pieSlice.addEventListener('mouseleave', that.drawIndustryPieChart.bind(that, false));
+			// });
+			var pieSlices = chart.selectAll('g g');
+			pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true));
+			pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
+		});
+		//industryPieChart.on('hover', (e) => { console.log(e); })
 		this.industryPieChart = industryPieChart;
+		window.industryPieChart = industryPieChart;
+		window.industryDim = this.industryDim;
 	}
 
 	drawYieldDimCountChart() {
