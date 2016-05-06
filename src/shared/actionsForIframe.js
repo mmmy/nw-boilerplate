@@ -10,12 +10,16 @@ export default function(store) {
 	};
 
   let sendSymbolHistory = function(postData, cb) {
-    console.log(postData);
     tradingViewActions.getSymbolHistory(postData, cb);
+  }
+
+  let sendSymbolSearchResult = function(postData, cb) {
+    tradingViewActions.getSymbolSearchResult(postData, cb);
   }
 
 	window.actionsForIframe = {
 		searchSymbolDateRange,      //tv-chart.html 中 "搜索"
 		sendSymbolHistory,          //获取股票数据
+    sendSymbolSearchResult,
 	};
 }
