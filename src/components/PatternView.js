@@ -51,14 +51,18 @@ class PatternView extends React.Component {
 
 			const showSymbol = false;
 			this.setState({showSymbol});
-		
+
 	}
 
 	setActivePattern() {
 
 		let { dispatch } = this.props;
-		let { id } = this.props.pattern;
-		dispatch(activeActions.setActiveId(id));
+		let { id, symbol, baseBars, kLine } = this.props.pattern;
+
+    let dateStart = kLine[0][0];
+    let dateEnd = kLine[baseBars - 1][0];
+
+		dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
 
 	}
 
@@ -72,7 +76,7 @@ class PatternView extends React.Component {
 			'column': !fullView,
 			'larger': index === 0,
 			'smaller': index > 0 && index < 5,
-		}); 
+		});
 
 		const symbolClass = classNames('symbol-container', {'hide-symbol':!this.state.showSymbol && !isActive}); //hover显示symbol
 
@@ -82,14 +86,14 @@ class PatternView extends React.Component {
 		});
 
 		return (<div className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
-			
+
 			<div className={symbolClass}>{pattern.symbol}</div>
-			
+
 			<div className={echartWrapper}>
 				<EChart {...this.props} />
 				<PatternInfo pattern={pattern} dispatch={dispatch} column fullView={fullView} index={index}/>
 			</div>
-			
+
 			<PatternInfo pattern={pattern} dispatch={dispatch} />
 
 		</div>);

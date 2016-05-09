@@ -14,8 +14,8 @@ function splitData(rawData, baseBars) {
     var lowArr = [], highArr = [];
 
     for (var i = 0; i < rawData.length; i++) {
-        categoryData.push(rawData[i].splice(0, 1)[0]);
-        values.push(rawData[i]);
+        categoryData.push(rawData[i].slice(0, 1)[0]);
+        values.push(rawData[i].slice(1));
         lowArr.push(isNaN(+rawData[i][2]) ? Infinity : +rawData[i][2]);
         highArr.push(isNaN(+rawData[i][3]) ? -Infinity : +rawData[i][3]);
     }
@@ -49,7 +49,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  
+
 };
 
 class EChart extends React.Component {
@@ -141,7 +141,7 @@ class EChart extends React.Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		
+
 	}
 
 	shouldComponentUpdate(){
