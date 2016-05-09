@@ -29,7 +29,19 @@ class PatternInfo extends React.Component {
 
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps){
+
+		let {similarity} = newProps.pattern;
+		let yieldRate = newProps.pattern.yield;
+
+		let {old_similarity} = this.props.pattern;
+		let old_yieldRate = this.props.pattern.yield;
+
+		//属性发生变化才渲染
+		if (old_similarity === similarity && old_yieldRate == yieldRate) {
+			return false;
+		}
+
 		return true;
 	}
 
@@ -38,7 +50,7 @@ class PatternInfo extends React.Component {
 	}
 
 	render(){
-
+		//console.log('pattern-info-container');
 		let {similarity} = this.props.pattern;
 		let yieldRate = this.props.pattern.yield;
 

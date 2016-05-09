@@ -134,7 +134,6 @@ class PatternCollection extends React.Component {
 				let isActive = id === e.id;
 				return <PatternView isActive={isActive} show={show} pattern={e} key={e.id} index={i} dispatch={dispatch} fullView={fullView}/>
 			});
-
 		//}
 
 		return nodes;
