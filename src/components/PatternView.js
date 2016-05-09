@@ -64,6 +64,9 @@ class PatternView extends React.Component {
 
 		dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
 
+    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+    chart.Q5.getAll()[1].setSymbol(symbol);
+
 	}
 
 	render(){
