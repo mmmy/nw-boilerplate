@@ -31,7 +31,8 @@ let {searchOptions} = config;
 let searchPattern = ({ symbol, dateRange, bars}, cb, errorCb) => {
 	
 	let exchangeReg = /.*\:/ ; //匹配开始到冒号的所有字符, 
-	let id = parseInt(symbol.replace(exchangeReg, '')); //去掉交易所字符
+	//let id = parseInt(symbol.replace(exchangeReg, '')); //去掉交易所字符
+	let id = symbol.replace(exchangeReg, ''); //去掉交易所字符
 	
 	console.assert(!isNaN(id), 'error: 股票id  为NaN');
 	console.assert(dateRange.length == 2);
@@ -76,6 +77,7 @@ let searchPattern = ({ symbol, dateRange, bars}, cb, errorCb) => {
 	};
 
 	let postData = JSON.stringify(postObj);
+	console.log(postData);
 	request(options, callback, errorCb, postData);
 }
 
