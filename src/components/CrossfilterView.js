@@ -18,7 +18,7 @@ import classnames from 'classnames';
 import { filterActions } from '../flux/actions';
 
 const propTypes = {
-  	stretchView: PropTypes.bool.isRequired,
+  stretchView: PropTypes.bool.isRequired,
 	crossFilter: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
 };
@@ -64,7 +64,7 @@ class CrossfilterView extends React.Component {
 	//响应resize事件
 	handleResize(e){
 
-		console.log(e);
+		//console.log(e);
 		if(!this.props.stretchView) { return }
 
 		let {position_bubble_chart, industry_quarter_chart, yield_count_chart} = this.refs;
@@ -119,7 +119,7 @@ class CrossfilterView extends React.Component {
 		//解决第一transition 动画的之后布局	 bug
 		let that = this;
 		setTimeout(this.handleResize.bind(this), 300);
-		console.log('^-^crossFilter view did update', new Date() - this.renderDate);
+		//console.log('^-^crossFilter view did update', new Date() - this.renderDate);
 	}
 
 	render() {
@@ -128,7 +128,7 @@ class CrossfilterView extends React.Component {
 		  'crossfilter-container-stretch': this.props.stretchView,
 		  'crossfilter-container-shrink': !this.props.stretchView
 		});
-		console.log('crossFilter view render');
+		//console.log('crossFilter view render');
 		return (
 		  <div className={ className }>
 		  	<div className="dc-chart-row">
@@ -150,7 +150,7 @@ class CrossfilterView extends React.Component {
 		//crossFilter 如果改变或者不存在 那么重新生成dimentsions !!
 		if(this.oldCrossFilter !== crossFilter) {
 
-			console.info('-_-CrossfilterView crossfilter changed !');
+			//console.info('-_-CrossfilterView crossfilter changed !');
 			
 			this.oldCrossFilter = crossFilter;
 
@@ -256,14 +256,16 @@ class CrossfilterView extends React.Component {
 		    //.clipPadding(16)
 			.transitionDuration(transitionDuration)
 		    .colors('#757575')
+		    //.colors('rgba(117, 117, 117, 1)')
 		    .symbolSize(15)
-		    .excludedSize(14)
+		    .excludedSize(15)
 		    .excludedColor('#aFaFaF')
 		    .excludedOpacity(0.2)
 		    .renderHorizontalGridLines(true)
 		    .renderVerticalGridLines(true)
 
 		    .dimension(this.yieldDateDim)
+		    //.brushOn(false)
 		    //.excludedOpacity(0.5)
 		    .group(this.yieldDateGroup);
 		    //.yAxisMin(-400);
@@ -374,14 +376,14 @@ class CrossfilterView extends React.Component {
 			.linearColors(['#4F4F4F','#ddd'])
 			//.linearColors(['#ddd','#333'])
 			.colorDomain([0, 5])
-			.colorAccessor(function(d, i){ console.log(d,i,'-------'); return i;})
+			.colorAccessor(function(d, i){ return i })
 			//.label(() => { return 'aaa'; })
 			//.title((e) => { console.log('title', e); return e.key + e.value; })
 			.renderTitle(false);
 
 		industryPieChart.on('filtered', this.onChartFiltered.bind(this));
 		industryPieChart.on('renderlet', (chart) => {
-			console.log(chart, '~~~~~~~~~~~~~~~~~~~');
+			//console.log(chart, '~~~~~~~~~~~~~~~~~~~');
 			// var pieSliceDoms = document.querySelectorAll('.pie-slice');
 			// pieSliceDoms && pieSliceDoms.forEach((pieSlice) => {
 			// 	//pieSlice.addEventListener('mouseenter', function(){console.log('111')});
@@ -436,7 +438,7 @@ class CrossfilterView extends React.Component {
 
 	onChartFiltered(chart, filter) {
 
-		console.log('chart filtered & filter:',filter);
+		//console.log('chart filtered & filter:',filter);
 
 		let { dispatch } = this.props;
 

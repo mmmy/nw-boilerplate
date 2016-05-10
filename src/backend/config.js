@@ -3,15 +3,15 @@
 export default {
 
 	searchOptions: { 	    //搜索配置
-		host: 'localhost',  //'192.168.0.20',
-		port: 30020,
+		host: '112.74.17.175',  //'192.168.0.20',
+		port: 17654,
 		path: '/match',
 		method: 'POST',
 	},
 
 	patternOptions: {  	    //获取k线数据配置
-		host: 'localhost',
-		port: 30011,
+		host: '112.74.17.175',
+		port: 15501,
 		path: '/query',
 		method: 'POST',
 	},
