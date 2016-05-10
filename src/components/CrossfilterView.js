@@ -27,7 +27,7 @@ const defaultProps = {
 
 };
 
-const barChartBars = 30;
+const barChartBars = 10;
 const transitionDuration = 400;   //过滤动画毫秒数
 //node 重要: 一个crossfilter不能 生成超过128个dimentsion, 所以注意缓存dimentsion !
 

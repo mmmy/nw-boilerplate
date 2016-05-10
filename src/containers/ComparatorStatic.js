@@ -67,7 +67,8 @@ class ComparatorStatic extends React.Component {
       interval: 'D',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
-      datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
+      //datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
+      datafeed: new window.Kfeeds.UDFCompatibleDatafeed(""),
       library_path: "charting_library/",
       locale: "zh",
       //	Regression Trend-related functionality is not implemented yet, so it's hidden for a while

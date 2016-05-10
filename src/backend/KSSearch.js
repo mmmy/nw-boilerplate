@@ -59,6 +59,7 @@ let searchPattern = ({ symbol, dateRange, bars}, cb, errorCb) => {
 			let resObj = JSON.parse(resStr);
 			//TODO: 处理resObj
 			let dataObj = resObj;
+			console.info('++++++++++++++++++++++++++++++++++', resObj);
 			cb && cb(dataObj);
 		} catch (e) {
 			errorCb(e);
