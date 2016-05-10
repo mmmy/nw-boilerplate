@@ -20,7 +20,7 @@
 	}
 
 	.item-title{
-		font-size: 0.7em;
+		font-size: 0.85em;
 		color: @ks-color-gray-4;
 		text-align: center;
 		height: @title_H;
@@ -44,12 +44,12 @@
 		}
 
 		.item-body{
-			font-size: 0.75em;
+			font-size: 0.8em;
 		}
 
 		.item-name{
 			color: @ks-color-gray-7;
-			padding-bottom: 2px;
+			padding-bottom: 5px;
 		}
 
 		.item-data{
@@ -94,20 +94,31 @@
 	font-size: 0.85em;
 	//border-left: 1px solid @ks-color-gray-8;
 	//border-right: 1px solid @ks-color-gray-8;
+	//TODO: xiaolu
 	.type-item-container{
 		padding-left: 10px;
-		padding-top: 5px;
-		font-size: 0.9em;
+		padding-bottom: 12px;
+		font-size: 1em;
 		color: @ks-color-gray-5;
-		width: 49%;
+		//width: 49%;
 		float: left;
+		&:nth-child(2n-1){
+			width: calc(~"99% - 210px");
+		}
+		&:nth-child(2n){
+			width: 210px;
+		}
+
+		.lulu {
+			color: @ks-color-gray-4;	
+		}
 	}
 }
 
 
 
 //动画效果要人命 >__<
-@font-size-ww: 0.8em;
+@font-size-ww: 0.85em;
 @font-size-mama: @font-size-ww * 2.2;
 @width-bala: 30%;
 @mama-top1: 35%;
@@ -150,7 +161,7 @@
 
 	.up-rate {
 		left: 0;
-		top: 58%;
+		top: 59%;
 		font-size: @font-size-ww;
 		width: @width-bala;
 		color: @ks-color-gray-4;
@@ -164,7 +175,7 @@
 
 	.up-rate-value {
 		left: 0;
-		top: 70%;
+		top: 75%;
 		font-size: @font-size-ww * 2.2;
 		width: @width-bala;
 		&.mama {
@@ -177,7 +188,7 @@
 
 	.median {
 		left: 0;
-		top:23%;
+		top:22%;
 		font-size: @font-size-ww;
 		width: @width-bala * 0.5;
 		color: @ks-color-gray-7;
@@ -190,7 +201,7 @@
 
 	.median-value {
 		left: 0;
-		top: 36%;
+		top: 37%;
 		font-size: @font-size-ww;
 		width: @width-bala * 0.5;
 		&.mama {
@@ -203,7 +214,7 @@
 
 	.mean {
 		left: 15%;
-		top: 23%;	
+		top: 22%;	
 		font-size: @font-size-ww;	
 		width: @width-bala * 0.5;
 		color: @ks-color-gray-7;
@@ -216,7 +227,7 @@
 
 	.mean-value {
 		left: 15%;
-		top: 36%;
+		top: 37%;
 		font-size: @font-size-ww;
 		width: @width-bala * 0.5;
 		&.mama {

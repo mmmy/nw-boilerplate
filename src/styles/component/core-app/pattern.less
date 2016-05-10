@@ -1,5 +1,5 @@
 @patternToolbar_H: 80px;
-@patternView_W: @patternContainerStretch_W/2 - 13px - 8px;
+@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 20px;
 
 @patternView_flat_W: @patternView_W; //130px
 
@@ -19,7 +19,7 @@
 	&.full{
 		width: @patternContainerStretch_W;
 		height: @patternContainerStretch_H;
-		padding-right: 5px;
+		//padding-right: 5px;
 	}
 
 	&.smaller{
@@ -28,6 +28,7 @@
 }
 
 .pattern-toolbar-container{
+	margin-left: 40px;
 	height: @patternToolbar_H;
 	//border-bottom: 1px solid @ks-color-gray-8;
 	&.hide{
@@ -170,6 +171,7 @@
 	position: relative;
 	height: 100%;
 	overflow: scroll;
+	padding: 0 0 10px 40px;
 	.scrollbar(@width:8px);
 	.scrollbar-track(@background-color:transparent);
 	.scrollbar-thumb();
@@ -189,6 +191,7 @@
 	overflow: hidden;
 
 	margin: 3px;
+	margin-top: 10px;
 	&:nth-child(2n) {
 		margin-left: 20px;
 	}
@@ -200,7 +203,7 @@
 	&:hover {
 		//border: 1px solid RGBA(151, 165, 178, 1.00);
 		z-index: 20;
-		box-shadow: 0 1px 3px 0 @ks-color-gray-4;
+		box-shadow: 0 0 3px 0 @ks-color-gray-4;
 	}
 
 	&:focus {
@@ -241,18 +244,18 @@
 			width: @patternView_W * 1.4 * @smaller * 1.2;
 			//margin: 10px;
 			&:nth-child(2) {
-				margin-top: 20px;	
+				margin-top: 30px;	
 			}
 			&:nth-child(3) {
-				margin-top: 20px;
+				margin-top: 30px;
 				margin-left:15px;
 			}
 			&:nth-child(4) {
-				margin-top: 10px;
+				//margin-top: 10px;
 				margin-bottom: 30px;
 			}
 			&:nth-child(5) {
-				margin-top: 10px;	
+				//margin-top: 10px;
 				margin-bottom: 30px;
 				margin-left: 15px;
 			}
@@ -332,7 +335,7 @@
 			width: @patternView_W * 0.4 * @larger;
 		}
 		&.smaller{
-			width: @patternView_W * 0.4 * @smaller * 1.2;
+			width: @patternView_W * 0.4 * @smaller * 1.7;
 		}
 	}
 	//border-top: 1px solid @ks-color-gray-8;
