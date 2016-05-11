@@ -90,7 +90,7 @@ class ComparatorPrediction extends React.Component {
         hoverAnimation: false,
         lineStyle: {
           normal: {
-            color: i === 5 ? '#c23531' : '#ccc',
+            color: i === 5 ? '#c23531' : '#ccc', // 暂时写死第五条线是红色
             width: 0.8
           }
         },
