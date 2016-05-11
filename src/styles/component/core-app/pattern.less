@@ -1,5 +1,6 @@
 @patternToolbar_H: 80px;
-@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 10px;
+//@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 10px;
+@patternView_W: @patternContainerStretch_W * 0.393;
 
 @patternView_flat_W: @patternView_W; //130px
 
@@ -28,7 +29,7 @@
 }
 
 .pattern-toolbar-container{
-	margin-left: 20px;
+	margin-left: 6.8%;
 	height: @patternToolbar_H;
 	//border-bottom: 1px solid @ks-color-gray-8;
 	&.hide{
@@ -52,11 +53,11 @@
 		padding-left: 7px;
 
 		&.item0 {
-			width: 40%;
+			width: 43%;
 		}
 
 		&.item1 {
-			width: 60%;
+			width: 57%;
 		}
 	}
 
@@ -65,7 +66,7 @@
 		//width: px;
 		font-size: 0.85em;
 		color: @ks-color-gray-6;
-		padding: 5px 0;
+		padding: 5px 5%;
 	}
 
 	.slider-container{
@@ -95,7 +96,7 @@
 .sort-trigger-btn {
 	position: relative;
 	float: right;
-	margin: 10px 20px;
+	margin: 5.9% 10.6%;
 	font-size: 12px;
 	background-color: transparent;
 	border: none;
@@ -172,7 +173,7 @@
 	height: 100%;
 	overflow: scroll;
 	padding: 0 0 10px 20px;
-	.scrollbar(@width:8px);
+	.scrollbar(@width:5px);
 	.scrollbar-track(@background-color:transparent);
 	.scrollbar-thumb();
 
@@ -191,7 +192,8 @@
 	overflow: hidden;
 
 	margin: 3px;
-	margin-top: 10px;
+	margin-top: 2%;
+	margin-left: 4%;
 	&:nth-child(2n) {
 		margin-left: 20px;
 	}
