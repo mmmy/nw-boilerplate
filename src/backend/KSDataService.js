@@ -47,15 +47,13 @@ let chunksToKline = (chunks) => {
  * args: [{symbol, dateRange:[]},]
  */
 
-let postSymbolData = (args, cb, errorCb) => {
-
-	const { bars } = args;
+let postSymbolData = (args, bars, cb, errorCb) => {
 
 	let options = {           		
 		...patternOptions
 	};
 
-	let batchCondition = args.map(({symbol, dateRange, timeUnit='d', category='cs', additionDate = { type:'days', value: 10 } }) => {
+	let batchCondition = args.map(({symbol, dateRange, timeUnit='d', category='cs', additionDate = { type:'days', value: 30 } }) => {
 		
 		return {
 			dataCategory: category,
@@ -74,7 +72,7 @@ let postSymbolData = (args, cb, errorCb) => {
 	// 	'pt': args.map(({symbol, dateRange}) => { return path.join('/', symbol, ''+dateRange[0], ''+dateRange[1]); })
 	// });
 	let postData = JSON.stringify(postObj);
-	console.log(postData);
+	console.log('--------------------------------------', postData);
 
 	let dataCb = (resStr) => {
 		

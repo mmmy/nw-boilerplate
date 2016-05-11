@@ -2,16 +2,20 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import EChart from './EChart';
 import PatternInfo from './PatternInfo';
+import { activeActions } from '../flux/actions';
 
 const propTypes = {
 	pattern: PropTypes.object.isRequired,
 	index: PropTypes.number.isRequired,
 	show: PropTypes.bool,
 	fullView: PropTypes.bool.isRequired,
+	isActive: PropTypes.bool,
+	dispatch: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
-  show: true
+  	show: true,
+  	isActive: false,
 };
 
 class PatternView extends React.Component {
@@ -50,25 +54,34 @@ class PatternView extends React.Component {
 		
 	}
 
+	setActivePattern() {
+
+		let { dispatch } = this.props;
+		let { id } = this.props.pattern;
+		dispatch(activeActions.setActiveId(id));
+
+	}
+
 	render(){
 
-		let {show, pattern, dispatch, index, fullView} = this.props;
+		let {show, pattern, dispatch, index, fullView, isActive} = this.props;
 
 		const className = classNames('transition-all', 'pattern-view', {
+			'active': isActive,
 			'hide': !show,
 			'column': !fullView,
 			'larger': index === 0,
 			'smaller': index > 0 && index < 5,
 		}); 
 
-		const symbolClass = classNames('symbol-container', {'hide-symbol':!this.state.showSymbol}); //hover显示symbol
+		const symbolClass = classNames('symbol-container', {'hide-symbol':!this.state.showSymbol && !isActive}); //hover显示symbol
 
 		const echartWrapper = classNames('echart-row-wrapper', {
 			'larger': !fullView && index === 0,
 			'smaller': !fullView && index > 0 && index < 5
 		});
 
-		return (<div className={className} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
+		return (<div className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
 			
 			<div className={symbolClass}>{pattern.symbol}</div>
 			
