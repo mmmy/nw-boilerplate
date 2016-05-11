@@ -1,5 +1,5 @@
 @patternToolbar_H: 80px;
-@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 20px;
+@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 10px;
 
 @patternView_flat_W: @patternView_W; //130px
 
@@ -28,7 +28,7 @@
 }
 
 .pattern-toolbar-container{
-	margin-left: 40px;
+	margin-left: 20px;
 	height: @patternToolbar_H;
 	//border-bottom: 1px solid @ks-color-gray-8;
 	&.hide{
@@ -171,7 +171,7 @@
 	position: relative;
 	height: 100%;
 	overflow: scroll;
-	padding: 0 0 10px 40px;
+	padding: 0 0 10px 20px;
 	.scrollbar(@width:8px);
 	.scrollbar-track(@background-color:transparent);
 	.scrollbar-thumb();
