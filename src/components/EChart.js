@@ -49,7 +49,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  
+
 };
 
 class EChart extends React.Component {
@@ -149,7 +149,7 @@ class EChart extends React.Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		
+
 	}
 
 	shouldComponentUpdate(newProps){
