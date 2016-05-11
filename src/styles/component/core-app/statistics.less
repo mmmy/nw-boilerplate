@@ -1,4 +1,5 @@
-@reportContainer_H: 100px;
+@reportContainer_H: 20%;
+@reportTypeContainer_H: 12%;
 
 
 .statistics-container{
@@ -6,7 +7,7 @@
 	width: @statisticsContainer_W;
 	height: @statisticsContainer_H;
 	//border-top: 1px solid @ks-color-gray-8;
-	padding: 0 5%;
+	padding: 0 3.5% 0 6%;
 	&.full{
 		width: @statisticsContainerStretch_W;
 		height: @statisticsContainerStretch_H;
@@ -27,11 +28,12 @@
 }
 
 .reporttype-container-wrap {
-	height: @reportContainer_H*0.9;
+	height: @reportTypeContainer_H;
 }
 
 .crossfilter-container-wrap {
-	height: calc(~'100% - '@reportContainer_H*2~' - '@reportContainer_H*0.9);
+	height: calc(~'100% - '@reportContainer_H~' - '@reportTypeContainer_H);
 	//border-left: 1px solid @ks-color-gray-8;
 	//border-right: 1px solid @ks-color-gray-8;
 }
+

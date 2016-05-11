@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { SineWaves } from 'sine-waves';
+import { SineWaves } from './lib/sine-waves';
 
 const propTypes = {
 
@@ -37,7 +37,7 @@ class SearchWaitingWaves extends React.Component {
 		let el = this.refs.waves;
 		let width = el.parentNode.clientWidth,
 			height = el.parentNode.clientHeight;
-		
+
 		let waves = new SineWaves({
 			// Canvas Element
 			el: el,

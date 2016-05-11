@@ -60,7 +60,7 @@ let searchPattern = (args, cb, errorCb) => {
 			};
 		});
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
-		KSDataService.postSymbolData(args, dataCb, errorCb);
+		KSDataService.postSymbolData(args, bars, dataCb, errorCb);
 	};
 	//获取搜索结果
 	KSSearch.searchPattern(searchArgs, searchCb, errorCb);

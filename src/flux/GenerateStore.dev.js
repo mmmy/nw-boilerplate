@@ -6,15 +6,15 @@ import promiseMiddleware from 'redux-promise';
 import reducers from './reducers';
 
 //Env===dev
-import createLogger from 'redux-logger';
-
-const logger = createLogger({
-  duration: true,
-  collapsed: true
-});
+// import createLogger from 'redux-logger';
+//
+// const logger = createLogger({
+//   duration: true,
+//   collapsed: true
+// });
 
 const createStoreWithMiddleware = compose(
-  applyMiddleware(thunkMiddleware, promiseMiddleware, logger), //!\ logger must be last middleware in chain
+  applyMiddleware(thunkMiddleware, promiseMiddleware), //!\ logger must be last middleware in chain
   DevTools.instrument()
 )(createStore);
 

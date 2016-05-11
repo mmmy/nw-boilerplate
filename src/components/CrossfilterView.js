@@ -1,3 +1,15 @@
+   //   ___ __ 
+   //   _{___{__}\
+   //  {_}      `\)            
+   // {_}        `            _.-''''--.._
+   // {_}                    //'.--.  \___`.
+   //  { }__,_.--~~~-~~~-~~-::.---. `-.\  `.)
+   //   `-.{_{_{_{_{_{_{_{_//  -- 8;=- `
+   //      `-:,_.:,_:,_:,.`\\._ ..'=- , 
+   //          // // // //`-.`\`   .-'/
+   //   jgs   << << << <<    \ `--'  /----)
+   //          ^  ^  ^  ^     `-.....--'''
+
 import React, { PropTypes } from 'react';
 import d3 from 'd3';
 import DC from 'dc';
@@ -6,7 +18,7 @@ import classnames from 'classnames';
 import { filterActions } from '../flux/actions';
 
 const propTypes = {
-  	stretchView: PropTypes.bool.isRequired,
+  stretchView: PropTypes.bool.isRequired,
 	crossFilter: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
 };
@@ -15,7 +27,7 @@ const defaultProps = {
 
 };
 
-const barChartBars = 30;
+const barChartBars = 10;
 const transitionDuration = 400;   //过滤动画毫秒数
 //node 重要: 一个crossfilter不能 生成超过128个dimentsion, 所以注意缓存dimentsion !
 
@@ -52,7 +64,7 @@ class CrossfilterView extends React.Component {
 	//响应resize事件
 	handleResize(e){
 
-		console.log(e);
+		//console.log(e);
 		if(!this.props.stretchView) { return }
 
 		let {position_bubble_chart, industry_quarter_chart, yield_count_chart} = this.refs;
@@ -83,7 +95,7 @@ class CrossfilterView extends React.Component {
 		}
 
 		if (pieChartR != this.pieChartR) {
-			setTimeout(() => { that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).redraw(); });
+			setTimeout(() => { that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); });
 			//setTimeout(()=> { that.industryPieChart.renderYAxis(that.industryPieChart) });
 			//setTimeout(() => { that.industryPieChart.renderXAxis(that.industryPieChart) });
 			this.pieChartR = pieChartR;
@@ -107,7 +119,7 @@ class CrossfilterView extends React.Component {
 		//解决第一transition 动画的之后布局	 bug
 		let that = this;
 		setTimeout(this.handleResize.bind(this), 300);
-		console.log('^-^crossFilter view did update', new Date() - this.renderDate);
+		//console.log('^-^crossFilter view did update', new Date() - this.renderDate);
 	}
 
 	render() {
@@ -116,7 +128,7 @@ class CrossfilterView extends React.Component {
 		  'crossfilter-container-stretch': this.props.stretchView,
 		  'crossfilter-container-shrink': !this.props.stretchView
 		});
-		console.log('crossFilter view render');
+		//console.log('crossFilter view render');
 		return (
 		  <div className={ className }>
 		  	<div className="dc-chart-row">
@@ -124,7 +136,7 @@ class CrossfilterView extends React.Component {
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
 		    <div className="dc-chart-row">
-		    	<div className='inline-chart-wrapper'><strong>饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"></div></div>
+		    	<div className='inline-chart-wrapper'><strong>饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"><div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
 		    	<div className='inline-chart-wrapper'><strong>收益率统计</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>
 		  </div>
@@ -138,7 +150,7 @@ class CrossfilterView extends React.Component {
 		//crossFilter 如果改变或者不存在 那么重新生成dimentsions !!
 		if(this.oldCrossFilter !== crossFilter) {
 
-			console.info('-_-CrossfilterView crossfilter changed !');
+			//console.info('-_-CrossfilterView crossfilter changed !');
 			
 			this.oldCrossFilter = crossFilter;
 
@@ -243,15 +255,17 @@ class CrossfilterView extends React.Component {
 		    // .xAxisLabel("x")
 		    //.clipPadding(16)
 			.transitionDuration(transitionDuration)
-		    .colors('#3F5C76')
+		    .colors('#757575')
+		    //.colors('rgba(117, 117, 117, 1)')
 		    .symbolSize(15)
-		    .excludedSize(14)
-		    .excludedColor('#1F77B4')
+		    .excludedSize(15)
+		    .excludedColor('#aFaFaF')
 		    .excludedOpacity(0.2)
 		    .renderHorizontalGridLines(true)
 		    .renderVerticalGridLines(true)
 
 		    .dimension(this.yieldDateDim)
+		    //.brushOn(false)
 		    //.excludedOpacity(0.5)
 		    .group(this.yieldDateGroup);
 		    //.yAxisMin(-400);
@@ -303,8 +317,37 @@ class CrossfilterView extends React.Component {
 		this.positionBubbleChart = positionBubbleChart;
 	}
 
+
+	//显示行业百分比信息
+	setIndustryInfo(show = true, event) {
+		//console.log(event);
+
+		if(!show) {
+			this.refs.industry_percent.innerHTML = '';
+			this.refs.industry_name.innerHTML = '';
+			return;
+		}
+
+		let { key, value } = event.data;
+
+		//计算百分比
+		let total = this.industryDim.top(Infinity).length;
+		let percent = (value * 100 / total).toFixed(1) + '%';
+
+		this.refs.industry_percent.innerHTML = `<div class='animated fadeIn'>${percent}</div>`;
+		this.refs.industry_name.innerHTML = `<div class='animated fadeIn'>${key}</div>`;
+
+		let baseWidth = 50;
+		let containerWidth = this.refs.industry_percent.clientWidth;
+
+		let fontSize = (containerWidth / baseWidth) * 100;
+		this.refs.industry_percent.style.fontSize = fontSize + '%';
+		this.refs.industry_name.style.fontSize = fontSize * 0.7 + '%';
+	}
+
 	drawIndustryPieChart() {
 
+		let that = this;
 		let {industry_quarter_chart} = this.refs;
 		let width = industry_quarter_chart.clientWidth,
 			height = industry_quarter_chart.clientHeight,
@@ -322,20 +365,38 @@ class CrossfilterView extends React.Component {
 			.height(height)
 			.radius(radius)
 			.transitionDuration(transitionDuration)
-			.innerRadius(0)
+			.innerRadius(radius / 1.8)
+			//.externalRadiusPadding(10)
 			.renderLabel(false)
 			.dimension(this.industryDim)
 			.group(this.industryGroup)
+			.drawPaths(false)
 			//.colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
 			//.colors(['#0f0'])
-			//.linearColors(['#7CB2E0','#2F4C66'])
+			.linearColors(['#4F4F4F','#ddd'])
 			//.linearColors(['#ddd','#333'])
-			//.colorDomain([0, 4])
-			//.colorAccessor(function(d, i){ console.log(d,i,'-------'); return i;})
-			//.title(() => {return 'pieChart'});
+			.colorDomain([0, 5])
+			.colorAccessor(function(d, i){ return i })
+			//.label(() => { return 'aaa'; })
+			//.title((e) => { console.log('title', e); return e.key + e.value; })
+			.renderTitle(false);
 
 		industryPieChart.on('filtered', this.onChartFiltered.bind(this));
+		industryPieChart.on('renderlet', (chart) => {
+			//console.log(chart, '~~~~~~~~~~~~~~~~~~~');
+			// var pieSliceDoms = document.querySelectorAll('.pie-slice');
+			// pieSliceDoms && pieSliceDoms.forEach((pieSlice) => {
+			// 	//pieSlice.addEventListener('mouseenter', function(){console.log('111')});
+			// 	//pieSlice.addEventListener('mouseleave', that.drawIndustryPieChart.bind(that, false));
+			// });
+			var pieSlices = chart.selectAll('g g');
+			pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true));
+			pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
+		});
+		//industryPieChart.on('hover', (e) => { console.log(e); })
 		this.industryPieChart = industryPieChart;
+		window.industryPieChart = industryPieChart;
+		window.industryDim = this.industryDim;
 	}
 
 	drawYieldDimCountChart() {
@@ -357,10 +418,12 @@ class CrossfilterView extends React.Component {
 			.dimension(this.yieldDim)
 			.group(this.yieldGroup)
 			.renderHorizontalGridLines(true)
+			.colors('#4F4F4F')
+			//.excludedColor('#f00')
 			//.elasticY(true)
 			//.centerBar(true)
 			.gap(1)
-			.x(d3.scale.linear().domain([0, barChartBars - 1]));
+			.x(d3.scale.linear().domain([0, barChartBars+1]));
 
 		let rangeInterval = (this.yield100Range[1] - this.yield100Range[0]) / barChartBars ,
 		    minYield100 = this.yield100Range[0];
@@ -375,7 +438,7 @@ class CrossfilterView extends React.Component {
 
 	onChartFiltered(chart, filter) {
 
-		console.log('chart filtered & filter:',filter);
+		//console.log('chart filtered & filter:',filter);
 
 		let { dispatch } = this.props;
 

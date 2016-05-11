@@ -66,7 +66,7 @@ gulp.task('styles', [], function(){
 });
 
 gulp.task('compile', function(cb){
-	sequence('html','scripts','styles',cb);
+	sequence('html','fonts','image','scripts','styles',cb);
 });
 
 gulp.task('watch', ['html','fonts','image','scripts','styles'], function(){

@@ -16,7 +16,7 @@ const defaultProps = {
 
 };
 
-class Template extends React.Component {
+class statisticsContainer extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -40,12 +40,12 @@ class Template extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.log('statisticsContainer did update', new Date() - this.renderDate);
+		//console.log('statisticsContainer did update', new Date() - this.renderDate);
 	}
 
 	render(){
 		this.renderDate = new Date();
-		const { fullView, statisticsLarger, report, crossFilter, dispatch} = this.props;
+		const { fullView, statisticsLarger, report, crossFilter, dispatch, filter, searchConfig} = this.props;
 		const className = classNames('transition-all', 'statistics-container', {
 			'full': fullView,
 			'larger': statisticsLarger,
@@ -71,9 +71,9 @@ class Template extends React.Component {
 
 	    return (
 	      <div className={ className }>
-	        <div className={fistReportClass}><ReportDetailView report={report} fullView={fullView}/></div>
-	        <div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>
-	        <div className={reportClass3}><ReportTypeView report={report} /></div>
+	        <div className={fistReportClass}><ReportDetailView crossFilter={crossFilter} fullView={fullView}/></div>
+	        {/*<div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>*/}
+	        <div className={reportClass3}><ReportTypeView report={report} searchConfig={searchConfig}/></div>
 	        <div className={'crossfilter-container-wrap'}>
 	          <CrossfilterView
 	            dispatch={dispatch}
@@ -85,11 +85,11 @@ class Template extends React.Component {
 	}
 }
 
-Template.propTypes = propTypes;
-Template.defaultProps = defaultProps;
+statisticsContainer.propTypes = propTypes;
+statisticsContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const {layout, report, patterns} = state;
+	const {layout, report, patterns, filter, searchConfig} = state;
 	const {stockView, patternSmallView} = layout;
 	const {crossFilter} = patterns;
 	return {
@@ -97,7 +97,9 @@ let stateToProps = function(state) {
 			statisticsLarger: patternSmallView,
 			crossFilter,
 			report,
+			filter,
+			searchConfig,
 		};
 };
 
-export default connect(stateToProps)(Template);
+export default connect(stateToProps)(statisticsContainer);

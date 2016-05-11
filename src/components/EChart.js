@@ -6,27 +6,39 @@ import {factorCandleOption , factorLineOption} from './utils/echart-options';
 const renderDataLen = Infinity;
 let candleChart = true;
 
-function splitData(rawData) {
+function splitData(rawData, baseBars) {
+	//console.log('baseBars', baseBars);
+    var categoryData = [];
+    var values = [];
 
-	let pluckInterval = Math.floor(rawData.length / renderDataLen) || 1;
-    
-    let categoryData = [];
-    let values = [];
-    
     var lowArr = [], highArr = [];
 
-    for (let i = 0; i < rawData.length; i += pluckInterval) {
+    for (var i = 0; i < rawData.length; i++) {
         categoryData.push(rawData[i].slice(0, 1)[0]);
         values.push(rawData[i].slice(1));
         lowArr.push(isNaN(+rawData[i][2]) ? Infinity : +rawData[i][2]);
         highArr.push(isNaN(+rawData[i][3]) ? -Infinity : +rawData[i][3]);
     }
-    
+    //console.log(highArr);
+    var min = Math.min.apply(null, lowArr);
+    var max = Math.max.apply(null, lowArr);
+
+    var arange10 = [];
+    for (var i=0; i < 40; i++) {
+    	arange10.push([categoryData[baseBars], min + (max - min) / 23 * i]);
+    }
+
+    var areaData = categoryData.slice(baseBars).map((e) => {
+    	return [e, max * 2];
+    });
+
     return {
         categoryData: categoryData,
         values: values,
-        yMin: Math.min.apply(null, lowArr),
-        yMax: Math.max.apply(null, highArr),
+        lineData: arange10,
+        areaData: areaData,
+        yMin: min,
+        yMax: max,
     };
 }
 
@@ -37,7 +49,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  
+
 };
 
 class EChart extends React.Component {
@@ -45,15 +57,21 @@ class EChart extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {};
+		this.canvasNode = window.document.createElement('canvas');
+		this.canvasNode.height = 200;
+		this.canvasNode.width = 200;
 	}
 
 	drawChart() {
 		// let node = this.refs['echart'+this.props.index];
-		let node = window.document.createElement('canvas');
-			node.height = 200;
-			node.width = 200;
+		const { kLine, baseBars } = this.props.pattern;
+		if (this.oldKline === kLine) {
+			return;
+		}
+		this.oldKline = kLine;
+		let node = this.canvasNode;
+
 		let chart = echarts.init(node);
-		const kLine = this.props.pattern.kLine;
 		let index = this.props.index;
 		this.chart = chart;
 		if(index===0){
@@ -62,10 +80,12 @@ class EChart extends React.Component {
 		//candleChart
 		if (candleChart) {
 
-			let data0 = splitData(kLine);
-			let candleOption = factorCandleOption();
+			let data0 = splitData(kLine, baseBars);
+			let candleOption = factorCandleOption(kLine.length < 50);
 			candleOption.xAxis.data = data0.categoryData;
 			candleOption.series[0].data = data0.values;
+			candleOption.series[1].data = data0.lineData;
+			candleOption.series[2].data = data0.areaData;
 			candleOption.yAxis.min = data0.yMin;
 			candleOption.yAxis.max = data0.yMax;
 			//console.log(data0.values[0]);
@@ -99,7 +119,9 @@ class EChart extends React.Component {
 	}
 
 	componentDidUpdate() {
-		//this.drawChart()
+
+			setTimeout(this.drawChart.bind(this));
+			//this.drawChart()	
 		//console.log('echart componentDidUpdate');
 		/*******************************************
 		let { fullView, index }  = this.props;
@@ -127,10 +149,10 @@ class EChart extends React.Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		
+
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps){
 		return true;
 	}
 

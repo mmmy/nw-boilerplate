@@ -44,7 +44,12 @@ class ComparatorStatic extends React.Component {
   }
 
 	render() {
-    const { patterns, filter, isPredictionShow, lastClosePrice } = this.props;
+    const { patterns,
+      filter,
+      isPredictionShow,
+      lastClosePrice,
+      heatmapYAxis,
+      dispatch } = this.props;
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
       'comparator-chart-static-show': this.props.stretchView,
@@ -58,11 +63,12 @@ class ComparatorStatic extends React.Component {
     const STOCK_VIEW = 'comparator-chart';
 
     let options = {
-      symbol: 'AA',
+      symbol: '000001.SZ',
       interval: 'D',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
-      datafeed: new Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
+      //datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
+      datafeed: new window.Kfeeds.UDFCompatibleDatafeed(""),
       library_path: "charting_library/",
       locale: "zh",
       //	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
@@ -114,7 +120,7 @@ class ComparatorStatic extends React.Component {
             <div className={ 'comparator-header' }>
               <span>走势预测</span>
             </div>
-            <ComparatorPrediction filter={ filter } patterns={ patterns } lastClosePrice={ lastClosePrice }/>
+            <ComparatorPrediction dispatch={ dispatch } filter={ filter } patterns={ patterns } lastClosePrice={ lastClosePrice }/>
           </div>
 
           <div className={'prediction-panel'}>
@@ -124,7 +130,7 @@ class ComparatorStatic extends React.Component {
               <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
             </button>
 
-            <ComparatorHeatmap />
+            <ComparatorHeatmap lastClosePrice={ lastClosePrice } heatmapYAxis={ heatmapYAxis } filter={ filter } patterns={ patterns } />
           </div>
 
         </div>
@@ -139,14 +145,14 @@ ComparatorStatic.defaultProps = defaultProps;
 var stateToProps = function(state) {
 	const {layout, patterns, filter, prediction} = state;
 	const {stockView, isPredictionShow} = layout;
-  const {lastClosePrice} = prediction;
+  const {lastClosePrice, predictionpriceScaleMarks, predictionLastClosePrices, heatmapYAxis} = prediction;
 	return {
 		stretchView: !stockView,
     isPredictionShow: isPredictionShow,
     patterns: patterns,
-    filter, filter,
-    lastClosePrice, lastClosePrice
-
+    filter: filter,
+    lastClosePrice: lastClosePrice,
+    heatmapYAxis: heatmapYAxis
 	};
 };
 export default connect(stateToProps)(ComparatorStatic);
