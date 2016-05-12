@@ -40,14 +40,6 @@ class ComparatorHeatmap extends React.Component {
     }
 
     option.series[0].data = this.generateSeriesData(option.yAxis[0].data);
-    //
-    // let maxData = 5;
-    //
-    // option.series[0].data.forEach(d => {
-    //   if (d[2] > maxData) maxData = d[2];
-    // });
-
-    // option.visualMap[0].max = maxData - 1;
 
     window.heatmap.setOption(option);
   }
@@ -75,25 +67,16 @@ class ComparatorHeatmap extends React.Component {
   generateSeriesData(newYAxis) {
     this.initDimensions();
     let eChartSeriesData = [];
-    // let yAxis = newYAxis.map((y) => {
-    //   return y + (newYAxis[1] - newYAxis[0]);
-    // });
     let yAxis = newYAxis;
+
     yAxis.unshift(yAxis[0] + yAxis[0] - yAxis[1]);
-    // yAxis.push(yAxis[yAxis.length - 1] * 2 - yAxis[yAxis.length - 2])
 
     yAxis.forEach((e, i) => {
-      // eChartSeriesData.push([0,i - yAxis.length/2 + 1, 0]);
       eChartSeriesData.push([0, i, 0]);
     });
 
     let lastPrices = [];
     let percentage = 0;
-    // this.symbolDim.top(Infinity).forEach((e, i) => {
-    //   if (i === 0) percentage = this.props.lastClosePrice / e.kLine[0][2];
-    //   let price = Math.round(e.kLine[e.kLine.length - 1][2] * percentage * 1E2) / 1E2;
-    //   lastPrices.push(price);
-    // });
 
     window.eChart.getOption().series.forEach((serie) => {
       lastPrices.push(serie.data[serie.data.length - 1]);
@@ -114,8 +97,6 @@ class ComparatorHeatmap extends React.Component {
       });
     });
 
-    // eChartSeriesData.push([0, eChartSeriesData.length, 1]);
-
     return eChartSeriesData;
   }
 
@@ -123,7 +104,6 @@ class ComparatorHeatmap extends React.Component {
     const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionHeatmap']);
     window.heatmap = echarts.init(dom);
 
-    // const priceScale = [-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
     const priceScale = this.props.heatmapYAxis;
     const data = [];
     let option = {
