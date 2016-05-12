@@ -148,8 +148,8 @@ class ComparatorPrediction extends React.Component {
         },
         // scale: true,
         // interval: 0.5,
-        max: 'maxData',
-        min: 5.5
+        // max: 'maxData',
+        // min: 5.5
       },
       series: this.generateSeriesData()
       // series: predictionRandomData()

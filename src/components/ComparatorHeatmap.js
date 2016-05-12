@@ -84,15 +84,19 @@ class ComparatorHeatmap extends React.Component {
 
     yAxis.forEach((e, i) => {
       // eChartSeriesData.push([0,i - yAxis.length/2 + 1, 0]);
-      eChartSeriesData.push([0, i, 1]);
+      eChartSeriesData.push([0, i, 0]);
     });
 
     let lastPrices = [];
     let percentage = 0;
-    this.symbolDim.top(Infinity).forEach((e, i) => {
-      if (i === 0) percentage = this.props.lastClosePrice / e.kLine[0][2];
-      let price = Math.round(e.kLine[e.kLine.length - 1][2] * percentage * 1E2) / 1E2;
-      lastPrices.push(price);
+    // this.symbolDim.top(Infinity).forEach((e, i) => {
+    //   if (i === 0) percentage = this.props.lastClosePrice / e.kLine[0][2];
+    //   let price = Math.round(e.kLine[e.kLine.length - 1][2] * percentage * 1E2) / 1E2;
+    //   lastPrices.push(price);
+    // });
+
+    window.eChart.getOption().series.forEach((serie) => {
+      lastPrices.push(serie.data[serie.data.length - 1]);
     });
 
     let maxPrice = Math.max(...lastPrices);
@@ -146,7 +150,7 @@ class ComparatorHeatmap extends React.Component {
       },
       visualMap: {
         show: false,
-        min: 1,
+        min: 0,
         max: 15,
         calculable: false,
         orient: 'vertical',
