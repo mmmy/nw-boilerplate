@@ -1,7 +1,8 @@
 import * as types from '../constants/ActionTypes';
 
 let getPatternSmallView = function() {
-	return window.innerWidth < 1000;
+	return false;
+	//return window.innerWidth < 1000;
 }
 
 const initialState = {

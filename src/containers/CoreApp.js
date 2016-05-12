@@ -4,6 +4,7 @@ import StockView from './StockView';
 import SearchReport from './SearchReport';
 import ComparatorStatic from './ComparatorStatic';
 import classNames from 'classnames';
+import { setRem } from '../components/utils/layoutUtils';
 
 const propTypes = {
   stretchView: PropTypes.bool
@@ -15,7 +16,7 @@ class MainChart extends React.Component {
 	}
 
 	componentDidMount() {
-
+    setRem();
 	}
 
 	render() {

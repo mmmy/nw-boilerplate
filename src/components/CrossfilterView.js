@@ -27,7 +27,7 @@ const defaultProps = {
 
 };
 
-const barChartBars = 10;
+const barChartBars = 20;
 const transitionDuration = 400;   //过滤动画毫秒数
 //node 重要: 一个crossfilter不能 生成超过128个dimentsion, 所以注意缓存dimentsion !
 
@@ -377,6 +377,7 @@ class CrossfilterView extends React.Component {
 			//.linearColors(['#ddd','#333'])
 			.colorDomain([0, 5])
 			.colorAccessor(function(d, i){ return i })
+			//.gap(3)
 			//.label(() => { return 'aaa'; })
 			//.title((e) => { console.log('title', e); return e.key + e.value; })
 			.renderTitle(false);
