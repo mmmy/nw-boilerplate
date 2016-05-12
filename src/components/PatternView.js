@@ -26,7 +26,8 @@ class PatternView extends React.Component {
 	}
 
 	componentDidMount() {
-
+		this.bindResizeFunc = this.handleResize.bind(this);
+		window.addEventListener('resize', this.bindResizeFunc);
 	}
 
 	componentWillReceiveProps(){
@@ -38,7 +39,7 @@ class PatternView extends React.Component {
 	}
 
 	componentWillUnmount(){
-
+		window.removeEventListener('resize', this.bindResizeFunc);
 	}
 
 	handleMouseEnter(){
@@ -87,7 +88,9 @@ class PatternView extends React.Component {
 			'smaller': !fullView && index > 0 && index < 5
 		});
 
-		return (<div className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
+		let style = fullView && this.getWH() || { widht: '', height: ''};
+
+		return (<div style={style} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
 
 			<div className={symbolClass}>{pattern.symbol}</div>
 
@@ -100,6 +103,32 @@ class PatternView extends React.Component {
 
 		</div>);
 	}
+
+	getWH() {
+		let baseWindow_W = 1600,
+					basePatternView_W = 130,
+					basePatternView_H = 182;
+
+			let window_W = window.document.body.clientWidth;
+
+			let pW = window_W / 1600 * 130,
+					pH = window_W / 1600 * 182;
+
+			return {width: pW + 'px', height: pH + 'px'};
+	}
+
+	handleResize() {
+
+		let { fullView } = this.props;
+		if(fullView) {
+
+			let { width, height } = this.getWH();
+
+			$(this.refs.pattern_view).width(width).height(height);
+		}
+
+	}
+
 }
 
 PatternView.propTypes = propTypes;

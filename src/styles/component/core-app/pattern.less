@@ -1,6 +1,6 @@
 @patternToolbar_H: 80px;
 //@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 10px;
-@patternView_W: @patternContainerStretch_W * 0.393;
+@patternView_W: 130px; // @patternContainerStretch_W * 0.393;
 
 @patternView_flat_W: @patternView_W; //130px
 
@@ -71,7 +71,7 @@
 
 	.slider-container{
 		display: inline-block;
-		width: 110px;
+		width: 55%;
 		padding-left: 10px;
 		//padding: 8px;
 	}
@@ -172,7 +172,7 @@
 	position: relative;
 	height: 100%;
 	overflow: scroll;
-	padding: 0 0 10px 20px;
+	padding: 0 0 10px 5.8%;
 	.scrollbar(@width:5px);
 	.scrollbar-track(@background-color:transparent);
 	.scrollbar-thumb();
@@ -187,15 +187,16 @@
 	float: left;
 	width: @patternView_flat_W;
 	height: @patternView_flat_W * 1.4;
+	transition: width, height 0.3s  0 ease;
 	background-color: #fff;
 	//border: 1px solid @ks-color-gray-8;
 	overflow: hidden;
 
 	margin: 3px;
-	margin-top: 2%;
-	margin-left: 4%;
+	margin-top: 3%;
+	margin-left: 3%;
 	&:nth-child(2n) {
-		margin-left: 20px;
+		margin-left: 7%;
 	}
 
 	&.hide {
@@ -274,8 +275,8 @@
 }
 
 .echart-row-wrapper {
-	width: @patternView_W * 1.4;
-	height: @patternView_W;
+	width: 140%;
+	height: 71.4%;
 
 	&.larger{
 		width: @patternView_W * 1.4 * @larger;
@@ -290,8 +291,8 @@
 .echart{
 	float: left;
 	display: inline-block;
-	width: @patternView_W;
-	height: @patternView_W;
+	width: 71.4%;
+	height: 100%;
 	cursor: pointer;
 	transform-origin: left top;
 	transform: scale(1,1);
@@ -328,12 +329,12 @@
 
 .pattern-info-container {
 	position: relative;
-	height: @patternView_flat_W*0.4;
+	height: 28.5%;
 	width: 100%;
 
 	&.column {
 		height: 100%;
-		width: @patternView_W*0.4;
+		width: 28.5%;
 		display: inline-block;
 		&.larger{
 			width: @patternView_W * 0.4 * @larger;
