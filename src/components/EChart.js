@@ -14,8 +14,8 @@ function splitData(rawData, baseBars) {
     var lowArr = [], highArr = [];
 
     for (var i = 0; i < rawData.length; i++) {
-        categoryData.push(rawData[i].splice(0, 1)[0]);
-        values.push(rawData[i]);
+        categoryData.push(rawData[i].slice(0, 1)[0]);
+        values.push(rawData[i].slice(1));
         lowArr.push(isNaN(+rawData[i][2]) ? Infinity : +rawData[i][2]);
         highArr.push(isNaN(+rawData[i][3]) ? -Infinity : +rawData[i][3]);
     }
@@ -57,15 +57,21 @@ class EChart extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {};
+		this.canvasNode = window.document.createElement('canvas');
+		this.canvasNode.height = 200;
+		this.canvasNode.width = 200;
 	}
 
 	drawChart() {
 		// let node = this.refs['echart'+this.props.index];
-		let node = window.document.createElement('canvas');
-			node.height = 200;
-			node.width = 200;
-		let chart = echarts.init(node);
 		const { kLine, baseBars } = this.props.pattern;
+		if (this.oldKline === kLine) {
+			return;
+		}
+		this.oldKline = kLine;
+		let node = this.canvasNode;
+
+		let chart = echarts.init(node);
 		let index = this.props.index;
 		this.chart = chart;
 		if(index===0){
@@ -113,7 +119,9 @@ class EChart extends React.Component {
 	}
 
 	componentDidUpdate() {
-		//this.drawChart()
+
+			setTimeout(this.drawChart.bind(this));
+			//this.drawChart()	
 		//console.log('echart componentDidUpdate');
 		/*******************************************
 		let { fullView, index }  = this.props;
@@ -144,7 +152,7 @@ class EChart extends React.Component {
 		
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps){
 		return true;
 	}
 

@@ -9,7 +9,7 @@ let getDaysDuration = (d1, d2) => {
 
 //kLine = [['2012-1-2', open, close, low, high]]
 let calcYieldRate = (kLine, baseBars=1) => {
-
+	console.log(kLine);
 	if (Object.prototype.toString.call(kLine) !== '[object Array]') {
 		console.error('kLine must be a array');
 		return 0;
