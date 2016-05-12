@@ -27,7 +27,7 @@ const defaultProps = {
 
 };
 
-const barChartBars = 10;
+const barChartBars = 20;
 const transitionDuration = 400;   //过滤动画毫秒数
 //node 重要: 一个crossfilter不能 生成超过128个dimentsion, 所以注意缓存dimentsion !
 
@@ -87,7 +87,15 @@ class CrossfilterView extends React.Component {
 		let that = this;
 		if (bubbleChartW != this.scatterChartW || bubbleChartH != this.scatterChartH) {
 			//this.yieldDateScatterChart 
-			setTimeout(() => {that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH).redraw(); });
+			let size = bubbleChartW / 40;
+			let xTicks = 6, yTicks = 5;
+			if(bubbleChartW > 400) xTicks = 12;
+			if(bubbleChartH > 200) yTicks = 9;
+			setTimeout(() => { 
+				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH).symbolSize(size).excludedSize(size).redraw(); 
+				that.yieldDateScatterChart.xAxis().ticks(xTicks);
+				that.yieldDateScatterChart.yAxis().ticks(yTicks);
+			});
 			setTimeout(()=> {that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart) })
 			setTimeout(() => {that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart) });
 			this.scatterChartW = bubbleChartW;
@@ -257,13 +265,17 @@ class CrossfilterView extends React.Component {
 			.transitionDuration(transitionDuration)
 		    .colors('#757575')
 		    //.colors('rgba(117, 117, 117, 1)')
-		    .symbolSize(15)
-		    .excludedSize(15)
+		    .symbolSize(width/40)
+		    .excludedSize(width/40)
 		    .excludedColor('#aFaFaF')
-		    .excludedOpacity(0.2)
+		    .excludedOpacity(0.3)
 		    .renderHorizontalGridLines(true)
 		    .renderVerticalGridLines(true)
-
+		    .mouseZoomable(true)
+		    //.xAxisPadding(10)
+		    //.yAxisPadding(10)
+		    //.elasticY(true)
+		    //.elasticX(true)
 		    .dimension(this.yieldDateDim)
 		    //.brushOn(false)
 		    //.excludedOpacity(0.5)
@@ -274,8 +286,11 @@ class CrossfilterView extends React.Component {
       //           .group(this.yieldDateGroup, "Blue Group")
       //           .colors("blue"),
 		    // ]);
-		 yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(3);
-		 yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(3).ticks(7);
+		let xTicks = 6, yTicks = 5;
+		if(width > 400) xTicks = 12;
+		if(height > 200) yTicks = 9;
+		 yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(5).ticks(xTicks);
+		 yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
 
 		 window.yieldDateScatterChart= yieldDateScatterChart;
 		 yieldDateScatterChart.on('filtered', this.onChartFiltered.bind(this));
@@ -377,6 +392,7 @@ class CrossfilterView extends React.Component {
 			//.linearColors(['#ddd','#333'])
 			.colorDomain([0, 5])
 			.colorAccessor(function(d, i){ return i })
+			//.gap(3)
 			//.label(() => { return 'aaa'; })
 			//.title((e) => { console.log('title', e); return e.key + e.value; })
 			.renderTitle(false);
@@ -428,8 +444,8 @@ class CrossfilterView extends React.Component {
 		let rangeInterval = (this.yield100Range[1] - this.yield100Range[0]) / barChartBars ,
 		    minYield100 = this.yield100Range[0];
 
-		yieldDimCountChart.xAxis().tickFormat((v) => {return (v * rangeInterval + minYield100 ).toFixed(0) + '%'; }).ticks(5).innerTickSize(3);
-		yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(3);
+		yieldDimCountChart.xAxis().tickFormat((v) => {return (v * rangeInterval + minYield100 ).toFixed(0) + '%'; }).ticks(7).innerTickSize(5);
+		yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(5);
 		//yield.yAxis().tickFromat((v) => {return v+'%'});
 		yieldDimCountChart.on('filtered', this.onChartFiltered.bind(this));
 		window.yieldDimCountChart = yieldDimCountChart;

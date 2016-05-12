@@ -1,5 +1,6 @@
 @patternToolbar_H: 80px;
-@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 20px;
+//@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 10px;
+@patternView_W: 130px; // @patternContainerStretch_W * 0.393;
 
 @patternView_flat_W: @patternView_W; //130px
 
@@ -28,7 +29,7 @@
 }
 
 .pattern-toolbar-container{
-	margin-left: 40px;
+	margin-left: 6.8%;
 	height: @patternToolbar_H;
 	//border-bottom: 1px solid @ks-color-gray-8;
 	&.hide{
@@ -51,27 +52,31 @@
 		height: 100%;
 		padding-left: 7px;
 
+		h5 {
+			color: @lulu-black;
+		}
+
 		&.item0 {
-			width: 40%;
+			width: 43%;
 		}
 
 		&.item1 {
-			width: 60%;
+			width: 57%;
 		}
 	}
 
 	.title-left {
 		display: inline-block;
 		//width: px;
-		font-size: 0.85em;
-		color: @ks-color-gray-6;
-		padding: 5px 0;
+		font-size: 1.2rem;
+		color: @lulu-gary3;
+		padding: 5px 5%;
 	}
 
 	.slider-container{
 		display: inline-block;
-		width: 110px;
-		padding-left: 10px;
+		width: 55%;
+		padding-left: 3%;
 		//padding: 8px;
 	}
 
@@ -95,8 +100,8 @@
 .sort-trigger-btn {
 	position: relative;
 	float: right;
-	margin: 10px 20px;
-	font-size: 12px;
+	margin: 5.9% 10.6%;
+	font-size: 1.2rem;
 	background-color: transparent;
 	border: none;
 
@@ -127,11 +132,9 @@
 	//padding: 10px 10px;
 	margin-top: 10px;
 	padding-left: 13px;
-	font-size: 0.95em;
+	font-size: 1.15rem;
 	cursor: pointer;
 	.sorticons-container {
-
-		color: @ks-color-gray-8;
 		
 		.fa-sort-desc {
 			position: relative;
@@ -171,13 +174,15 @@
 	position: relative;
 	height: 100%;
 	overflow: scroll;
-	padding: 0 0 10px 40px;
-	.scrollbar(@width:8px);
+	padding: 10px 0 10px 5.8%;
+	.scrollbar(@width:5px);
 	.scrollbar-track(@background-color:transparent);
 	.scrollbar-thumb();
 
 	&.scroll-hidden{
 		overflow: hidden;
+		padding-top: 20px;
+		padding-left: 0;
 	}
 }
 
@@ -186,14 +191,16 @@
 	float: left;
 	width: @patternView_flat_W;
 	height: @patternView_flat_W * 1.4;
+	transition: width, height 0.3s  0 ease;
 	background-color: #fff;
 	//border: 1px solid @ks-color-gray-8;
 	overflow: hidden;
 
 	margin: 3px;
-	margin-top: 10px;
+	margin-top: 3%;
+	margin-left: 3%;
 	&:nth-child(2n) {
-		margin-left: 20px;
+		margin-left: 7%;
 	}
 
 	&.hide {
@@ -203,7 +210,7 @@
 	&:hover {
 		//border: 1px solid RGBA(151, 165, 178, 1.00);
 		z-index: 20;
-		box-shadow: 0 0 3px 0 @ks-color-gray-4;
+		box-shadow: 0 0 15px 0 @ks-color-gray-8;
 	}
 
 	&:focus {
@@ -217,6 +224,8 @@
 		width: 100%;
 		padding-top: 5px;
 		padding-left: 10px;
+		font-size: 1.2rem;
+		font-family: 'AvantGarde';
 		//background-color: RGBA(151, 165, 178, 1.00);
 		//background-image: -webkit-linear-gradient();
 		position: absolute;
@@ -242,6 +251,7 @@
 			//transform: scale(.5,.5);
 			height: @patternView_W * @smaller;
 			width: @patternView_W * 1.4 * @smaller * 1.2;
+			margin-top: 5px;
 			//margin: 10px;
 			&:nth-child(2) {
 				margin-top: 30px;	
@@ -265,13 +275,13 @@
 
 	&.active {
 		border-radius: 2px;
-		box-shadow: 0 0 10px 0 #888;
+		box-shadow: 0 3px 15px 0 rgba(179, 179, 179, 0.76);
 	}	
 }
 
 .echart-row-wrapper {
-	width: @patternView_W * 1.4;
-	height: @patternView_W;
+	width: 140%;
+	height: 71.4%;
 
 	&.larger{
 		width: @patternView_W * 1.4 * @larger;
@@ -286,12 +296,12 @@
 .echart{
 	float: left;
 	display: inline-block;
-	width: @patternView_W;
-	height: @patternView_W;
+	width: 71.4%;
+	height: 100%;
 	cursor: pointer;
 	transform-origin: left top;
 	transform: scale(1,1);
-	padding: 5px;
+	padding: 10px;
 	@keyframes larger {
 		from {transform: scale(1,1);} to {transform: scale(@larger, @larger);}
 	}
@@ -324,12 +334,12 @@
 
 .pattern-info-container {
 	position: relative;
-	height: @patternView_flat_W*0.4;
+	height: 28.5%;
 	width: 100%;
 
 	&.column {
 		height: 100%;
-		width: @patternView_W*0.4;
+		width: 28.5%;
 		display: inline-block;
 		&.larger{
 			width: @patternView_W * 0.4 * @larger;
@@ -340,15 +350,15 @@
 	}
 	//border-top: 1px solid @ks-color-gray-8;
 	h5{
-		color: @ks-color-gray-7;
-		font-size: 0.8em;
+		color: @lulu-gary1;
+		font-size: 1.2rem;
 		padding-top: 5px;
 		margin: 0;
 	}
 
 	p{
-		color: @ks-color-gray-2;
-		font-size: 0.8em;
-		padding-top: 2px;
+		color: @lulu-black;
+		font-size: 1.1rem;
+		padding-top: 8%;
 	}
 }

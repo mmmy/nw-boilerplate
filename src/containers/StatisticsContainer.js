@@ -45,7 +45,7 @@ class statisticsContainer extends React.Component {
 
 	render(){
 		this.renderDate = new Date();
-		const { fullView, statisticsLarger, report, crossFilter, dispatch, filter} = this.props;
+		const { fullView, statisticsLarger, report, crossFilter, dispatch, filter, searchConfig} = this.props;
 		const className = classNames('transition-all', 'statistics-container', {
 			'full': fullView,
 			'larger': statisticsLarger,
@@ -73,7 +73,7 @@ class statisticsContainer extends React.Component {
 	      <div className={ className }>
 	        <div className={fistReportClass}><ReportDetailView crossFilter={crossFilter} fullView={fullView}/></div>
 	        {/*<div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>*/}
-	        <div className={reportClass3}><ReportTypeView report={report} /></div>
+	        <div className={reportClass3}><ReportTypeView report={report} searchConfig={searchConfig}/></div>
 	        <div className={'crossfilter-container-wrap'}>
 	          <CrossfilterView
 	            dispatch={dispatch}
@@ -89,7 +89,7 @@ statisticsContainer.propTypes = propTypes;
 statisticsContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const {layout, report, patterns, filter} = state;
+	const {layout, report, patterns, filter, searchConfig} = state;
 	const {stockView, patternSmallView} = layout;
 	const {crossFilter} = patterns;
 	return {
@@ -98,6 +98,7 @@ let stateToProps = function(state) {
 			crossFilter,
 			report,
 			filter,
+			searchConfig,
 		};
 };
 
