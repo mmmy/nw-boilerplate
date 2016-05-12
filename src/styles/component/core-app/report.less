@@ -2,7 +2,7 @@
 @width1: 24%;
 @width2: 100% - @width0 - @width1;
 
-@title_H: 26px;
+@title_H: 35%;
 
 .reportdetail-container {
 	position: relative;
@@ -20,11 +20,11 @@
 	}
 
 	.item-title{
-		font-size: 0.85em;
+		font-size: 1.2rem;
 		color: @lulu-gary2;
 		text-align: center;
 		height: @title_H;
-		padding-top: 10px;
+		padding-top: 4%;
 		margin: 0;
 		//border-bottom: 1px solid @ks-color-gray-8;
 
@@ -44,12 +44,13 @@
 		}
 
 		.item-body{
-			font-size: 0.8em;
+			font-size: 1.15rem;
 		}
 
 		.item-name{
 			color: @lulu-gary1;
-			padding-bottom: 5px;
+			padding-bottom: 12%;
+			padding-top: 5%
 		}
 
 		.item-data{
@@ -89,26 +90,24 @@
 
 //搜索空间  等信息
 .reporttype-container{
-	padding-top: 30px;
+	padding-top: 6.7%;
 	height: 100%;
-	font-size: 0.85em;
+	font-size: 1.2rem;
 	//border-left: 1px solid @ks-color-gray-8;
 	//border-right: 1px solid @ks-color-gray-8;
 	//TODO: xiaolu
 	.type-item-container{
-		padding-left: 10px;
-
-		padding-bottom: 12px;
-		font-size: 1em;
+		padding-left: 3%;
+		padding-bottom: 4%;
+		font-size: 1.2rem;
 		color: @lulu-gary1;
-
 		//width: 49%;
 		float: left;
 		&:nth-child(2n-1){
-			width: calc(~"99% - 210px");
+			width: 42%;
 		}
 		&:nth-child(2n){
-			width: 210px;
+			width: 58%;
 		}
 
 		.lulu {
@@ -120,7 +119,7 @@
 
 
 //动画效果要人命 >__<
-@font-size-ww: 0.85em;
+@font-size-ww: 1.2rem;
 @font-size-mama: @font-size-ww * 2.2;
 @width-bala: 30%;
 @mama-top1: 35%;
@@ -155,7 +154,7 @@
 
 	.shouyi {
 		left: 0;
-		top: 5%;
+		top: 5.5%;
 		font-size: @font-size-ww;
 		width: @width-bala;
 		color: @lulu-gary2;
@@ -163,7 +162,7 @@
 
 	.up-rate {
 		left: 0;
-		top: 59%;
+		top: 57%;
 		font-size: @font-size-ww;
 		width: @width-bala;
 		color: @lulu-gary2;
@@ -177,7 +176,7 @@
 
 	.up-rate-value {
 		left: 0;
-		top: 75%;
+		top: 73%;
 		font-size: @font-size-ww * 2.2;
 		width: @width-bala;
 		&.mama {
@@ -190,7 +189,7 @@
 
 	.median {
 		left: 0;
-		top:22%;
+		top:20%;
 		font-size: @font-size-ww;
 		width: @width-bala * 0.5;
 		color: @lulu-gary1;
@@ -203,7 +202,7 @@
 
 	.median-value {
 		left: 0;
-		top: 37%;
+		top: 32%;
 		font-size: @font-size-ww;
 		width: @width-bala * 0.5;
 		&.mama {
@@ -216,7 +215,7 @@
 
 	.mean {
 		left: 15%;
-		top: 22%;	
+		top: 20%;	
 		font-size: @font-size-ww;	
 		width: @width-bala * 0.5;
 		color: @lulu-gary1;
@@ -229,7 +228,7 @@
 
 	.mean-value {
 		left: 15%;
-		top: 37%;
+		top: 32%;
 		font-size: @font-size-ww;
 		width: @width-bala * 0.5;
 		&.mama {

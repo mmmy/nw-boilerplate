@@ -1,3 +1,4 @@
+import { setRem } from '../components/utils/layoutUtils';
 
 let initJquery = () => {
 	let $ = require('jquery');
@@ -27,6 +28,10 @@ let initAssert = () => {
 	};
 };
 
+let initResize = () => {
+	window.addEventListener('resize', setRem);
+};
+
 module.exports = () => {
 	/******************************************
 		.showDevTools()  not work at here
@@ -47,4 +52,5 @@ module.exports = () => {
 
  	initJquery();
  	initAssert();
+ 	initResize();
 };

@@ -12,7 +12,7 @@ const defaultProps = {
 
 };
 
-class Component extends React.Component {
+class Comparator extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -55,8 +55,8 @@ class Component extends React.Component {
 	}
 }
 
-Component.propTypes = propTypes;
-Component.defaultProps = defaultProps;
+Comparator.propTypes = propTypes;
+Comparator.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
 	const {layout} = state;
@@ -65,4 +65,4 @@ let stateToProps = function(state) {
 		stretchView: !stockView,
 	};
 };
-export default connect(stateToProps)(Component);
+export default connect(stateToProps)(Comparator);
