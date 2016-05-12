@@ -10,6 +10,7 @@ const propTypes = {
 	fullView: PropTypes.bool.isRequired,
 	waitingForPatterns: PropTypes.bool.isRequired,
 	sort: PropTypes.object.isRequired,
+	active: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -94,8 +95,10 @@ class PatternCollection extends React.Component {
 
 	getPatternNodes() {
 		
-		let { dispatch, waitingForPatterns, fullView } = this.props;
+		let { dispatch, waitingForPatterns, fullView, active } = this.props;
+
 		let { crossFilter, rawData , error} = this.props.patterns;
+		let { id } = active;
 
 		let sortedData = this.sortData(rawData);
 
@@ -128,9 +131,9 @@ class PatternCollection extends React.Component {
 			
 			nodes = sortedData.map((e, i) => {
 				let show = idArr.indexOf(e.id) !== -1;
-				return <PatternView show={show} pattern={e} key={e.id} index={i} dispatch={dispatch} fullView={fullView}/>
+				let isActive = id === e.id;
+				return <PatternView isActive={isActive} show={show} pattern={e} key={e.id} index={i} dispatch={dispatch} fullView={fullView}/>
 			});
-
 		//}
 
 		return nodes;

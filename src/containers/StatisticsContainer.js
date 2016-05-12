@@ -40,7 +40,7 @@ class statisticsContainer extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.log('statisticsContainer did update', new Date() - this.renderDate);
+		//console.log('statisticsContainer did update', new Date() - this.renderDate);
 	}
 
 	render(){
