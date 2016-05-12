@@ -40,12 +40,12 @@ class ComparatorHeatmap extends React.Component {
     }
 
     option.series[0].data = this.generateSeriesData(option.yAxis[0].data);
-
-    let maxData = 5;
-
-    option.series[0].data.forEach(d => {
-      if (d[2] > maxData) maxData = d[2];
-    });
+    //
+    // let maxData = 5;
+    //
+    // option.series[0].data.forEach(d => {
+    //   if (d[2] > maxData) maxData = d[2];
+    // });
 
     // option.visualMap[0].max = maxData - 1;
 
@@ -166,9 +166,9 @@ class ComparatorHeatmap extends React.Component {
           }
         },
         itemStyle: {
-          emphasis: {
-            shadowBlur: 20,
-            shadowColor: 'rgba(100, 110, 110, 1)'
+          normal: {
+            borderColor: '#C6C7C8',
+            borderWidth: 1
           }
         }
       }],
