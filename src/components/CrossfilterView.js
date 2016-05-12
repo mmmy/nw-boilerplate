@@ -88,7 +88,14 @@ class CrossfilterView extends React.Component {
 		if (bubbleChartW != this.scatterChartW || bubbleChartH != this.scatterChartH) {
 			//this.yieldDateScatterChart 
 			let size = bubbleChartW / 40;
-			setTimeout(() => {that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH).symbolSize(size).excludedSize(size).redraw(); });
+			let xTicks = 6, yTicks = 5;
+			if(bubbleChartW > 400) xTicks = 12;
+			if(bubbleChartH > 200) yTicks = 9;
+			setTimeout(() => { 
+				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH).symbolSize(size).excludedSize(size).redraw(); 
+				that.yieldDateScatterChart.xAxis().ticks(xTicks);
+				that.yieldDateScatterChart.yAxis().ticks(yTicks);
+			});
 			setTimeout(()=> {that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart) })
 			setTimeout(() => {that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart) });
 			this.scatterChartW = bubbleChartW;
@@ -279,8 +286,11 @@ class CrossfilterView extends React.Component {
       //           .group(this.yieldDateGroup, "Blue Group")
       //           .colors("blue"),
 		    // ]);
-		 yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(5).ticks(10);
-		 yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(7);
+		let xTicks = 6, yTicks = 5;
+		if(width > 400) xTicks = 12;
+		if(height > 200) yTicks = 9;
+		 yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(5).ticks(xTicks);
+		 yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
 
 		 window.yieldDateScatterChart= yieldDateScatterChart;
 		 yieldDateScatterChart.on('filtered', this.onChartFiltered.bind(this));
@@ -434,7 +444,7 @@ class CrossfilterView extends React.Component {
 		let rangeInterval = (this.yield100Range[1] - this.yield100Range[0]) / barChartBars ,
 		    minYield100 = this.yield100Range[0];
 
-		yieldDimCountChart.xAxis().tickFormat((v) => {return (v * rangeInterval + minYield100 ).toFixed(0) + '%'; }).ticks(5).innerTickSize(5);
+		yieldDimCountChart.xAxis().tickFormat((v) => {return (v * rangeInterval + minYield100 ).toFixed(0) + '%'; }).ticks(7).innerTickSize(5);
 		yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(5);
 		//yield.yAxis().tickFromat((v) => {return v+'%'});
 		yieldDimCountChart.on('filtered', this.onChartFiltered.bind(this));
