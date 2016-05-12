@@ -30,8 +30,8 @@ class ComparatorHeatmap extends React.Component {
   componentWillReceiveProps(nextProps) {
     let { heatmapYAxis, scaleMaxValue, scaleMinValue } = nextProps;
     let option = window.heatmap.getOption();
-    const count = 6;
-    let gap = (scaleMaxValue - scaleMinValue) / count;
+    const count = Math.round(scaleMaxValue - scaleMinValue);
+    let gap = 1;
     option.yAxis[0].data = [scaleMinValue];
     let value = scaleMinValue;
     for (let i = 0; i < count; i++) {
@@ -74,7 +74,7 @@ class ComparatorHeatmap extends React.Component {
 
   generateSeriesData(newYAxis) {
     this.initDimensions();
-    let eChartSeriesData = [[0, -1, 0]];
+    let eChartSeriesData = [];
     // let yAxis = newYAxis.map((y) => {
     //   return y + (newYAxis[1] - newYAxis[0]);
     // });
@@ -109,6 +109,8 @@ class ComparatorHeatmap extends React.Component {
         }
       });
     });
+
+    // eChartSeriesData.push([0, eChartSeriesData.length, 1]);
 
     return eChartSeriesData;
   }
