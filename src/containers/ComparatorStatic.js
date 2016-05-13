@@ -49,6 +49,8 @@ class ComparatorStatic extends React.Component {
       isPredictionShow,
       lastClosePrice,
       heatmapYAxis,
+      scaleMinValue,
+      scaleMaxValue,
       dispatch } = this.props;
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
@@ -67,7 +69,7 @@ class ComparatorStatic extends React.Component {
       interval: 'D',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
-      //datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
+      // datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
       datafeed: new window.Kfeeds.UDFCompatibleDatafeed(""),
       library_path: "charting_library/",
       locale: "zh",
@@ -130,7 +132,13 @@ class ComparatorStatic extends React.Component {
               <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
             </button>
 
-            <ComparatorHeatmap lastClosePrice={ lastClosePrice } heatmapYAxis={ heatmapYAxis } filter={ filter } patterns={ patterns } />
+            <ComparatorHeatmap
+              lastClosePrice={ lastClosePrice }
+              heatmapYAxis={ heatmapYAxis }
+              filter={ filter }
+              patterns={ patterns }
+              scaleMinValue={ scaleMinValue }
+              scaleMaxValue={ scaleMaxValue } />
           </div>
 
         </div>
@@ -145,14 +153,16 @@ ComparatorStatic.defaultProps = defaultProps;
 var stateToProps = function(state) {
 	const {layout, patterns, filter, prediction} = state;
 	const {stockView, isPredictionShow} = layout;
-  const {lastClosePrice, predictionpriceScaleMarks, predictionLastClosePrices, heatmapYAxis} = prediction;
+  const {lastClosePrice, predictionpriceScaleMarks, predictionLastClosePrices, heatmapYAxis, scaleMaxValue, scaleMinValue} = prediction;
 	return {
 		stretchView: !stockView,
     isPredictionShow: isPredictionShow,
     patterns: patterns,
     filter: filter,
     lastClosePrice: lastClosePrice,
-    heatmapYAxis: heatmapYAxis
+    heatmapYAxis: heatmapYAxis,
+    scaleMinValue: scaleMinValue,
+    scaleMaxValue: scaleMaxValue
 	};
 };
 export default connect(stateToProps)(ComparatorStatic);
