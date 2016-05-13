@@ -60,8 +60,9 @@ class StockView extends React.Component {
         		// width: 300,
         		overrides: {
 						"paneProperties.background": "#131313",
-                        "paneProperties.vertGridProperties.color": "#131313",
-                        "paneProperties.horzGridProperties.color": "#131313",
+            "paneProperties.vertGridProperties.color": "#131313",
+            "paneProperties.horzGridProperties.color": "#131313",
+            "symbolWatermarkProperties.color": '#131313',
 						"symbolWatermarkProperties.transparency": 90,
 						"scalesProperties.textColor" : "#AAA",
 
