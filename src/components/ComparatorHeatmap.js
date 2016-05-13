@@ -28,10 +28,20 @@ class ComparatorHeatmap extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    let { heatmapYAxis, scaleMaxValue, scaleMinValue } = nextProps;
     let option = window.heatmap.getOption();
-    option.series[0].data = this.generateSeriesData();
-    option.yAxis[0].data = nextProps.heatmapYAxis;
-    window.heatmap.setOption(option, true);
+    const count = Math.round(scaleMaxValue - scaleMinValue);
+    let gap = 1;
+    option.yAxis[0].data = [scaleMinValue];
+    let value = scaleMinValue;
+    for (let i = 0; i < count; i++) {
+      option.yAxis[0].data.push(value + gap);
+      value = value + gap;
+    }
+
+    option.series[0].data = this.generateSeriesData(option.yAxis[0].data);
+
+    window.heatmap.setOption(option);
   }
 
   shouldComponentUpdate(){
@@ -54,26 +64,35 @@ class ComparatorHeatmap extends React.Component {
     }
   }
 
-  generateSeriesData() {
+  generateSeriesData(newYAxis) {
     this.initDimensions();
     let eChartSeriesData = [];
-    let yAxis = this.props.heatmapYAxis;
+    let yAxis = newYAxis;
+
+    yAxis.unshift(yAxis[0] + yAxis[0] - yAxis[1]);
 
     yAxis.forEach((e, i) => {
-      eChartSeriesData.push([0,i - yAxis.length/2 + 1, 0]);
+      eChartSeriesData.push([0, i, 0]);
     });
 
     let lastPrices = [];
     let percentage = 0;
-    this.symbolDim.top(Infinity).forEach((e, i) => {
-      if (i === 0) percentage = this.props.lastClosePrice / e.kLine[0][2];
-      lastPrices.push(e.kLine[e.kLine.length - 1][2] * percentage);
+
+    window.eChart.getOption().series.forEach((serie) => {
+      lastPrices.push(serie.data[serie.data.length - 1]);
     });
 
-    lastPrices.forEach((price, priceIndex) => {
-      yAxis.forEach((y, yIndex) => {
-        if (price >= y && price < yAxis[yIndex + 1]) {
-          eChartSeriesData[yIndex][2] = eChartSeriesData[yIndex][2] + 1;
+    let maxPrice = Math.max(...lastPrices);
+    let minPrice = Math.min(...lastPrices);
+
+    lastPrices.forEach((price) => {
+      eChartSeriesData.forEach((item, index) => {
+        if (index + 1 < yAxis.length) {
+          if (price >= yAxis[index] && price < yAxis[index + 1]) {
+            eChartSeriesData[index][2] = eChartSeriesData[index][2] + 1;
+          }
+        } else {
+
         }
       });
     });
@@ -85,19 +104,19 @@ class ComparatorHeatmap extends React.Component {
     const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionHeatmap']);
     window.heatmap = echarts.init(dom);
 
-    // const priceScale = [-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
     const priceScale = this.props.heatmapYAxis;
     const data = [];
     let option = {
       tooltip: {
-        show: false,
-        showContent: false
+        show: true,
+        showContent: true
       },
       animation: false,
       grid: {
         height: '100%',
-        y: '-5%'
-        // width: '10'
+        y: 0,
+        borderColor: '#000',
+        borderWidth: 5
       },
       xAxis: {
         show: false,
@@ -111,13 +130,15 @@ class ComparatorHeatmap extends React.Component {
       },
       visualMap: {
         show: false,
-        min: 1,
-        max: 30,
+        min: 0,
+        max: 15,
         calculable: false,
         orient: 'vertical',
         left: 'center',
         bottom: '15%',
-        color: ['#982C2F', '#C23433', '#E42329', '#F63A3B'] // 从大到小排列
+        // color: ['#982C2F', '#C23433', '#E42329', '#F63A3B'] // 从大到小排列
+        color: ['#982C2F', '#C23433', '#E42329', '#F63A3B', '#C6C7C8'] // 从大到小排列
+
       },
       series: [{
         name: 'Punch Card',
@@ -129,13 +150,13 @@ class ComparatorHeatmap extends React.Component {
           }
         },
         itemStyle: {
-          emphasis: {
-            shadowBlur: 20,
-            shadowColor: 'rgba(100, 110, 110, 1)'
+          normal: {
+            borderColor: '#C6C7C8',
+            borderWidth: 1
           }
         }
       }],
-      backgroundColor: '#C6C7C8',
+      // backgroundColor: '#C6C7C8',
     };
 
     if (option && typeof option === "object") {

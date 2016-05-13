@@ -90,7 +90,7 @@ class ComparatorPrediction extends React.Component {
         hoverAnimation: false,
         lineStyle: {
           normal: {
-            color: i === 5 ? '#c23531' : '#ccc',
+            color: i === 5 ? '#c23531' : '#ccc', // 暂时写死第五条线是红色
             width: 0.8
           }
         },
@@ -148,8 +148,8 @@ class ComparatorPrediction extends React.Component {
         },
         // scale: true,
         // interval: 0.5,
-        max: 'maxData',
-        min: 5.5
+        // max: 'maxData',
+        // min: 5.5
       },
       series: this.generateSeriesData()
       // series: predictionRandomData()
