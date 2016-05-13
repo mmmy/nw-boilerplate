@@ -23,8 +23,26 @@ const togglePredictionPanel = function togglePredictionPanel() {
   };
 };
 
+const takeScreenshot = function takeScreenshot() {
+  return (dispatch) => {
+    dispatch({
+      type: type.TAKE_SCREENSHOT,
+    })
+  };
+};
+
+const renderScreenshot = function renderScreenshot() {
+  return (dispatch) => {
+    dispatch({
+      type: type.RENDER_SCREENSHOT,
+    })
+  };
+};
+
 module.exports = {
   toggleStockView,
   waitingForPatterns,
   togglePredictionPanel,
+  takeScreenshot,
+  renderScreenshot
 }

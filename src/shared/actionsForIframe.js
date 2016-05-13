@@ -1,4 +1,5 @@
 import { patternActions, layoutActions, tradingViewActions } from '../flux/actions';
+import fs from 'fs';
 
 export default function(store) {
 
@@ -17,9 +18,35 @@ export default function(store) {
     tradingViewActions.getSymbolSearchResult(postData, cb);
   }
 
+  let takeScreenshot = function(canvasDom) {
+    try {
+      const canvasContainer = canvasDom.document.getElementsByClassName('multiple')[0];
+      const canvas = canvasContainer.getElementsByTagName('canvas')[2];
+      const img = canvas.toDataURL();
+
+      var regex = /^data:.+\/(.+);base64,(.*)$/;
+      var matches = img.match(regex);
+      var ext = matches[1];
+      var data = matches[2];
+      var buffer = new Buffer(data, 'base64');
+
+      fs.writeFile('src/image/screenshort_origin.' + ext, buffer, function(){
+        if (store) {
+          store.dispatch({
+            type: 'TAKE_SCREENSHOT',
+          });
+          console.log('screenshort_origin taken, rerender...');
+        }
+      });
+    } catch (err) {
+      throw(err.message);
+    }
+  }
+
 	window.actionsForIframe = {
 		searchSymbolDateRange,      //tv-chart.html 中 "搜索"
 		sendSymbolHistory,          //获取股票数据
     sendSymbolSearchResult,
+    takeScreenshot
 	};
 }
