@@ -55,14 +55,14 @@ class StockView extends React.Component {
 				client_id: 'tradingview.com',
 				user_id: 'public_user_id',
 				autosize: true,
-        		fullscreen: false,
+        fullscreen: false,
         		// height: 300,
         		// width: 300,
-        		overrides: {
+	      overrides: {
 						"paneProperties.background": "#131313",
-            "paneProperties.vertGridProperties.color": "#131313",
-            "paneProperties.horzGridProperties.color": "#131313",
-            "symbolWatermarkProperties.color": '#131313',
+	          "paneProperties.vertGridProperties.color": "#131313",
+	          "paneProperties.horzGridProperties.color": "#131313",
+	          "symbolWatermarkProperties.color": '#131313',
 						"symbolWatermarkProperties.transparency": 90,
 						"scalesProperties.textColor" : "#AAA",
 
@@ -80,6 +80,11 @@ class StockView extends React.Component {
 				},
 				studies_overrides: {
 
+				},
+				ks_overrides: {
+					"ksSplitView": false,
+					volume: false,
+					OHLCBarBorderColor: true,
 				}
 			};
 
