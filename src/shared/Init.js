@@ -4,6 +4,17 @@ let initJquery = () => {
 	let $ = require('jquery');
 	window.jQeury = window.$ = $;
 	global.jQeury = global.$ = $;
+	//animate.css helper
+	if(!$.fn.animatedCss){
+			$.fn.extend({
+			    animateCss: function (animationName) {
+			        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+			        $(this).addClass('animated ' + animationName).one(animationEnd, function() {
+			            $(this).removeClass('animated ' + animationName);
+			        });
+			    }
+			});
+	}
 	/*let TradingView =*/ require('../../tradingview/charting_library/charting_library');
 	/*let Datafeed =*/ require('../../tradingview/charting_library/datafeed/udf/datafeed');
   require('../../tradingview/charting_library/datafeed/udf/ks_search_result');

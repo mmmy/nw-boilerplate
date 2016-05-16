@@ -100,7 +100,7 @@ class SortBar extends React.Component {
 	render(){
 		//let {sort} = this.props;
 		return (<div className="sortbar-container">
-				<div className='toolbar-item'><h5>匹配图形</h5></div>
+				<div className='toolbar-item'><h5 className='left-title'>匹配图形</h5></div>
 				<div className='toolbar-item'>
 					<button className='sort-trigger-btn' onFocus={ this.showSortPanel.bind(this) } onBlur={ this.hideSortPanel.bind(this) }>
 						排序
