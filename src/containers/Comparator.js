@@ -51,9 +51,8 @@ class Comparator extends React.Component {
     const containerClassName = classNames('transition-all', 'container-comparator', {
       'container-comparator-stretch': this.props.stretchView,
     });
-
+    //const screenshotPrediction = path.join('./image','chart-screenshot.png');
     const screenshot = this.getScreenshort();
-
 
 		return (
       <div className={ containerClassName } >
