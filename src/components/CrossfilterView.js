@@ -126,7 +126,14 @@ class CrossfilterView extends React.Component {
 
 		//解决第一transition 动画的之后布局	 bug
 		let that = this;
-		setTimeout(this.handleResize.bind(this), 300);
+		let { stretchView } = this.props;
+		$('.container-searchreport').one("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", () => { 
+			if(stretchView) {
+				that.handleResize.bind(that)();
+			}
+		});
+
+		//setTimeout(this.handleResize.bind(this), 300);
 		//console.log('^-^crossFilter view did update', new Date() - this.renderDate);
 	}
 
@@ -138,7 +145,7 @@ class CrossfilterView extends React.Component {
 		});
 		//console.log('crossFilter view render');
 		return (
-		  <div className={ className }>
+		  <div ref='root' className={ className }>
 		  	<div className="dc-chart-row">
 		  		<strong>历史时间分布</strong>
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
@@ -204,6 +211,9 @@ class CrossfilterView extends React.Component {
 			//console.log(yearArr);
 			this.yearRange = [Math.min.apply(null, yearArr) || 1990, Math.max.apply(null, yearArr) || new Date().getFullYear()];     //年份的最大最小值
 			this.yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)]; //收益率的最大最小值
+			this.yield100Range[0] = Math.floor(this.yield100Range[0] / 20) * 20; // -23 => -4, 34 => 20
+			this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 20) * 20; // 88 => 100, 129 => 140
+
 			let rangeInterval = ( this.yield100Range[1] -  this.yield100Range[0] ) / barChartBars;
 
 			console.assert(this.yearRange[1] > this.yearRange[0], this.yearRange);
@@ -439,6 +449,7 @@ class CrossfilterView extends React.Component {
 			//.elasticY(true)
 			//.centerBar(true)
 			.gap(1)
+			.mouseZoomable(true)
 			.x(d3.scale.linear().domain([0, barChartBars+1]));
 
 		let rangeInterval = (this.yield100Range[1] - this.yield100Range[0]) / barChartBars ,
