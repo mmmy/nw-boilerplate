@@ -38,18 +38,25 @@ class Comparator extends React.Component {
 
 	}
 
+  getScreenshort() {
+    const screenshotPrediction = path.join('..', 'src/image/screenshort_origin.png');
+    const screenshotPredictionClassName = classNames('comparator-chart-screenshot');
+
+    return (
+      <img src={ screenshotPrediction } className={ screenshotPredictionClassName }/>
+    );
+  }
+
 	render() {
     const containerClassName = classNames('transition-all', 'container-comparator', {
       'container-comparator-stretch': this.props.stretchView,
     });
-
-    const screenshotPrediction = path.join('./image','chart-screenshot.png');
-
-    const screenshotPredictionClassName = classNames('comparator-chart-screenshot');
+    //const screenshotPrediction = path.join('./image','chart-screenshot.png');
+    const screenshot = this.getScreenshort();
 
 		return (
       <div className={ containerClassName } >
-        <img src={ screenshotPrediction } className={ screenshotPredictionClassName }/>
+        { screenshot }
       </div>
     );
 	}
