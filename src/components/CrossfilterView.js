@@ -14,6 +14,7 @@ import React, { PropTypes } from 'react';
 import d3 from 'd3';
 import DC from 'dc';
 import classnames from 'classnames';
+import _ from 'underscore';
 
 import { filterActions } from '../flux/actions';
 
@@ -43,7 +44,7 @@ class CrossfilterView extends React.Component {
 
 		this.drawDc();
 
-		this.bindResizeFunc = this.handleResize.bind(this);
+		this.bindResizeFunc = _.debounce(this.handleResize.bind(this), 200);
 
 		window.addEventListener('resize', this.bindResizeFunc);
 	}
@@ -398,9 +399,10 @@ class CrossfilterView extends React.Component {
 			.drawPaths(false)
 			//.colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
 			//.colors(['#0f0'])
-			.linearColors(['#4F4F4F','#ddd'])
+			.linearColors(['#444','#ddd'])
 			//.linearColors(['#ddd','#333'])
-			.colorDomain([0, 5])
+			.colorDomain([0, this.industryGroup.size() - 1])
+			.minAngleForLabel(30)
 			.colorAccessor(function(d, i){ return i })
 			//.gap(3)
 			//.label(() => { return 'aaa'; })
