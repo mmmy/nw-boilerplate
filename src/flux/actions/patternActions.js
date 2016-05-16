@@ -20,11 +20,11 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 		const startTime = new Date();
 
 		if (devLocal) {
-			
+
 			ajaxData.getPatterns(
-				
-				{symbol, dateRange}, 
-				
+
+				{symbol, dateRange},
+
 				(res) => {
 					let patterns = JSON.parse(res);
 					patterns.crossFilter = crossfilter(patterns.rawData);
@@ -42,7 +42,7 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 
 		} else {
 
-			backend.searchPattern({symbol, dateRange, bars}, 
+			backend.searchPattern({symbol, dateRange, bars},
 
 				(resArr) => {
 
@@ -52,6 +52,12 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 					patterns.crossFilter = crossfilter(patterns.rawData);
 					let searchTimeSpent = new Date() - startTime;
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
+
+          // 截图
+          setTimeout(() => {
+            let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+            window.actionsForIframe.takeScreenshot(chart);
+          }, 5E3);
 					cb && cb();
 
 				}, (error) => {

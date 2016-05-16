@@ -11,7 +11,7 @@ const initialState = {
 	waitingForPatterns: false, 					         //等待 getPatterns 返回结果
   isPredictionShow: true,                      // 走势预测面板显示
 	searchTimeSpent: 0, 						             //毫秒
-  hasNewScreenshot: 0
+  hasNewScreenshot: false
 }
 
 export default function layout(state = initialState, action) {
