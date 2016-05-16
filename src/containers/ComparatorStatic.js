@@ -38,12 +38,15 @@ class ComparatorStatic extends React.Component {
 	componentWillUnmount(){
 
 	}
-
+  componentDidUpdate() {
+    console.info('ComparatorStatic did update in millsec: ', new Date() - this.d1);
+  }
   togglePredictionPanel() {
     this.props.dispatch(layoutActions.togglePredictionPanel());
   }
 
 	render() {
+    this.d1 = new Date();
     const { patterns,
       filter,
       isPredictionShow,

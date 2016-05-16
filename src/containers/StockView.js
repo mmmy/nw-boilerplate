@@ -26,7 +26,7 @@ class StockView extends React.Component {
 	}
 
 	shouldComponentUpdate(){
-		return true;
+		return false; //不需要更新
 	}
 
 	componentWillUnmount(){

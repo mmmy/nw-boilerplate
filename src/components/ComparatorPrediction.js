@@ -37,7 +37,9 @@ class ComparatorPrediction extends React.Component {
   shouldComponentUpdate(){
     return true;
   }
-
+  componentDidUpdate() {
+    console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
+  }
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
   }
@@ -165,6 +167,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   render(){
+    this.d1 = new Date();
     let className = classNames('comparator-prediction-chart');
 
     return (
