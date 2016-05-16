@@ -5,10 +5,10 @@
   "main": "./build/index.html",
   "window": {
     "show": true,
-    "width": 1600,
+    "width": 1200,
     "height": 700,
     "min_width": 900,
-    "min_height": 695,
+    "min_height": 600,
     "resizable": true,
     "standard-window": false,
     "fullscreen": false,
