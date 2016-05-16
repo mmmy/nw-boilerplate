@@ -108,8 +108,8 @@ class ComparatorHeatmap extends React.Component {
     const data = [];
     let option = {
       tooltip: {
-        show: true,
-        showContent: true
+        show: false,
+        showContent: false
       },
       animation: false,
       grid: {
