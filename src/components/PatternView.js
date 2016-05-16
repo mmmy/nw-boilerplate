@@ -64,7 +64,7 @@ class PatternView extends React.Component {
     let dateEnd = kLine[baseBars - 1][0];
 
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    if (!isActive) chart.Q5.getAll()[1].setSymbol("000002.SZ");
+    if (!isActive) chart.Q5.getAll()[1].setSymbol(symbol);
     chart.TradingView.gotoDate(chart.Q5.getAll()[1], +new Date(dateStart));
     dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
 	}
