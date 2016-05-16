@@ -43,7 +43,7 @@ class Comparator extends React.Component {
       'container-comparator-stretch': this.props.stretchView,
     });
 
-    const screenshotPrediction = path.join('..', 'src/static/img', 'chart-screenshot.png');
+    const screenshotPrediction = path.join('./image','chart-screenshot.png');
 
     const screenshotPredictionClassName = classNames('comparator-chart-screenshot');
 
