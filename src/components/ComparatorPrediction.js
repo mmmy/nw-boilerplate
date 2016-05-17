@@ -29,11 +29,9 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    if (nextProps.patterns) {
-      let option = window.eChart.getOption();
-      option.series = this.generateSeriesData();
-      window.eChart.setOption(option, true);
-    }
+    let option = window.eChart.getOption();
+    option.series = this.generateSeriesData();
+    window.eChart.setOption(option, true);
   }
 
   shouldComponentUpdate(){
