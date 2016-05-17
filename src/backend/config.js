@@ -6,13 +6,16 @@ export default {
 		host: '112.74.17.175',  //'192.168.0.20',
 		port: 17654,
 		path: '/match',
+		url: 'http://112.74.17.175:17654/match',
 		method: 'POST',
+		agent: false
 	},
 
 	patternOptions: {  	    //获取k线数据配置
 		host: '112.74.17.175',
 		port: 15501,
 		path: '/query',
+		url: 'http://112.74.17.175:15501/query',
 		method: 'POST',
 	},
 

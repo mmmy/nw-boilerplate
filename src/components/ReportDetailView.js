@@ -169,7 +169,7 @@ class ReportDetailView extends React.Component {
 					items:[
 							{name:'收益中位数', content:(down.median*100).toFixed(2)+'%'}, 
 							{name:'收益平均数',content:(down.mean*100).toFixed(2)+'%'}, 
-							{name:'上涨极值',content:(down.min*100).toFixed(2)+'%'}
+							{name:'下跌极值',content:(down.min*100).toFixed(2)+'%'}
 						]
 					})
 				}
