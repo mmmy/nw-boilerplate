@@ -1,4 +1,5 @@
 #!/bin/bash
+# 打包到../search_release.zip
 rm ../search_release.zip
 rm -rf ../search_release
 mkdir ../search_release
