@@ -72,7 +72,7 @@ let postSymbolData = (args, bars, cb, errorCb) => {
 	// 	'pt': args.map(({symbol, dateRange}) => { return path.join('/', symbol, ''+dateRange[0], ''+dateRange[1]); })
 	// });
 	let postData = JSON.stringify(postObj);
-	console.log('--------------------------------------', postData);
+	//console.log('--------------------------------------', postData);
 
 	let dataCb = (resStr) => {
 		
