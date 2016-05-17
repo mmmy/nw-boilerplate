@@ -171,7 +171,17 @@ class CrossfilterView extends React.Component {
 			this.oldCrossFilter = crossFilter;
 
 			// this.idDim = crossFilter.dimension((data) => { return data.id; });
+			let scalize = (arr) => { //arr = [num, num]    =>  1:1 or 1:4 or 2:3
+				
+				let left = arr[0],
+						right = arr[1];
 
+				if(left >= 0) return arr;
+				let max = Math.max(-left, right);
+
+				return [-max, max];
+
+			};
 			// this.idGroup = this.idDim.group().reduce(
 			// 		(p, v)=>{
 			// 			try{
@@ -212,11 +222,14 @@ class CrossfilterView extends React.Component {
 			//console.log(yearArr);
 			this.yearRange = [Math.min.apply(null, yearArr) || 1990, Math.max.apply(null, yearArr) || new Date().getFullYear()];     //年份的最大最小值
 			this.yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)]; //收益率的最大最小值
-			this.yield100Range[0] = Math.floor(this.yield100Range[0] / 20) * 20; // -23 => -4, 34 => 20
-			this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 20) * 20; // 88 => 100, 129 => 140
-
+			//this.yield100Range[0] = Math.floor(this.yield100Range[0] / 20) * 20; // -23 => -4, 34 => 20
+			//this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 20) * 20; // 88 => 100, 129 => 140
+			this.yield100Range[0] = Math.floor(this.yield100Range[0] / 100) * 100; // -23 => -50, 34 => 50
+			this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 100) * 100; // 88 => 100, 129 => 150
+			this.yield100Range = scalize(this.yield100Range);
 			let rangeInterval = ( this.yield100Range[1] -  this.yield100Range[0] ) / barChartBars;
-
+			console.info(this.yield100Range);
+			console.info(rangeInterval);
 			console.assert(this.yearRange[1] > this.yearRange[0], this.yearRange);
 			console.assert(this.yield100Range[1] > this.yield100Range[0]);
 			this.yieldDateGroup = this.yieldDateDim.group();
@@ -269,11 +282,11 @@ class CrossfilterView extends React.Component {
 			.height(height)
 			.margins({top:5, right:20, bottom:20, left:40})
 		    .x(d3.scale.linear().domain([this.yearRange[0]-1, this.yearRange[1]+1]))
-		    .y(d3.scale.linear().domain([ Math.floor(this.yield100Range[0]/50)*50 - 50, Math.ceil(this.yield100Range[1]/50)*50 + 50 ]))  //设置为50的整数倍,上下延长50
+		    .y(d3.scale.linear().domain(this.yield100Range))  //设置为50的整数倍,上下延长50
 		    //.yAxisLabel("y")
 		    // .xAxisLabel("x")
 		    //.clipPadding(16)
-			.transitionDuration(transitionDuration)
+				.transitionDuration(transitionDuration)
 		    .colors('#757575')
 		    //.colors('rgba(117, 117, 117, 1)')
 		    .symbolSize(width/40)
@@ -282,7 +295,7 @@ class CrossfilterView extends React.Component {
 		    .excludedOpacity(0.3)
 		    .renderHorizontalGridLines(true)
 		    .renderVerticalGridLines(true)
-		    .mouseZoomable(true)
+		    //.mouseZoomable(true)
 		    //.xAxisPadding(10)
 		    //.yAxisPadding(10)
 		    //.elasticY(true)
@@ -357,7 +370,9 @@ class CrossfilterView extends React.Component {
 		let { key, value } = event.data;
 
 		//计算百分比
-		let total = this.industryDim.top(Infinity).length;
+		let total = this.industryGroup.top(Infinity).reduce((pre, curObj) => {
+			return pre + curObj.value;
+		}, 0);
 		let percent = (value * 100 / total).toFixed(1) + '%';
 
 		this.refs.industry_percent.innerHTML = `<div class='animated fadeIn'>${percent}</div>`;
@@ -452,12 +467,17 @@ class CrossfilterView extends React.Component {
 			//.centerBar(true)
 			.gap(1)
 			.mouseZoomable(true)
+			.zoomOutRestrict(false)
+			.zoomScale([1,4])
 			.x(d3.scale.linear().domain([0, barChartBars+1]));
+			//.x(d3.scale.ordinal())
+			//.xUnits(DC.units.ordinal);
+			//.x(d3.scale.linear().domain([this.yield100Range[0], barChartBars+1]));
 
 		let rangeInterval = (this.yield100Range[1] - this.yield100Range[0]) / barChartBars ,
 		    minYield100 = this.yield100Range[0];
 
-		yieldDimCountChart.xAxis().tickFormat((v) => {return (v * rangeInterval + minYield100 ).toFixed(0) + '%'; }).ticks(7).innerTickSize(5);
+		yieldDimCountChart.xAxis().tickFormat((v) => {return (v * rangeInterval + minYield100 ).toFixed(0) + '%'; }).ticks(6).innerTickSize(5);
 		yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(5);
 		//yield.yAxis().tickFromat((v) => {return v+'%'});
 		yieldDimCountChart.on('filtered', this.onChartFiltered.bind(this));

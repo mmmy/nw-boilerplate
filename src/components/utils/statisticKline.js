@@ -72,7 +72,7 @@ module.exports = (klines) => {
 		
 		down.median = getMedian(downYieldArr);
 		down.mean = downLen > 0 ? (downSum / downLen) : 0;
-		down.min =  downLen > 0 ? downYieldArr[downLen - 1] : 0;
+		down.min =  downLen > 0 ? downYieldArr[0] : 0;
 
 	}
 
