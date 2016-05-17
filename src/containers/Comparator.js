@@ -20,12 +20,11 @@ class Comparator extends React.Component {
 
 		};
 		this.state = {
-      screenshot_origin_path: null
     };
 	}
 
 	componentDidMount() {
-    this.state.screenshot_origin_path = path.join('..', 'src/image/screenshot_origin.png');
+    // this.state.screenshot_origin_path = path.join('..', 'src/image/screenshot_origin.png');
 	}
 
 	componentWillReceiveProps(){
@@ -33,7 +32,7 @@ class Comparator extends React.Component {
 	}
 
   componentDidUpdate() {
-    this.state.screenshot_origin_path = path.join('..', 'src/image/screenshot_origin.png');
+    // this.state.screenshot_origin_path = path.join('..', 'src/image/screenshot_origin.png');
   }
 
 	shouldComponentUpdate(){
@@ -44,26 +43,28 @@ class Comparator extends React.Component {
 
 	}
 
-  getScreenshort() {
-    const screenshotPrediction = path.join('..', 'src/image/screenshot_origin.png') + '?random_number=' + new Date().getTime();
-    const screenshotPredictionClassName = classNames('comparator-chart-screenshot');
-
-    return (
-      <img key={ screenshotPrediction } src={ screenshotPrediction } className={ screenshotPredictionClassName }/>
-    );
-  }
+  // getScreenshort() {
+  //   const screenshotPrediction = path.join('..', 'src/image/screenshot_origin.png') + '?random_number=' + new Date().getTime();
+  //   const screenshotPredictionClassName = classNames('comparator-chart-screenshot');
+  //
+  //   return (
+  //     <img key={ screenshotPrediction } src={ screenshotPrediction } className={ screenshotPredictionClassName }/>
+  //   );
+  // }
 
 	render() {
     const containerClassName = classNames('transition-all', 'container-comparator', {
       'container-comparator-stretch': this.props.stretchView,
     });
+      const screenshotPredictionClassName = classNames('comparator-chart-screenshot');
     //const screenshotPrediction = path.join('./image','chart-screenshot.png');
 
-    const screenshot = this.props.hasNewScreenshot ? this.getScreenshort() : path.join('..', 'src/image/screenshot_origin.png');
+    // const screenshot = this.props.hasNewScreenshot ? this.getScreenshort() : path.join('..', 'src/image/screenshot_origin.png');
+    // const screenshot = this.props.screenshotURL;
 
 		return (
       <div className={ containerClassName } >
-        { screenshot }
+        <img key={ this.props.screenshotURL } src={ this.props.screenshotURL } className={ screenshotPredictionClassName }/>
       </div>
     );
 	}
@@ -74,10 +75,11 @@ Comparator.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
 	const {layout} = state;
-	const {stockView, hasNewScreenshot} = layout;
+	const {stockView, hasNewScreenshot, screenshotURL} = layout;
 	return {
 		stretchView: !stockView,
-    hasNewScreenshot: hasNewScreenshot
+    hasNewScreenshot: hasNewScreenshot,
+    screenshotURL: screenshotURL
 	};
 };
 export default connect(stateToProps)(Comparator);

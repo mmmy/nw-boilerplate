@@ -32,11 +32,11 @@ export default function(store) {
       fs.writeFile('src/image/screenshot_origin.' + ext, buffer, function(err){
         if (err) throw err;
         store.dispatch({
-          type: 'TAKE_SCREENSHOT',
+          type: 'TAKE_SCREENSHOT'
         });
+        console.log('screenshot_origin taken, rerender...');
       });
 
-      console.log('screenshort_origin taken, rerender...');
   }
 
 	window.actionsForIframe = {
