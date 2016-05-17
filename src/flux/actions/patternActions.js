@@ -52,12 +52,6 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 					patterns.crossFilter = crossfilter(patterns.rawData);
 					let searchTimeSpent = new Date() - startTime;
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
-
-          // 截图
-          setTimeout(() => {
-            let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-            window.actionsForIframe.takeScreenshot(chart);
-          }, 5E3);
 					cb && cb();
 
 				}, (error) => {
