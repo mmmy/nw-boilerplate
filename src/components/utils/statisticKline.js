@@ -51,9 +51,10 @@ module.exports = (klines) => {
 			allArr.push(kline.yield);
 		});
 
-		upYieldArr.sort();
-		downYieldArr.sort();
-		allArr.sort();
+		var sortFunc = (a, b) => { return a - b };
+		upYieldArr.sort(sortFunc);
+		downYieldArr.sort(sortFunc);
+		allArr.sort(sortFunc);
 
 		let upLen = upYieldArr.length,
 			downLen = downYieldArr.length;

@@ -1,4 +1,5 @@
 import { setRem } from '../components/utils/layoutUtils';
+import _ from 'underscore';
 
 let initJquery = () => {
 	let $ = require('jquery');
@@ -40,7 +41,7 @@ let initAssert = () => {
 };
 
 let initResize = () => {
-	window.addEventListener('resize', setRem);
+	window.addEventListener('resize', _.debounce(setRem, 200));
 };
 
 module.exports = () => {
