@@ -29,9 +29,11 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    let option = window.eChart.getOption();
-    option.series = this.generateSeriesData();
-    window.eChart.setOption(option, true);
+    if (nextProps.patterns) {
+      let option = window.eChart.getOption();
+      option.series = this.generateSeriesData();
+      window.eChart.setOption(option, true);
+    }
   }
 
   shouldComponentUpdate(){
@@ -99,6 +101,19 @@ class ComparatorPrediction extends React.Component {
         z: i === 5 ? 9999 : 2
       });
     });
+
+    let dataMaxLength = 0;
+    eChartSeriesData.forEach((serie) => {
+      if (serie.data.length > dataMaxLength) dataMaxLength = serie.data.length;
+    });
+
+    eChartSeriesData.forEach((serie) => {
+      let data = serie.data
+      while (data.length < dataMaxLength) {
+        data.push(data[data.length - 1]);
+      }
+    });
+
     return eChartSeriesData;
   }
 
