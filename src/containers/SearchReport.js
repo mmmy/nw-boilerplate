@@ -35,6 +35,7 @@ class SearchReport extends React.Component {
 	}
 
 	shouldComponentUpdate(){
+		// console.log('shouldComponentUpdate');
 		return true;
 	}
 

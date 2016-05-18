@@ -59,13 +59,15 @@ class ComparatorPrediction extends React.Component {
 			this.oldCrossFilter = crossFilter;
 		}
     this.xAxisData = [];
-    for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
+    
+    if (this.symbolDim.top(Infinity).length !== 0)
+      for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
 	}
 
   splitData(kLine, baseBars) {
     let data = [];
-    let percentage = this.props.lastClosePrice / kLine[0][2];
-    data.push(kLine[0][2] * percentage);
+    let percentage = this.props.lastClosePrice / kLine.slice(baseBars)[0][2];
+    // data.push(kLine[0][2] * percentage);
 
     if (kLine.length > baseBars) {
       kLine.slice(baseBars).forEach((e, i) => {
@@ -82,35 +84,38 @@ class ComparatorPrediction extends React.Component {
   generateSeriesData() {
     this.initDimensions();
     let eChartSeriesData = [];
-    // demo
-    this.symbolDim.top(Infinity).forEach((e, i) => {
-      eChartSeriesData.push({
-        data: this.splitData(e.kLine, e.baseBars),
-        name: '模拟数据',
-        type: 'line',
-        showSymbol: false,
-        hoverAnimation: false,
-        lineStyle: {
-          normal: {
-            color: i === 5 ? '#c23531' : '#ccc', // 暂时写死第五条线是红色
-            width: 0.8
-          }
-        },
-        z: i === 5 ? 9999 : 2
+    let rawData = this.symbolDim.top(Infinity);
+
+    if (rawData.length !== 0) {
+      this.symbolDim.top(Infinity).forEach((e, i) => {
+        eChartSeriesData.push({
+          data: this.splitData(e.kLine, e.baseBars),
+          name: '模拟数据',
+          type: 'line',
+          showSymbol: false,
+          hoverAnimation: false,
+          lineStyle: {
+            normal: {
+              color: i === 5 ? '#c23531' : '#ccc', // 暂时写死第五条线是红色
+              width: 0.8
+            }
+          },
+          z: i === 5 ? 9999 : 2
+        });
       });
-    });
 
-    let dataMaxLength = 0;
-    eChartSeriesData.forEach((serie) => {
-      if (serie.data.length > dataMaxLength) dataMaxLength = serie.data.length;
-    });
+      let dataMaxLength = 0;
+      eChartSeriesData.forEach((serie) => {
+        if (serie.data.length > dataMaxLength) dataMaxLength = serie.data.length;
+      });
 
-    eChartSeriesData.forEach((serie) => {
-      let data = serie.data
-      while (data.length < dataMaxLength) {
-        data.push(data[data.length - 1]);
-      }
-    });
+      eChartSeriesData.forEach((serie) => {
+        let data = serie.data
+        while (data.length < dataMaxLength) {
+          data.push(data[data.length - 1]);
+        }
+      });
+    }
 
     return eChartSeriesData;
   }

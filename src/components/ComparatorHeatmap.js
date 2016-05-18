@@ -116,7 +116,7 @@ class ComparatorHeatmap extends React.Component {
         height: '100%',
         y: 0,
         borderColor: '#000',
-        borderWidth: 5
+        borderWidth: 0 
       },
       xAxis: {
         show: false,

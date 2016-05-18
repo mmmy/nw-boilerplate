@@ -19,7 +19,6 @@ export default function(store) {
   }
 
   let takeScreenshot = function(canvasDom) {
-    try {
       const canvasContainer = canvasDom.document.getElementsByClassName('multiple')[0];
       const canvas = canvasContainer.getElementsByTagName('canvas')[2];
       const img = canvas.toDataURL();
@@ -30,17 +29,14 @@ export default function(store) {
       var data = matches[2];
       var buffer = new Buffer(data, 'base64');
 
-      fs.writeFile('src/image/screenshort_origin.' + ext, buffer, function(){
-        if (store) {
-          store.dispatch({
-            type: 'TAKE_SCREENSHOT',
-          });
-          console.log('screenshort_origin taken, rerender...');
-        }
+      fs.writeFile('src/image/screenshot_origin.' + ext, buffer, function(err){
+        if (err) throw err;
+        store.dispatch({
+          type: 'TAKE_SCREENSHOT'
+        });
+        console.log('screenshot_origin taken, rerender...');
       });
-    } catch (err) {
-      throw(err.message);
-    }
+
   }
 
 	window.actionsForIframe = {
