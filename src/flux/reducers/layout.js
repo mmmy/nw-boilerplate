@@ -12,7 +12,8 @@ const initialState = {
   isPredictionShow: true,                      // 走势预测面板显示
 	searchTimeSpent: 0, 						             //毫秒
   hasNewScreenshot: false,
-  screenshotURL: ''
+  screenshotTvURL: '',
+  screenshotEChartURL: '',
 }
 
 export default function layout(state = initialState, action) {
@@ -63,7 +64,8 @@ export default function layout(state = initialState, action) {
       return {
         ...state,
         hasNewScreenshot: true,
-        screenshotURL: '../src/image/screenshot_origin.png?random_number=' + new Date().getTime()
+        screenshotTvURL: '../src/image/screenshot_origin.png?random_number=' + new Date().getTime(),
+        screenshotEChartURL: '../src/image/screenshot_prediction.png?random_number=' + new Date().getTime()
       };
 
     case types.RENDER_SCREENSHOT:
