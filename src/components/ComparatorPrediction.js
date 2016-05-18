@@ -59,22 +59,19 @@ class ComparatorPrediction extends React.Component {
 			this.oldCrossFilter = crossFilter;
 		}
     this.xAxisData = [];
-    
+
     if (this.symbolDim.top(Infinity).length !== 0)
       for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
 	}
 
   splitData(kLine, baseBars) {
     let data = [];
-    let percentage = this.props.lastClosePrice / kLine.slice(baseBars)[0][2];
-    // data.push(kLine[0][2] * percentage);
 
-    if (kLine.length > baseBars) {
-      kLine.slice(baseBars).forEach((e, i) => {
-        data.push(e[2] * percentage);
-      });
-    } else {
-      kLine.forEach((e, i) => {
+    if (kLine && kLine.length !== 0) {
+      let line = kLine.length > baseBars ? kLine.slice(baseBars) : kLine;
+      let percentage = this.props.lastClosePrice / line[0][2];
+
+      line.forEach((e, i) => {
         data.push(e[2] * percentage);
       });
     }
@@ -85,6 +82,7 @@ class ComparatorPrediction extends React.Component {
     this.initDimensions();
     let eChartSeriesData = [];
     let rawData = this.symbolDim.top(Infinity);
+    let activeId = this.props.activeId;
 
     if (rawData.length !== 0) {
       this.symbolDim.top(Infinity).forEach((e, i) => {
@@ -96,11 +94,11 @@ class ComparatorPrediction extends React.Component {
           hoverAnimation: false,
           lineStyle: {
             normal: {
-              color: i === 5 ? '#c23531' : '#ccc', // 暂时写死第五条线是红色
+              color: e.id === activeId ? '#c23531' : '#ccc', // 暂时写死第五条线是红色
               width: 0.8
             }
           },
-          z: i === 5 ? 9999 : 2
+          z: e.id === activeId ? 9999 : 2
         });
       });
 

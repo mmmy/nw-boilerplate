@@ -54,7 +54,8 @@ class ComparatorStatic extends React.Component {
       heatmapYAxis,
       scaleMinValue,
       scaleMaxValue,
-      dispatch } = this.props;
+      dispatch,
+      activeId } = this.props;
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
       'comparator-chart-static-show': this.props.stretchView,
@@ -153,7 +154,12 @@ class ComparatorStatic extends React.Component {
             <div className={ 'comparator-header' }>
               <span>走势预测</span>
             </div>
-            <ComparatorPrediction dispatch={ dispatch } filter={ filter } patterns={ patterns } lastClosePrice={ lastClosePrice }/>
+            <ComparatorPrediction
+              dispatch={ dispatch }
+              filter={ filter }
+              patterns={ patterns }
+              lastClosePrice={ lastClosePrice }
+              activeId={ activeId }/>
           </div>
 
           <div className={'prediction-panel'}>
@@ -182,9 +188,10 @@ ComparatorStatic.propTypes = propTypes;
 ComparatorStatic.defaultProps = defaultProps;
 
 var stateToProps = function(state) {
-	const {layout, patterns, filter, prediction} = state;
+	const {layout, patterns, filter, prediction, active} = state;
 	const {stockView, isPredictionShow} = layout;
   const {lastClosePrice, predictionpriceScaleMarks, predictionLastClosePrices, heatmapYAxis, scaleMaxValue, scaleMinValue} = prediction;
+  const {id} = active;
 	return {
 		stretchView: !stockView,
     isPredictionShow: isPredictionShow,
@@ -193,7 +200,8 @@ var stateToProps = function(state) {
     lastClosePrice: lastClosePrice,
     heatmapYAxis: heatmapYAxis,
     scaleMinValue: scaleMinValue,
-    scaleMaxValue: scaleMaxValue
+    scaleMaxValue: scaleMaxValue,
+    activeId: id
 	};
 };
 export default connect(stateToProps)(ComparatorStatic);
