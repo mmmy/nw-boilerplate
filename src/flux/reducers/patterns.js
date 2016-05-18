@@ -5,7 +5,7 @@ import crossfilter from 'crossfilter';
 
 let d1 = new Date();
 let initialState = {
-	rawData: (process.env.NODE_ENV == 'development' ? randomPartterns(0) : randomPartterns(0)),
+	rawData: (process.env.NODE_ENV == 'development' ? randomPartterns(1) : randomPartterns(1)),
 	//crossFilter: function(){ return crossfilter(this.rawData); }(),
 	error: null,
 };

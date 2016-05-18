@@ -67,8 +67,8 @@ class SearchReport extends React.Component {
 
 	renderWaitingPanel() {
 	
-		let { waitingForPatterns, noPattern } = this.props;
-		let node = (waitingForPatterns || noPattern) ? <SearchWaitingWaves slow={noPattern}/> : '';
+		let { waitingForPatterns, firstStart } = this.props;
+		let node = waitingForPatterns ? <SearchWaitingWaves slow={firstStart}/> : '';
 
 		let wavesContainer = classNames('waves-container');
 
@@ -97,14 +97,13 @@ SearchReport.propTypes = propTypes;
 SearchReport.defaultProps = defaultProps;
 
 let stateToProps = function(state){
-	const {layout, patterns} = state;
-	const {stockView, searchTimeSpent, waitingForPatterns} = layout;
-	const noPattern = patterns.rawData.length == 0;
+	const {layout} = state;
+	const {stockView, searchTimeSpent, waitingForPatterns, firstStart} = layout;
 	return {
 		fullView: !stockView,
 		searchTimeSpent,
 		waitingForPatterns,
-		noPattern,
+		firstStart,
 	}
 };
 
