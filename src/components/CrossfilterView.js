@@ -30,6 +30,7 @@ const defaultProps = {
 
 const barChartBars = 20;
 const transitionDuration = 400;   //过滤动画毫秒数
+const debounceTime = 50;
 //node 重要: 一个crossfilter不能 生成超过128个dimentsion, 所以注意缓存dimentsion !
 
 class CrossfilterView extends React.Component {
@@ -317,7 +318,7 @@ class CrossfilterView extends React.Component {
 		 yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
 
 		 window.yieldDateScatterChart= yieldDateScatterChart;
-		 yieldDateScatterChart.on('filtered', this.onChartFiltered.bind(this));
+		 yieldDateScatterChart.on('filtered', _.debounce(this.onChartFiltered.bind(this), debounceTime));
 	}
 
 	drawPositionBubbleChart(){
@@ -350,7 +351,7 @@ class CrossfilterView extends React.Component {
 		
 		positionBubbleChart.yAxis().tickFormat((v) => { return v+'%';});
 
-		positionBubbleChart.on('filtered', this.onChartFiltered.bind(this));
+		positionBubbleChart.on('filtered', _.debounce(this.onChartFiltered.bind(this), debounceTime));
 		window.positionBubbleChart = positionBubbleChart;
 
 		this.positionBubbleChart = positionBubbleChart;
@@ -469,6 +470,8 @@ class CrossfilterView extends React.Component {
 			.mouseZoomable(true)
 			.zoomOutRestrict(false)
 			.zoomScale([1,4])
+			.controlsUseVisibility(true)
+			.turnOnControls(true)
 			.x(d3.scale.linear().domain([0, barChartBars+1]));
 			//.x(d3.scale.ordinal())
 			//.xUnits(DC.units.ordinal);
@@ -481,12 +484,76 @@ class CrossfilterView extends React.Component {
 		yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(5);
 		//yield.yAxis().tickFromat((v) => {return v+'%'});
 		yieldDimCountChart.on('filtered', this.onChartFiltered.bind(this));
+		yieldDimCountChart.on('preRender', function(chart){ console.log(chart); });
+		var filterhandler = function (dimension, filters) {
+			console.info('actual filters:',filters);
+			return ;
+	    dimension.filter(null);
+	    if (filters.length === 0) {
+	        dimension.filter(null);
+	    } else {
+	        dimension.filterFunction(function (d) {
+	            for (var i = 0; i < filters.length; i++) {
+	                var filter = filters[i];
+	                if (filter.isFiltered && filter.isFiltered(d)) {
+	                    return true;
+	                } else if (filter <= d && filter >= d) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        });
+	    }
+	    return filters;
+		};
+		//filterhandler = yieldDimCountChart.filterHandler().bind(null);
+		let handler = _.throttle(filterhandler, 2000, {leading: true, trailing: true});
+		//yieldDimCountChart.filterHandler(this.handleFilterCb.bind(this));
+		// yieldDimCountChart.filterHandler(filterhandler);
+
 		window.yieldDimCountChart = yieldDimCountChart;
 		this.yieldDimCountChart = yieldDimCountChart;
 	}
 
-	onChartFiltered(chart, filter) {
+	handleFilterCb(dimension, filters) {
+		this._dimension = dimension;
+		this._filters = filters;
+		this._dimensionFilter = this._dimensionFilter || _.throttle(this.dimensionFilter.bind(this), 1000, {leading:true, trailing: false});
+		this._dimensionFilter();
+		return filters;
+	}
 
+	dimensionFilter() {
+
+		console.info(this._dimension);
+		console.info('filters hahaha-----',this._filters);
+		let dimension = this._dimension,
+				filters = this._filters;
+
+		console.assert(dimension != null);
+
+		dimension.filter(null);
+    if (filters.length === 0) {
+        dimension.filter(null);
+    } else {
+        dimension.filterFunction(function (d) {
+            for (var i = 0; i < filters.length; i++) {
+                var filter = filters[i];
+                if (filter.isFiltered && filter.isFiltered(d)) {
+                    return true;
+                } else if (filter <= d && filter >= d) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+    return filters;
+	}
+
+	onChartFiltered(chart, filter) {
+		//console.info('onChartFiltered', chart, filter);
+		//return;
 		//console.log('chart filtered & filter:',filter);
 
 		let { dispatch } = this.props;

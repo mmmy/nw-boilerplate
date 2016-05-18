@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { SineWaves } from './lib/sine-waves';
 
 const propTypes = {
-
+	slow: PropTypes.bool
 };
 
 const defaultProps = {
@@ -33,17 +33,18 @@ class SearchWaitingWaves extends React.Component {
 	}
 
 	initWaves(){
-
+		let { slow } = this.props;
 		let el = this.refs.waves;
 		let width = el.parentNode.clientWidth,
 			height = el.parentNode.clientHeight;
 
+		const speed = slow ? (5 * 0.3) : 5;
 		let waves = new SineWaves({
 			// Canvas Element
 			el: el,
 
 			// General speed of entire wave system
-			speed: 5,
+			speed: speed,
 	        width: width,
 	        height: height,
 	        wavesWidth: "200%",
@@ -72,7 +73,7 @@ class SearchWaitingWaves extends React.Component {
 	        resizeEvent: function() {
 	            var a = this.ctx.createLinearGradient(0, 0, this.width, 0);
 	            a.addColorStop(0, "rgba(33, 33, 33, 0)"),
-	            a.addColorStop(.5, "rgba(33, 33, 33, 0.2)"),
+	            a.addColorStop(.5, "rgba(150, 150, 150, 0.2)"),
 	            a.addColorStop(1, "rgba(33, 33, 33, 0)");
 	            for (var b = -1, c = this.waves.length; ++b < c; )
 	                this.waves[b].strokeStyle = a;
@@ -81,6 +82,12 @@ class SearchWaitingWaves extends React.Component {
 	            a = void 0
 	        }
 		});
+		this.waves = waves;
+		window.waves = waves;
+	}
+
+	shiningWave(waves) {
+
 	}
 
 	render(){
