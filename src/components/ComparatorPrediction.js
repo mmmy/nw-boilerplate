@@ -68,7 +68,7 @@ class ComparatorPrediction extends React.Component {
     let data = [];
 
     if (kLine && kLine.length !== 0) {
-      let line = kLine.length > baseBars ? kLine.slice(baseBars) : [];
+      let line = kLine.length > baseBars ? kLine.slice(baseBars) : [0];
       // let line = kLine;
       if (line.length > 1) {
         let percentage = this.props.lastClosePrice / line[0][2];
@@ -91,8 +91,7 @@ class ComparatorPrediction extends React.Component {
     let minValue = 1000;
     if (rawData.length !== 0) {
       this.symbolDim.top(Infinity).forEach((e, i) => {
-        // if (e.kLine - e.baseBars >= 30) {
-
+        if (e.kLine.length > e.baseBars) {
           eChartSeriesData.push({
             data: this.splitData(e.kLine, e.baseBars),
             name: '模拟数据',
@@ -107,12 +106,12 @@ class ComparatorPrediction extends React.Component {
             },
             z: e.id === 5 ? 9999 : 2
           });
-        // }
+        }
       });
 
       let dataMaxLength = 0;
       eChartSeriesData.forEach((serie) => {
-        if (serie.data.length > dataMaxLength) dataMaxLength = serie.data.length;
+        if (serie.data.length > dataMaxLength && serie.data.length !== 1) dataMaxLength = serie.data.length;
       });
 
 
