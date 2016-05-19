@@ -34,7 +34,7 @@ let request = (options, cb, errorCb, postData) => {
 		errorCb && errorCb(error);
 	})
 	.always(function() {
-		console.log("complete");
+		// console.log("complete");
 	});
 	
 	return;

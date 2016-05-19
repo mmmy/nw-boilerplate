@@ -31,6 +31,11 @@ class Comparator extends React.Component {
 	}
 
   componentDidUpdate() {
+  	let { stretchView } = this.props;
+  	if(!stretchView) {
+  		//$(this.refs.img1).animateCss('slideInLeft');
+  		//$(this.refs.img2).animateCss('slideInLeft');
+  	}
   }
 
 	shouldComponentUpdate(){
@@ -43,17 +48,22 @@ class Comparator extends React.Component {
 
 
 	render() {
+		let { stretchView, screenshotTvURL, screenshotEChartURL } = this.props;
     const containerClassName = classNames('transition-all', 'container-comparator', {
       'container-comparator-stretch': this.props.stretchView,
       // 'container-comparator-hide': this.props.stretchView,
     });
-      const screenshotTvClassName = classNames('comparator-tv-screenshot');
-      const screenshotEchartClassName = classNames('comparator-echart-screenshot');
+      const screenshotTvClassName = classNames('comparator-tv-screenshot transition-all', {
+      	'stretch': stretchView
+      });
+      const screenshotEchartClassName = classNames('comparator-echart-screenshot transition-all', {
+      	'stretch':stretchView
+      });
 
 		return (
       <div className={ containerClassName } >
-        <img key={ this.props.screenshotTvURL } src={ this.props.screenshotTvURL } className={ screenshotTvClassName }/>
-        <img key={ this.props.screenshotEChartURL } src={ this.props.screenshotEChartURL } className={ screenshotEchartClassName }/>
+        { screenshotTvURL ? <img ref='img1' key={ screenshotTvURL } src={ screenshotTvURL } className={ screenshotTvClassName }/> : '' }
+        { screenshotEChartURL ? <img ref='img2' key={ screenshotEChartURL } src={ screenshotEChartURL } className={ screenshotEchartClassName }/> : '' }
       </div>
     );
 	}

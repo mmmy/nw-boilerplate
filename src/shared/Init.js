@@ -41,6 +41,7 @@ let initAssert = () => {
 };
 
 let initResize = () => {
+	setRem();
 	window.addEventListener('resize', _.debounce(setRem, 200));
 };
 

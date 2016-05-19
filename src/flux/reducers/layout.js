@@ -9,6 +9,7 @@ const initialState = {
 	stockView: true, 							               //主stock view 视图
 	patternSmallView: getPatternSmallView(),     //patterns 一列 or 两列 视图
 	waitingForPatterns: (process.env.NODE_ENV !== 'development'), 	//等待 getPatterns 返回结果
+	firstStart: true,
   isPredictionShow: true,                      // 走势预测面板显示
 	searchTimeSpent: 0, 						             //毫秒
   hasNewScreenshot: false,
@@ -44,6 +45,7 @@ export default function layout(state = initialState, action) {
 			return {
 				...state,
 				waitingForPatterns: true,
+				firstStart: false,
 			};
 
 		case types.CHANGE_PATTERNS:    //搜索结束

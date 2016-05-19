@@ -2,3 +2,5 @@ build
 node_modules
 *DS_Store*
 search_release*
+src/image/screenshot_origin.png
+src/image/screenshot_prediction.png

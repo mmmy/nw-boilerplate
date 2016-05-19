@@ -35,6 +35,7 @@ class SearchReport extends React.Component {
 	}
 
 	shouldComponentUpdate(){
+		// console.log('shouldComponentUpdate');
 		return true;
 	}
 
@@ -67,8 +68,8 @@ class SearchReport extends React.Component {
 
 	renderWaitingPanel() {
 	
-		let { waitingForPatterns } = this.props;
-		let node = waitingForPatterns ? <SearchWaitingWaves /> : '';
+		let { waitingForPatterns, firstStart } = this.props;
+		let node = waitingForPatterns ? <SearchWaitingWaves slow={firstStart}/> : '';
 
 		let wavesContainer = classNames('waves-container');
 
@@ -98,11 +99,12 @@ SearchReport.defaultProps = defaultProps;
 
 let stateToProps = function(state){
 	const {layout} = state;
-	const {stockView, searchTimeSpent, waitingForPatterns} = layout;
+	const {stockView, searchTimeSpent, waitingForPatterns, firstStart} = layout;
 	return {
 		fullView: !stockView,
 		searchTimeSpent,
 		waitingForPatterns,
+		firstStart,
 	}
 };
 
