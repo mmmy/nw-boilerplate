@@ -69,8 +69,8 @@ class ComparatorPrediction extends React.Component {
 
     if (kLine && kLine.length !== 0) {
       let line = kLine.length > baseBars ? kLine.slice(baseBars) : [0];
-
-      if (line.length !== 0) {
+      // let line = kLine;
+      if (line.length > 1) {
         let percentage = this.props.lastClosePrice / line[0][2];
 
         line.forEach((e, i) => {
@@ -91,20 +91,23 @@ class ComparatorPrediction extends React.Component {
     let minValue = 1000;
     if (rawData.length !== 0) {
       this.symbolDim.top(Infinity).forEach((e, i) => {
-        eChartSeriesData.push({
-          data: this.splitData(e.kLine, e.baseBars),
-          name: '模拟数据',
-          type: 'line',
-          showSymbol: false,
-          hoverAnimation: false,
-          lineStyle: {
-            normal: {
-              color: e.id === activeId ? '#c23531' : '#ccc', // 暂时写死第五条线是红色
-              width: 0.8
-            }
-          },
-          z: e.id === activeId ? 9999 : 2
-        });
+        // if (e.kLine - e.baseBars >= 30) {
+
+          eChartSeriesData.push({
+            data: this.splitData(e.kLine, e.baseBars),
+            name: '模拟数据',
+            type: 'line',
+            showSymbol: false,
+            hoverAnimation: false,
+            lineStyle: {
+              normal: {
+                color: e.id === 5 ? '#c23531' : '#ccc', // TODO
+                width: 0.8
+              }
+            },
+            z: e.id === 5 ? 9999 : 2
+          });
+        // }
       });
 
       let dataMaxLength = 0;
@@ -115,8 +118,10 @@ class ComparatorPrediction extends React.Component {
 
       eChartSeriesData.forEach((serie) => {
         let data = serie.data
-        while (data.length < dataMaxLength) {
-          data.push(data[data.length - 1]);
+        if (data.length !== 1) {
+          while (data.length < dataMaxLength) {
+            data.push(data[data.length - 1]);
+          }
         }
 
         data.forEach((d) => {
@@ -125,7 +130,6 @@ class ComparatorPrediction extends React.Component {
         })
       });
     }
-
 
     window.eChartMaxValue = maxValue;
     window.eChartMinValue = minValue;
