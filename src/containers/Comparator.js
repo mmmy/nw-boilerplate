@@ -24,7 +24,6 @@ class Comparator extends React.Component {
 	}
 
 	componentDidMount() {
-    // this.state.screenshot_origin_path = path.join('..', 'src/image/screenshot_origin.png');
 	}
 
 	componentWillReceiveProps(){
@@ -32,7 +31,11 @@ class Comparator extends React.Component {
 	}
 
   componentDidUpdate() {
-    // this.state.screenshot_origin_path = path.join('..', 'src/image/screenshot_origin.png');
+  	let { stretchView } = this.props;
+  	if(!stretchView) {
+  		//$(this.refs.img1).animateCss('slideInLeft');
+  		//$(this.refs.img2).animateCss('slideInLeft');
+  	}
   }
 
 	shouldComponentUpdate(){
@@ -43,28 +46,24 @@ class Comparator extends React.Component {
 
 	}
 
-  // getScreenshort() {
-  //   const screenshotPrediction = path.join('..', 'src/image/screenshot_origin.png') + '?random_number=' + new Date().getTime();
-  //   const screenshotPredictionClassName = classNames('comparator-chart-screenshot');
-  //
-  //   return (
-  //     <img key={ screenshotPrediction } src={ screenshotPrediction } className={ screenshotPredictionClassName }/>
-  //   );
-  // }
 
 	render() {
+		let { stretchView, screenshotTvURL, screenshotEChartURL } = this.props;
     const containerClassName = classNames('transition-all', 'container-comparator', {
       'container-comparator-stretch': this.props.stretchView,
+      // 'container-comparator-hide': this.props.stretchView,
     });
-      const screenshotPredictionClassName = classNames('comparator-chart-screenshot');
-    //const screenshotPrediction = path.join('./image','chart-screenshot.png');
-
-    // const screenshot = this.props.hasNewScreenshot ? this.getScreenshort() : path.join('..', 'src/image/screenshot_origin.png');
-    // const screenshot = this.props.screenshotURL;
+      const screenshotTvClassName = classNames('comparator-tv-screenshot transition-all', {
+      	'stretch': stretchView
+      });
+      const screenshotEchartClassName = classNames('comparator-echart-screenshot transition-all', {
+      	'stretch':stretchView
+      });
 
 		return (
       <div className={ containerClassName } >
-        <img key={ this.props.screenshotURL } src={ this.props.screenshotURL } className={ screenshotPredictionClassName }/>
+        { screenshotTvURL ? <img ref='img1' key={ screenshotTvURL } src={ screenshotTvURL } className={ screenshotTvClassName }/> : '' }
+        { screenshotEChartURL ? <img ref='img2' key={ screenshotEChartURL } src={ screenshotEChartURL } className={ screenshotEchartClassName }/> : '' }
       </div>
     );
 	}
@@ -75,11 +74,12 @@ Comparator.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
 	const {layout} = state;
-	const {stockView, hasNewScreenshot, screenshotURL} = layout;
+	const {stockView, hasNewScreenshot, screenshotTvURL, screenshotEChartURL} = layout;
 	return {
 		stretchView: !stockView,
     hasNewScreenshot: hasNewScreenshot,
-    screenshotURL: screenshotURL
+    screenshotTvURL: screenshotTvURL,
+    screenshotEChartURL: screenshotEChartURL
 	};
 };
 export default connect(stateToProps)(Comparator);

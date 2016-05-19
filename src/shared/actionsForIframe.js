@@ -21,22 +21,35 @@ export default function(store) {
   let takeScreenshot = function(canvasDom) {
       const canvasContainer = canvasDom.document.getElementsByClassName('multiple')[0];
       const canvas = canvasContainer.getElementsByTagName('canvas')[2];
-      const img = canvas.toDataURL();
+      const tvSS = canvas.toDataURL();
+      const eChartSS = window.eChart.getDataURL();
 
-      var regex = /^data:.+\/(.+);base64,(.*)$/;
-      var matches = img.match(regex);
-      var ext = matches[1];
-      var data = matches[2];
-      var buffer = new Buffer(data, 'base64');
+      _saveScreenshot(tvSS, 'src/image/screenshot_origin');
+      _saveScreenshot(eChartSS, 'src/image/screenshot_prediction');
 
-      fs.writeFile('src/image/screenshot_origin.' + ext, buffer, function(err){
-        if (err) throw err;
-        store.dispatch({
-          type: 'TAKE_SCREENSHOT'
-        });
-        console.log('screenshot_origin taken, rerender...');
+      // fs.writeFile('src/image/screenshot_origin.' + ext, buffer, function(err){
+      //   if (err) throw err;
+      //   store.dispatch({
+      //     type: 'TAKE_SCREENSHOT'
+      //   });
+      //   console.log('screenshot_origin taken, rerender...');
+      // });
+  }
+
+  const _saveScreenshot = function(dataURL, path) {
+    var regex = /^data:.+\/(.+);base64,(.*)$/;
+    var matches = dataURL.match(regex);
+    var ext = matches[1];
+    var data = matches[2];
+    var buffer = new Buffer(data, 'base64');
+
+    fs.writeFile(path + '.' + ext, buffer, function(err){
+      if (err) throw err;
+      store.dispatch({
+        type: 'TAKE_SCREENSHOT'
       });
-
+      console.log('screenshot taken, rerender...');
+    });
   }
 
 	window.actionsForIframe = {

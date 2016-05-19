@@ -5,7 +5,7 @@
   "main": "./build/index.html",
   "window": {
     "show": true,
-    "width": 1200,
+    "width": 1277,
     "height": 768,
     "min_width": 900,
     "min_height": 600,
