@@ -68,12 +68,15 @@ class ComparatorPrediction extends React.Component {
     let data = [];
 
     if (kLine && kLine.length !== 0) {
-      let line = kLine.length > baseBars ? kLine.slice(baseBars) : kLine;
-      let percentage = this.props.lastClosePrice / line[0][2];
+      let line = kLine.length > baseBars ? kLine.slice(baseBars) : [0];
 
-      line.forEach((e, i) => {
-        data.push(e[2] * percentage);
-      });
+      if (line.length !== 0) {
+        let percentage = this.props.lastClosePrice / line[0][2];
+
+        line.forEach((e, i) => {
+          data.push(e[2] * percentage);
+        });
+      }
     }
     return data;
   }
@@ -84,6 +87,8 @@ class ComparatorPrediction extends React.Component {
     let rawData = this.symbolDim.top(Infinity);
     let activeId = this.props.activeId;
 
+    let maxValue = 0;
+    let minValue = 1000;
     if (rawData.length !== 0) {
       this.symbolDim.top(Infinity).forEach((e, i) => {
         eChartSeriesData.push({
@@ -107,13 +112,23 @@ class ComparatorPrediction extends React.Component {
         if (serie.data.length > dataMaxLength) dataMaxLength = serie.data.length;
       });
 
+
       eChartSeriesData.forEach((serie) => {
         let data = serie.data
         while (data.length < dataMaxLength) {
           data.push(data[data.length - 1]);
         }
+
+        data.forEach((d) => {
+          maxValue = d >= maxValue ? d : maxValue;
+          minValue = d < minValue ? d : minValue;
+        })
       });
     }
+
+
+    window.eChartMaxValue = maxValue;
+    window.eChartMinValue = minValue;
 
     return eChartSeriesData;
   }
