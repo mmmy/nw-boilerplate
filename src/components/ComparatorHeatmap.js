@@ -116,7 +116,7 @@ class ComparatorHeatmap extends React.Component {
         height: '100%',
         y: 0,
         borderColor: '#000',
-        borderWidth: 0 
+        borderWidth: 0
       },
       xAxis: {
         show: false,
@@ -131,13 +131,13 @@ class ComparatorHeatmap extends React.Component {
       visualMap: {
         show: false,
         min: 0,
-        max: 15,
+        max: 50,
         calculable: false,
         orient: 'vertical',
         left: 'center',
         bottom: '15%',
         // color: ['#982C2F', '#C23433', '#E42329', '#F63A3B'] // 从大到小排列
-        color: ['#982C2F', '#C23433', '#E42329', '#F63A3B', '#C6C7C8'] // 从大到小排列
+        color: ['#831211', '#A40A07', '#B70A05', '#D90A03', '#FC0900', '#C6C7C8'] // 从大到小排列
 
       },
       series: [{
