@@ -67,16 +67,13 @@ class ComparatorPrediction extends React.Component {
   splitData(kLine, baseBars) {
     let data = [];
 
-    if (kLine && kLine.length !== 0) {
-      let line = kLine.length > baseBars ? kLine.slice(baseBars) : [0];
-      // let line = kLine;
-      if (line.length > 1) {
-        let percentage = this.props.lastClosePrice / line[0][2];
+    if (kLine && kLine.length > baseBars) {
+      let line =  kLine.slice(baseBars);
+      let percentage = this.props.lastClosePrice / line[0][2];
 
-        line.forEach((e, i) => {
-          data.push(e[2] * percentage);
-        });
-      }
+      line.forEach((e, i) => {
+        data.push(e[2] * percentage);
+      });
     }
     return data;
   }
@@ -92,20 +89,23 @@ class ComparatorPrediction extends React.Component {
     if (rawData.length !== 0) {
       this.symbolDim.top(Infinity).forEach((e, i) => {
         if (e.kLine.length > e.baseBars) {
-          eChartSeriesData.push({
-            data: this.splitData(e.kLine, e.baseBars),
-            name: '模拟数据',
-            type: 'line',
-            showSymbol: false,
-            hoverAnimation: false,
-            lineStyle: {
-              normal: {
-                color: e.id === 5 ? '#c23531' : '#ccc', // TODO
-                width: 0.8
-              }
-            },
-            z: e.id === 5 ? 9999 : 2
-          });
+          let data = this.splitData(e.kLine, e.baseBars);
+          if (data.length > 0) {
+            eChartSeriesData.push({
+              data: data,
+              name: '模拟数据',
+              type: 'line',
+              showSymbol: false,
+              hoverAnimation: false,
+              lineStyle: {
+                normal: {
+                  color: e.id === 5 ? '#c23531' : '#ccc', // TODO
+                  width: 0.8
+                }
+              },
+              z: e.id === 5 ? 9999 : 2
+            });
+          }
         }
       });
 
