@@ -11,11 +11,14 @@ const propTypes = {
 	waitingForPatterns: PropTypes.bool.isRequired,
 	sort: PropTypes.object.isRequired,
 	active: PropTypes.object.isRequired,
+	filter: PropTypes.object,
 };
 
 const defaultProps = {
   	
 };
+
+let _nodes = [];
 
 //note 重要: crossfilter 生成的dimensions数量不能超过128个 , 所以要注意保存dimension !!
 
@@ -30,12 +33,43 @@ class PatternCollection extends React.Component {
 
 	}
 
-	componentWillReceiveProps() {
+	componentWillReceiveProps(newProps) { //优化性能
+		// let { id } = newProps.active;
+		// let oldId = this.props.active.id;
+		// if(id !== this.props.active.id) {
+		// 	console.log('xxxxxxxxxxxxxxxx');
+		// 	$(`#pattern_view_${id}`,this.refs.container).addClass('active');
+		// 	$(`#pattern_view_${oldId}`,this.refs.container).removeClass('active');
+		let {crossFilter} = newProps.patterns;
+		if(this.oldCrossFilter !== crossFilter) {
+
+			console.info('crossFilter changed!');
+			this.oldCrossFilter = crossFilter;
+			this.symbolDim = crossFilter.dimension(e=>{ return e.symbol; });
+			
+		}
+
+		if( newProps.filter !== this.props.filter ){
+			
+			let filteredData = this.symbolDim.top(Infinity),
+					idArr = _.pluck(filteredData, 'id'),
+					node = this.refs.container;
+			//console.info('idarr', idArr);
+			setTimeout(() => {
+				$('.pattern-view', node).addClass('hide');
+				idArr.forEach((id) => {
+					$(`#pattern_view_${id}`,node).removeClass('hide');
+				});		
+			});
+
+		}
 
 	}
 
-	shouldComponentUpdate() {
-		return true;
+	shouldComponentUpdate(newProps, newState) {
+		//return false;
+		return newProps.filter === this.props.filter;   //filter更新后不进行刷新, 而是在componentWillReceiveProps 进行手动刷新
+		// return (newProps.sort !== this.props.sort) || (newProps.patterns != this.props.patterns);
 	}
 
 	componentWillUnmount() {
@@ -44,6 +78,7 @@ class PatternCollection extends React.Component {
 
 	componentDidUpdate() {
 		console.log('patterns collections view  did update', new Date() - this.renderDate);
+		console.log('patterns collections view  did update2', new Date() - this.renderDate2);
 		if(!this.props.fullView) {
 			//console.log('patternCollection did update');
 			this.refs.container.scrollTop = 0;
@@ -132,10 +167,11 @@ class PatternCollection extends React.Component {
 			nodes = sortedData.map((e, i) => {
 				let show = idArr.indexOf(e.id) !== -1;
 				let isActive = id === e.id;
-				return <PatternView isActive={isActive} show={show} pattern={e} key={e.id} index={i} dispatch={dispatch} fullView={fullView}/>
+				return <PatternView id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={i} dispatch={dispatch} fullView={fullView}/>
 			});
+			//nodes = nodes.length > 0 ? nodes.slice(0,10) : [];
 		//}
-
+		this.renderDate2 = new Date();
 		return nodes;
 	}
 

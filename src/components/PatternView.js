@@ -11,6 +11,7 @@ const propTypes = {
 	fullView: PropTypes.bool.isRequired,
 	isActive: PropTypes.bool,
 	dispatch: PropTypes.func.isRequired,
+	id: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
@@ -71,7 +72,7 @@ class PatternView extends React.Component {
 
 	render(){
 
-		let {show, pattern, dispatch, index, fullView, isActive} = this.props;
+		let {show, pattern, dispatch, index, fullView, isActive, id} = this.props;
 
 		const className = classNames('transition-all', 'pattern-view', {
 			'active': isActive,
@@ -90,7 +91,7 @@ class PatternView extends React.Component {
 
 		let style = fullView && this.getWH() || { widht: '', height: ''};
 
-		return (<div style={style} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
+		return (<div style={style} id={ `pattern_view_${id}`} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
 
 			<div className={symbolClass}>{pattern.symbol}</div>
 

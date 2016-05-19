@@ -33,6 +33,10 @@ class PatternContainer extends React.Component {
 		return true;
 	}
 
+	componentDidUpdate() {
+
+	}
+
 	componentWillUnmount(){
 
 	}
