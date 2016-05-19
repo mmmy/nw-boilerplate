@@ -235,7 +235,7 @@ class CrossfilterView extends React.Component {
 			console.assert(this.yield100Range[1] > this.yield100Range[0]);
 			this.yieldDateGroup = this.yieldDateDim.group();
 
-			this.yieldDim = crossFilter.dimension((data) => { return Math.round((Math.round(data.yield*100) - that.yield100Range[0]) / rangeInterval); }); //转换到 0 - (barChartBars - 1)
+			this.yieldDim = crossFilter.dimension((data) => { return Math.floor((data.yield*100 - that.yield100Range[0]) / rangeInterval); }); //转换到 0 - (barChartBars - 1)
 			this.yieldGroup = this.yieldDim.group();
 
 			this.industryDim = crossFilter.dimension((data) => { return data.industry; });
