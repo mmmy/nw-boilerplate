@@ -178,7 +178,7 @@
 	position: relative;
 	height: 100%;
 	overflow: scroll;
-	padding: 10px 0 10px 5.8%;
+	padding: 10px 0 10px 2.8%;
 	.scrollbar(@width:5px);
 	.scrollbar-track(@background-color:transparent);
 	.scrollbar-thumb();
@@ -195,16 +195,16 @@
 	float: left;
 	width: @patternView_flat_W;
 	height: @patternView_flat_W * 1.4;
-	transition: width, height 0.3s  0 ease;
+	// transition: width, height 0.3s  0 ease;
 	background-color: #fff;
 	//border: 1px solid @ks-color-gray-8;
 	overflow: hidden;
 
 	margin: 3px;
 	margin-top: 3%;
-	margin-left: 3%;
+	margin-left: 6%;
 	&:nth-child(2n) {
-		margin-left: 7%;
+		margin-left: 6%;
 	}
 
 	&.hide {
@@ -257,18 +257,18 @@
 			width: @patternView_W * 1.4 * @smaller * 1.2;
 			margin-top: 5px;
 			//margin: 10px;
-			&:nth-child(2) {
+			&.s1 {
 				margin-top: 30px;	
 			}
-			&:nth-child(3) {
+			&.s2 {
 				margin-top: 30px;
 				margin-left:15px;
 			}
-			&:nth-child(4) {
+			&.s3 {
 				//margin-top: 10px;
 				margin-bottom: 30px;
 			}
-			&:nth-child(5) {
+			&.s4 {
 				//margin-top: 10px;
 				margin-bottom: 30px;
 				margin-left: 15px;

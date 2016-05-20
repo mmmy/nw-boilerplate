@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
-import PatternView from './PatternView';
+import PatternView from '../components/PatternView';
+import { connect } from 'react-redux';
 import * as sortTypes from '../flux/constants/SortTypes';
 import _ from 'underscore';
 import classNames from 'classnames';
@@ -8,7 +9,7 @@ const propTypes = {
 	patterns: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
 	fullView: PropTypes.bool.isRequired,
-	waitingForPatterns: PropTypes.bool.isRequired,
+	// waitingForPatterns: PropTypes.bool.isRequired,
 	sort: PropTypes.object.isRequired,
 	active: PropTypes.object.isRequired,
 	filter: PropTypes.object,
@@ -81,12 +82,44 @@ class PatternCollection extends React.Component {
 			$(`#pattern_view_${oldId}`,this.refs.container).removeClass('active');
 		}
 
+		return;
+		/**
+		 * 切换视图
+		 */
+		let { fullView } = newProps,
+				oldFullView = this.props.fullView;
+		if (fullView !== oldFullView) {
+			let leading5 = $(">*:visible", this.refs.container);
+			console.info(leading5);
+			let node1 = $(leading5[0]),
+					node2 = $(leading5[1]),
+					node3 = $(leading5[2]),
+					node4 = $(leading5[3]),
+					node5 = $(leading5[4]);
+
+			if(fullView) {
+				node1.removeClass('column larger');
+				node2.removeClass('column smaller s1');
+				node3.removeClass('column smaller s2');
+				node4.removeClass('column smaller s3');
+				node5.removeClass('column smaller s4');
+			} else {
+				node1.addClass('column larger');
+				node2.addClass('column smaller s1');
+				node3.addClass('column smaller s2');
+				node4.addClass('column smaller s3');
+				node5.addClass('column smaller s4');
+				this.refs.container.scrollTop = 0;
+			}
+		}
+
 	}
 
 	shouldComponentUpdate(newProps, newState) {
 		//return true;
 		return 	(newProps.filter === this.props.filter)    //filter更新后不进行自动刷新, 而是在componentWillReceiveProps 进行手动刷新
 						&& (newProps.active.id === this.props.active.id)   //点击patternview
+						//&& (newProps.fullView === this.props.fullView)   //视图切换
 		// return (newProps.sort !== this.props.sort) || (newProps.patterns != this.props.patterns);
 	}
 
@@ -95,8 +128,8 @@ class PatternCollection extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.log('patterns collections view  did update', new Date() - this.renderDate);
-		console.log('patterns collections view  did update2', new Date() - this.renderDate2);
+		console.info('patterns collections view  did update', new Date() - this.renderDate);
+		console.info('patterns collections view  did update2', new Date() - this.renderDate2);
 		if(!this.props.fullView) {
 			//console.log('patternCollection did update');
 			this.refs.container.scrollTop = 0;
@@ -182,10 +215,11 @@ class PatternCollection extends React.Component {
 			let filteredData = this.symbolDim.top(Infinity),
 				idArr = _.pluck(filteredData, 'id');
 			
+			let index = 0; //显示出来的index, -1为隐藏的
 			nodes = sortedData.map((e, i) => {
 				let show = idArr.indexOf(e.id) !== -1;
 				let isActive = id === e.id;
-				return <PatternView id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={i} dispatch={dispatch} fullView={fullView}/>
+				return <PatternView id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>
 			});
 			//nodes = nodes.length > 0 ? nodes.slice(0,10) : [];
 		//}
@@ -207,4 +241,11 @@ class PatternCollection extends React.Component {
 PatternCollection.propTypes = propTypes;
 PatternCollection.defaultProps = defaultProps;
 
-export default PatternCollection;
+let stateToProps = function(state) {
+	const {layout, patterns, sort, active, filter } = state;
+	const {stockView, patternSmallView} = layout;
+	//const {crossFilter,rawData} = patterns;
+	return {fullView: !stockView, patternSmallView, patterns, sort, active, filter };
+};
+
+export default connect(stateToProps)(PatternCollection);
