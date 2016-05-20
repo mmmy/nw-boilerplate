@@ -40,6 +40,12 @@ class PatternCollection extends React.Component {
 		// 	console.log('xxxxxxxxxxxxxxxx');
 		// 	$(`#pattern_view_${id}`,this.refs.container).addClass('active');
 		// 	$(`#pattern_view_${oldId}`,this.refs.container).removeClass('active');
+		//return;
+		
+		/**
+		 * filter手动刷新
+		 */
+		//return;
 		let {crossFilter} = newProps.patterns;
 		if(this.oldCrossFilter !== crossFilter) {
 
@@ -64,11 +70,23 @@ class PatternCollection extends React.Component {
 
 		}
 
+		/**
+		 * 点击pattern手动刷新
+		 */
+		let { id } = newProps.active;
+		let oldId = this.props.active.id;
+		if(id !== this.props.active.id) {
+			console.log('手动刷新active id显示');
+			$(`#pattern_view_${id}`,this.refs.container).addClass('active');
+			$(`#pattern_view_${oldId}`,this.refs.container).removeClass('active');
+		}
+
 	}
 
 	shouldComponentUpdate(newProps, newState) {
-		//return false;
-		return newProps.filter === this.props.filter;   //filter更新后不进行刷新, 而是在componentWillReceiveProps 进行手动刷新
+		//return true;
+		return 	(newProps.filter === this.props.filter)    //filter更新后不进行自动刷新, 而是在componentWillReceiveProps 进行手动刷新
+						&& (newProps.active.id === this.props.active.id)   //点击patternview
 		// return (newProps.sort !== this.props.sort) || (newProps.patterns != this.props.patterns);
 	}
 

@@ -31,8 +31,9 @@ class ComparatorStatic extends React.Component {
 
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps, newState){
 		return true;
+    return newProps.filter === this.props.filter; 
 	}
 
 	componentWillUnmount(){

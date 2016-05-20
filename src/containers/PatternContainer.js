@@ -29,12 +29,13 @@ class PatternContainer extends React.Component {
 
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps, newState){
 		return true;
+		return newProps.filter === this.props.filter;
 	}
 
 	componentDidUpdate() {
-
+		console.info('PatternContainer did update in', new Date() - this.d1);
 	}
 
 	componentWillUnmount(){
@@ -42,6 +43,7 @@ class PatternContainer extends React.Component {
 	}
 
 	render(){
+		this.d1 = new Date();
 		const { fullView, patternSmallView, dispatch, sort, patterns } = this.props;
 		const className = classNames('transition-all', 'pattern-container', {
 			'full': fullView,

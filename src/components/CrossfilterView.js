@@ -541,6 +541,7 @@ class CrossfilterView extends React.Component {
 	onChartFiltered(chart, filter) {
 
 		//_dimensionFilter(chart.dimension(), chart.filters());
+		// return;
 		let { dispatch } = this.props;
 		console.info('onChartFiltered !!!',filter);
 		switch (chart) {

@@ -31,8 +31,9 @@ class statisticsContainer extends React.Component {
 
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps, newState){
 		return true;
+		return newProps.filter === this.props.filter;
 	}
 
 	componentWillUnmount(){
@@ -40,7 +41,7 @@ class statisticsContainer extends React.Component {
 	}
 
 	componentDidUpdate() {
-		//console.log('statisticsContainer did update', new Date() - this.renderDate);
+		console.info('statisticsContainer did update', new Date() - this.renderDate);
 	}
 
 	render(){

@@ -39,6 +39,10 @@ class SearchReport extends React.Component {
 		return true;
 	}
 
+	componentDidUpdate() {
+		console.info('SearchReport did update in:', new Date() - this.d1);
+	}
+
 	componentWillUnmount(){
 
 	}
@@ -48,6 +52,7 @@ class SearchReport extends React.Component {
 	}
 
 	render(){
+		this.d1 = new Date();
 		const { fullView, statisticsLarger} = this.props;
 		const className = classNames('transition-all', 'container-searchreport', {
 			'searchreport-full': fullView,

@@ -20,7 +20,7 @@ class MainChart extends React.Component {
 	}
 
   componentDidUpdate() {
-    console.info('app did update in millsec: ', new Date() - this.d1);
+    console.info('CoreApp did update in millsec: ', new Date() - this.d1);
   }
 
 	render() {
