@@ -62,7 +62,7 @@ let _dimensionFilter = (dimension, filters) => {
           return false;
       });
   }
-  DC.redrawAll();
+  setTimeout(DC.redrawAll);
   return filters;
 
 };
@@ -100,7 +100,7 @@ class CrossfilterView extends React.Component {
 		// //this.drawDc();
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps, newState){
 		return true;
 	}
 
@@ -181,7 +181,7 @@ class CrossfilterView extends React.Component {
 		});
 
 		//setTimeout(this.handleResize.bind(this), 300);
-		//console.log('^-^crossFilter view did update', new Date() - this.renderDate);
+		console.info('^-^crossFilter view did update', new Date() - this.renderDate);
 	}
 
 	render() {
@@ -307,7 +307,7 @@ class CrossfilterView extends React.Component {
 			this.drawIndustryPieChart();
 			this.drawYieldDimCountChart();
 
-			DC.renderAll();
+			setTimeout(DC.renderAll);
 		}
 
 	}
