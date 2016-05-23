@@ -20,7 +20,7 @@ const defaultProps = {
 };
 
 let _nodes = [];
-
+let _oldPatternRawData = null;
 //note 重要: crossfilter 生成的dimensions数量不能超过128个 , 所以要注意保存dimension !!
 
 class PatternCollection extends React.Component {
@@ -31,7 +31,7 @@ class PatternCollection extends React.Component {
 	}
 
 	componentDidMount() {
-
+		_oldPatternRawData = this.props.patterns.rawData;
 	}
 
 	componentWillReceiveProps(newProps) { //优化性能
@@ -117,6 +117,16 @@ class PatternCollection extends React.Component {
 
 	shouldComponentUpdate(newProps, newState) {
 		//return true;
+		//pattern 改变 的时候 只渲染前5个, 结局搜索后渲染时间过长的问题
+		if(newProps.patterns.rawData !== _oldPatternRawData) {
+			this.renderLeading5 = true;
+			_oldPatternRawData = newProps.patterns.rawData;
+			let that = this;
+			setTimeout(() => { that.setState({}); }, 2000);
+		} else {
+			this.renderLeading5 = false;
+		}
+
 		return 	(newProps.filter === this.props.filter)    //filter更新后不进行自动刷新, 而是在componentWillReceiveProps 进行手动刷新
 						&& (newProps.active.id === this.props.active.id)   //点击patternview
 						//&& (newProps.fullView === this.props.fullView)   //视图切换
@@ -216,7 +226,9 @@ class PatternCollection extends React.Component {
 				idArr = _.pluck(filteredData, 'id');
 			
 			let index = 0; //显示出来的index, -1为隐藏的
-			nodes = sortedData.map((e, i) => {
+			//sortedData = sortedData.slice(0 ,5);
+			let dataArr = this.renderLeading5 ? sortedData.slice(0, 5) : sortedData;
+			nodes = dataArr.map((e, i) => {
 				let show = idArr.indexOf(e.id) !== -1;
 				let isActive = id === e.id;
 				return <PatternView id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>

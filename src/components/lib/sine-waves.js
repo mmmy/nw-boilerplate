@@ -604,7 +604,7 @@ SineWaves.prototype.update = function(time) {
     var timeModifier = this.waves[index].timeModifier || 1;
     this.waves[index].addTime = (this.waves[index].addTime==undefined ? 0 : this.waves[index].addTime) - (timeModifier - 1) * 0.007;
   }
-  console.log('SineWaves update');
+  //console.log('SineWaves update');
   if (typeof time === 'undefined') {
     time = this.time;
   }

@@ -87,7 +87,8 @@ class SearchReport extends React.Component {
 	renderDataPanels() {
 
 		let dataPanelClass = classNames('search-report-wrapper', 'transition-top', 'transition-duration2', {
-			'slide-down': this.props.waitingForPatterns
+			'slide-down': this.props.waitingForPatterns,
+			'transition-delay3': !this.props.waitingForPatterns,
 		});
 
 		return (<div className={dataPanelClass} >

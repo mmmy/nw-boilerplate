@@ -84,6 +84,8 @@ gulp.task('watch', ['html','fonts','image','scripts','styles'], function(){
 	}));
 });
 
+gulp.task('build', ['html','fonts','image','scripts','styles']);
+
 gulp.task('dev_react',['styles'],function(){
   gulp.watch(paths.STYLES, ['styles']);
   gulp.src('dev_react/*.html').pipe(gulp.dest(paths.BUILD));

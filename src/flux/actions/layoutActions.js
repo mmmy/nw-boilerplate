@@ -26,7 +26,7 @@ const togglePredictionPanel = function togglePredictionPanel() {
 const takeScreenshot = function takeScreenshot() {
   return (dispatch) => {
     dispatch({
-      type: type.TAKE_SCREENSHOT,
+      type: types.TAKE_SCREENSHOT,
     })
   };
 };
@@ -34,15 +34,38 @@ const takeScreenshot = function takeScreenshot() {
 const renderScreenshot = function renderScreenshot() {
   return (dispatch) => {
     dispatch({
-      type: type.RENDER_SCREENSHOT,
+      type: types.RENDER_SCREENSHOT,
     })
   };
 };
+
+const showConfigModal = function() {
+  return (dispatch) => {
+    setTimeout(() => {
+      dispatch({
+        type: types.SHOW_CONFIG_MODAL,
+      });
+    });
+  };
+};
+
+const closeConfigModal = function() {
+  return (dispatch) => {
+    setTimeout(() => {
+      dispatch({
+        type: types.CLOSE_CONFIG_MODAL,
+      });
+    });
+  };
+};
+
 
 module.exports = {
   toggleStockView,
   waitingForPatterns,
   togglePredictionPanel,
   takeScreenshot,
-  renderScreenshot
+  renderScreenshot,
+  showConfigModal,
+  closeConfigModal,
 }

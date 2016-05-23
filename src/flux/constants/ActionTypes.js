@@ -35,3 +35,7 @@ export const SET_HEATMAP_YAXIS = 'SET_HEATMAP_YAXIS';
 
 //active
 export const SET_ACTIVE_ID = 'SET_ACTIVE_ID';
+
+//config modal
+export const SHOW_CONFIG_MODAL = 'SHOW_CONFIG_MODAL';
+export const CLOSE_CONFIG_MODAL = 'CLOSE_CONFIG_MODAL';
