@@ -12,11 +12,15 @@ export default function(store) {
 
   let sendSymbolHistory = function(postData, cb) {
     tradingViewActions.getSymbolHistory(postData, cb);
-  }
+  };
 
   let sendSymbolSearchResult = function(postData, cb) {
     tradingViewActions.getSymbolSearchResult(postData, cb);
-  }
+  };
+
+  let showConfigModal = function() {
+    store.dispatch(layoutActions.showConfigModal());
+  };
 
   let takeScreenshot = function(canvasDom) {
       const canvasContainer = canvasDom.document.getElementsByClassName('multiple')[0];
@@ -56,6 +60,7 @@ export default function(store) {
 		searchSymbolDateRange,      //tv-chart.html 中 "搜索"
 		sendSymbolHistory,          //获取股票数据
     sendSymbolSearchResult,
-    takeScreenshot
+    takeScreenshot,
+    showConfigModal,
 	};
 }
