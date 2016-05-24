@@ -6,6 +6,19 @@ import { patternActions } from '../flux/actions';
 import classNames from 'classnames';
 import ToggleBar from '../components/ToggleBar';
 import SearchWaitingWaves from '../components/SearchWaitingWaves';
+import store from '../store';
+
+let afterSearchMessage = (number, timeSpent) => {
+	const time = (timeSpent/1000).toFixed(3);
+	let msgNode = $(`<div class="search-message-container slide-up-down">拱石为你找到匹配图形<span class="number">${number}</span>个，用时<span>${time}</span>秒</div>`);
+	msgNode.appendTo(window.document.body);
+	msgNode.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
+		//console.log('afterSearchMessage container animation ended----====-----');
+		msgNode.remove();
+	});
+};
+
+let _isToggled = false;
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
@@ -27,11 +40,11 @@ class SearchReport extends React.Component {
 	}
 
 	componentDidMount() {
-
+		//afterSearchMessage(200, 0.001);
 	}
 
-	componentWillReceiveProps(){
-
+	componentWillReceiveProps(newProps){
+		_isToggled = newProps.fullView !== this.props.fullView;
 	}
 
 	shouldComponentUpdate(){
@@ -41,6 +54,15 @@ class SearchReport extends React.Component {
 
 	componentDidUpdate() {
 		console.info('SearchReport did update in:', new Date() - this.d1);
+		let { fullView, waitingForPatterns } = this.props;
+		$(this.refs.container).one("webkitTransitionEnd oTransitionEnd MSTransitionEnd", (e) => {
+			if(!fullView && !waitingForPatterns && !_isToggled) {
+				console.info('SearchReport animation over');
+				console.log(e);
+				let state = store.getState();
+				afterSearchMessage(state.patterns.rawData.length, state.layout.searchTimeSpent);
+			}
+		});
 	}
 
 	componentWillUnmount(){
@@ -91,7 +113,7 @@ class SearchReport extends React.Component {
 			'transition-delay3': !this.props.waitingForPatterns,
 		});
 
-		return (<div className={dataPanelClass} >
+		return (<div className={dataPanelClass} ref='container'>
 			<Comparator />
 			<SearchDetail />
 		</div>);

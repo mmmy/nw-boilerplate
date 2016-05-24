@@ -1,5 +1,7 @@
 import KSSearch from './KSSearch';
 import KSDataService from './KSDataService';
+import store from '../store';
+import lodash from 'lodash';
 
 let __data = [];
 /**
@@ -8,7 +10,9 @@ let __data = [];
 
 let searchPattern = (args, cb, errorCb) => {
 
-	const { symbol, bars, dateRange, additionDate } = args;
+	const { symbol, bars, dateRange, searchConfig } = args;
+
+	let { additionDate } = searchConfig;
 
 	let searchArgs = { symbol, dateRange, bars };
 

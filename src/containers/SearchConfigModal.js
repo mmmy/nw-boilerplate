@@ -39,8 +39,8 @@ class SearchConfigModal extends React.Component {
 	}
 
 	render(){
-		let { showConfigModal } = this.props;
-		return showConfigModal ? <ConfigModal /> : <div></div>;
+		let { showConfigModal, searchConfig, dispatch } = this.props;
+		return showConfigModal ? <ConfigModal searchConfig={searchConfig} dispatch={dispatch}/> : <div></div>;
 	}
 
 }
@@ -50,10 +50,11 @@ SearchConfigModal.defaultProps = defaultProps;
 
 
 let stateToProps = function(state) {
-	const {configModal} = state;
+	const {configModal, searchConfig} = state;
 	const {showConfigModal} = configModal;
 	return {
 		showConfigModal,
+		searchConfig,
 	};
 };
 

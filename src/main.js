@@ -3,6 +3,7 @@ import 'babel-polyfill';
 import init from './shared/Init';
 import actionsForIframe from './shared/actionsForIframe';
 import app from './app';
+import store from './store';
 
 Promise.all([
   new Promise((resolve) => {

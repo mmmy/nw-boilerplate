@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PatternCollection from './PatternCollection';
 import SortBar from '../components/SortBar';
 import FilterBar from '../components/FilterBar';
+import PatternStatisticsPanel from './PatternStatisticsPanel';
 import classNames from 'classnames';
 
 const propTypes = {
@@ -59,7 +60,11 @@ class PatternContainer extends React.Component {
 		const collectionClass = classNames('transition-all', 'pattern-collection-container', {
 			'stretch': !fullView,
 		});
-
+		const patternInfoClass = classNames('transition-all', 'pattern-statistics-container', {
+			'ks-transition-height-opacity': fullView,
+			'ks-show': fullView,
+			'ks-hidden': !fullView,
+		});
 		return (<div className={ className }>
 			<div className={ toolbarClass }>
 				<SortBar dispatch={dispatch} sort={sort} />
@@ -67,6 +72,9 @@ class PatternContainer extends React.Component {
 			</div>
 			<div className={ collectionClass }>
 				<PatternCollection dispatch={ dispatch } />
+			</div>
+			<div className={ patternInfoClass }>
+				<PatternStatisticsPanel />
 			</div>
 		</div>);
 	}
