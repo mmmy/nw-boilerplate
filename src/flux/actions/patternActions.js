@@ -2,7 +2,7 @@ import * as types from '../constants/ActionTypes';
 import ajaxData from '../../backend/ajaxData';
 import backend from '../../backend';
 import crossfilter from 'crossfilter';
-
+import store from '../../store';
 /**
  * 异步获取patterns
  * @param  {string}   symbol    [股票代码]
@@ -20,11 +20,11 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 		const startTime = new Date();
 
 		if (devLocal) {
-
+			
 			ajaxData.getPatterns(
-
-				{symbol, dateRange},
-
+				
+				{symbol, dateRange}, 
+				
 				(res) => {
 					let patterns = JSON.parse(res);
 					patterns.crossFilter = crossfilter(patterns.rawData);
@@ -42,7 +42,9 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 
 		} else {
 
-			backend.searchPattern({symbol, dateRange, bars},
+			let { searchConfig } = store.getState();
+
+			backend.searchPattern({symbol, dateRange, bars, searchConfig}, 
 
 				(resArr) => {
 

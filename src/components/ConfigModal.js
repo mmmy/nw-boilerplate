@@ -16,7 +16,8 @@ const defaultProps = {
 let datePickerOptions = {
 	format: "yyyy/mm/dd",
 	language: "zh-CN",
-	keyboardNavigation: false
+	keyboardNavigation: false,
+	autoclose: true,
 };
 
 class SearchConfigModal extends React.Component {
@@ -31,8 +32,20 @@ class SearchConfigModal extends React.Component {
 	}
 
 	componentDidMount() {
-		$(this.refs.startDate).datepicker(datePickerOptions);
-		$(this.refs.endDate).datepicker(datePickerOptions);
+		let that = this;
+		let { searchConfig } = this.state;
+
+		$(this.refs.startDate).datepicker(datePickerOptions).on('hide', (e) => { 
+			let dateStr = e.format();
+			searchConfig.dateRange[0] = dateStr;
+			that.setState({searchConfig});
+		});
+
+		$(this.refs.endDate).datepicker(datePickerOptions).on('hide', (e) => { 
+			let dateStr = e.format();
+			searchConfig.dateRange[1] = dateStr;
+			that.setState({searchConfig});
+		});
 	}
 
 	componentWillReceiveProps(){
@@ -79,7 +92,7 @@ class SearchConfigModal extends React.Component {
 			</div>
 			<div className='item-title'>统计天数</div>
 			<div className='item-body-container days'>
-				<button>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button>+</button><span>天</span>
+				<button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button><span>天</span>
 			</div>
 			<div className='footer'>
 				<button onClick={this.handleSaveConfig.bind(this)}>保存配置</button><span onClick={this.resetState.bind(this)}>重置</span>
@@ -92,7 +105,7 @@ class SearchConfigModal extends React.Component {
 			<div className='modal-overlay'></div>
 
 			<div className='config-modal-container'>
-				<div className='close-icon fa fa-close' onClick={this.closeModal.bind(this)}></div>
+				<div className='close-icon' onClick={this.closeModal.bind(this)}><span className='fa fa-close'></span></div>
 				<div className='modal-content-wrapper'>
 					{this.renderContent()}
 				</div>
@@ -136,6 +149,20 @@ class SearchConfigModal extends React.Component {
 
 	resetState() {
 		let searchConfig = lodash.cloneDeep(this.props.searchConfig);
+		this.setState({searchConfig});
+	}
+
+	reduceDays() {
+		let { searchConfig } = this.state;
+		if(searchConfig.additionDate.value > 0) {
+			searchConfig.additionDate.value = parseInt(searchConfig.additionDate.value) - 1;
+			this.setState({searchConfig});
+		}
+	}
+
+	addDays() {
+		let { searchConfig } = this.state;
+		searchConfig.additionDate.value = parseInt(searchConfig.additionDate.value) + 1;
 		this.setState({searchConfig});
 	}
 

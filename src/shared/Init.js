@@ -3,9 +3,10 @@ import _ from 'underscore';
 
 let initJquery = () => {
 	let $ = require('jquery');
-	window.jQeury = window.$ = $;
-	global.jQeury = global.$ = $;
+	window.jQuery = window.$ = $;
+	global.jQuery = global.$ = $;
 	require('./bootstrap-datepicker.min');
+	require('./bootstrap-datepicker.zh-CN.min');
 	//animate.css helper
 	if(!$.fn.animatedCss){
 			$.fn.extend({

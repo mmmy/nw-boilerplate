@@ -32,7 +32,7 @@ class PatternView extends React.Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		
+
 		// let { fullView, index } = newProps;
 		// let oldFullView = this.props.fullView;
 		// return;
@@ -91,7 +91,7 @@ class PatternView extends React.Component {
 
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
     if (!isActive) chart.Q5.getAll()[1].setSymbol(symbol);
-    chart.TradingView.gotoDate(chart.Q5.getAll()[1], +new Date(dateStart));
+    chart.KeyStone.gotoDate(chart.Q5.getAll()[1], +new Date(dateStart));
 	}
 
 	render(){
