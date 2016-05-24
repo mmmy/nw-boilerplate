@@ -1,5 +1,6 @@
 import KSSearch from './KSSearch';
 import KSDataService from './KSDataService';
+import store from '../store';
 
 let __data = [];
 /**

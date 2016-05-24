@@ -5,6 +5,7 @@ let initJquery = () => {
 	let $ = require('jquery');
 	window.jQeury = window.$ = $;
 	global.jQeury = global.$ = $;
+	require('./bootstrap-datepicker.min');
 	//animate.css helper
 	if(!$.fn.animatedCss){
 			$.fn.extend({

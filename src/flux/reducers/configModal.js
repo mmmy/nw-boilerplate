@@ -1,7 +1,7 @@
 import * as types from '../constants/ActionTypes';
 
 const initialState = {
-  showConfigModal: false,
+  showConfigModal: true,
 };
 
 export default function active(state = initialState, action) {

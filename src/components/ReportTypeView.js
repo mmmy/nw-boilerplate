@@ -40,10 +40,11 @@ class ReportTypeView extends React.Component {
 		const startDate = dateRange[0] ? moment(dateRange[0]).format('YYYY.MM.DD') : '--';
 		const endDate = dateRange[1] ? moment(dateRange[1]).format('YYYY.MM.DD') : '--';
 
+		let spaceDefinitionStr = spaceDefinition.stock ? '股票' : '' + spaceDefinition.furture ? ' 期货' : '';
 		return (<div className="reporttype-container">
 				<div className='type-item-container'>搜索空间: <span className='lulu'>{`${searchSpace}`}</span></div>
 				<div className='type-item-container'>搜索时间: <span className='lulu'>{`${startDate} ~ ${endDate}`}</span></div>
-				<div className='type-item-container'>空间定义: <span className='lulu'>{`${spaceDefinition}`}</span></div>
+				<div className='type-item-container'>空间定义: <span className='lulu'>{`${spaceDefinitionStr}`}</span></div>
 				<div className='type-item-container'>匹配形态: <span className='lulu'>{`${matchType}`}</span></div>
 			</div>);
 	}
