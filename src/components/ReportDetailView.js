@@ -181,7 +181,8 @@ class ReportDetailView extends React.Component {
 
 	renderStuffs(data) {
 		
-		const { fullView } = this.props;
+		const { fullView, searchConfig } = this.props;
+		let daysStr = searchConfig && searchConfig.additionDate && searchConfig.additionDate.value || '0';
 		//统计天数
 		const daysClass = classNames('position-ab', 'text-center', 'transition-all', 'days', {'mama': !fullView});
 		//统计天数值
@@ -203,7 +204,7 @@ class ReportDetailView extends React.Component {
 
 		return [
 			<div className={daysClass}>统计天数</div>,
-			<div className={daysValueClass}>30</div>,
+			<div className={daysValueClass}>{daysStr}</div>,
 			<div className={shouyiClass}>收益</div>,
 			<div className={upRateClass}>上涨比例</div>, //xiaolu
 			<div className={upRateValueClass} style={{'color': '#b61c15'}}>{ (data.upPercent*100).toFixed(1) + '%' }</div>,

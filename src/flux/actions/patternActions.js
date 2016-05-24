@@ -52,6 +52,7 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 						rawData: resArr,
 					};
 					patterns.crossFilter = crossfilter(patterns.rawData);
+					patterns.searchConfig = searchConfig;
 					let searchTimeSpent = new Date() - startTime;
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 					cb && cb();

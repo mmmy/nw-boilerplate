@@ -72,7 +72,7 @@ class statisticsContainer extends React.Component {
 
 	    return (
 	      <div className={ className }>
-	        <div className={fistReportClass}><ReportDetailView crossFilter={crossFilter} fullView={fullView}/></div>
+	        <div className={fistReportClass}><ReportDetailView searchConfig={searchConfig} crossFilter={crossFilter} fullView={fullView}/></div>
 	        {/*<div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>*/}
 	        <div className={reportClass3}><ReportTypeView report={report} searchConfig={searchConfig}/></div>
 	        <div className={'crossfilter-container-wrap'}>
@@ -90,16 +90,16 @@ statisticsContainer.propTypes = propTypes;
 statisticsContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const {layout, report, patterns, filter, searchConfig} = state;
+	const {layout, report, patterns, filter} = state;
 	const {stockView, patternSmallView} = layout;
-	const {crossFilter} = patterns;
+	const {crossFilter, searchConfig} = patterns;
 	return {
 			fullView: !stockView,
 			statisticsLarger: patternSmallView,
 			crossFilter,
 			report,
 			filter,
-			searchConfig,
+			searchConfig: searchConfig || state.searchConfig,
 		};
 };
 
