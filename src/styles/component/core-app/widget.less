@@ -1,0 +1,32 @@
+//afterSearchMessage
+
+@-webkit-keyframes slide-up-down {
+	0% { bottom: -30px; }
+	20% { bottom: 0; }
+	80% { bottom: 0; }
+	100% { bottom: -30px; }
+}
+
+.search-message-container {
+	position: fixed;
+	bottom: -30px;
+	left: 0;
+	width: 100%;
+	height: 30px;
+	text-align: center;
+	box-shadow: 0 0 40px 0 #f7f7f7;
+	font-size: 12px;
+	padding-top: 5px;
+	color: @ks-color-gray-5;
+	.font-msyh();
+	&.slide-up-down {
+		-webkit-animation: 4s ease 0s slide-up-down;
+	}
+	.number {
+		color: @ks-color-gray-1;
+		padding: 0 5px;
+	}
+	.timespend {
+
+	}
+}
