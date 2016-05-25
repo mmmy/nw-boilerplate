@@ -85,7 +85,7 @@ class PatternView extends React.Component {
 		let { dispatch, isActive } = this.props;
 		let { id, symbol, baseBars, kLine } = this.props.pattern;
 
-    let dateStart = kLine[baseBars][0];
+    let dateStart = kLine[baseBars - 20] ? kLine[baseBars - 20][0] : kLine[baseBars];
     let dateEnd = kLine[baseBars - 1][0];
     dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
 
