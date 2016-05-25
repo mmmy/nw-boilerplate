@@ -5,6 +5,21 @@
 	height: 100%;
 	//border: 1px solid yellow;
 	background-color: #fff;
+	.toggle-btn {
+		background-image: url('./image/toggle-normal.png');
+		background-repeat: no-repeat;
+		background-color: transparent;
+		background-size: contain;
+		margin-right: 10px;
+		outline: none;
+		border: none;
+		display: inline-block;
+		height: 1.3rem;
+		width: 1.3rem;
+		&.larger {
+			background-image: url('./image/toggle-larger.png');
+		}
+	}
 }
 
 .crossfilter-container-stretch{
@@ -20,6 +35,7 @@
 	width: 100%;
 	height: 50%;
 	padding-top: 5.5%;
+	position: relative;
 	//padding-bottom: 4%;
 	//border: 1px solid #ddd;
 	&:nth-child(2) {
@@ -37,9 +53,23 @@
 	}
 	.inline-chart-wrapper {
 		display: inline-block;
-		position: relative;
+		position: absolute;
 		width: 50%;
-		height: 100%;
+		height: 93%;
+		top: 7%;
+		background-color: rgba(255, 255, 255, 0);
+		&:nth-child(2) {
+			left: 50%;
+			padding: 0;
+			&.full{
+				background-color: rgba(255, 255, 255, 0.9);
+				left: 0;
+				top: -95%;
+				height: 190%;
+				width: 100%;
+				padding: 30% 0;
+			}
+		}
 	}
 
 }
@@ -57,6 +87,7 @@
 
 .yield-count-chart{
 	height: calc(~"88% - "@chartTitleH);
+	min-height: 150px;
 	width: 100%;
 }
 
@@ -82,4 +113,8 @@
 		color: @ks-color-gray-7;
 		font-size: 1rem
 	}
+}
+
+.dc-chart>svg {
+	overflow: visible;
 }

@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { sortActions } from '../flux/actions';
+import { sortActions, filterActions } from '../flux/actions';
+import RCSlider from 'rc-slider';
+import DC from 'dc';
 import * as sortTypes from '../flux/constants/SortTypes';
 
 const SORT_BTN_DATE = { type:'SORT_BTN_DATE', label:'按日期' };
@@ -10,6 +12,7 @@ const SORT_BTN_YIELD= { type:'SORT_BTN_YIELD', label:'按收益率' };
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
 	sort: PropTypes.object.isRequired,
+	crossFilter: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -21,7 +24,10 @@ class SortBar extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			showSortPanel: false
+			showChildPanel: false,
+			panelType: -1,  					//0,1,2,3
+			values:{min:0, max:100},
+			eyeType: 0 								//0,1,2
 		};
 	}
 
@@ -83,29 +89,78 @@ class SortBar extends React.Component {
 		return (<a className={btnClass} onClick={this.handleSort.bind(this, btnType.type)} >{ btnType.label } <span className='sort-icon'>{ icons }</span></a>);
 	}
 
-	renderSortPanel() {
+	renderChildPanel(panelType) {
 		
-		if(this.state.showSortPanel === false) {
+		if(this.state.panelType !== panelType) {
 			return '';
 		}
+		switch(panelType) {
+			case 0:   //sort
+				return <div className='child-panel-container'>
+					{this.renderSortIcons(SORT_BTN_SIMILARITY)}
+					{this.renderSortIcons(SORT_BTN_DATE)}
+					{this.renderSortIcons(SORT_BTN_YIELD)}
+				</div>;
+				break;
 
-		return <div className='sort-panel-container'>
-			{this.renderSortIcons(SORT_BTN_SIMILARITY)}
-			{this.renderSortIcons(SORT_BTN_DATE)}
-			{this.renderSortIcons(SORT_BTN_YIELD)}
-		</div>;
+			case 1:  //filter
+				let {min, max} = this.state.values;
+				return <div className='child-panel-container'>
+					<span className='title-left' >相似度:</span>
+					<div className='slider-container'>
+						<RCSlider 
+							className='slider-appearance' 
+							min={0} 
+							max={100} 
+							range 
+							value={[min, max]} 
+							onChange={this.rangeChange.bind(this)} 
+							onAfterChange={this.rangeChangeComplete.bind(this)} 
+							tipFormatter={ function(d) {return d+'%';} }
+						/>
+					</div>
+				</div>;
+				break;
+
+			case 2:   //eye
+				let {eyeType} = this.state;
+				return <div className='child-panel-container flex'>
+					<span className={'eye-item fa fa-'+ (eyeType===0 ? 'check-' : '') +'square-o'} onClick={this.changeEyeType.bind(this,0)}>看全部</span>
+					<span className={'eye-item fa fa-'+ (eyeType===1 ? 'check-' : '') + 'square-o'} onClick={this.changeEyeType.bind(this,1)}>只看未剔除</span>
+					<span className={'eye-item fa fa-'+ (eyeType===2 ? 'check-' : '') +'square-o'} onClick={this.changeEyeType.bind(this,2)}>只看剔除</span>
+				</div>
+				break;
+
+			case 3:  //search
+				break;
+			default:
+				return '';
+		}
 	
 	}
 
 	render(){
 		//let {sort} = this.props;
-		return (<div className="sortbar-container">
-				<div className='toolbar-item'><h5 className='left-title'>匹配图形</h5></div>
-				<div className='toolbar-item'>
-					<button className='sort-trigger-btn' onFocus={ this.showSortPanel.bind(this) } onBlur={ this.hideSortPanel.bind(this) }>
-						排序
-						{this.renderSortPanel()}
+		return (<div className="toolbar-container">
+				<div className='toolbar-item item0'><h5 className='left-title'>匹配图形</h5></div>
+				<div className='toolbar-item item1'>
+					<button className='pattern-bar-btn' onFocus={ this.showChildPanel.bind(this, 3) } onBlur={ this.hideChildPanel.bind(this) }>
+						<span className='icon search'></span>
+						{this.renderChildPanel(3)}
 					</button>
+					<button className='pattern-bar-btn' onFocus={ this.showChildPanel.bind(this, 2) } onBlur={ this.hideChildPanel.bind(this) }>
+						<span className='icon eye'></span>
+						{this.renderChildPanel(2)}
+					</button>
+					<button className='pattern-bar-btn' onFocus={ this.showChildPanel.bind(this, 1) } onBlur={ this.hideChildPanel.bind(this) }>
+						<span className='icon filter'></span>
+						{this.renderChildPanel(1)}
+					</button>
+					<button className='pattern-bar-btn' onFocus={ this.showChildPanel.bind(this, 0) } onBlur={ this.hideChildPanel.bind(this) }>
+						<span className='icon sort'></span>
+						{this.renderChildPanel(0)}
+					</button>
+
 				</div>
 			</div>);
 	}
@@ -128,13 +183,49 @@ class SortBar extends React.Component {
 
 	}
 
-	showSortPanel() {
-		this.setState({showSortPanel: true});
+	showChildPanel(type) { //0,1,2,3
+		this.setState({showChildPanel: true, panelType: type});
 	}
 
-	hideSortPanel() {
-		this.setState({showSortPanel: false});
+	hideChildPanel() {
+		this.setState({showChildPanel: false, panelType: -1});
 	}
+
+	rangeChange(range){
+		this.setState({values:{min:range[0], max:range[1]}});
+	}
+
+	rangeChangeComplete(range){
+		console.log('rangeChangeComplete');
+		this.handleFilterSimilarity();
+	}
+
+	handleFilterSimilarity() {
+		this.filterSimilarity(this.state.values);
+		this.props.dispatch(filterActions.setFilterSimilarity(this.state.values));	
+	}
+	
+	filterSimilarity({min, max}) {
+		this.initDimensions();
+		this.similarityDim.filter([min, max]);
+		DC.redrawAll();
+	}
+
+	initDimensions() {
+		let {crossFilter} = this.props;
+		if(this.oldCrossFilter !== crossFilter) {
+			this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
+			this.similarityDim = crossFilter.dimension(function(d) {return Math.round(d.similarity*100); });
+			this.oldCrossFilter = crossFilter;
+		}
+	}
+
+	changeEyeType(type) {
+		let {eyeType} = this.state;
+		if(type===eyeType) return;
+		this.setState({eyeType:type});
+	}
+
 }
 
 SortBar.propTypes = propTypes;

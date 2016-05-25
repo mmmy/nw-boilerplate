@@ -67,8 +67,8 @@ class PatternContainer extends React.Component {
 		});
 		return (<div className={ className }>
 			<div className={ toolbarClass }>
-				<SortBar dispatch={dispatch} sort={sort} />
-				<FilterBar dispatch={dispatch} crossFilter={patterns.crossFilter} />
+				<SortBar crossFilter={patterns.crossFilter} dispatch={dispatch} sort={sort} />
+				{/*<FilterBar dispatch={dispatch} crossFilter={patterns.crossFilter} />*/}
 			</div>
 			<div className={ collectionClass }>
 				<PatternCollection dispatch={ dispatch } />

@@ -82,7 +82,7 @@ class CrossfilterView extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {chart3larger: false};
 		//this.oldCrossFilter = props.crossFilter;
 	}
 
@@ -184,6 +184,48 @@ class CrossfilterView extends React.Component {
 		console.info('^-^crossFilter view did update', new Date() - this.renderDate);
 	}
 
+	resizeChart3() {
+		
+		let a = 2.03, b = - 143.59;
+		let curW = this.refs.yield_count_chart.clientWidth,
+				curH = this.refs.yield_count_chart.clientHeight;
+		let wrapper = $(this.refs.yield_count_chart_wrapper);
+
+		let targetW = 0,
+				targetH = 0;
+
+		if(wrapper.hasClass('full')) {
+			targetW = curW * 2;
+			targetH = curH * a + b;
+		} else {
+			targetW = curW / 2;
+			targetH = this.refs.industry_quarter_chart.clientHeight;
+		}
+		let that = this;
+		setTimeout(() => {that.yieldDimCountChart.width(targetW).height(targetH).redraw(); });
+		setTimeout(()=> {that.yieldDimCountChart.renderYAxis(that.yieldDimCountChart) });
+		setTimeout(() => {that.yieldDimCountChart.renderXAxis(that.yieldDimCountChart) });
+	}
+
+	toggleChart3() {
+		//let chart3larger = this.state;
+		//this.setState({chart3larger: !chart3larger});
+		// let interVal = setInterval(this.handleResize.bind(this),50);
+		let wrapper = $(this.refs.yield_count_chart_wrapper);
+		//this.yieldDimCountChart.transitionDuration(1);
+		//let padding = wrapper.has('.full') ? '0' : ''
+		wrapper.toggleClass('full');
+		let that = this;
+		wrapper.one("webkitTransitionEnd oTransitionEnd MSTransitionEnd", () => {
+			//clearInterval(interVal);
+			// that.handleResize();
+		});
+		//wrapper.css('padding', '');
+		$(this.refs.toggle_btn).toggleClass('larger');
+		this.resizeChart3();
+		// setTimeout(this.handleResize.bind(this), 500);
+	}
+
 	render() {
 		this.renderDate = new Date();
 		const className = classnames('crossfilter-container', {
@@ -191,6 +233,9 @@ class CrossfilterView extends React.Component {
 		  'crossfilter-container-shrink': !this.props.stretchView
 		});
 		//console.log('crossFilter view render');
+		let { chart3larger } = this.state;
+		let toggleBtnClass = classnames('toggle-btn');
+		let toggleBtn = <button ref='toggle_btn' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
 		return (
 		  <div ref='root' className={ className }>
 		  	<div className="dc-chart-row">
@@ -199,7 +244,7 @@ class CrossfilterView extends React.Component {
 		    </div>
 		    <div className="dc-chart-row">
 		    	<div className='inline-chart-wrapper'><strong>饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"><div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
-		    	<div className='inline-chart-wrapper'><strong>收益率统计</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{toggleBtn}收益率统计</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>
 		  </div>
 		);
@@ -270,8 +315,8 @@ class CrossfilterView extends React.Component {
 			this.yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)]; //收益率的最大最小值
 			//this.yield100Range[0] = Math.floor(this.yield100Range[0] / 20) * 20; // -23 => -4, 34 => 20
 			//this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 20) * 20; // 88 => 100, 129 => 140
-			this.yield100Range[0] = Math.floor(this.yield100Range[0] / 100) * 100; // -23 => -50, 34 => 50
-			this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 100) * 100; // 88 => 100, 129 => 150
+			this.yield100Range[0] = Math.floor(this.yield100Range[0] / 50) * 50; // -23 => -50, 34 => 50
+			this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 50) * 50; // 88 => 100, 129 => 150
 			this.yield100Range = scalize(this.yield100Range);
 			let rangeInterval = ( this.yield100Range[1] -  this.yield100Range[0] ) / barChartBars;
 			console.info(this.yield100Range);
