@@ -9,6 +9,7 @@ import comparatorTv from './comparatorTv';
 import prediction from './prediction';
 import active from './active';
 import searchConfig from './searchConfig';
+import configModal from './configModal';
 
 export default combineReducers({
 	layout,
@@ -21,4 +22,5 @@ export default combineReducers({
 	prediction,
 	active,
 	searchConfig,
+	configModal,
 });

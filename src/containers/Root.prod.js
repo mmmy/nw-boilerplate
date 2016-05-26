@@ -4,6 +4,7 @@ import MainContainer from './MainContainer';
 //import { toggleStockView } from '../flux/actions/layoutActions';
 import Header from './Header';
 import RightToolBar from './RightToolBar';
+import SearchConfigModal from './SearchConfigModal';
 import CoreApp from './CoreApp';
 
 //import StockView from './StockView';
@@ -24,6 +25,8 @@ class Root extends React.Component {
 			<RightToolBar />
 
 			<CoreApp />
+
+			<SearchConfigModal />
 
 		</MainContainer>);
 	}

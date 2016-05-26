@@ -19,7 +19,12 @@ class MainChart extends React.Component {
     setRem();
 	}
 
+  componentDidUpdate() {
+    console.info('CoreApp did update in millsec: ', new Date() - this.d1);
+  }
+
 	render() {
+    this.d1 = new Date();
     let comparatorChartClassName = classNames('comparator-chart-static', {
       'comparator-chart-static-show': this.props.stretchView,
       'comparator-chart-static-hide': !this.props.stretchView,

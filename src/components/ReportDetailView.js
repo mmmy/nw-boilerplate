@@ -36,18 +36,6 @@ class ReportDetailView extends React.Component {
 	}
 
 	componentDidUpdate() {
-
-		if(!$.fn.animatedCss){
-			$.fn.extend({
-			    animateCss: function (animationName) {
-			        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-			        $(this).addClass('animated ' + animationName).one(animationEnd, function() {
-			            $(this).removeClass('animated ' + animationName);
-			        });
-			    }
-			});
-		}
-
 		let { fullView } = this.props;
 
 		if (fullView) {
@@ -179,9 +167,9 @@ class ReportDetailView extends React.Component {
 				{this.generateItem({
 					title:'下跌', 
 					items:[
-							{name:'收益中位数', content:down.median.toFixed(2)+'%'}, 
+							{name:'收益中位数', content:(down.median*100).toFixed(2)+'%'}, 
 							{name:'收益平均数',content:(down.mean*100).toFixed(2)+'%'}, 
-							{name:'上涨极值',content:(down.min*100).toFixed(2)+'%'}
+							{name:'下跌极值',content:(down.min*100).toFixed(2)+'%'}
 						]
 					})
 				}
@@ -193,7 +181,8 @@ class ReportDetailView extends React.Component {
 
 	renderStuffs(data) {
 		
-		const { fullView } = this.props;
+		const { fullView, searchConfig } = this.props;
+		let daysStr = searchConfig && searchConfig.additionDate && searchConfig.additionDate.value || '0';
 		//统计天数
 		const daysClass = classNames('position-ab', 'text-center', 'transition-all', 'days', {'mama': !fullView});
 		//统计天数值
@@ -215,7 +204,7 @@ class ReportDetailView extends React.Component {
 
 		return [
 			<div className={daysClass}>统计天数</div>,
-			<div className={daysValueClass}>30</div>,
+			<div className={daysValueClass}>{daysStr}</div>,
 			<div className={shouyiClass}>收益</div>,
 			<div className={upRateClass}>上涨比例</div>, //xiaolu
 			<div className={upRateValueClass} style={{'color': '#b61c15'}}>{ (data.upPercent*100).toFixed(1) + '%' }</div>,

@@ -4,7 +4,9 @@ const initialState = {
   lastClosePrice: 0,
   predictionLastClosePrices: [],    // 用作heatmap
   predictionPriceScaleMarks: [],    // 用作heatmap
-  heatmapYAxis: [] 
+  heatmapYAxis: [],
+  scaleMaxValue: 0,
+  scaleMinValue:0
 };
 
 export default function prediction(state = initialState, action) {
@@ -31,10 +33,12 @@ export default function prediction(state = initialState, action) {
       }
 
     case types.SET_HEATMAP_YAXIS:
-      let heatmapYAxis = action.heatmapYAxis;
+      let { heatmapYAxis, scaleMaxValue, scaleMinValue } = action;
       return {
         ...state,
-        heatmapYAxis: heatmapYAxis
+        heatmapYAxis: heatmapYAxis,
+        scaleMaxValue: scaleMaxValue,
+        scaleMinValue: scaleMinValue
       }
 
     default:

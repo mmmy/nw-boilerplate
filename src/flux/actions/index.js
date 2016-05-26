@@ -6,6 +6,7 @@ import comparatorTvActions from './comparatorTvActions';
 import predictionActions from './predictionActions';
 import activeActions from './activeActions';
 import tradingViewActions from './tradingViewActions';
+import searchConfigActions from './searchConfigActions';
 
 module.exports = {
 	layoutActions,
@@ -15,5 +16,6 @@ module.exports = {
   comparatorTvActions,
   predictionActions,
   activeActions,
-  tradingViewActions
+  tradingViewActions,
+  searchConfigActions,
 }

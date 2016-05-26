@@ -34,7 +34,7 @@ let searchPattern = ({ symbol, dateRange, bars}, cb, errorCb) => {
 	//let id = parseInt(symbol.replace(exchangeReg, '')); //去掉交易所字符
 	let id = symbol.replace(exchangeReg, ''); //去掉交易所字符
 	
-	console.assert(!isNaN(id), 'error: 股票id  为NaN');
+	//console.assert(!isNaN(id), 'error: 股票id  为NaN');
 	console.assert(dateRange.length == 2);
 	console.assert(bars > 0);
 	//console.log(searchOptions, config);

@@ -59,11 +59,11 @@ class ToggleBar extends React.Component {
 
 		const time = (searchTimeSpent/1000).toFixed(3);
 
-		return (<div className={toggleClass}>
-					<div className={btnWrapper}>
-						<div className="item title">云搜索</div>
-						<div className={timespentClass}>{ `用时:${time}秒` }</div>
-						<div className={btnClass} onClick={this.toggleView.bind(this)}><i className="fa fa-angle-up"></i></div>
+		return (<div className={toggleClass} >
+					<div className={btnWrapper} onClick={this.toggleView.bind(this)}>
+						<div className="item title">搜索</div>
+						{/*<div className={timespentClass}>{ `用时:${time}秒` }</div>*/}
+						<div className={btnClass} ><i className="fa fa-angle-up"></i></div>
 					</div>
 		          {/*<button
 		            style={{'marginLeft':'48%'}}
@@ -77,6 +77,8 @@ class ToggleBar extends React.Component {
 	}
 
 	toggleView() {
+		let { waitingForPatterns } = this.props;
+		if (waitingForPatterns) return;
 		this.props.dispatch(layoutActions.toggleStockView());
 	}
 

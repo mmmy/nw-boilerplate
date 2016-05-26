@@ -37,7 +37,9 @@ class ComparatorPrediction extends React.Component {
   shouldComponentUpdate(){
     return true;
   }
-
+  componentDidUpdate() {
+    console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
+  }
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
   }
@@ -57,20 +59,19 @@ class ComparatorPrediction extends React.Component {
 			this.oldCrossFilter = crossFilter;
 		}
     this.xAxisData = [];
-    for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
+
+    if (this.symbolDim.top(Infinity).length !== 0)
+      for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
 	}
 
   splitData(kLine, baseBars) {
     let data = [];
-    let percentage = this.props.lastClosePrice / kLine[0][2];
-    data.push(kLine[0][2] * percentage);
 
-    if (kLine.length > baseBars) {
-      kLine.slice(baseBars).forEach((e, i) => {
-        data.push(e[2] * percentage);
-      });
-    } else {
-      kLine.forEach((e, i) => {
+    if (kLine && kLine.length > baseBars) {
+      let line =  kLine.slice(baseBars);
+      let percentage = this.props.lastClosePrice / line[0][2];
+
+      line.forEach((e, i) => {
         data.push(e[2] * percentage);
       });
     }
@@ -80,23 +81,58 @@ class ComparatorPrediction extends React.Component {
   generateSeriesData() {
     this.initDimensions();
     let eChartSeriesData = [];
-    // demo
-    this.symbolDim.top(Infinity).forEach((e, i) => {
-      eChartSeriesData.push({
-        data: this.splitData(e.kLine, e.baseBars),
-        name: '模拟数据',
-        type: 'line',
-        showSymbol: false,
-        hoverAnimation: false,
-        lineStyle: {
-          normal: {
-            color: i === 5 ? '#c23531' : '#ccc',
-            width: 0.8
+    let rawData = this.symbolDim.top(Infinity);
+    let activeId = this.props.activeId;
+
+    let maxValue = 0;
+    let minValue = 1000;
+    if (rawData.length !== 0) {
+      this.symbolDim.top(Infinity).forEach((e, i) => {
+        if (e.kLine.length > e.baseBars) {
+          let data = this.splitData(e.kLine, e.baseBars);
+          if (data.length > 0) {
+            eChartSeriesData.push({
+              data: data,
+              name: '模拟数据',
+              type: 'line',
+              showSymbol: false,
+              hoverAnimation: false,
+              lineStyle: {
+                normal: {
+                  color: e.id === 5 ? '#c23531' : '#ccc', // TODO
+                  width: 0.8
+                }
+              },
+              z: e.id === 5 ? 9999 : 2
+            });
           }
-        },
-        z: i === 5 ? 9999 : 2
+        }
       });
-    });
+
+      let dataMaxLength = 0;
+      eChartSeriesData.forEach((serie) => {
+        if (serie.data.length > dataMaxLength && serie.data.length !== 1) dataMaxLength = serie.data.length;
+      });
+
+
+      eChartSeriesData.forEach((serie) => {
+        let data = serie.data
+        if (data.length !== 1) {
+          while (data.length < dataMaxLength) {
+            data.push(data[data.length - 1]);
+          }
+        }
+
+        data.forEach((d) => {
+          maxValue = d >= maxValue ? d : maxValue;
+          minValue = d < minValue ? d : minValue;
+        })
+      });
+    }
+
+    window.eChartMaxValue = maxValue;
+    window.eChartMinValue = minValue;
+
     return eChartSeriesData;
   }
 
@@ -148,8 +184,8 @@ class ComparatorPrediction extends React.Component {
         },
         // scale: true,
         // interval: 0.5,
-        max: 'maxData',
-        min: 5.5
+        // max: 'maxData',
+        // min: 5.5
       },
       series: this.generateSeriesData()
       // series: predictionRandomData()
@@ -165,6 +201,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   render(){
+    this.d1 = new Date();
     let className = classNames('comparator-prediction-chart');
 
     return (

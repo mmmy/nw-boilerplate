@@ -1,6 +1,8 @@
 export const TOGGLE_STOCK_VIEW = 'TOGGLE_STOCK_VIEW';
 export const TOGGLE_PREDICTION_PANEL = 'TOGGLE_PREDICTION_PANEL';
 export const RE_LAYOUT = 'RE_LAYOUT';
+export const TAKE_SCREENSHOT = 'TAKE_SCREENSHOT';
+export const RENDER_SCREENSHOT = 'RENDER_SCREENSHOT';
 
 export const WAITING_PATTERNS = 'WAITING_PATTERNS';        //开始等待后台返回结果
 export const CHANGE_REPORT = 'CHANGE_REPORT';   			//设置patterns, 一般是从后台返回的数据
@@ -34,4 +36,8 @@ export const SET_HEATMAP_YAXIS = 'SET_HEATMAP_YAXIS';
 //active
 export const SET_ACTIVE_ID = 'SET_ACTIVE_ID';
 
-// UDF
+//config modal
+export const SHOW_CONFIG_MODAL = 'SHOW_CONFIG_MODAL';
+export const CLOSE_CONFIG_MODAL = 'CLOSE_CONFIG_MODAL';
+
+export const SET_SEARCH_CONFIG = 'SET_SEARCH_CONFIG';

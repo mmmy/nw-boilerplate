@@ -32,13 +32,13 @@ gulp.task('html', function(){
 });
 
 gulp.task('scripts', [], function(){
-	gulp.src(paths.SCRIPTS)
-	.pipe($.plumber(function(error){
-		$.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
-      	this.emit('end');
-	}))
-	.pipe($.babel())
-	.pipe(gulp.dest(paths.BUILD))
+	return gulp.src(paths.SCRIPTS)
+				.pipe($.plumber(function(error){
+					$.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
+			      	this.emit('end');
+				}))
+				.pipe($.babel())
+				.pipe(gulp.dest(paths.BUILD));
 	// .pipe($.eslint())
 	// .pipe($.eslint.format())
 	// .pipe($.eslint.failAfterError());
@@ -72,7 +72,7 @@ gulp.task('compile', function(cb){
 gulp.task('watch', ['html','fonts','image','scripts','styles'], function(){
 	gulp.watch(paths.APP, ['html']);
 	gulp.watch(paths.STYLES, ['styles']);
-	gulp.watch(paths.SCRIPTS, ['scripts','html']);
+	gulp.watch(paths.SCRIPTS, ['scripts']);
 
 	$.livereload.listen();
 
@@ -83,6 +83,8 @@ gulp.task('watch', ['html','fonts','image','scripts','styles'], function(){
 		env: env
 	}));
 });
+
+gulp.task('build', ['html','fonts','image','scripts','styles']);
 
 gulp.task('dev_react',['styles'],function(){
   gulp.watch(paths.STYLES, ['styles']);
