@@ -27,7 +27,8 @@ class SortBar extends React.Component {
 			showChildPanel: false,
 			panelType: -1,  					//0,1,2,3
 			values:{min:0, max:100},
-			eyeType: 0 								//0,1,2
+			eyeType: 0, 								//0,1,2
+			searchSymbol: ''
 		};
 	}
 
@@ -132,7 +133,9 @@ class SortBar extends React.Component {
 				break;
 
 			case 3:  //search
+				return '';
 				break;
+
 			default:
 				return '';
 		}
@@ -141,23 +144,24 @@ class SortBar extends React.Component {
 
 	render(){
 		//let {sort} = this.props;
+		let {panelType, searchSymbol} = this.state;
 		return (<div className="toolbar-container">
 				<div className='toolbar-item item0'><h5 className='left-title'>匹配图形</h5></div>
 				<div className='toolbar-item item1'>
-					<button className='pattern-bar-btn' onFocus={ this.showChildPanel.bind(this, 3) } onBlur={ this.hideChildPanel.bind(this) }>
-						<span className='icon search'></span>
-						{this.renderChildPanel(3)}
+					<button className='pattern-bar-btn' onFocus={ this.toggleSearchPanel.bind(this, true) } onBlur={ this.toggleSearchPanel.bind(this, false) }>
+						<span className='transition-all transition-ease transition-duration2 icon search' ref='search_icon'></span>
+						<div className='transition-all transition-ease transition-duration2 child-panel-search' ref='search_panel'><input value={searchSymbol} onChange={this.changeSearchSymbol.bind(this)} ref='search_input' /><i className='fa fa-close' onClick={this.clearSearchInput.bind(this)}></i></div>
 					</button>
 					<button className='pattern-bar-btn' onFocus={ this.showChildPanel.bind(this, 2) } onBlur={ this.hideChildPanel.bind(this) }>
-						<span className='icon eye'></span>
+						<span className={'icon eye '+(panelType===2 ? 'active' : '')}></span>
 						{this.renderChildPanel(2)}
 					</button>
 					<button className='pattern-bar-btn' onFocus={ this.showChildPanel.bind(this, 1) } onBlur={ this.hideChildPanel.bind(this) }>
-						<span className='icon filter'></span>
+						<span className={'icon filter '+(panelType===1 ? 'active' : '')}></span>
 						{this.renderChildPanel(1)}
 					</button>
 					<button className='pattern-bar-btn' onFocus={ this.showChildPanel.bind(this, 0) } onBlur={ this.hideChildPanel.bind(this) }>
-						<span className='icon sort'></span>
+						<span className={'icon sort '+(panelType===0 ? 'active' : '')}></span>
 						{this.renderChildPanel(0)}
 					</button>
 
@@ -183,7 +187,18 @@ class SortBar extends React.Component {
 
 	}
 
-	showChildPanel(type) { //0,1,2,3
+	toggleSearchPanel(show) {
+		if(show) {
+			$(this.refs.search_icon).addClass('active');
+			$(this.refs.search_panel).addClass('active');
+			$(this.refs.search_input).focus();
+		}else{
+			$(this.refs.search_icon).removeClass('active');
+			$(this.refs.search_panel).removeClass('active');
+		}
+	}
+
+	showChildPanel(type) { //0,1,2
 		this.setState({showChildPanel: true, panelType: type});
 	}
 
@@ -211,6 +226,13 @@ class SortBar extends React.Component {
 		DC.redrawAll();
 	}
 
+	filterSymbol(symbol){
+		this.initDimensions();
+		this.symbolDim.filter(function(d){ return d.indexOf(symbol) >=0; });
+		DC.redrawAll();
+		this.props.dispatch(filterActions.setFilterSymbol(symbol));
+	}
+
 	initDimensions() {
 		let {crossFilter} = this.props;
 		if(this.oldCrossFilter !== crossFilter) {
@@ -226,6 +248,15 @@ class SortBar extends React.Component {
 		this.setState({eyeType:type});
 	}
 
+	changeSearchSymbol(e) {
+		let symbol = e.target.value;
+		this.setState({searchSymbol: symbol});
+		this.filterSymbol(symbol);
+	}
+
+	clearSearchInput() {
+		this.setState({searchSymbol:''});
+	}
 }
 
 SortBar.propTypes = propTypes;

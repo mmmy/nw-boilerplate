@@ -214,6 +214,7 @@ class CrossfilterView extends React.Component {
 		let wrapper = $(this.refs.yield_count_chart_wrapper);
 		//this.yieldDimCountChart.transitionDuration(1);
 		//let padding = wrapper.has('.full') ? '0' : ''
+		$('.chart-body').removeAttr('clip-path');
 		wrapper.toggleClass('full');
 		let that = this;
 		wrapper.one("webkitTransitionEnd oTransitionEnd MSTransitionEnd", () => {

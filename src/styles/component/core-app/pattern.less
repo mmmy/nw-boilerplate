@@ -122,7 +122,40 @@
 			color: @ks-color-gray-5;
 			&:before {
 				display: inline-block;
-				width: 1.6rem;
+				width: 2.6rem;
+				color: @ks-color-gray-2;
+			}
+		}
+	}
+
+	.child-panel-search {
+		position: absolute;
+		right: 0;
+		top: 0;
+		background-color: white;
+		width: 0;
+		height: 2.6rem;
+		overflow: hidden;
+		margin: 4% 0;
+		z-index: 100;
+		&.active {
+			width: 14rem;
+		}
+
+		input {
+			width: 11rem;
+			position: absolute;
+			right: 3rem;
+			outline: none;
+			border: none;
+		}
+		.fa-close {
+			font-size: 1.4rem;
+			position: absolute;
+			right: 1rem;
+			padding-top: .4rem;
+			color: @ks-color-gray-6;
+			&:hover{
 				color: @ks-color-gray-2;
 			}
 		}
@@ -146,11 +179,14 @@
 	}
 
 	.icon {
-		background-size: contain;
+		background-size: cover;
 		background-repeat: no-repeat;
 		display: block;
 		width: 1.8rem;
 		height: 1.8rem;
+		&.active {
+			background-position: 0 100%;
+		}
 	}
 
 	.sort {
@@ -164,12 +200,21 @@
 	}
 	.search {
 		background-image: url('./image/search.png');
+		position: relative;
+		background-color: white;
+		z-index: 5;
+		left: 0;
+
+		&.active {
+			left: -800%;
+			background-position: 0 0;
+		}
 	}
 }
 
 //排序item btn
 .sort-btn {
-	text-align: center;
+	text-align: left;
 	display: block;
 	width: 33.3%;
 	float: left;
