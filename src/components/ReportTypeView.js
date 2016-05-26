@@ -43,8 +43,8 @@ class ReportTypeView extends React.Component {
 		let spaceDefinitionStr = (spaceDefinition.stock ? '股票' : '') + (spaceDefinition.furture ? ' 期货' : '');
 		spaceDefinitionStr = spaceDefinitionStr || '--';
 		return (<div className="reporttype-container">
-				<div className='type-item-container'>搜索空间: <span className='lulu'>{`${searchSpace}`}</span></div>
-				<div className='type-item-container'>搜索时间: <span className='lulu'>{`${startDate} ~ ${endDate}`}</span></div>
+				<div className='type-item-container'>搜索空间: <span className='lulu font-number'>{`${searchSpace}`}</span></div>
+				<div className='type-item-container'>搜索时间: <span className='lulu font-number'>{`${startDate} ~ ${endDate}`}</span></div>
 				<div className='type-item-container'>空间定义: <span className='lulu'>{`${spaceDefinitionStr}`}</span></div>
 				<div className='type-item-container'>匹配形态: <span className='lulu'>{`${matchType}`}</span></div>
 			</div>);

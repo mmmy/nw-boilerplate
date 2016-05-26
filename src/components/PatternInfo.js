@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import Switch from './Switch';
 import classNames from 'classnames';
 
 const propTypes = {
@@ -7,6 +8,8 @@ const propTypes = {
 	colomn: PropTypes.bool,
 	index: PropTypes.number,
 	fullView: PropTypes.bool,
+	isTrashed: PropTypes.bool,
+	toggleTrash: PropTypes.func
 };
 
 const defaultProps = {
@@ -18,7 +21,7 @@ class PatternInfo extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {showSwitch: false};
 	}
 
 	componentDidMount() {
@@ -54,7 +57,7 @@ class PatternInfo extends React.Component {
 		let {similarity} = this.props.pattern;
 		let yieldRate = this.props.pattern.yield;
 
-		let { column, index, fullView } = this.props;
+		let { column, index, fullView, isTrashed } = this.props;
 
 		const smaller = !fullView && index > 0 && index < 5,
 				larger = !fullView && index === 0;
@@ -66,8 +69,9 @@ class PatternInfo extends React.Component {
 		});
 
 		let flexClass = classNames('flex-container', { 'column':  column});
+		let switchWidget = this.state.showSwitch ? <div className='pattern-info-switch-wrapper'><Switch on={isTrashed} onToggle={this.props.toggleTrash}/></div> : '';
 		// console.log(column,smaller, index);
-		return (<div className = {containerClass}>
+		return (<div className = {containerClass} onMouseEnter={this.mouseEnter.bind(this)} onMouseLeave={this.mouseLeave.bind(this)}>
 			<div className = {flexClass}>
 				<div>
 					<h5>相似度</h5>
@@ -78,8 +82,21 @@ class PatternInfo extends React.Component {
 					<p className='font-number'>{(yieldRate*100).toFixed(1)+'%'}</p>
 				</div>)}
 			</div>
+			{switchWidget}
 		</div>);
 	}
+
+	mouseEnter() {
+		let {column} = this.props;
+		if(!column) {
+			this.setState({showSwitch: true});
+		}
+	}
+
+	mouseLeave() {
+		this.setState({showSwitch: false});
+	}
+
 }
 
 PatternInfo.propTypes = propTypes;

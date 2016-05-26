@@ -80,10 +80,15 @@ let setFilterYieldDateRange = function(yieldDaterange) {
 	// }
 }
 
+let setFilterId = (trashedIdArr) => { 
+	return {type: types.SET_FILTER_ID, trashedIdArr};
+}; 
+
 module.exports = {
 	setFilterIndustry,
 	setFilterYieldRange,
 	setFilterYieldDateRange,
 	setFilterSymbol,
 	setFilterSimilarity,
+	setFilterId,
 }

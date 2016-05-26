@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { sortActions, filterActions } from '../flux/actions';
+import { sortActions, filterActions, patternTrashActions } from '../flux/actions';
 import RCSlider from 'rc-slider';
 import DC from 'dc';
 import * as sortTypes from '../flux/constants/SortTypes';
@@ -99,7 +99,7 @@ class SortBar extends React.Component {
 			case 0:   //sort
 				return <div className='child-panel-container'>
 					{this.renderSortIcons(SORT_BTN_SIMILARITY)}
-					{this.renderSortIcons(SORT_BTN_DATE)}
+					{/*this.renderSortIcons(SORT_BTN_DATE)*/}
 					{this.renderSortIcons(SORT_BTN_YIELD)}
 				</div>;
 				break;
@@ -246,6 +246,9 @@ class SortBar extends React.Component {
 		let {eyeType} = this.state;
 		if(type===eyeType) return;
 		this.setState({eyeType:type});
+		let showTrashed = type === 0 || type === 2,
+			showNotTrashed = type === 0 || type === 1;
+		this.props.dispatch(patternTrashActions.setPatternTrashLayout(showTrashed, showNotTrashed));
 	}
 
 	changeSearchSymbol(e) {

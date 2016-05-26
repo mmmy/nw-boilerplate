@@ -6,6 +6,7 @@ const initialState = {
 	symbol: '',
 	similarity: {min:0, max:100},
 	yieldDateRange: [[],[]],
+	trashedIdArr: []
 };
 
 export default function filter(state = initialState, actions) {
@@ -61,6 +62,13 @@ export default function filter(state = initialState, actions) {
 			return {
 				...state,
 				yieldDateRange,
+			};
+
+		case types.SET_FILTER_ID:
+			let trashedIdArr = actions.trashedIdArr;
+			return {
+				...state,
+				trashedIdArr,
 			};
 
 		default:

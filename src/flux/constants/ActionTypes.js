@@ -18,6 +18,7 @@ export const SET_FILTER_YIELDRANGE = 'SET_FILTER_YIELDRANGE'; 		//filter收益�
 export const SET_FILTER_SYMBOL = 'SET_FILTER_SYMBOL';           //symbol filter
 export const SET_FILTER_SIMILARITY = 'SET_FILTER_SIMILARITY';   //相似度范围过滤
 export const SET_FILTER_YIELDDATERANGE = 'SET_FILTER_YIELDDATERANGE';   //时间范围过滤
+export const SET_FILTER_ID = 'SET_FILTER_ID';
 
 //错误处理
 export const GET_PATTERNS_ERROR = 'GET_PATTERNS_ERROR';          //获取patterns错误
@@ -41,3 +42,6 @@ export const SHOW_CONFIG_MODAL = 'SHOW_CONFIG_MODAL';
 export const CLOSE_CONFIG_MODAL = 'CLOSE_CONFIG_MODAL';
 
 export const SET_SEARCH_CONFIG = 'SET_SEARCH_CONFIG';
+
+//
+export const SET_PATTERN_TRASH_LAYOUT = 'SET_PATTERN_TRASH_LAYOUT';

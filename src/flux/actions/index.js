@@ -7,6 +7,7 @@ import predictionActions from './predictionActions';
 import activeActions from './activeActions';
 import tradingViewActions from './tradingViewActions';
 import searchConfigActions from './searchConfigActions';
+import patternTrashActions from './patternTrashActions';
 
 module.exports = {
 	layoutActions,
@@ -18,4 +19,5 @@ module.exports = {
   activeActions,
   tradingViewActions,
   searchConfigActions,
+  patternTrashActions,
 }

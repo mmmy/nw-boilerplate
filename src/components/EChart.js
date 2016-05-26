@@ -46,6 +46,7 @@ const propTypes = {
 	pattern: PropTypes.object.isRequired,
 	index: PropTypes.number.isRequired,
 	fullView: PropTypes.bool.isRequired,
+	isTrashed: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -162,14 +163,15 @@ class EChart extends React.Component {
 
 	render(){
 
-		let { fullView, index } = this.props;
+		let { fullView, index, isTrashed } = this.props;
 		//console.log('index', this.props.index);
 		const className = classNames('echart', 'transition-all', {
 			'larger': !fullView && index === 0,
 			'smaller': !fullView && index > 0 && index < 5,
 		});
 
-		return <div ref={'echart'+this.props.index} className={className} ><img src='' /></div>;
+		let trashInfo = isTrashed ? <div className='trashed-info'><h1>不参与</h1><h1>走势计算</h1></div> : '';
+		return <div ref={'echart'+this.props.index} className={className} ><img src='' />{trashInfo}</div>;
 
 	}
 }

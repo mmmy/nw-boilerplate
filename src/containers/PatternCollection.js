@@ -2,8 +2,10 @@ import React, { PropTypes } from 'react';
 import PatternView from '../components/PatternView';
 import { connect } from 'react-redux';
 import * as sortTypes from '../flux/constants/SortTypes';
+import { filterActions } from '../flux/actions';
 import _ from 'underscore';
 import classNames from 'classnames';
+import DC from 'dc';
 
 const propTypes = {
 	patterns: PropTypes.object.isRequired,
@@ -19,9 +21,12 @@ const defaultProps = {
   	
 };
 
-let _nodes = [];
 let _oldPatternRawData = null;
 //note 重要: crossfilter 生成的dimensions数量不能超过128个 , 所以要注意保存dimension !!
+let _idTrashed = [];  //记录剔除状态
+let setTrashed = (id) => { _idTrashed[id] = true };
+let resetTrashed = () => { _idTrashed[id] = undefined };
+let isTrashed = (id) => { return _idTrashed[id]; };
 
 class PatternCollection extends React.Component {
 
@@ -53,24 +58,38 @@ class PatternCollection extends React.Component {
 			console.info('crossFilter changed!');
 			this.oldCrossFilter = crossFilter;
 			this.symbolDim = crossFilter.dimension(e=>{ return e.symbol; });
-			
+			//idDim , 剔除dimentsion
+			this.idDim = crossFilter.dimension(d=>{ return d.id; });
 		}
 
-		if( newProps.filter !== this.props.filter ){
-			
+		let hideHelper = () => {
+			let {showNotTrashed, showTrashed} = newProps.patternTrashed;
 			let filteredData = this.symbolDim.top(Infinity),
 					idArr = _.pluck(filteredData, 'id'),
 					node = this.refs.container;
 			//console.info('idarr', idArr);
 			setTimeout(() => {
 				$('.pattern-view', node).addClass('hide');
-				idArr.forEach((id) => {
-					$(`#pattern_view_${id}`,node).removeClass('hide');
-				});		
+				if(showNotTrashed){
+					idArr.forEach((id) => {
+						$(`#pattern_view_${id}`,node).removeClass('hide');
+					});
+				}
+				if(showTrashed) {
+					_idTrashed.forEach((isTrashed, id) => {
+						isTrashed && $(`#pattern_view_${id}`,node).removeClass('hide');
+					});
+				}		
 			});
+		};
 
+		if( newProps.filter !== this.props.filter ){
+			hideHelper();
 		}
 
+		if( newProps.patternTrashed !== this.props.patternTrashed ) {
+			hideHelper();
+		}
 		/**
 		 * 点击pattern手动刷新
 		 */
@@ -129,6 +148,7 @@ class PatternCollection extends React.Component {
 
 		return 	(newProps.filter === this.props.filter)    //filter更新后不进行自动刷新, 而是在componentWillReceiveProps 进行手动刷新
 						&& (newProps.active.id === this.props.active.id)   //点击patternview
+						&& (newProps.patternTrashed === this.props.patternTrashed) //eye
 						//&& (newProps.fullView === this.props.fullView)   //视图切换
 		// return (newProps.sort !== this.props.sort) || (newProps.patterns != this.props.patterns);
 	}
@@ -189,12 +209,21 @@ class PatternCollection extends React.Component {
 		return this.sortedData;
 	}
 
+	filterTrashedId(id, isTrashed) {
+		console.info(id, isTrashed, 'xxxxxxxxxx000000000000');
+		_idTrashed[id] = isTrashed;
+		this.idDim && this.idDim.filterFunction((d) => { return !_idTrashed[d]; });
+		DC.redrawAll();
+		this.props.dispatch(filterActions.setFilterId(_idTrashed.concat([])));
+	}
+
 	getPatternNodes() {
 		
-		let { dispatch, waitingForPatterns, fullView, active } = this.props;
+		let { dispatch, waitingForPatterns, fullView, active, patternTrashed } = this.props;
 
 		let { crossFilter, rawData , error} = this.props.patterns;
 		let { id } = active;
+		let { showTrashed, showNotTrashed } = patternTrashed;
 
 		let sortedData = this.sortData(rawData);
 
@@ -219,7 +248,7 @@ class PatternCollection extends React.Component {
 				console.info('crossFilter changed!');
 				this.oldCrossFilter = crossFilter;
 				this.symbolDim = crossFilter.dimension(e=>{ return e.symbol; });
-				
+				this.idDim = crossFilter.dimension(d=>{ return d.id; });
 			}
 
 			let filteredData = this.symbolDim.top(Infinity),
@@ -229,9 +258,17 @@ class PatternCollection extends React.Component {
 			//sortedData = sortedData.slice(0 ,5);
 			let dataArr = this.renderLeading5 ? sortedData.slice(0, 5) : sortedData;
 			nodes = dataArr.map((e, i) => {
-				let show = idArr.indexOf(e.id) !== -1;
+				let show = false;
+				if(showNotTrashed && showTrashed) {   //查看全部
+					show = idArr.indexOf(e.id) !== -1;
+					show = show || _idTrashed[e.id];
+				} else if (showNotTrashed && !showTrashed) { //只看未剔除
+					show = idArr.indexOf(e.id) !== -1;
+				} else if (!showNotTrashed && showTrashed) {  //只看剔除
+					show = _idTrashed[e.id];
+				}
 				let isActive = id === e.id;
-				return <PatternView id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>
+				return <PatternView filterTrashedId={this.filterTrashedId.bind(this)} id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>
 			});
 			//nodes = nodes.length > 0 ? nodes.slice(0,10) : [];
 		//}
@@ -254,10 +291,10 @@ PatternCollection.propTypes = propTypes;
 PatternCollection.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const {layout, patterns, sort, active, filter } = state;
+	const {layout, patterns, sort, active, filter, patternTrashed} = state;
 	const {stockView, patternSmallView} = layout;
 	//const {crossFilter,rawData} = patterns;
-	return {fullView: !stockView, patternSmallView, patterns, sort, active, filter };
+	return {fullView: !stockView, patternSmallView, patterns, sort, active, filter, patternTrashed };
 };
 
 export default connect(stateToProps)(PatternCollection);

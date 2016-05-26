@@ -12,6 +12,7 @@ const propTypes = {
 	isActive: PropTypes.bool,
 	dispatch: PropTypes.func.isRequired,
 	id: PropTypes.number.isRequired,
+	filterTrashedId: PropTypes.func,
 };
 
 const defaultProps = {
@@ -23,7 +24,12 @@ class PatternView extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {showSymbol: false};
+		this.state = {showSymbol: false, isTrashed: false};
+	}
+
+	setTrashed(isTrashed) {
+		this.setState({isTrashed});
+		this.props.filterTrashedId && this.props.filterTrashedId(this.props.id, isTrashed);
 	}
 
 	componentDidMount() {
@@ -121,11 +127,11 @@ class PatternView extends React.Component {
 			<div className={symbolClass}>{pattern.symbol}</div>
 
 			<div className={echartWrapper} ref='echart_wrapper'>
-				<EChart {...this.props} />
+				<EChart {...this.props} isTrashed={this.state.isTrashed} />
 				<PatternInfo pattern={pattern} dispatch={dispatch} column fullView={fullView} index={index}/>
 			</div>
 
-			<PatternInfo pattern={pattern} dispatch={dispatch} />
+			<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} />
 
 		</div>);
 	}
