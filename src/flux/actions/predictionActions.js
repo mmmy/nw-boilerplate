@@ -27,11 +27,13 @@ const setPredictionPriceScaleMarks = function(predictionPriceScaleMarks) {
   }
 }
 
-const setHetmapOption = function(heatmapYAxis) {
+const setHetmapOption = function(heatmapYAxis, scaleMaxValue, scaleMinValue) {
   return (dispatch) => {
     dispatch({
       type: types.SET_HEATMAP_YAXIS,
-      heatmapYAxis: heatmapYAxis
+      heatmapYAxis: heatmapYAxis,
+      scaleMaxValue: scaleMaxValue,
+      scaleMinValue: scaleMinValue
     })
   }
 }

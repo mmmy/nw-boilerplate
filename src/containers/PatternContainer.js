@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import PatternCollection from '../components/PatternCollection';
+import PatternCollection from './PatternCollection';
 import SortBar from '../components/SortBar';
 import FilterBar from '../components/FilterBar';
+import PatternStatisticsPanel from './PatternStatisticsPanel';
 import classNames from 'classnames';
 
 const propTypes = {
@@ -29,8 +30,14 @@ class PatternContainer extends React.Component {
 
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps, newState){
 		return true;
+		// return (newProps.filter === this.props.filter)
+		// 			&& (newProps.fullView === this.props.fullView);
+	}
+
+	componentDidUpdate() {
+		console.info('PatternContainer did update in', new Date() - this.d1);
 	}
 
 	componentWillUnmount(){
@@ -38,6 +45,7 @@ class PatternContainer extends React.Component {
 	}
 
 	render(){
+		this.d1 = new Date();
 		const { fullView, patternSmallView, dispatch, sort, patterns } = this.props;
 		const className = classNames('transition-all', 'pattern-container', {
 			'full': fullView,
@@ -52,14 +60,21 @@ class PatternContainer extends React.Component {
 		const collectionClass = classNames('transition-all', 'pattern-collection-container', {
 			'stretch': !fullView,
 		});
-
+		const patternInfoClass = classNames('transition-all', 'pattern-statistics-container', {
+			'ks-transition-height-opacity': fullView,
+			'ks-show': fullView,
+			'ks-hidden': !fullView,
+		});
 		return (<div className={ className }>
 			<div className={ toolbarClass }>
-				<SortBar dispatch={dispatch} sort={sort} />
-				<FilterBar dispatch={dispatch} crossFilter={patterns.crossFilter} />
+				<SortBar crossFilter={patterns.crossFilter} dispatch={dispatch} sort={sort} />
+				{/*<FilterBar dispatch={dispatch} crossFilter={patterns.crossFilter} />*/}
 			</div>
 			<div className={ collectionClass }>
-				<PatternCollection {...this.props} />
+				<PatternCollection dispatch={ dispatch } />
+			</div>
+			<div className={ patternInfoClass }>
+				<PatternStatisticsPanel />
 			</div>
 		</div>);
 	}
@@ -69,10 +84,10 @@ PatternContainer.propTypes = propTypes;
 PatternContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const {layout, patterns, filter, sort, active} = state;
-	const {stockView, patternSmallView, waitingForPatterns} = layout;
+	const {layout, patterns, sort } = state;
+	const {stockView, patternSmallView} = layout;
 	//const {crossFilter,rawData} = patterns;
-	return {fullView: !stockView, patternSmallView, patterns, filter, waitingForPatterns, sort, active};
+	return {fullView: !stockView, patternSmallView, patterns, sort };
 };
 
 export default connect(stateToProps)(PatternContainer);

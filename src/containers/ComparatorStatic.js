@@ -31,25 +31,33 @@ class ComparatorStatic extends React.Component {
 
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps, newState){
+    // return newProps.stretchView === this.props.stretchView;
 		return true;
+    return newProps.filter === this.props.filter; 
 	}
 
 	componentWillUnmount(){
 
 	}
-
+  componentDidUpdate() {
+    console.info('ComparatorStatic did update in millsec: ', new Date() - this.d1);
+  }
   togglePredictionPanel() {
     this.props.dispatch(layoutActions.togglePredictionPanel());
   }
 
 	render() {
+    this.d1 = new Date();
     const { patterns,
       filter,
       isPredictionShow,
       lastClosePrice,
       heatmapYAxis,
-      dispatch } = this.props;
+      scaleMinValue,
+      scaleMaxValue,
+      dispatch,
+      activeId } = this.props;
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
       'comparator-chart-static-show': this.props.stretchView,
@@ -63,11 +71,11 @@ class ComparatorStatic extends React.Component {
     const STOCK_VIEW = 'comparator-chart';
 
     let options = {
-      symbol: '000001.SZ',
+      symbol: '000002.SZ',
       interval: 'D',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
-      //datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
+      // datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
       datafeed: new window.Kfeeds.UDFCompatibleDatafeed(""),
       library_path: "charting_library/",
       locale: "zh",
@@ -82,25 +90,53 @@ class ComparatorStatic extends React.Component {
       user_id: 'public_user_id',
       autosize: true,
       fullscreen: false,
-      overrides: {
-          //"paneProperties.background": "#191919",
-           //"paneProperties.vertGridProperties.color": "#191919",
-           //"paneProperties.horzGridProperties.color": "#191919",
-          //"symbolWatermarkProperties.transparency": 90,
-          //"scalesProperties.textColor" : "#AAA",
+      // overrides: {
+      //     //"paneProperties.background": "#191919",
+      //      //"paneProperties.vertGridProperties.color": "#191919",
+      //      //"paneProperties.horzGridProperties.color": "#191919",
+      //     //"symbolWatermarkProperties.transparency": 90,
+      //     //"scalesProperties.textColor" : "#AAA",
 
-          "mainSeriesProperties.candleStyle.upColor": "#fff",
-          "mainSeriesProperties.candleStyle.downColor": "#fff",
-          "mainSeriesProperties.candleStyle.drawWick": true,
-          "mainSeriesProperties.candleStyle.drawBorder": true,
-          "mainSeriesProperties.candleStyle.borderColor": "#378658",
-          "mainSeriesProperties.candleStyle.borderUpColor": "#8E0000",
-          "mainSeriesProperties.candleStyle.borderDownColor": "#6A6A6A",
-          "mainSeriesProperties.candleStyle.wickUpColor": '#8E0000',
-          "mainSeriesProperties.candleStyle.wickDownColor": '#6A6A6A',
-          "mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
+      //     "mainSeriesProperties.candleStyle.upColor": "#fff",
+      //     "mainSeriesProperties.candleStyle.downColor": "#fff",
+      //     "mainSeriesProperties.candleStyle.drawWick": true,
+      //     "mainSeriesProperties.candleStyle.drawBorder": true,
+      //     "mainSeriesProperties.candleStyle.borderColor": "#378658",
+      //     "mainSeriesProperties.candleStyle.borderUpColor": "#8E0000",
+      //     "mainSeriesProperties.candleStyle.borderDownColor": "#6A6A6A",
+      //     "mainSeriesProperties.candleStyle.wickUpColor": '#8E0000',
+      //     "mainSeriesProperties.candleStyle.wickDownColor": '#6A6A6A',
+      //     "mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
 
-      },
+      // },
+      disabled_features: ["header_widget","border_around_the_chart",'control_bar','timeframes_toolbar', 'display_market_status', 'remove_library_container_border', 'chart_property_page_style'],
+     overrides: {
+            "paneProperties.background": "#fff",
+            "paneProperties.vertGridProperties.color": "#fff",
+            "paneProperties.horzGridProperties.color": "#fff",
+            "symbolWatermarkProperties.transparency": 10, //TODO,
+            "symbolWatermarkProperties.color": '#fff',
+            "scalesProperties.textColor" : "#333",
+
+            "mainSeriesProperties.candleStyle.upColor": "#fff",
+            "mainSeriesProperties.candleStyle.downColor": "#fff",
+            "mainSeriesProperties.candleStyle.drawWick": true,
+            "mainSeriesProperties.candleStyle.drawBorder": true,
+            "mainSeriesProperties.candleStyle.borderColor": "#378658",
+            "mainSeriesProperties.candleStyle.borderUpColor": "#8E0000",
+            "mainSeriesProperties.candleStyle.borderDownColor": "#6A6A6A",
+            "mainSeriesProperties.candleStyle.wickUpColor": '#8E0000',
+            "mainSeriesProperties.candleStyle.wickDownColor": '#6A6A6A',
+            "mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
+            "scalesProperties.lineColor" : "transparent",
+
+            "mainSeriesProperties.barStyle.upColor": "#6ba583",
+        },
+        ks_overrides: {
+          "ksSplitView": true,
+          volume: true,
+          OHLCBarBorderColor: true,
+        }
       // height: 300,
       // width: 300,
     }
@@ -120,7 +156,12 @@ class ComparatorStatic extends React.Component {
             <div className={ 'comparator-header' }>
               <span>走势预测</span>
             </div>
-            <ComparatorPrediction dispatch={ dispatch } filter={ filter } patterns={ patterns } lastClosePrice={ lastClosePrice }/>
+            <ComparatorPrediction
+              dispatch={ dispatch }
+              filter={ filter }
+              patterns={ patterns }
+              lastClosePrice={ lastClosePrice }
+              activeId={ activeId }/>
           </div>
 
           <div className={'prediction-panel'}>
@@ -130,7 +171,13 @@ class ComparatorStatic extends React.Component {
               <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
             </button>
 
-            <ComparatorHeatmap lastClosePrice={ lastClosePrice } heatmapYAxis={ heatmapYAxis } filter={ filter } patterns={ patterns } />
+            <ComparatorHeatmap
+              lastClosePrice={ lastClosePrice }
+              heatmapYAxis={ heatmapYAxis }
+              filter={ filter }
+              patterns={ patterns }
+              scaleMinValue={ scaleMinValue }
+              scaleMaxValue={ scaleMaxValue } />
           </div>
 
         </div>
@@ -143,16 +190,20 @@ ComparatorStatic.propTypes = propTypes;
 ComparatorStatic.defaultProps = defaultProps;
 
 var stateToProps = function(state) {
-	const {layout, patterns, filter, prediction} = state;
+	const {layout, patterns, filter, prediction, active} = state;
 	const {stockView, isPredictionShow} = layout;
-  const {lastClosePrice, predictionpriceScaleMarks, predictionLastClosePrices, heatmapYAxis} = prediction;
+  const {lastClosePrice, predictionpriceScaleMarks, predictionLastClosePrices, heatmapYAxis, scaleMaxValue, scaleMinValue} = prediction;
+  const {id} = active;
 	return {
 		stretchView: !stockView,
     isPredictionShow: isPredictionShow,
     patterns: patterns,
     filter: filter,
     lastClosePrice: lastClosePrice,
-    heatmapYAxis: heatmapYAxis
+    heatmapYAxis: heatmapYAxis,
+    scaleMinValue: scaleMinValue,
+    scaleMaxValue: scaleMaxValue,
+    activeId: id
 	};
 };
 export default connect(stateToProps)(ComparatorStatic);

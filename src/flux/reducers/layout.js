@@ -6,11 +6,15 @@ let getPatternSmallView = function() {
 }
 
 const initialState = {
-	stockView: false, 							               //主stock view 视图
+	stockView: true, 							               //主stock view 视图
 	patternSmallView: getPatternSmallView(),     //patterns 一列 or 两列 视图
-	waitingForPatterns: false, 					         //等待 getPatterns 返回结果
-  	isPredictionShow: true,                      // 走势预测面板显示
+	waitingForPatterns: true,//(process.env.NODE_ENV !== 'development'), 	//等待 getPatterns 返回结果
+	firstStart: true,
+  isPredictionShow: true,                      // 走势预测面板显示
 	searchTimeSpent: 0, 						             //毫秒
+  hasNewScreenshot: false,
+  screenshotTvURL: '',
+  screenshotEChartURL: '',
 }
 
 export default function layout(state = initialState, action) {
@@ -41,6 +45,7 @@ export default function layout(state = initialState, action) {
 			return {
 				...state,
 				waitingForPatterns: true,
+				firstStart: false,
 			};
 
 		case types.CHANGE_PATTERNS:    //搜索结束
@@ -56,6 +61,20 @@ export default function layout(state = initialState, action) {
 				...state,
 				waitingForPatterns: false
 			};
+
+    case types.TAKE_SCREENSHOT:
+      return {
+        ...state,
+        hasNewScreenshot: true,
+        screenshotTvURL: '../src/image/screenshot_origin.png?random_number=' + new Date().getTime(),
+        screenshotEChartURL: '../src/image/screenshot_prediction.png?random_number=' + new Date().getTime()
+      };
+
+    case types.RENDER_SCREENSHOT:
+      return {
+        ...state,
+        hasNewScreenshot: false
+      }
 
 		default:
 			return state;

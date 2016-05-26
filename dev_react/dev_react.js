@@ -6,6 +6,7 @@ let tabsArr = [
 	{title:'chart',component:'./component/chart'},
 	{title:'transition',component:'./component/transition'},
 	{title:'waves',component:'./component/waves'},
+	{title:'config',component:'./component/configModal'},
 	];
 
 

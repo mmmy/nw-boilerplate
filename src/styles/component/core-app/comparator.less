@@ -2,7 +2,8 @@
 .container-comparator{
   position: relative;
   float: left;
-  border: 1px solid @ks-color-gray-8;
+  //left: 20px;
+  // border: 1px solid @ks-color-gray-8;
   border-right: none;
   width: @comparator_W;
   height: @comparator_H;
@@ -11,7 +12,13 @@
 .container-comparator-stretch{
   width: @comparatorStretch_W;
   height: @comparatorStretch_H;
-  padding-right: 40px;
+  .ks-show();
+  // .ks-fade-in();
+  // z-index: 9999;
+}
+
+.container-comparator-hide{
+  .ks-hidden()
 }
 
 // comparator-chart-static
@@ -20,7 +27,7 @@
   position: absolute;
   width: @comparatorStretch_W;
   height: @comparatorChartStatic_H ;
-  top: @header_H / 2;
+  top: 14px;
 }
 
 .comparator-chart-static-show{
@@ -35,19 +42,45 @@
 
 // comparator-chart-screenshot
 
-.comparator-chart-screenshot{
+.comparator-tv-screenshot{
   position: absolute;
-  width: 100%;
-  top: 0;
+  width: 90%;
+  //height: 80%;
+  top: 40px;
+  left: 10%;
+  &.stretch{
+    //z-index: 100;
+    //opacity: 0.5;
+    top: -3px;
+    width: calc(~"100% - 87px");
+    //height: 43%;
+    left: 51px;
+  }
+}
+
+.comparator-echart-screenshot{
+  position: absolute;
+  width: 23%;
+  // height: 80%;
+  right: 0;
+  top: 40px;
+  &.stretch{
+    // opacity: 0.5;
+    // z-index: 100;
+    width: 23.7%;
+    //height: 42.9%;
+    right: 41px;
+    top: 0;
+  }
 }
 
 .comparator-prediction-container{
   position: absolute;
   width: 25%;
-  height: calc(~'50% - 24px - ' @header_H / 2);
-  top: 7px;
+  height: calc(~'50% - 24px - 2px');
+  top: 3px;
   // right: calc(~'45px + 8px');
-  right: 40px;
+  right: 32px;
 
   .prediction-main{
     position: absolute;
@@ -84,7 +117,7 @@
 
   .prediction-panel{
     position: absolute;
-    width: 10px;
+    width: 12px;
     height: 100%;
     right: 0;
     color: #000;
@@ -111,8 +144,10 @@
 
     }
     .comparator-heatmap{
+      // top: 30px;
       position: absolute;
       width: 100%;
+      // height: calc(~'100% - 30px');
       height: 100%;
       background-color: #F6DADD;
     }

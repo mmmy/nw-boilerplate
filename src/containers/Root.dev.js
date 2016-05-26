@@ -5,6 +5,7 @@ import MainContainer from './MainContainer';
 import Header from './Header';
 import RightToolBar from './RightToolBar';
 import CoreApp from './CoreApp';
+import SearchConfigModal from './SearchConfigModal';
 import DevTools from './DevTools';
 
 // import StockView from './StockView';
@@ -25,6 +26,8 @@ class Root extends React.Component {
 			<RightToolBar />
 
 			<CoreApp />
+
+			<SearchConfigModal />
 
       <DevTools />
 
