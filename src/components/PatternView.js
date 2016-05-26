@@ -85,13 +85,14 @@ class PatternView extends React.Component {
 		let { dispatch, isActive } = this.props;
 		let { id, symbol, baseBars, kLine } = this.props.pattern;
 
-    let dateStart = kLine[0][0];
+    let dateStart = kLine[baseBars - 20] ? kLine[baseBars - 20][0] : kLine[baseBars];
     let dateEnd = kLine[baseBars - 1][0];
     dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
 
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    if (!isActive) chart.Q5.getAll()[1].setSymbol(symbol);
-    chart.KeyStone.gotoDate(chart.Q5.getAll()[1], +new Date(dateStart));
+    if (!isActive) chart.KeyStone.setSymbol(symbol, '', 1, () => {
+      chart.KeyStone.gotoDate(chart.Q5.getAll()[1], +new Date(dateStart));
+    });
 	}
 
 	render(){
