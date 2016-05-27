@@ -29,6 +29,8 @@ class ReactTradingView extends React.Component {
 
     let widget = new window.TradingView.widget(options);
 
+    if (this.props.viewId === 'comparator-chart') window.widget_comparator = widget;
+
     if (this.props.viewId === 'comparator-chart') {
       this.setChartLayout();
     }
