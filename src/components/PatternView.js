@@ -95,11 +95,35 @@ class PatternView extends React.Component {
     let dateEnd = kLine[baseBars - 1][0];
     dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
 
-    let chart = window.widget_comparator;
-    if (!isActive) chart.KeyStone.setSymbol(symbol, '', 1, () => {
-      chart.KeyStone.gotoDate(chart.Q5.getAll()[1], +new Date(dateStart));
+    let widget = window.widget_comparator;
+    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+    // if (!isActive) chart.KeyStone.setSymbol(symbol, '', 1, () => {
+    //   chart.KeyStone.gotoDate(chart.Q5.getAll()[1], +new Date(dateStart));
+    // });
+
+    chart.KeyStone.setSymbol(symbol, '', 1);
+    let oneDay = 60 * 60 * 24;
+    let dateRange = {
+      from: +new Date(dateStart) / 1000 - oneDay * kLine.length * 0.6,
+      to: +new Date(dateEnd) / 1000 + oneDay * kLine.length * 0.6
+    };
+    _doWhenSeriesCompleted(() => {
+      widget.setVisibleRange(dateRange, '1');
     });
+    // setTimeout(() => {
+    //   widget.setVisibleRange(dateRange, '1');
+    // }, 3e3);
 	}
+
+  _doWhenSeriesCompleted(callback) {
+    const run = (chart) => {
+      chart.Q5.getAll().model().mainSeries().onCompleted().unsubscribe(null, run);
+      callback()
+    };
+
+    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+    let chart.Q5.getAll().model().mainSeries().onCompleted().subscribe(null, run);
+  }
 
 	render(){
 
