@@ -34,7 +34,7 @@ class ComparatorStatic extends React.Component {
 	shouldComponentUpdate(newProps, newState){
     // return newProps.stretchView === this.props.stretchView;
 		return true;
-    return newProps.filter === this.props.filter; 
+    return newProps.filter === this.props.filter;
 	}
 
 	componentWillUnmount(){
@@ -136,7 +136,8 @@ class ComparatorStatic extends React.Component {
           "ksSplitView": true,
           volume: true,
           OHLCBarBorderColor: true,
-        }
+        },
+        debug: true
       // height: 300,
       // width: 300,
     }
