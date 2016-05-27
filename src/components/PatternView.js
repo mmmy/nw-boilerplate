@@ -95,7 +95,7 @@ class PatternView extends React.Component {
     let dateEnd = kLine[baseBars - 1][0];
     dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
 
-    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+    let chart = window.widget_comparator;
     if (!isActive) chart.KeyStone.setSymbol(symbol, '', 1, () => {
       chart.KeyStone.gotoDate(chart.Q5.getAll()[1], +new Date(dateStart));
     });

@@ -37,7 +37,7 @@ class ReactTradingView extends React.Component {
   }
 
   getChartDom() {
-    return document[window.document.getElementsByTagName('iframe')[0].id];
+    return window.widget_comparator;
   }
 
   setChartLayout() {
