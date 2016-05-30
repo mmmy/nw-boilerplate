@@ -98,27 +98,30 @@ class PatternView extends React.Component {
     let widget = window.widget_comparator;
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
-    chart.KeyStone.setSymbol(symbol, '', 1);
     let oneDay = 60 * 60 * 24;
     let dateRange = {
       from: +new Date(dateStart) / 1000 - oneDay * kLine.length * 0.6,
       to: +new Date(dateEnd) / 1000 + oneDay * kLine.length * 0.6
     };
 
-    this._doWhenSeriesCompleted(() => {
+    window.timeRange = dateRange;
+
+    chart.KeyStone.setSymbol(symbol, '', 1);
+    this._doWhenBarReceived(() => {
       widget.setVisibleRange(dateRange, '1');
+      window.parent.timeRange = undefined;
     });
 	}
 
-  _doWhenSeriesCompleted(callback) {
+  _doWhenBarReceived(callback) {
     function run() {
       let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-      chart.Q5.getAll()[1].model().mainSeries().onCompleted().unsubscribe(null, run);
+      chart.Q5.getAll()[1].model().mainSeries().onBarReceived().unsubscribe(null, run);
       callback()
     };
 
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[1].model().mainSeries().onCompleted().subscribe(null, run);
+    chart.Q5.getAll()[1].model().mainSeries().onBarReceived().subscribe(null, run);
   }
 
 	render(){
