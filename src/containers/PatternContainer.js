@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PatternCollection from './PatternCollection';
 import SortBar from '../components/SortBar';
 import FilterBar from '../components/FilterBar';
+import TrashModal from '../components/TrashModal';
 import PatternStatisticsPanel from './PatternStatisticsPanel';
 import classNames from 'classnames';
 
@@ -21,7 +22,7 @@ class PatternContainer extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {showTrashPanel: false};
 	}
 
 	componentDidMount() {
@@ -72,24 +73,32 @@ class PatternContainer extends React.Component {
 
 	}
 
-	trashAll() {
-		let visiblePatternViews = $('.pattern-view:visible','.pattern-collection');
-		let idArr = [];
-		visiblePatternViews.map((i, patternView) => {
-			let idStr = patternView.id;
-			idArr.push(parseInt(idStr.replace('pattern_view_','')));
-		});
-		this.refs.pattern_collection.stateProps._setIdTrashed(idArr, true);
+	// trashAll() {
+	// 	let visiblePatternViews = $('.pattern-view:visible','.pattern-collection');
+	// 	let idArr = [];
+	// 	visiblePatternViews.map((i, patternView) => {
+	// 		let idStr = patternView.id;
+	// 		idArr.push(parseInt(idStr.replace('pattern_view_','')));
+	// 	});
+	// 	this.refs.pattern_collection.stateProps._setIdTrashed(idArr, true);
+	// }
+
+	// resetAllTrash() {
+	// 	let trashedNodes = $('.trashed-info', '.pattern-collection').parent().parent().parent();
+	// 	let idArr = [];
+	// 	trashedNodes.map((i, patternView) => {
+	// 		let idStr = patternView.id;
+	// 		idArr.push(parseInt(idStr.replace('pattern_view_','')));
+	// 	});
+	// 	this.refs.pattern_collection.stateProps._setIdTrashed(idArr, false);
+	// }
+
+	resetTrash(idArr) {
+		this.refs.pattern_collection.stateProps._setIdTrashed(idArr, false);
 	}
 
-	resetAllTrash() {
-		let trashedNodes = $('.trashed-info', '.pattern-collection').parent().parent().parent();
-		let idArr = [];
-		trashedNodes.map((i, patternView) => {
-			let idStr = patternView.id;
-			idArr.push(parseInt(idStr.replace('pattern_view_','')));
-		});
-		this.refs.pattern_collection.stateProps._setIdTrashed(idArr, false);
+	showTrashPanel() {
+		this.setState({showTrashPanel: true});
 	}
 
 	render(){
@@ -122,8 +131,9 @@ class PatternContainer extends React.Component {
 				<PatternCollection ref='pattern_collection' dispatch={ dispatch } />
 			</div>
 			<div ref='pattern_statistics_container' className={ patternInfoClass }>
-				<PatternStatisticsPanel onTrash={this.trashAll.bind(this)} resetAll={this.resetAllTrash.bind(this)}/>
+				<PatternStatisticsPanel showTrashPanel={this.showTrashPanel.bind(this)}/>
 			</div>
+			{this.state.showTrashPanel ? <TrashModal resetTrash={this.resetTrash.bind(this)}/> : ''}
 		</div>);
 	}
 }

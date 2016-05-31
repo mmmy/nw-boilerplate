@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import echarts from 'echarts';
 import classNames from 'classnames';
+import { setFunc } from './helper/updateEchartImage';
 import {factorCandleOption , factorLineOption} from './utils/echart-options';
 
 const renderDataLen = Infinity;
@@ -47,6 +48,7 @@ const propTypes = {
 	index: PropTypes.number.isRequired,
 	fullView: PropTypes.bool.isRequired,
 	isTrashed: PropTypes.bool,
+	id: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
@@ -117,6 +119,7 @@ class EChart extends React.Component {
 
 	componentDidMount() {
 		this.drawChart();
+		setFunc(this.props.id, this.drawChart.bind(this));
 	}
 
 	componentDidUpdate() {

@@ -69,7 +69,7 @@ class PatternInfo extends React.Component {
 		});
 
 		let flexClass = classNames('flex-container', { 'column':  column});
-		let switchWidget = this.state.showSwitch ? <div className='pattern-info-switch-wrapper'><Switch on={isTrashed} onToggle={this.props.toggleTrash}/></div> : '';
+		let switchWidget = this.state.showSwitch ? <div className='pattern-info-switch-wrapper'><Switch trasded={isTrashed} onToggle={this.props.toggleTrash}/></div> : '';
 		// console.log(column,smaller, index);
 		return (<div className = {containerClass} onMouseEnter={this.mouseEnter.bind(this)} onMouseLeave={this.mouseLeave.bind(this)}>
 			<div className = {flexClass}>
