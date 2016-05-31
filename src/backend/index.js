@@ -14,7 +14,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 	let { additionDate } = searchConfig;
 
-	let searchArgs = { symbol, dateRange, bars };
+	let searchArgs = { symbol, dateRange, bars, additionDate };
 
 	let searchCb = (resObj) => {
 		
@@ -22,7 +22,8 @@ let searchPattern = (args, cb, errorCb) => {
 
 		__data = resObj.results.map((pattern, i) => {
 
-			const {id, similarity= resObj.similarities && resObj.similarities[i] || (0.95 - 0.01*i), begin, end, industry='1', type='D'} = pattern;
+			const {id, similarity= resObj.similarities && resObj.similarities[i] || (0.95 - 0.01*i), begin, end, industry='未知行业', type='D'} = pattern;
+			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = {};
 			//let id = i;
 
@@ -36,24 +37,25 @@ let searchPattern = (args, cb, errorCb) => {
 				type,
 				baseBars: bars,
 				kLine,
-				'yield': 0	
+				'yield': _return
 			};
 
 		});
 
 		//获取kline具体数据
-		let dataCb = (klineArr) => {
+		let dataCb = (startIndex, klineArr) => {
 			
 			console.info(`第二步: 获取kline具体数据 [ 正常结束 ], 返回 ${klineArr.length} 条记录`);
 
 			klineArr.forEach(({ metaData, kLine, yieldRate }, i) => {
-				__data[i].kLine = kLine;
-				__data[i].metaData = metaData;
-				__data[i].yield = yieldRate;
-				__data[i].industry = metaData.className || '未知行业';
+				let index = i + startIndex;
+				__data[index].kLine = kLine;
+				__data[index].metaData = metaData;
+				__data[index].yield = __data[index].yield === undefined ? yieldRate : __data[index].yield;
+				__data[index].industry = metaData.className || '未知行业';
 			});
 
-			cb && cb(__data);
+			(startIndex === 0) && cb && cb(__data);
 		};
 
 		//let args = [{'symbol':'ss600000',dateRange:[3, 5]}, {'symbol':'ss600000', dateRange:[7, 8]}];
@@ -70,10 +72,17 @@ let searchPattern = (args, cb, errorCb) => {
 		});
 		console.info('第二步: 获取kline具体数据 [ 开始 ]');
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
-		KSDataService.postSymbolData(args, bars, dataCb, (err) => {
+		let startIndex = 0,
+				nextIndex = 5;
+		KSDataService.postSymbolData(startIndex, args.slice(0, nextIndex), bars, dataCb, (err) => {
 			console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);
 		});
+		// KSDataService.postSymbolData(nextIndex, args.slice(nextIndex), bars, dataCb, (err) => {
+		// 	console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
+		// 	errorCb && errorCb(err);
+		// });
+
 	};
 	
 	console.info('第一步: 搜索 [ 开始 ]');

@@ -5,11 +5,11 @@ const initialState = {
 	sortType: '',
 }
 
-export default function filter(state = initialState, actions) {
+export default function filter(state = initialState, action) {
 	
 	let { sortType } = state;
 	
-	switch (actions.type) {
+	switch (action.type) {
 
 		case types.SORT_BY_DATE: //日期
 
@@ -42,6 +42,13 @@ export default function filter(state = initialState, actions) {
 			return {
 				...state,
 				sortType
+			};
+
+		case types.CHANGE_PATTERNS: //重置
+
+			return {
+				...state,
+				sortType: ''
 			};
 
 		default:

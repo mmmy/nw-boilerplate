@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as sortTypes from '../flux/constants/SortTypes';
 import { filterActions } from '../flux/actions';
 import _ from 'underscore';
+import lodash from 'lodash';
 import classNames from 'classnames';
 import DC from 'dc';
 
@@ -27,16 +28,38 @@ let _idTrashed = [];  //记录剔除状态
 let setTrashed = (id) => { _idTrashed[id] = true };
 let resetTrashed = () => { _idTrashed[id] = undefined };
 let isTrashed = (id) => { return _idTrashed[id]; };
+let _setIdTrashed = (idArr, isTrashed) => {   //批量设置 
+	// console.log('setIdTrashed----'); 
+	let that = _setIdTrashed.proptotype._patterncollection;
+	idArr.length && idArr.forEach(id => { 
+		// _idTrashed[id]=isTrashed 
+		that.refs[`pattern_view_${id}`].setTrashed(isTrashed);
+	});  
+	// console.log(_setIdTrashed.proptotype._patterncollection);
+	// that.setState({});
+};
+
+_setIdTrashed.proptotype={_patterncollection: null};
 
 class PatternCollection extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {};
+		let that = this;
+
+		this._debounceRedrawDc = _.debounce(() => {
+			console.log('o0o0o0o0o0o0o0o00o0o0    debounce func called ... !');
+			that.idDim && that.idDim.filterFunction((d) => { return !_idTrashed[d]; });
+			DC.redrawAll();
+			that.props.dispatch(filterActions.setFilterId(_idTrashed.concat([])));
+		}, 100);
+		//this._idTrashed = _idTrashed;
 	}
 
 	componentDidMount() {
 		_oldPatternRawData = this.props.patterns.rawData;
+		_setIdTrashed.proptotype._patterncollection = this;
 	}
 
 	componentWillReceiveProps(newProps) { //优化性能
@@ -141,7 +164,7 @@ class PatternCollection extends React.Component {
 			this.renderLeading5 = true;
 			_oldPatternRawData = newProps.patterns.rawData;
 			let that = this;
-			setTimeout(() => { that.setState({}); }, 2000);
+			// setTimeout(() => { that.setState({}); }, 2000);
 		} else {
 			this.renderLeading5 = false;
 		}
@@ -212,9 +235,7 @@ class PatternCollection extends React.Component {
 	filterTrashedId(id, isTrashed) {
 		console.info(id, isTrashed, 'xxxxxxxxxx000000000000');
 		_idTrashed[id] = isTrashed;
-		this.idDim && this.idDim.filterFunction((d) => { return !_idTrashed[d]; });
-		DC.redrawAll();
-		this.props.dispatch(filterActions.setFilterId(_idTrashed.concat([])));
+		this._debounceRedrawDc();
 	}
 
 	getPatternNodes() {
@@ -268,7 +289,7 @@ class PatternCollection extends React.Component {
 					show = _idTrashed[e.id];
 				}
 				let isActive = id === e.id;
-				return <PatternView filterTrashedId={this.filterTrashedId.bind(this)} id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>
+				return <PatternView ref={`pattern_view_${e.id}`} filterTrashedId={this.filterTrashedId.bind(this)} id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>
 			});
 			//nodes = nodes.length > 0 ? nodes.slice(0,10) : [];
 		//}
@@ -294,7 +315,7 @@ let stateToProps = function(state) {
 	const {layout, patterns, sort, active, filter, patternTrashed} = state;
 	const {stockView, patternSmallView} = layout;
 	//const {crossFilter,rawData} = patterns;
-	return {fullView: !stockView, patternSmallView, patterns, sort, active, filter, patternTrashed };
+	return {fullView: !stockView, patternSmallView, patterns, sort, active, filter, patternTrashed, _setIdTrashed };
 };
 
 export default connect(stateToProps)(PatternCollection);

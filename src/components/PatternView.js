@@ -28,6 +28,7 @@ class PatternView extends React.Component {
 	}
 
 	setTrashed(isTrashed) {
+		if(this.state.isTrashed === isTrashed) return;
 		this.setState({isTrashed});
 		this.props.filterTrashedId && this.props.filterTrashedId(this.props.id, isTrashed);
 	}
@@ -63,8 +64,13 @@ class PatternView extends React.Component {
 	}
 
 	shouldComponentUpdate(newProps, newState){
+		// if(newProps.isTrashed !== this.state.isTrashed) {
+		// 	this.setState({isTrashed: newProps.isTrashed});
+		// 	//return false;
+		// }
+
 		if((newProps.fullView !== this.props.fullView) && (newProps.index<0 || newProps.index>=5 ) ) return false;
-		console.info('shouldComponentUpdate, index:', newProps.index);
+		// console.info('shouldComponentUpdate, index:', newProps.index);
 		return true;
 		// return newProps.fullView === this.props.fullView; //取消自动刷新
 	}

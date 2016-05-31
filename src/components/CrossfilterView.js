@@ -109,7 +109,7 @@ class CrossfilterView extends React.Component {
 	}
 
 	//响应resize事件
-	handleResize(e){
+	handleResize(e, disableTrasitionOnce=false){
 
 		//console.log(e);
 		if(!this.props.stretchView) { return }
@@ -131,6 +131,12 @@ class CrossfilterView extends React.Component {
 		// 	this.bubbleChartW = bubbleChartW;
 		// 	this.bubbleChartH = bubbleChartH;
 		// }
+		if (disableTrasitionOnce) {
+			this.yieldDateScatterChart.transitionDuration(0);
+			this.industryPieChart.transitionDuration(0);
+			this.yieldDimCountChart.transitionDuration(0);
+		}
+
 		let that = this;
 		if (bubbleChartW != this.scatterChartW || bubbleChartH != this.scatterChartH) {
 			//this.yieldDateScatterChart 
@@ -142,15 +148,21 @@ class CrossfilterView extends React.Component {
 				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH).symbolSize(size).excludedSize(size).redraw(); 
 				that.yieldDateScatterChart.xAxis().ticks(xTicks);
 				that.yieldDateScatterChart.yAxis().ticks(yTicks);
+				that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart);
+				that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart);
+				disableTrasitionOnce && that.yieldDateScatterChart.transitionDuration(transitionDuration);
 			});
-			setTimeout(()=> {that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart) })
-			setTimeout(() => {that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart) });
+			// setTimeout(()=> {that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart) })
+			// setTimeout(() => {that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart) });
 			this.scatterChartW = bubbleChartW;
 			this.scatterChartH = bubbleChartH;
 		}
 
 		if (pieChartR != this.pieChartR) {
-			setTimeout(() => { that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); });
+			setTimeout(() => { 
+				that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); 
+				disableTrasitionOnce && that.industryPieChart.transitionDuration(transitionDuration);
+			});
 			//setTimeout(()=> { that.industryPieChart.renderYAxis(that.industryPieChart) });
 			//setTimeout(() => { that.industryPieChart.renderXAxis(that.industryPieChart) });
 			this.pieChartR = pieChartR;
@@ -159,7 +171,10 @@ class CrossfilterView extends React.Component {
 		}
 
 		if (yieldChartW != this.yieldChartW || yieldChartH != this.yieldChartH) {
-			setTimeout(() => {that.yieldDimCountChart.width(yieldChartW).height(yieldChartH).redraw(); });
+			setTimeout(() => {
+				that.yieldDimCountChart.width(yieldChartW).height(yieldChartH).redraw(); 
+				disableTrasitionOnce && that.yieldDimCountChart.transitionDuration(transitionDuration);
+			});
 			setTimeout(()=> {that.yieldDimCountChart.renderYAxis(that.yieldDimCountChart) });
 			setTimeout(() => {that.yieldDimCountChart.renderXAxis(that.yieldDimCountChart) });
 			this.yieldChartW = yieldChartW;
@@ -174,14 +189,38 @@ class CrossfilterView extends React.Component {
 		//解决第一transition 动画的之后布局	 bug
 		let that = this;
 		let { stretchView } = this.props;
-		$('.container-searchreport').one("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", () => { 
+		$('.statistics-container').one("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", () => { 
 			if(stretchView) {
-				that.handleResize.bind(that)();
+				that.handleResize.bind(that)(null, true);
 			}
 		});
 
 		//setTimeout(this.handleResize.bind(this), 300);
 		console.info('^-^crossFilter view did update', new Date() - this.renderDate);
+	}
+
+	resizeChart2() {
+		
+		let a = 2.03, b = - 143.59;
+		let curW = this.refs.industry_quarter_chart.clientWidth,
+				curH = this.refs.industry_quarter_chart.clientHeight;
+		let wrapper = $(this.refs.industry_quarter_chart_wrapper);
+
+		let targetW = 0,
+				targetH = 0;
+
+		if(wrapper.hasClass('full')) {
+			targetW = curW * 2;
+			targetH = curH * a + b;
+		} else {
+			targetW = curW / 2;
+			targetH = this.refs.yield_count_chart.clientHeight;
+		}
+		let that = this;
+		let pieChartR = Math.min(targetW,targetH)/2 - 10;
+		setTimeout(() => {that.industryPieChart.width(targetW).height(targetH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); });
+		// setTimeout(()=> {that.industryPieChart.renderYAxis(that.industryPieChart) });
+		// setTimeout(() => {that.industryPieChart.renderXAxis(that.industryPieChart) });
 	}
 
 	resizeChart3() {
@@ -207,6 +246,46 @@ class CrossfilterView extends React.Component {
 		setTimeout(() => {that.yieldDimCountChart.renderXAxis(that.yieldDimCountChart) });
 	}
 
+	toggleChart1() {
+		//let chart3larger = this.state;
+		//this.setState({chart3larger: !chart3larger});
+		// let interVal = setInterval(this.handleResize.bind(this),50);
+		let wrapper = $(this.refs.position_bubble_chart_wrapper);
+		//this.yieldDimCountChart.transitionDuration(1);
+		//let padding = wrapper.has('.full') ? '0' : ''
+		$('.chart-body').removeAttr('clip-path');
+		wrapper.toggleClass('full');
+		let that = this;
+		wrapper.one("webkitTransitionEnd oTransitionEnd MSTransitionEnd", () => {
+			//clearInterval(interVal);
+			// that.handleResize();
+		});
+		//wrapper.css('padding', '');
+		$(this.refs.toggle_btn1).toggleClass('larger');
+		// this.resizeChart2();
+		// setTimeout(this.handleResize.bind(this), 500);
+	}	
+
+	toggleChart2() {
+		//let chart3larger = this.state;
+		//this.setState({chart3larger: !chart3larger});
+		// let interVal = setInterval(this.handleResize.bind(this),50);
+		let wrapper = $(this.refs.industry_quarter_chart_wrapper);
+		//this.yieldDimCountChart.transitionDuration(1);
+		//let padding = wrapper.has('.full') ? '0' : ''
+		$('.chart-body').removeAttr('clip-path');
+		wrapper.toggleClass('full');
+		let that = this;
+		wrapper.one("webkitTransitionEnd oTransitionEnd MSTransitionEnd", () => {
+			//clearInterval(interVal);
+			// that.handleResize();
+		});
+		//wrapper.css('padding', '');
+		$(this.refs.toggle_btn2).toggleClass('larger');
+		this.resizeChart2();
+		// setTimeout(this.handleResize.bind(this), 500);
+	}
+
 	toggleChart3() {
 		//let chart3larger = this.state;
 		//this.setState({chart3larger: !chart3larger});
@@ -222,7 +301,7 @@ class CrossfilterView extends React.Component {
 			// that.handleResize();
 		});
 		//wrapper.css('padding', '');
-		$(this.refs.toggle_btn).toggleClass('larger');
+		$(this.refs.toggle_btn3).toggleClass('larger');
 		this.resizeChart3();
 		// setTimeout(this.handleResize.bind(this), 500);
 	}
@@ -236,16 +315,18 @@ class CrossfilterView extends React.Component {
 		//console.log('crossFilter view render');
 		let { chart3larger } = this.state;
 		let toggleBtnClass = classnames('toggle-btn');
-		let toggleBtn = <button ref='toggle_btn' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
+		let toggleBtn1 = <button ref='toggle_btn1' className={toggleBtnClass} onClick={this.toggleChart1.bind(this)}></button>;
+		let toggleBtn2 = <button ref='toggle_btn2' className={toggleBtnClass} onClick={this.toggleChart2.bind(this)}></button>;
+		let toggleBtn3 = <button ref='toggle_btn3' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
 		return (
 		  <div ref='root' className={ className }>
-		  	<div className="dc-chart-row">
-		  		<strong>历史时间分布</strong>
+		  	<div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='position_bubble_chart_wrapper'>
+		  		<strong>{toggleBtn1}历史时间分布</strong>
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
 		    <div className="dc-chart-row">
-		    	<div className='inline-chart-wrapper'><strong>饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"><div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{toggleBtn}收益率统计</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{toggleBtn2}饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"><div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{toggleBtn3}收益率统计</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>
 		  </div>
 		);
@@ -303,8 +384,9 @@ class CrossfilterView extends React.Component {
 
 			this.yieldDateDim = crossFilter.dimension((data) => {
 
-				let lastBar = data.kLine[data.kLine.length - 1];
-				let year = lastBar ? new Date(lastBar[0]).getFullYear() : 0;
+				// let lastBar = data.kLine[data.kLine.length - 1];
+				// let year = lastBar ? new Date(lastBar[0]).getFullYear() : 0;
+				let year = new Date(data.end).getFullYear();
 				let yield100 = Math.round(data.yield*100);
 				//缓存所有数据的年份范围 和 收益率范围
 				yearArr.push(year);

@@ -28,7 +28,7 @@ let {searchOptions} = config;
 ******************/
 
 //symbol:'Shenzhen:000001.SZ';
-let searchPattern = ({ symbol, dateRange, bars}, cb, errorCb) => {
+let searchPattern = ({ symbol, dateRange, bars, additionDate}, cb, errorCb) => {
 	
 	let exchangeReg = /.*\:/ ; //匹配开始到冒号的所有字符, 
 	//let id = parseInt(symbol.replace(exchangeReg, '')); //去掉交易所字符
@@ -74,7 +74,9 @@ let searchPattern = ({ symbol, dateRange, bars}, cb, errorCb) => {
 			end:{time: new Date(dateRange[1]).toISOString()},
 			len:bars
 		},
-		samples:[]
+		samples:[],
+		topN: 100,
+		nLookForward: additionDate.value,
 	};
 
 	let postData = JSON.stringify(postObj);

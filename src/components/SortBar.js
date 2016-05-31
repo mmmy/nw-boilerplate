@@ -36,8 +36,10 @@ class SortBar extends React.Component {
 
 	}
 
-	componentWillReceiveProps(){
-
+	componentWillReceiveProps(newProps){
+		if(newProps.crossFilter !== this.props.crossFilter) {
+			this.setState({values: {min:0, max:100}, searchSymbol: ''});
+		}
 	}
 
 	shouldComponentUpdate(){

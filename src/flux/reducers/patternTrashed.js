@@ -2,7 +2,7 @@ import * as types from '../constants/ActionTypes';
 
 const initialState = {
 	showNotTrashed: true,
-	showTrashed: true,
+	showTrashed: false,
 };
 
 export default function active(state = initialState, action) {

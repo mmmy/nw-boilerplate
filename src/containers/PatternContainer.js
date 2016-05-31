@@ -15,6 +15,8 @@ const defaultProps = {
   
 };
 
+let _slideStatisticsNode = null;
+
 class PatternContainer extends React.Component {
 
 	constructor(props) {
@@ -24,6 +26,28 @@ class PatternContainer extends React.Component {
 
 	componentDidMount() {
 
+		let parentNode = $(this.refs.pattern_statistics_container);
+		let childNode = $(`<div class='transition-all transition-ease transition-duration1000 statistics-slide-widget flex'><button><i class='fa fa-trash'></i>一键剔除</button><i class='fa fa-chevron-down'></i></div>`);
+		let childrenBtn = childNode.children();
+
+		let that = this;
+		childrenBtn[0].onclick = () => {
+			let a = that;
+			let visiblePatternViews = $('.pattern-view:visible','.pattern-collection');
+			let idArr = [];
+			visiblePatternViews.map((i, patternView) => {
+				let idStr = patternView.id;
+				idArr.push(parseInt(idStr.replace('pattern_view_','')));
+			});
+			that.refs.pattern_collection.stateProps._setIdTrashed(idArr, true);
+		};
+		childrenBtn[1].onclick = () => {
+			childNode.removeClass('slide-up');
+		}
+		parentNode.prepend(childNode);
+
+		_slideStatisticsNode = childNode;
+
 	}
 
 	componentWillReceiveProps(){
@@ -31,6 +55,10 @@ class PatternContainer extends React.Component {
 	}
 
 	shouldComponentUpdate(newProps, newState){
+		if (newProps.filter !== this.props.filter) {
+			_slideStatisticsNode && _slideStatisticsNode.addClass('slide-up');
+			return false;
+		}
 		return true;
 		// return (newProps.filter === this.props.filter)
 		// 			&& (newProps.fullView === this.props.fullView);
@@ -42,6 +70,26 @@ class PatternContainer extends React.Component {
 
 	componentWillUnmount(){
 
+	}
+
+	trashAll() {
+		let visiblePatternViews = $('.pattern-view:visible','.pattern-collection');
+		let idArr = [];
+		visiblePatternViews.map((i, patternView) => {
+			let idStr = patternView.id;
+			idArr.push(parseInt(idStr.replace('pattern_view_','')));
+		});
+		this.refs.pattern_collection.stateProps._setIdTrashed(idArr, true);
+	}
+
+	resetAllTrash() {
+		let trashedNodes = $('.trashed-info', '.pattern-collection').parent().parent().parent();
+		let idArr = [];
+		trashedNodes.map((i, patternView) => {
+			let idStr = patternView.id;
+			idArr.push(parseInt(idStr.replace('pattern_view_','')));
+		});
+		this.refs.pattern_collection.stateProps._setIdTrashed(idArr, false);
 	}
 
 	render(){
@@ -71,10 +119,10 @@ class PatternContainer extends React.Component {
 				{/*<FilterBar dispatch={dispatch} crossFilter={patterns.crossFilter} />*/}
 			</div>
 			<div className={ collectionClass }>
-				<PatternCollection dispatch={ dispatch } />
+				<PatternCollection ref='pattern_collection' dispatch={ dispatch } />
 			</div>
-			<div className={ patternInfoClass }>
-				<PatternStatisticsPanel />
+			<div ref='pattern_statistics_container' className={ patternInfoClass }>
+				<PatternStatisticsPanel onTrash={this.trashAll.bind(this)} resetAll={this.resetAllTrash.bind(this)}/>
 			</div>
 		</div>);
 	}
@@ -84,10 +132,10 @@ PatternContainer.propTypes = propTypes;
 PatternContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const {layout, patterns, sort } = state;
+	const {layout, patterns, sort, filter } = state;
 	const {stockView, patternSmallView} = layout;
 	//const {crossFilter,rawData} = patterns;
-	return {fullView: !stockView, patternSmallView, patterns, sort };
+	return {fullView: !stockView, patternSmallView, patterns, sort, filter};
 };
 
 export default connect(stateToProps)(PatternContainer);

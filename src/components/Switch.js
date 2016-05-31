@@ -49,7 +49,7 @@ class Switch extends React.Component {
 	render(){
 		let {width, height, onColor, offColor} = this.props;
 		let style = {width, height};
-		let className = classNames('switch-pin transition-all transition-duration2 transition-ease', {'on': this.state.on});
+		let className = classNames('switch-pin transition-all transition-duration2 transition-ease', {'on': !this.state.on});
 		return (
       <div style={style} className="switch-contianer" onClick={this.toggle.bind(this)}>
       	<div className={className}></div>

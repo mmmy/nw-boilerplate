@@ -7,6 +7,7 @@ var path 	= require('path');
 var del 	= require('del');
 var sequence = require('run-sequence');
 var $ 		= require('gulp-load-plugins')();
+var builder = require('gulp-node-webkit-builder');
 
 //
 var paths = {
@@ -98,6 +99,19 @@ gulp.task('dev_react',['styles'],function(){
 gulp.task('yq', function(){
 	process.env.yq = 'yes';
 	gulp.run('watch');
+});
+
+gulp.task('release', ['build'], function() {
+  return gulp.src(['./build/**/*'])
+		.pipe($.plumber(function(error){
+			$.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
+	      	this.emit('end');
+		}))
+    .pipe(builder({
+        version: 'v0.12.3',
+        quite: false,
+        platforms: ['osx64']
+     }));
 });
 
 gulp.task('default', ['watch']);

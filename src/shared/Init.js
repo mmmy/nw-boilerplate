@@ -10,10 +10,11 @@ let initJquery = () => {
 	//animate.css helper
 	if(!$.fn.animatedCss){
 			$.fn.extend({
-			    animateCss: function (animationName) {
+			    animateCss: function (animationName, cb) {
 			        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
 			        $(this).addClass('animated ' + animationName).one(animationEnd, function() {
 			            $(this).removeClass('animated ' + animationName);
+			            cb && cb();
 			        });
 			    }
 			});

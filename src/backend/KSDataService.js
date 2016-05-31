@@ -47,7 +47,7 @@ let chunksToKline = (chunks) => {
  * args: [{symbol, dateRange:[]},]
  */
 
-let postSymbolData = (args, bars, cb, errorCb) => {
+let postSymbolData = (startIndex, args, bars, cb, errorCb) => {
 
 	let options = {           		
 		...patternOptions
@@ -97,7 +97,7 @@ let postSymbolData = (args, bars, cb, errorCb) => {
 
 				});
 
-				cb && cb(klineArr);
+				cb && cb(startIndex, klineArr);
 			};
 			//TODO:获取文件chunk, 并合并数据
 			let fileChunkCount = 0;
