@@ -147,7 +147,7 @@ class ComparatorStatic extends React.Component {
     });
 
     return (
-      <div className={ comparatorChartClassName }>
+      <div className={ comparatorChartClassName } id='__comparator_prediction_container'>
         <ReactTradingView
           viewId={ STOCK_VIEW }
           options={ options } />
