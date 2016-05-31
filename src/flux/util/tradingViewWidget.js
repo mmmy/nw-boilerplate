@@ -16,7 +16,7 @@ const getChart = (type) => {
 
 const setChartLayout = () => {
   setInterval(() => {
-    let chart = document[window.document.getElementsByTagName('iframe')[0].id]
+    let chart = window.widget_comparator
     if (chart.W76 && chart.Q5) {
       setChartLayout();
       chart.W76.setChartLayout(chart.Q5, '2v');

@@ -34,7 +34,7 @@ class ComparatorStatic extends React.Component {
 	shouldComponentUpdate(newProps, newState){
     // return newProps.stretchView === this.props.stretchView;
 		return true;
-    return newProps.filter === this.props.filter; 
+    return newProps.filter === this.props.filter;
 	}
 
 	componentWillUnmount(){
@@ -71,7 +71,7 @@ class ComparatorStatic extends React.Component {
     const STOCK_VIEW = 'comparator-chart';
 
     let options = {
-      symbol: '000002.SZ',
+      symbol: '000003.SZ',
       interval: 'D',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
@@ -136,7 +136,8 @@ class ComparatorStatic extends React.Component {
           "ksSplitView": true,
           volume: true,
           OHLCBarBorderColor: true,
-        }
+        },
+        debug: true
       // height: 300,
       // width: 300,
     }
