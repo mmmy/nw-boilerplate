@@ -97,8 +97,8 @@ class PatternContainer extends React.Component {
 		this.refs.pattern_collection.stateProps._setIdTrashed(idArr, false);
 	}
 
-	showTrashPanel() {
-		this.setState({showTrashPanel: true});
+	showTrashPanel(show) {
+		this.setState({showTrashPanel: show});
 	}
 
 	render(){
@@ -131,9 +131,9 @@ class PatternContainer extends React.Component {
 				<PatternCollection ref='pattern_collection' dispatch={ dispatch } />
 			</div>
 			<div ref='pattern_statistics_container' className={ patternInfoClass }>
-				<PatternStatisticsPanel showTrashPanel={this.showTrashPanel.bind(this)}/>
+				<PatternStatisticsPanel showTrashPanel={this.showTrashPanel.bind(this, true)}/>
 			</div>
-			{this.state.showTrashPanel ? <TrashModal resetTrash={this.resetTrash.bind(this)}/> : ''}
+			{this.state.showTrashPanel ? <TrashModal onClose={this.showTrashPanel.bind(this, false)} resetTrash={this.resetTrash.bind(this)}/> : ''}
 		</div>);
 	}
 }
