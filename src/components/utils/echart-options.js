@@ -143,7 +143,7 @@ var factorCandleOption=function(candleBorder = true){
 		            areaStyle: {
 		                normal: {
 		                    color: 'rgb(255,255,255)',
-		                    opacity: 0.4
+		                    opacity: 0.6
                 		}
            		 	},
            		}

@@ -75,7 +75,7 @@ class PatternInfo extends React.Component {
 			<div className = {flexClass}>
 				<div>
 					<h5>相似度</h5>
-					<p className='font-number'>{(similarity*100).toFixed(0)+'%'}</p>
+					<p className='font-number'>{(similarity*100 + '').slice(0, 4)+'%'}</p>
 				</div>
 				{ (column && smaller) ? [] : (<div>
 					<h5>返回</h5>
