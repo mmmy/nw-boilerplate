@@ -97,7 +97,7 @@ class PatternView extends React.Component {
 		let { dispatch, isActive } = this.props;
 		let { id, symbol, baseBars, kLine } = this.props.pattern;
 
-    let dateStart = kLine[baseBars - 20] ? kLine[baseBars - 20][0] : kLine[baseBars];
+    let dateStart = kLine[baseBars - 20] ? kLine[baseBars - 20][0] : kLine[baseBars][0];
     let dateEnd = kLine[baseBars - 1][0];
     dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
 
@@ -112,11 +112,17 @@ class PatternView extends React.Component {
 
     window.timeRange = dateRange;
 
-    chart.KeyStone.setSymbol(symbol, '', 1);
-    this._doWhenBarReceived(() => {
-      widget.setVisibleRange(dateRange, '1');
-      window.parent.timeRange = undefined;
-    });
+    let oldSymbol = window.widget_comparator._innerWindow().Q5.getAll()[1].model().mainSeries().symbol().split(':')[1];
+
+    if (oldSymbol !== symbol) {
+      chart.KeyStone.setSymbol(symbol, '', 1);
+      this._doWhenBarReceived(() => {
+        widget.setVisibleRange(dateRange, '1');
+        window.parent.timeRange = undefined;
+      });
+    } else {
+        widget.setVisibleRange(dateRange, '1');
+    }
 	}
 
   _doWhenBarReceived(callback) {
