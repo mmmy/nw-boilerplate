@@ -64,16 +64,12 @@ class ComparatorPrediction extends React.Component {
   splitData(kLine, baseBars) {
     let data = [];
     if (window.tv0_height) {
-      let startPoint = window.eChart.getHeight() / 2;
       if (kLine && kLine.length > baseBars) {
         let line =  kLine.slice(baseBars);
-        let normalizeCoef = startPoint / line[0][2];
 
         line.forEach((e, i) => {
-          if (i > 0){
-            let percentage = ((e[2] * normalizeCoef - line[i - 1][2]) * 100);
-            data.push(percentage);
-          }
+          let percentage = ((e[2] - line[0][2]) / line[0][2] * 100);
+          data.push(percentage);
         });
       }
     }
@@ -186,8 +182,8 @@ class ComparatorPrediction extends React.Component {
         },
         // scale: true,
         // interval: 0.5,
-        max: window.eChart.getHeight(),
-        min: 0
+        max: 30,
+        min: -30
       },
       series: this.generateSeriesDataFromDimension()
       // series: predictionRandomData()
