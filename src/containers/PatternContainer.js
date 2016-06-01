@@ -57,7 +57,13 @@ class PatternContainer extends React.Component {
 
 	shouldComponentUpdate(newProps, newState){
 		if (newProps.filter !== this.props.filter) {
-			_slideStatisticsNode && _slideStatisticsNode.addClass('slide-up');
+			let newFilter = newProps.filter;
+			let {industrys, yieldRange, symbol, similarity, yieldDateRange} = newFilter;
+			if(industrys.length == 0 && yieldRange.length == 0 && symbol === '' && similarity.min ==0 && similarity.max == 100 && yieldDateRange.length == 0) {
+				setTimeout(()=>{ _slideStatisticsNode && _slideStatisticsNode.removeClass('slide-up'); });
+			} else {
+				setTimeout(()=>{ _slideStatisticsNode && _slideStatisticsNode.addClass('slide-up'); });
+			}
 			return false;
 		}
 		return true;

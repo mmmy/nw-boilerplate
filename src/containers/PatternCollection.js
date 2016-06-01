@@ -92,11 +92,12 @@ class PatternCollection extends React.Component {
 
 		let hideHelper = () => {
 			let {showNotTrashed, showTrashed} = newProps.patternTrashed;
-			let filteredData = this.symbolDim.top(Infinity),
-					idArr = _.pluck(filteredData, 'id'),
-					node = this.refs.container;
 			//console.info('idarr', idArr);
+			let that = this;
 			setTimeout(() => {
+				let filteredData = that.symbolDim.top(Infinity),
+						idArr = _.pluck(filteredData, 'id'),
+						node = that.refs.container;
 				$('.pattern-view', node).addClass('hide');
 				if(showNotTrashed){
 					idArr.forEach((id) => {

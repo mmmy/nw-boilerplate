@@ -97,9 +97,12 @@ class SortBar extends React.Component {
 		if(this.state.panelType !== panelType) {
 			return '';
 		}
+		let handle = (e) => {
+			e.stopPropagation();
+		};
 		switch(panelType) {
 			case 0:   //sort
-				return <div className='child-panel-container'>
+				return <div className='child-panel-container' onClick={handle}>
 					{this.renderSortIcons(SORT_BTN_SIMILARITY)}
 					{/*this.renderSortIcons(SORT_BTN_DATE)*/}
 					{this.renderSortIcons(SORT_BTN_YIELD)}
@@ -110,7 +113,7 @@ class SortBar extends React.Component {
 				let {min, max} = this.state.values;
 				return <div className='child-panel-container'>
 					<span className='title-left' >相似度:</span>
-					<div className='slider-container'>
+					<div className='slider-container' onClick={handle}>
 						<RCSlider 
 							className='slider-appearance' 
 							min={0} 

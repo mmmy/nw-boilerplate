@@ -54,24 +54,24 @@ let setFilterSimilarity = function(similarity) {
 	}
 }
 
-let _yieldDaterange = null;
+let _yieldDateRange = null;
 
 let _setFilterYieldDateRange = _.debounce((dispatch) => {
 	console.info('_setFilterYieldDateRange called');
 	dispatch({
 		type: types.SET_FILTER_YIELDDATERANGE,
-		yieldDaterange: _yieldDaterange,
+		yieldDateRange: _yieldDateRange,
 	});
 
 }, debounceTime);
 
-let setFilterYieldDateRange = function(yieldDaterange) {
-	_yieldDaterange = yieldDaterange;
+let setFilterYieldDateRange = function(yieldDateRange) {
+	_yieldDateRange = yieldDateRange;
 	return _setFilterYieldDateRange;
 	return _.debounce((dispatch) => {
 		dispatch({
 			type: types.SET_FILTER_YIELDDATERANGE,
-			yieldDaterange,
+			yieldDateRange,
 		});
 	}, debounceTime);
 	// return {
