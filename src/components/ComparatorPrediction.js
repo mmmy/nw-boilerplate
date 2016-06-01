@@ -67,8 +67,7 @@ class ComparatorPrediction extends React.Component {
   splitData(kLine, baseBars) {
     let data = [];
     if (window.tv0_height) {
-      let startPoint = window.tv0_height / 2;
-      console.debug(window.tv0_height);
+      let startPoint = window.eChart.getHeight() / 2;
       if (kLine && kLine.length > baseBars) {
         let line =  kLine.slice(baseBars);
         let percentage = startPoint / line[0][2];
