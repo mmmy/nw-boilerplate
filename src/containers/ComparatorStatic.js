@@ -45,17 +45,7 @@ class ComparatorStatic extends React.Component {
   togglePredictionPanel() {
     this.props.dispatch(layoutActions.togglePredictionPanel());
     if (this.props.isPredictionShow === false) {
-      // window.actionsForIframe.scrollToOffsetAnimated();
       window.widget_comparator.setVisibleRange(window.searchingRange, '0');
-      window.widget_comparator._innerWindow().KeyStone.kscale(() => {
-        window.actionsForIframe.takeScreenshot(window.widget_comparator._innerWindow());
-      });
-    //   window.widget_comparator._innerWindow().KeyStone.kscale();
-    //   window.widget_comparator._innerWindow().KeyStone.kscale(() => {
-    //     setTimeout(() => {
-    //       window.widget_comparator._innerWindow().KeyStone.takeScreenshot(window.widget_comparator._innerWindow());
-    //     }, 200);
-    //   });
     }
   }
 
