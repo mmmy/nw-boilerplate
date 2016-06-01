@@ -130,6 +130,8 @@ class ComparatorPrediction extends React.Component {
 
     window.eChartMaxValue = maxValue;
     window.eChartMinValue = minValue;
+    let scaleMax = Math.max(Math.abs(maxValue), Math.abs(minValue));
+    window.eChartScale = scaleMax * 1.3;
 
     return eChartSeriesData;
   }
@@ -182,8 +184,8 @@ class ComparatorPrediction extends React.Component {
         },
         // scale: true,
         // interval: 0.5,
-        max: 30,
-        min: -30
+        // max: 100,
+        // min: -100
       },
       series: this.generateSeriesDataFromDimension()
       // series: predictionRandomData()
