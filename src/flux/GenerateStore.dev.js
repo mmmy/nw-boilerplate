@@ -15,7 +15,7 @@ import reducers from './reducers';
 
 const createStoreWithMiddleware = compose(
   applyMiddleware(thunkMiddleware, promiseMiddleware), //!\ logger must be last middleware in chain
-  // DevTools.instrument()
+  DevTools.instrument()
 )(createStore);
 
 export default function generateStore(initialState) {

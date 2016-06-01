@@ -46,10 +46,11 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 
 			backend.searchPattern({symbol, dateRange, bars, searchConfig}, 
 
-				(resArr) => {
+				(resArr, closePrice) => {
 
 					let patterns = {
 						rawData: resArr,
+						closePrice: closePrice || [],
 					};
 					patterns.crossFilter = crossfilter(patterns.rawData);
 					patterns.searchConfig = searchConfig;

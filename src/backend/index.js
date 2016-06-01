@@ -9,6 +9,7 @@ let __data = [];
 /**
  * args: {symbol: , bars: , dateRange:{from: , to: }, additionDate:{type:'days', value: 30} }
  */
+let __closePrice = [];
 
 let searchPattern = (args, cb, errorCb) => {
 
@@ -44,6 +45,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 		});
 
+		__closePrice = resObj.closePrice || [];
 		//获取kline具体数据
 		let dataCb = (startIndex, klineArr) => {
 			
@@ -58,7 +60,7 @@ let searchPattern = (args, cb, errorCb) => {
 			});
 
 			if(startIndex === 0) { //获取到前五个 刷新state
-				cb && cb(__data);
+				cb && cb(__data, __closePrice);
 			} else {
 				callFunc([startIndex, __data.length]);
 			}
