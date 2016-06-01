@@ -29,23 +29,19 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    let option = window.eChart.getOption();
-    option.series = this.generateSeriesData();
-    window.eChart.setOption(option, true);
   }
 
   shouldComponentUpdate(){
     return true;
   }
   componentDidUpdate() {
+    let option = window.eChart.getOption();
+    option.series = this.generateSeriesData();
+    window.eChart.setOption(option, true);
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
   }
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
-  }
-
-  getLastValueData() {
-  // TODO
   }
 
   handleResize() {
@@ -95,14 +91,14 @@ class ComparatorPrediction extends React.Component {
           if (data.length > 0) {
             eChartSeriesData.push({
               data: data,
-              name: '模拟数据',
+              name: e.symbol,
               type: 'line',
               showSymbol: false,
               hoverAnimation: false,
               lineStyle: {
                 normal: {
                   color: e.id === 5 ? '#c23531' : '#ccc', // TODO
-                  width: 0.8
+                  width: 0.5
                 }
               },
               z: e.id === 5 ? 9999 : 2
