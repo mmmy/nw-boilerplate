@@ -34,13 +34,16 @@
 
 //switch 
 .switch-contianer {
-	width: 4rem;
-	height: 2rem;
+	width: 3rem;
+	height: 3rem;
 	background-color: white;
 	position: relative;
 	box-shadow: -1px 3px 10px 0 #aaa;
 	cursor: pointer;
 	border-radius: 2px;
+	text-align: center;
+	font-size: 2rem;
+	color: @ks-color-gray-5;
 	.switch-pin {
 		position: absolute;
 		border-radius: 2px;
@@ -54,4 +57,80 @@
 		background-color: @lulu-red1;
 		left: 2rem;
 	}
+}
+
+
+
+.trash-modal-container {
+	position: relative;
+	width: 720px;
+	height: 480px;
+	z-index: 10001;
+	background-color: #fff;
+	box-shadow: 0 0 15px 0 #aaa;
+
+	.close-icon {
+		float: right;
+		//display: inline-block;
+		margin-right: 10px;
+		margin-top: 10px;
+		width: 30px;
+		height: 25px;
+		text-align: center;
+		cursor: pointer;
+		&:hover {
+			color: red;
+		}
+	}
+
+	input, button{
+		outline: none;
+	}
+	.title {
+		margin-top: 30px;
+		font-size: 2rem;
+		padding-left: 40px;
+		height: 40px;
+	}
+	.trash-modal-content-wrapper {
+		height: calc(~"100% - 130px");
+		// border: 1px solid red;
+		overflow: scroll;
+		.scrollbar(@width:5px);
+		.scrollbar-track(@background-color:transparent);
+		.scrollbar-thumb();
+		margin-right: 15px;
+	}
+	.footer {
+		border-top: 1px solid @ks-color-gray-9;
+		// border-bottom: 1px solid @ks-color-gray-5;
+		height: 60px;
+		button {
+			position: relative;
+			left: -25px;
+			border: none;
+			width: 160px;
+			font-size: 11px;
+			padding: 6px;
+			background-color: @config-modal-button-background-color;
+		}
+		.info-container {
+			position: relative;
+			left: -200px;
+			font-size: 10px;
+			width: 55px;
+			color: @ks-color-gray-6;
+			.font-number {
+				display: inline-block;
+				width: 25px;
+				text-align: right;
+				color: @ks-color-gray-1;
+				padding-right: 2px;
+			}
+		}
+	}
+}
+
+.trash-modal-content-wrapper {
+
 }

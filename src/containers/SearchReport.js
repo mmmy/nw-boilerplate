@@ -45,6 +45,10 @@ class SearchReport extends React.Component {
 
 	componentWillReceiveProps(newProps){
 		_isToggled = newProps.fullView !== this.props.fullView;
+		if(_isToggled) {
+			$(this.refs.inner_searchreport).css('opacity', '0');
+			// $('#__comparator_prediction_container').css('opacity', '0');
+		}
 	}
 
 	shouldComponentUpdate(){
@@ -63,6 +67,13 @@ class SearchReport extends React.Component {
 				afterSearchMessage(state.patterns.rawData.length, state.layout.searchTimeSpent);
 			}
 		});
+		_isToggled && $(this.refs.inner_searchreport).one("webkitTransitionEnd", () => {
+			setTimeout(() => {
+				$(this.refs.inner_searchreport).css('opacity', '1');
+				$('#__comparator_prediction_container').css('opacity', (fullView ? '1' : '0'));
+			}, 100);
+		});
+
 	}
 
 	componentWillUnmount(){
@@ -85,7 +96,7 @@ class SearchReport extends React.Component {
 	    return (
 	      <div className={ className }>
 	        <ToggleBar {...this.props} />
-	        <div className="inner-searchreport">
+	        <div ref='inner_searchreport' className="inner-searchreport">
 	          { this.renderWaitingPanel() }
 	          { this.renderDataPanels() }
 	        </div>

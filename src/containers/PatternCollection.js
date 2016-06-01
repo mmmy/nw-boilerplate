@@ -48,12 +48,17 @@ class PatternCollection extends React.Component {
 		this.state = {};
 		let that = this;
 
-		this._debounceRedrawDc = _.debounce(() => {
+		this._debounceRedrawDc = lodash.debounce(() => {
 			console.log('o0o0o0o0o0o0o0o00o0o0    debounce func called ... !');
 			that.idDim && that.idDim.filterFunction((d) => { return !_idTrashed[d]; });
 			DC.redrawAll();
 			that.props.dispatch(filterActions.setFilterId(_idTrashed.concat([])));
-		}, 100);
+			//显示垃圾桶数目
+			setTimeout(() => {
+				let trashedNumber = _idTrashed.reduce((pre,cur) => { return cur ? (pre + 1) : pre; }, 0);
+				$('.trashed-number', '.pattern-statistics-panel').text(trashedNumber);
+			});
+		}, 100, {leading: true});
 		//this._idTrashed = _idTrashed;
 	}
 
@@ -277,7 +282,7 @@ class PatternCollection extends React.Component {
 			
 			let index = 0; //显示出来的index, -1为隐藏的
 			//sortedData = sortedData.slice(0 ,5);
-			let dataArr = this.renderLeading5 ? sortedData.slice(0, 5) : sortedData;
+			let dataArr = /*this.renderLeading5*/false ? sortedData.slice(0, 5) : sortedData;
 			nodes = dataArr.map((e, i) => {
 				let show = false;
 				if(showNotTrashed && showTrashed) {   //查看全部

@@ -2,6 +2,7 @@ import KSSearch from './KSSearch';
 import KSDataService from './KSDataService';
 import store from '../store';
 import lodash from 'lodash';
+import { callFunc } from '../components/helper/updateEchartImage';
 
 let __data = [];
 /**
@@ -55,7 +56,11 @@ let searchPattern = (args, cb, errorCb) => {
 				__data[index].industry = metaData.className || '未知行业';
 			});
 
-			(startIndex === 0) && cb && cb(__data);
+			if(startIndex === 0) { //获取到前五个 刷新state
+				cb && cb(__data);
+			} else {
+				callFunc([startIndex, __data.length]);
+			}
 		};
 
 		//let args = [{'symbol':'ss600000',dateRange:[3, 5]}, {'symbol':'ss600000', dateRange:[7, 8]}];
@@ -78,10 +83,10 @@ let searchPattern = (args, cb, errorCb) => {
 			console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);
 		});
-		// KSDataService.postSymbolData(nextIndex, args.slice(nextIndex), bars, dataCb, (err) => {
-		// 	console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
-		// 	errorCb && errorCb(err);
-		// });
+		KSDataService.postSymbolData(nextIndex, args.slice(nextIndex), bars, dataCb, (err) => {
+			console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
+			errorCb && errorCb(err);
+		});
 
 	};
 	

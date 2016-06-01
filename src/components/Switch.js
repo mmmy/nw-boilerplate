@@ -6,20 +6,20 @@ const propTypes = {
 	height: PropTypes.string,
 	onColor: PropTypes.string,
 	offColor: PropTypes.string,
-	on: PropTypes.bool,
+	trashed: PropTypes.bool,
 	onToggle: PropTypes.func,
 };
 
 const defaultProps = {
-	on: false
+	trashed: false
 };
 
 class Switch extends React.Component {
 
 	constructor(props) {
 		super(props);
-		let {on} = this.props;
-		this.state = {on};
+		let {trashed} = this.props;
+		this.state = {trashed};
 	}
 
 	componentDidMount() {
@@ -41,18 +41,20 @@ class Switch extends React.Component {
 	toggle(e) {
 		e.stopPropagation();
 		let {onToggle} = this.props;
-		let {on} = this.state;
-		this.setState({on: !on});
-		onToggle && onToggle(!on);
+		let {trashed} = this.state;
+		this.setState({trashed: !trashed});
+		onToggle && onToggle(!trashed);
 	}
 
 	render(){
 		let {width, height, onColor, offColor} = this.props;
 		let style = {width, height};
-		let className = classNames('switch-pin transition-all transition-duration2 transition-ease', {'on': !this.state.on});
+		let { trashed } = this.state;
+		// let className = classNames('switch-pin transition-all transition-duration2 transition-ease', {'on': !this.state.on});
+		let className = classNames('fa', {'fa-trash': !trashed, 'fa-refresh': trashed});
 		return (
       <div style={style} className="switch-contianer" onClick={this.toggle.bind(this)}>
-      	<div className={className}></div>
+      	<i className={className}></i>
       </div>
     );
 	}

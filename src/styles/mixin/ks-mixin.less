@@ -1,4 +1,4 @@
-@transition-duration: 0.3s;
+@transition-duration: 0.2s;
 @transition-duration2: 0.5s;
 
 .transition-all{
@@ -71,12 +71,13 @@
 }
 
 .ks-fade-in{
-  transition: opacity @transition-duration2 ease @transition-duration + 0.3s;
+  // transition: opacity 0 ease @transition-duration + 0.1s;
+  // transition: opacity @transition-duration2 ease @transition-duration + 0.3s;
 }
 
 .ks-transition-height-opacity{
 	transition: height @transition-duration ease, 
-				opacity @transition-duration2 ease @transition-duration + 0.3;
+				opacity 0 ease @transition-duration + 0.1s;
 }
 
 .ks-no-transition {
@@ -93,6 +94,12 @@
 	&.column {
 		flex-direction: column;
 	}
+}
+
+.flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .chart-container{
