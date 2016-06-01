@@ -5,7 +5,6 @@ import ReactTradingView from '../components/ReactTradingView';
 import ComparatorPrediction from '../components/ComparatorPrediction';
 import ComparatorHeatmap from '../components/ComparatorHeatmap';
 import { layoutActions } from '../flux/actions';
-
 const propTypes = {
 
 };
@@ -45,6 +44,9 @@ class ComparatorStatic extends React.Component {
   }
   togglePredictionPanel() {
     this.props.dispatch(layoutActions.togglePredictionPanel());
+    if (this.props.isPredictionShow === false) {
+      window.widget_comparator.setVisibleRange(window.searchingRange, '0');
+    }
   }
 
 	render() {

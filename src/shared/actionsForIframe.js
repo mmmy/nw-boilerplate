@@ -40,6 +40,20 @@ export default function(store) {
       // });
   }
 
+  let scrollToOffsetAnimated = function() {
+    let widget = window.widget_comparator._innerWindow();
+    let chart = widget.Q5.getAll()[0];
+
+    const animationDuration = 1E3;
+
+    if (window._oldTimeScaleRightOffset) {
+      chart.model().timeScale().scrollToOffsetAnimated(window._oldTimeScaleRightOffset, animationDuration);
+      setTimeout(() => {
+        window.widget_comparator._innerWindow().KeyStone.kscale();
+      }, animationDuration + 300)
+    }
+  }
+
   const _saveScreenshot = function(dataURL, path) {
     var regex = /^data:.+\/(.+);base64,(.*)$/;
     var matches = dataURL.match(regex);
@@ -62,5 +76,6 @@ export default function(store) {
     sendSymbolSearchResult,
     takeScreenshot,
     showConfigModal,
+    scrollToOffsetAnimated,
 	};
 }
