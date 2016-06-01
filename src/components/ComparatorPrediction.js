@@ -36,7 +36,7 @@ class ComparatorPrediction extends React.Component {
   }
   componentDidUpdate() {
     let option = window.eChart.getOption();
-    option.series = this.generateSeriesData();
+    option.series = this.generateSeriesDataFromDimension();
     window.eChart.setOption(option, true);
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
   }
@@ -67,24 +67,27 @@ class ComparatorPrediction extends React.Component {
       let startPoint = window.eChart.getHeight() / 2;
       if (kLine && kLine.length > baseBars) {
         let line =  kLine.slice(baseBars);
-        let percentage = startPoint / line[0][2];
+        let normalizeCoef = startPoint / line[0][2];
 
         line.forEach((e, i) => {
-          data.push(e[2] * percentage);
+          if (i > 0){
+            let percentage = ((e[2] * normalizeCoef - line[i - 1][2]) * 100);
+            data.push(percentage);
+          }
         });
       }
     }
     return data;
   }
 
-  generateSeriesData() {
+  generateSeriesDataFromDimension() {
     this.initDimensions();
     let eChartSeriesData = [];
     let rawData = this.symbolDim.top(Infinity);
     let activeId = this.props.activeId;
 
-    let maxValue = 0;
-    let minValue = 1000;
+    let maxValue = -9999;
+    let minValue = 9999;
     if (rawData.length !== 0) {
       this.symbolDim.top(Infinity).forEach((e, i) => {
         if (e.kLine.length > e.baseBars) {
@@ -186,7 +189,7 @@ class ComparatorPrediction extends React.Component {
         max: window.eChart.getHeight(),
         min: 0
       },
-      series: this.generateSeriesData()
+      series: this.generateSeriesDataFromDimension()
       // series: predictionRandomData()
     };
 
