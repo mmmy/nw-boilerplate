@@ -45,7 +45,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 		});
 
-		__closePrice = resObj.closePrice || [];
+		__closePrice = resObj.closePrices || [];
 		//获取kline具体数据
 		let dataCb = (startIndex, klineArr) => {
 			
