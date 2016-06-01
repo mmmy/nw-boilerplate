@@ -1,5 +1,6 @@
 import KSSearch from './KSSearch';
 import KSDataService from './KSDataService';
+import { getIndustry } from './SymbolDataLocal';
 import store from '../store';
 import lodash from 'lodash';
 import { callFunc } from '../components/helper/updateEchartImage';
@@ -23,7 +24,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 		__data = resObj.results.map((pattern, i) => {
 
-			const {id, similarity= resObj.similarities && resObj.similarities[i] || (0.95 - 0.01*i), begin, end, industry='未知行业', type='D'} = pattern;
+			const {id, similarity= resObj.similarities && resObj.similarities[i] || (0.95 - 0.01*i), begin, end, industry=getIndustry(id), type='D'} = pattern;
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = {};
 			//let id = i;
@@ -53,7 +54,7 @@ let searchPattern = (args, cb, errorCb) => {
 				__data[index].kLine = kLine;
 				__data[index].metaData = metaData;
 				__data[index].yield = __data[index].yield === undefined ? yieldRate : __data[index].yield;
-				__data[index].industry = metaData.className || '未知行业';
+				__data[index].industry = __data[index].industry || metaData.className || '未知行业';
 			});
 
 			if(startIndex === 0) { //获取到前五个 刷新state
