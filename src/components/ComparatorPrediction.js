@@ -45,7 +45,8 @@ class ComparatorPrediction extends React.Component {
   }
 
   handleResize() {
-    window.onresize = setTimeout(window.eChart.resize, 0);
+    window.onresize = _.throttle(() => {
+      window.eChart.resize}, 300);
   }
 
   initDimensions() {
