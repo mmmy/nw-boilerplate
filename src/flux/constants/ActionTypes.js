@@ -45,3 +45,6 @@ export const SET_SEARCH_CONFIG = 'SET_SEARCH_CONFIG';
 
 //
 export const SET_PATTERN_TRASH_LAYOUT = 'SET_PATTERN_TRASH_LAYOUT';
+
+//用户
+export const SET_USER = 'SET_USER';

@@ -7,7 +7,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-
+	slow: true
 };
 
 const baseSpeed = 3;

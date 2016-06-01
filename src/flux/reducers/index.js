@@ -11,6 +11,7 @@ import active from './active';
 import searchConfig from './searchConfig';
 import configModal from './configModal';
 import patternTrashed from './patternTrashed';
+import account from './account';
 
 export default combineReducers({
 	layout,
@@ -25,4 +26,5 @@ export default combineReducers({
 	searchConfig,
 	configModal,
 	patternTrashed,
+	account,
 });

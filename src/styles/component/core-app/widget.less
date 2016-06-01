@@ -134,3 +134,93 @@
 .trash-modal-content-wrapper {
 
 }
+
+//login
+.login-panel-container {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+	z-index: 1000;
+	.body-container {
+		width: 280px;
+		margin: 10% auto 0 auto;
+	}
+	.logo{
+		background: url(@logo_url_png) no-repeat;
+		width: 80px;
+		height: 80px;
+		background-size: contain;
+		margin: auto;
+		margin-bottom: 10%;
+	}
+	input[type='text'], input[type='password'] {
+		width: 100%;
+		border: none;
+		outline: none;
+		border-bottom: 1px solid @ks-color-gray-9;
+		font-size: 16px;
+		padding: 5px;
+		z-index: 1;
+		&:focus {
+			border-bottom-color: @ks-color-gray-8;
+		}
+		margin-bottom: 30px;
+		position: relative;
+		background-color: transparent;
+	}
+	.user-name {
+		position: relative;
+	}
+	.password {
+		position: relative;
+	}
+	.placeholder {
+		position: absolute;
+		left: 0;
+		top: 0;
+		padding: 6px;
+		font-size: 14px;
+		color: @ks-color-gray-6;
+		z-index: 0;
+		&.move-left{
+			left: -100%;
+		}
+	}
+	.options {
+		margin-top: 10px;
+		color: @ks-color-gray-5;
+		input {
+			font-size: 18px;
+			margin-right: 5px;
+		}
+	}
+	.denglu{
+		margin-top: 10px;
+		button{
+			border: none;
+			outline: none;
+			width: 100%;
+			font-size: 17px;
+			background-color: @config-modal-button-background-color;
+			padding: 8px;
+			// letter-spacing: 10px;
+		}
+	}
+	.wave-container {
+		margin-top: 30px;
+		position: relative;
+		height: 20%;
+	}
+
+	.account-button{
+		position: relative;
+		.user-panel-container{
+			position: absolute;
+			top: 20px;
+			right: 0;
+		}
+	}
+}
