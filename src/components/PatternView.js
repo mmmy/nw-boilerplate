@@ -119,7 +119,7 @@ class PatternView extends React.Component {
       chart.KeyStone.setSymbol(symbol, '', 1);
       this._doWhenBarReceived(() => {
         widget.setVisibleRange(dateRange, '1');
-        window.parent.timeRange = undefined;
+        window.timeRange = undefined;
       });
     } else {
         widget.setVisibleRange(dateRange, '1');
