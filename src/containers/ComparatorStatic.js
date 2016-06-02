@@ -61,7 +61,7 @@ class ComparatorStatic extends React.Component {
     if (this.props.isPredictionShow === false) {
       // model.setPriceAutoScale(paneState, priceScale, false);
       window.widget_comparator.setVisibleRange(window.searchingRange, '0');
-      window.widget_comparator._innerWindow().KeyStone.alignSerieToCenter();
+      // window.widget_comparator._innerWindow().KeyStone.alignSerieToCenter();
     }
   }
 
