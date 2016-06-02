@@ -6,6 +6,7 @@ export default function(store) {
 	let searchSymbolDateRange = function({symbol, dateRange, bars}, cb) {
 		if (store && store.dispatch) {
 			store.dispatch(layoutActions.waitingForPatterns());                //开始等待
+      store.dispatch(patternActions.resetError());
 			store.dispatch(patternActions.getPatterns({symbol, dateRange, bars}, cb)); //从服务器获取patterns
 		}
 	};
