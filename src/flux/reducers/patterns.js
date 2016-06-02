@@ -11,7 +11,7 @@ let getInitialState = () => {
 		rawData: randomData.patterns,
 		//crossFilter: function(){ return crossfilter(this.rawData); }(),
 		closePrice: randomData.closePrice,
-		error: null,
+		error: {},
 		searchConfig: null,
 	};
 	initialState.crossFilter = crossfilter(initialState.rawData);
@@ -29,11 +29,13 @@ export default function patterns(state = getInitialState(), actions){
 			return actions.patterns || [];
 
 		case types.GET_PATTERNS_ERROR:
-			return {
-				...state,
-				error: actions.error,
-			};
+			state.error = actions.error;
+			return state;    //不进行刷新
 
+		case types.RESET_ERROR:
+			state.error = null;
+			return state;
+			
 		default:
 			return state;
 	}

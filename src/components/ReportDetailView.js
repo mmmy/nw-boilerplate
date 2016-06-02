@@ -55,7 +55,7 @@ class ReportDetailView extends React.Component {
 			<div className={bodyClass}>
 				{items.map((e, i) => {
 					let color = e.redColor === undefined ? '' : (e.redColor===true ? 'red':'green');
-					return (<div className='item-body' key={i}>
+					return (<div className='item-body' key={(title=='下跌') ? (i+4) : i}>
 							<div className='item-name'>{e.name}</div>
 							<div className='__fadeIn item-data font-number' style={{color:color}}>{e.content}</div>
 						</div>);

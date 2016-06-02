@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { layoutActions, patternActions } from '../flux/actions';
+import store from '../store';
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
@@ -38,6 +39,7 @@ class ToggleBar extends React.Component {
 	render(){
 
 		let {fullView, searchTimeSpent, waitingForPatterns} = this.props;
+		let { error } = store.getState().patterns;
 		
 		const toggleClass = classNames('container-toggle','transition-all', {
 			'full': fullView,
@@ -53,7 +55,7 @@ class ToggleBar extends React.Component {
 
 		const btnClass = classNames('item', 'btn-toggle', {
 			'rotate': fullView,
-			'ks-hidden': waitingForPatterns,
+			'ks-hidden': waitingForPatterns || error,
 			'ks-no-transition': waitingForPatterns,
 		});
 
@@ -78,7 +80,8 @@ class ToggleBar extends React.Component {
 
 	toggleView() {
 		let { waitingForPatterns } = this.props;
-		if (waitingForPatterns) return;
+		let { error } = store.getState().patterns;
+		if (waitingForPatterns || error) return;
 		this.props.dispatch(layoutActions.toggleStockView());
 	}
 

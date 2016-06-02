@@ -22,6 +22,7 @@ export const SET_FILTER_ID = 'SET_FILTER_ID';
 
 //错误处理
 export const GET_PATTERNS_ERROR = 'GET_PATTERNS_ERROR';          //获取patterns错误
+export const RESET_ERROR = 'RESET_ERROR';
 
 //sort
 export const SORT_BY_DATE = 'SORT_BY_DATE';

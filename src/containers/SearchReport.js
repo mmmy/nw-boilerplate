@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Comparator from './Comparator';
 import SearchDetail from './SearchDetail';
-import { patternActions } from '../flux/actions';
+import { patternActions, layoutActions } from '../flux/actions';
 import classNames from 'classnames';
 import ToggleBar from '../components/ToggleBar';
 import SearchWaitingWaves from '../components/SearchWaitingWaves';
@@ -19,6 +19,7 @@ let afterSearchMessage = (number, timeSpent) => {
 };
 
 let _isToggled = false;
+let _patternChanged = false;
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
@@ -45,6 +46,7 @@ class SearchReport extends React.Component {
 
 	componentWillReceiveProps(newProps){
 		_isToggled = newProps.fullView !== this.props.fullView;
+		_patternChanged = newProps.patterns !== this.props.patterns;
 		if(_isToggled) {
 			$(this.refs.inner_searchreport).css('opacity', '0');
 			// $('#__comparator_prediction_container').css('opacity', '0');
@@ -59,8 +61,10 @@ class SearchReport extends React.Component {
 	componentDidUpdate() {
 		console.info('SearchReport did update in:', new Date() - this.d1);
 		let { fullView, waitingForPatterns } = this.props;
+		let { error } = store.getState().patterns;
+
 		$(this.refs.container).one("webkitTransitionEnd oTransitionEnd MSTransitionEnd", (e) => {
-			if(!fullView && !waitingForPatterns && !_isToggled) {
+			if(!fullView && !waitingForPatterns && !_isToggled && !error && _patternChanged) {
 				console.info('SearchReport animation over');
 				console.log(e);
 				let state = store.getState();
@@ -118,7 +122,9 @@ class SearchReport extends React.Component {
 	}
 
 	renderDataPanels() {
-
+		let state = store.getState();
+		let {error} = state.patterns;
+		let errorPanel = error ? <div className='error-panel flex-center'><img src='./image/kline.png' /><div><h2>本次搜索失败了</h2><p>请您尝试<button onClick={this.restartSearch.bind(this)}>重新搜索</button>或返回<button onClick={this.resetError.bind(this)}>上一次搜索</button></p></div></div> : '';
 		let dataPanelClass = classNames('search-report-wrapper', 'transition-top', 'transition-duration2', {
 			'slide-down': this.props.waitingForPatterns,
 			'transition-delay3': !this.props.waitingForPatterns,
@@ -127,8 +133,21 @@ class SearchReport extends React.Component {
 		return (<div className={dataPanelClass} ref='container'>
 			<Comparator />
 			<SearchDetail />
+			{errorPanel}
 		</div>);
 
+	}
+
+	restartSearch() {
+		let {dispatch} = this.props;
+		dispatch(layoutActions.waitingForPatterns());
+		dispatch(patternActions.getPatterns({}));
+	}
+
+	resetError() {
+		let {dispatch} = this.props;
+		dispatch(patternActions.resetError());
+		this.setState({});
 	}
 
 }
@@ -137,13 +156,14 @@ SearchReport.propTypes = propTypes;
 SearchReport.defaultProps = defaultProps;
 
 let stateToProps = function(state){
-	const {layout} = state;
+	const {layout, patterns} = state;
 	const {stockView, searchTimeSpent, waitingForPatterns, firstStart} = layout;
 	return {
 		fullView: !stockView,
 		searchTimeSpent,
 		waitingForPatterns,
 		firstStart,
+		patterns,
 	}
 };
 

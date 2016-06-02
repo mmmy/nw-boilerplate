@@ -75,7 +75,7 @@ let searchPattern = ({ symbol, dateRange, bars, additionDate}, cb, errorCb) => {
 			len:bars
 		},
 		samples:[],
-		topN: 100,
+		topN: 200,
 		nLookForward: additionDate.value,
 	};
 

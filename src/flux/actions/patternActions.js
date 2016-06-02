@@ -12,9 +12,19 @@ import store from '../../store';
  */
 
 const devLocal = false;
+let _lastSearch = {};
 
 let getPatterns = ({symbol, dateRange, bars}, cb) => {
 	//console.log('patternActions: getPatterns',symbol, dateRange);
+	symbol = symbol || _lastSearch.symbol;
+	dateRange = dateRange || _lastSearch.dateRange;
+	bars = bars || _lastSearch.bars;
+
+	//缓存上一次的
+	_lastSearch.symbol = symbol;
+	_lastSearch.dateRange = dateRange;
+	_lastSearch.bars = bars;
+
 	return (dispacth) => {
 
 		const startTime = new Date();
@@ -67,8 +77,13 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 		}
 
 	};
-}
+};
+
+let resetError = () => {
+	return {type: types.RESET_ERROR};
+};
 
 module.exports = {
 	getPatterns,
+	resetError,
 };
