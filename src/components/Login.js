@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import Waves from './SearchWaitingWaves';
 import classNames from 'classnames';
+import { storageAccount, getAccount, removeAccount } from '../backend/localStorage';
 
 const propTypes = {
 	onLogined: PropTypes.func,
@@ -15,10 +16,55 @@ class Login extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {isLogining: false, username: '', password:'', autoLogin: false};
+		let that = this;
+		this.handleRiseze = (e) => {
+			let height = $(that.refs.login_panel_container).height();
+			let waveNode = that._waveNode || $('.waves-container');
+			let logoNode = that._logoNode || $('.btn-container');
+			let waveTop =  - ((height - 232.75) - 450 - 30);
+			let logoTop =  - ((height - 232.75) - 100);
+			waveNode.css({top: waveTop, transitionProperty: (e ? 'none' : '')});
+			logoNode.css({top: logoTop, transitionProperty: (e ? 'none' : '')});
+		}
+	}
+
+	initUI() {
+		let waveNode = $('.waves-container');
+		let logoNode = $('.btn-container');
+		logoNode.css({
+			'background-position-x': '50%',
+			// 'height': '80px',
+			'background-size': '80px',
+			'color': 'transparent',
+			'paddingTop': '40px',
+			'paddingBottom': '40px',
+		});
+		this._waveNode = waveNode;
+		this._logoNode = logoNode;
+	}
+
+	resetUI() {
+		let waveNode = this._waveNode || $('.waves-container');
+		let logoNode = this._logoNode || $('.btn-container');
+		waveNode.removeAttr('style');
+		logoNode.removeAttr('style');
+	}
+
+	autoLogin() {
+		let {username, password} = getAccount();
+		if (username) {
+			this.moveLeft(0, true);
+			this.moveLeft(1, true);
+			this.setState({username, password, autoLogin: true});
+			this.handleLogin();
+		}
 	}
 
 	componentDidMount() {
-
+		this.initUI();
+		this.handleRiseze();
+		window.addEventListener('resize', this.handleRiseze);
+		this.autoLogin();
 	}
 
 	componentWillReceiveProps(){
@@ -30,14 +76,15 @@ class Login extends React.Component {
 	}
 
 	componentWillUnmount(){
-
+		window.removeEventListener('resize', this.handleRiseze);
+		this.resetUI();
 	}
 
 	render(){
 		let { isLogining, username, password, autoLogin } = this.state;
 		let innerBtn = isLogining ? <i className='fa fa-spinner fa-spin'></i> : '登陆';
 		return (
-      <div className='login-panel-container'>
+      <div className='login-panel-container' ref='login_panel_container'>
       	<div className='body-container'>
       		<div className='logo'></div>
       		<div>
@@ -47,7 +94,7 @@ class Login extends React.Component {
       			<div className='options'><input onChange={this.changeAutoLogin.bind(this)} type='checkbox' checked={autoLogin}/>自动登陆</div>
       		</div>
       	</div>
-      	<div className='wave-container'><Waves /></div>
+      	{/*<div className='wave-container'><Waves /></div>*/}
       </div>
     );
 	}
@@ -78,10 +125,11 @@ class Login extends React.Component {
 		this.setState({isLogining: true});
 		let { onLogined } = this.props;
 		let that = this;
-		let {username, password, autoLogin} = this.state;
 		setTimeout(() => {
+			let {username, password, autoLogin} = that.state;
+			autoLogin ? storageAccount(username, password) : removeAccount();
 			onLogined && onLogined(username, password, autoLogin);
-		}, 3000);
+		}, 2000);
 	}
 
 	changeUsernamne(e) {

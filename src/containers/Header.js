@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import Login from '../components/Login';
 import {connect} from 'react-redux';
 import {accountActions} from '../flux/actions';
+import { removeAccount } from '../backend/localStorage';
 
 const propTypes = {
 	stretchView: PropTypes.bool,
@@ -20,7 +21,7 @@ class Header extends React.Component {
 
 		};
 
-		this.state= {showLogin: false};
+		this.state= {showLogin: true};
 	}
 
 
@@ -51,7 +52,8 @@ class Header extends React.Component {
 	}
 
 	render(){
-		let {showLogin} = this.state;
+		// let {showLogin} = this.state;
+		let showLogin = this.props.account.username === '';
 		return <div className="container-header">
 			{this.renderToolbar()}
 			{showLogin ? <Login onLogined={this.handleLogined.bind(this)}/> : ''}
@@ -81,6 +83,7 @@ class Header extends React.Component {
 
 	handleLogout() {
 		let {dispatch} = this.props;
+		removeAccount();
 		dispatch(accountActions.setUser('', '', false));
 	}
 }

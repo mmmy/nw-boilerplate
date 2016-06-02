@@ -74,8 +74,21 @@ export default function layout(state = initialState, action) {
       return {
         ...state,
         hasNewScreenshot: false
-      }
+      };
 
+    case types.SET_USER:
+    	let {username} = action;
+    	if(username === ''){
+    		return {
+    			...state,
+    			stockView: true,
+    			waitingForPatterns: true,
+    			firstStart: true,
+    		};
+    	} else {
+    		return state;
+    	}
+    	
 		default:
 			return state;
 

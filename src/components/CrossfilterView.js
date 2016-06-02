@@ -435,6 +435,8 @@ class CrossfilterView extends React.Component {
 			this.drawIndustryPieChart();
 			this.drawYieldDimCountChart();
 
+			this.industryPieChart.filterAll();
+			// this.industryPieChart.redraw();
 			setTimeout(DC.renderAll);
 		}
 

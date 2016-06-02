@@ -17,6 +17,13 @@ export default function filter(state = initialState, actions) {
 			let industrys = state.industrys,
 				industry = actions.industry;
 
+			if(industry === null) {
+				return {
+					...state,
+					industrys:[]
+				};
+			}
+
 			if(industrys.indexOf(industry) != -1) {
 				industrys.splice(industrys.indexOf(industry), 1);
 			} else {
@@ -71,6 +78,11 @@ export default function filter(state = initialState, actions) {
 				trashedIdArr,
 			};
 
+		case types.WAITING_PATTERNS:
+			return {
+				...initialState
+			};
+			
 		default:
 			return state;
 	}
