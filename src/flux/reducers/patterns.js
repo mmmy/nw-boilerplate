@@ -11,7 +11,7 @@ let getInitialState = () => {
 		rawData: randomData.patterns,
 		//crossFilter: function(){ return crossfilter(this.rawData); }(),
 		closePrice: randomData.closePrice,
-		error: {},
+		error: null,
 		searchConfig: null,
 	};
 	initialState.crossFilter = crossfilter(initialState.rawData);
