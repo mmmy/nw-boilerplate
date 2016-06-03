@@ -46,7 +46,7 @@ class Header extends React.Component {
 		let userPanel = this.state.showUserPanel ? <div className='user-panel-container'><div>{account.username}</div><div onClick={this.handleLogout.bind(this)}>登出</div></div> : '';
 
 		let toolbar = <div className='header-toolbar-container flex-center'>
-			<button className='account-button' onBlur={this.hideUserPanel.bind(this)} onClick={this.showLoginPanel.bind(this)}><i className='fa fa-sign-in'></i>{userPanel}</button>
+			<button className='account-button' onBlur={this.hideUserPanel.bind(this)} onClick={this.showLoginPanel.bind(this)}>{userPanel}</button>
 		</div>;
 		return toolbar;
 	}

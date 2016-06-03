@@ -18,4 +18,36 @@
 	// width: 50%;
 	height: 100%;
 	padding: 0 10px;
+	button {
+		position: relative;
+		width: 25px;
+		height: 25px;
+		border: none;
+		outline: none;
+		background-color: transparent;
+		background-repeat: no-repeat;
+		background-size: 92%;
+		&:focus {
+			background-position-y: 108%;
+		}
+	}
+	.account-button {
+		background-image: url('./image/user.png');
+		.user-panel-container {
+			position: absolute;
+			right: 0;
+			top: 30px;
+			//width: 50px;
+			padding: 5px 10px;
+			background-color: white;
+			box-shadow: 0 2px 5px #ddd;
+			color: @ks-color-gray-6;
+			&>*{
+				padding: 3px 0;
+				&:hover{
+					color: @ks-color-gray-3;
+				}
+			}
+		}
+	}
 }
