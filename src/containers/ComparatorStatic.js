@@ -32,7 +32,7 @@ class ComparatorStatic extends React.Component {
 
 	shouldComponentUpdate(newProps, newState){
     // return newProps.stretchView === this.props.stretchView;
-		return true;
+		// return true;
     return newProps.filter === this.props.filter;
 	}
 

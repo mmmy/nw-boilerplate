@@ -102,7 +102,7 @@ class SortBar extends React.Component {
 		};
 		switch(panelType) {
 			case 0:   //sort
-				return <div className='child-panel-container' onClick={handle}>
+				return <div style={{zIndex: 5}} className='child-panel-container' onClick={handle}>
 					{this.renderSortIcons(SORT_BTN_SIMILARITY)}
 					{/*this.renderSortIcons(SORT_BTN_DATE)*/}
 					{this.renderSortIcons(SORT_BTN_YIELD)}
@@ -111,7 +111,7 @@ class SortBar extends React.Component {
 
 			case 1:  //filter
 				let {min, max} = this.state.values;
-				return <div className='child-panel-container'>
+				return <div style={{zIndex: 5}} className='child-panel-container'>
 					<span className='title-left' >相似度:</span>
 					<div className='slider-container' onClick={handle}>
 						<RCSlider 

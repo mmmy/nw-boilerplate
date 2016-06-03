@@ -65,7 +65,7 @@ class EChart extends React.Component {
 		this.canvasNode.width = 200;
 	}
 
-	drawChart() {
+	drawChart(callback) {
 		// let node = this.refs['echart'+this.props.index];
 		const { kLine, baseBars } = this.props.pattern;
 		if (this.oldKline === kLine) {
@@ -114,6 +114,7 @@ class EChart extends React.Component {
 			});
 		}
 
+		callback &&  setTimeout(callback, 5);
 
 	}
 
