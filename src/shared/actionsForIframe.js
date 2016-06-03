@@ -23,7 +23,8 @@ export default function(store) {
     store.dispatch(layoutActions.showConfigModal());
   };
 
-  let takeScreenshot = function(canvasDom) {
+  let takeScreenshot = function() {
+      const canvasDom = window.widget_comparator._innerWindow();
       const canvasContainer = canvasDom.document.getElementsByClassName('multiple')[0];
       const canvas = canvasContainer.getElementsByTagName('canvas')[2];
       const tvSS = canvas.toDataURL();

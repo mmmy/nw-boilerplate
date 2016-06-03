@@ -36,8 +36,12 @@ class ComparatorPrediction extends React.Component {
   }
   componentDidUpdate() {
     let option = window.eChart.getOption();
-    option.series = this.generateSeriesDataFromDimension();
+    // option.series = this.generateSeriesDataFromDimension();
+    option.series = this.generateSeriesDataFromClosePrice();
     window.eChart.setOption(option, true);
+    let tvWindow = window.widget_comparator._innerWindow()
+    let tvPriceAxis = tvWindow.Q5.getAll()[0].model().mainSeries()._priceAxisViews[0];
+    tvPriceAxis.update();
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
   }
   componentWillUnmount(){
@@ -85,7 +89,7 @@ class ComparatorPrediction extends React.Component {
     let maxValue = -9999;
     let minValue = 9999;
     if (rawData.length !== 0) {
-      this.symbolDim.top(Infinity).forEach((e, i) => {
+      rawData.forEach((e, i) => {
         if (e.kLine.length > e.baseBars) {
           let data = this.splitData(e.kLine, e.baseBars);
           if (data.length > 0) {
@@ -134,6 +138,60 @@ class ComparatorPrediction extends React.Component {
     window.eChartScale = scaleMax * 1.2;
 
     return eChartSeriesData;
+  }
+
+  splitDataFromClosePrice(line) {
+    let data = [];
+    line.forEach((e) => {
+      let percentage = (e - line[0]) / line[0] * 100;
+      data.push(percentage);
+    })
+
+    return data;
+  }
+
+  generateSeriesDataFromClosePrice() {
+    this.initDimensions();
+    let rawData = this.symbolDim.top(Infinity);
+    let { closePrice } = this.props.patterns;
+    let series = [];
+    let minValue = 999999;
+    let maxValue = minValue * -1;
+
+    if (rawData.length > 0) {
+      rawData.forEach((e, i) => {
+        series.push({
+          data: this.splitDataFromClosePrice(closePrice[e.id]),
+          name: e.symbol,
+          type: 'line',
+          showSymbol: false,
+          hoverAnimation: false,
+          lineStyle: {
+            normal: {
+              color: i === 5 ? '#c23531' : '#ccc', // TODO
+              width: 0.5
+            }
+          },
+          z: i === 5 ? 9999 : 2
+        });
+      });
+    }
+
+    // find max min values for scale
+    series.forEach((serie) => {
+      let data = serie.data;
+      data.forEach((d) => {
+        maxValue = d > maxValue ? d : maxValue;
+        minValue = d < minValue ? d : minValue;
+      });
+    });
+
+    window.eChartMaxValue = maxValue;
+    window.eChartMinValue = minValue;
+    let scaleMax = Math.max(Math.abs(maxValue), Math.abs(minValue));
+    window.eChartScale = scaleMax * 1.2; // scale top/bottom margin
+
+    return series;
   }
 
   initEchart() {
@@ -187,7 +245,8 @@ class ComparatorPrediction extends React.Component {
         // max: 100,
         // min: -100
       },
-      series: this.generateSeriesDataFromDimension()
+      // series: this.generateSeriesDataFromDimension()
+      series: this.generateSeriesDataFromClosePrice()
       // series: predictionRandomData()
     };
 
