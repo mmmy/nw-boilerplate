@@ -36,7 +36,8 @@ class ComparatorPrediction extends React.Component {
   }
   componentDidUpdate() {
     let option = window.eChart.getOption();
-    option.series = this.generateSeriesDataFromDimension();
+    // option.series = this.generateSeriesDataFromDimension();
+    option.series = this.generateSeriesDataFromClosePrice();
     window.eChart.setOption(option, true);
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
   }
@@ -136,6 +137,57 @@ class ComparatorPrediction extends React.Component {
     return eChartSeriesData;
   }
 
+  splitDataFromClosePrice(line) {
+    let data = [];
+    line.forEach((e) => {
+      let percentage = (e - line[0]) / line[0] * 100;
+      data.push(percentage);
+    })
+
+    return data;
+  }
+
+  generateSeriesDataFromClosePrice() {
+    let { closePrice } = this.props.patterns;
+    let series = [];
+    let minValue = 999999;
+    let maxValue = minValue * -1;
+
+    if (closePrice.length > 0) {
+      closePrice.forEach((line, i) => {
+        series.push({
+          data: this.splitDataFromClosePrice(line),
+          name: ':',
+          type: 'line',
+          showSymbol: false,
+          hoverAnimation: false,
+          lineStyle: {
+            normal: {
+              color: i === 5 ? '#c23531' : '#ccc', // TODO
+              width: 0.5
+            }
+          },
+          z: i === 5 ? 9999 : 2
+        });
+      });
+    }
+
+    series.forEach((serie) => {
+      let data = serie.data;
+      data.forEach((d) => {
+        maxValue = d > maxValue ? d : maxValue;
+        minValue = d < minValue ? d : minValue;
+      });
+    });
+
+    window.eChartMaxValue = maxValue;
+    window.eChartMinValue = minValue;
+    let scaleMax = Math.max(Math.abs(maxValue), Math.abs(minValue));
+    window.eChartScale = scaleMax * 1.2;
+
+    return series;
+  }
+
   initEchart() {
     const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionLine']);
     window.eChart = echarts.init(dom);
@@ -187,7 +239,8 @@ class ComparatorPrediction extends React.Component {
         // max: 100,
         // min: -100
       },
-      series: this.generateSeriesDataFromDimension()
+      // series: this.generateSeriesDataFromDimension()
+      series: this.generateSeriesDataFromClosePrice()
       // series: predictionRandomData()
     };
 
