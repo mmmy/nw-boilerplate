@@ -39,9 +39,6 @@ class ComparatorPrediction extends React.Component {
     // option.series = this.generateSeriesDataFromDimension();
     option.series = this.generateSeriesDataFromClosePrice();
     window.eChart.setOption(option, true);
-    let tvWindow = window.widget_comparator._innerWindow()
-    let tvPriceAxis = tvWindow.Q5.getAll()[0].model().mainSeries()._priceAxisViews[0];
-    tvPriceAxis.update();
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
   }
   componentWillUnmount(){
