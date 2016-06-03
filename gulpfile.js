@@ -9,7 +9,8 @@ var sequence = require('run-sequence');
 var $ 		= require('gulp-load-plugins')();
 var builder = require('gulp-node-webkit-builder');
 
-//
+var PWD = process.env.PWD;
+
 var paths = {
 	BASE:  		'src',
 	APP: 		'src/index.html',
@@ -20,6 +21,20 @@ var paths = {
 	COMPONENTS: ['src/components/**/*.js'],
 	FLUX: 		['src/flux/*.js','src/flux/**/*.js'],
 	BUILD: 		'./build',
+};
+
+
+var watchJsFile = (e) => {
+	let filePath = e.path;
+	let relativePath = path.relative(PWD, filePath);
+	console.log('js file changed and to be rebuilt:', relativePath);
+	return gulp.src(relativePath, {base: paths.BASE})
+			.pipe($.plumber(function(error){
+				$.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
+		      	this.emit('end');
+			}))
+			.pipe($.babel())
+			.pipe(gulp.dest(paths.BUILD));
 };
 
 gulp.task('clean:build', function(cb){
@@ -73,7 +88,8 @@ gulp.task('compile', function(cb){
 gulp.task('watch', ['html','fonts','image','scripts','styles'], function(){
 	gulp.watch(paths.APP, ['html']);
 	gulp.watch(paths.STYLES, ['styles']);
-	gulp.watch(paths.SCRIPTS, ['scripts']);
+	// gulp.watch(paths.SCRIPTS, ['scripts']);
+	gulp.watch(paths.SCRIPTS, watchJsFile);
 
 	$.livereload.listen();
 
