@@ -39,6 +39,9 @@ class ComparatorPrediction extends React.Component {
     // option.series = this.generateSeriesDataFromDimension();
     option.series = this.generateSeriesDataFromClosePrice();
     window.eChart.setOption(option, true);
+    let tvWindow = window.widget_comparator._innerWindow()
+    let tvPriceAxis = tvWindow.Q5.getAll()[0].model().mainSeries()._priceAxisViews[0];
+    tvPriceAxis.update();
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
   }
   componentWillUnmount(){
@@ -86,7 +89,7 @@ class ComparatorPrediction extends React.Component {
     let maxValue = -9999;
     let minValue = 9999;
     if (rawData.length !== 0) {
-      this.symbolDim.top(Infinity).forEach((e, i) => {
+      rawData.forEach((e, i) => {
         if (e.kLine.length > e.baseBars) {
           let data = this.splitData(e.kLine, e.baseBars);
           if (data.length > 0) {
@@ -148,16 +151,18 @@ class ComparatorPrediction extends React.Component {
   }
 
   generateSeriesDataFromClosePrice() {
+    this.initDimensions();
+    let rawData = this.symbolDim.top(Infinity);
     let { closePrice } = this.props.patterns;
     let series = [];
     let minValue = 999999;
     let maxValue = minValue * -1;
 
-    if (closePrice.length > 0) {
-      closePrice.forEach((line, i) => {
+    if (rawData.length > 0) {
+      rawData.forEach((e, i) => {
         series.push({
-          data: this.splitDataFromClosePrice(line),
-          name: ':',
+          data: this.splitDataFromClosePrice(closePrice[e.id]),
+          name: e.symbol,
           type: 'line',
           showSymbol: false,
           hoverAnimation: false,
@@ -172,6 +177,7 @@ class ComparatorPrediction extends React.Component {
       });
     }
 
+    // find max min values for scale
     series.forEach((serie) => {
       let data = serie.data;
       data.forEach((d) => {
@@ -183,7 +189,7 @@ class ComparatorPrediction extends React.Component {
     window.eChartMaxValue = maxValue;
     window.eChartMinValue = minValue;
     let scaleMax = Math.max(Math.abs(maxValue), Math.abs(minValue));
-    window.eChartScale = scaleMax * 1.2;
+    window.eChartScale = scaleMax * 1.2; // scale top/bottom margin
 
     return series;
   }
