@@ -24,7 +24,7 @@ class PatternView extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {showSymbol: false, isTrashed: false};
+		this.state = {showSymbol: true, isTrashed: false};
 	}
 
 	setTrashed(isTrashed) {
@@ -81,14 +81,14 @@ class PatternView extends React.Component {
 
 	handleMouseEnter(){
 
-			const showSymbol = true;
-			this.setState({showSymbol});
+			// const showSymbol = true;
+			// this.setState({showSymbol});
 	}
 
 	handleMouseLeave(){
 
-			const showSymbol = false;
-			this.setState({showSymbol});
+			// const showSymbol = false;
+			// this.setState({showSymbol});
 
 	}
 

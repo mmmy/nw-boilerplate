@@ -42,6 +42,7 @@ class SearchReport extends React.Component {
 
 	componentDidMount() {
 		//afterSearchMessage(200, 0.001);
+		$('#__comparator_prediction_container').css('opacity', 0);
 	}
 
 	componentWillReceiveProps(newProps){
