@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { layoutActions } from '../flux/actions';
 import echarts from 'echarts';
 import { predictionRandomData } from './utils/comparatorPredictionEchart';
+import _ from 'underscore';
 
 const propTypes = {
   patterns: PropTypes.object.isRequired,
@@ -46,8 +47,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   handleResize() {
-    window.onresize = _.throttle(() => {
-      window.eChart.resize}, 100);
+    window.onresize = setTimeout(window.eChart.resize, 0);
   }
 
   initDimensions() {
