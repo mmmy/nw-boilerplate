@@ -26,7 +26,7 @@ class SortBar extends React.Component {
 		this.state = {
 			showChildPanel: false,
 			panelType: -1,  					//0,1,2,3
-			values:{min:0, max:100},
+			values:{min:0.0, max:100.0},
 			eyeType: 0, 								//0,1,2
 			searchSymbol: ''
 		};
@@ -116,8 +116,9 @@ class SortBar extends React.Component {
 					<div className='slider-container' onClick={handle}>
 						<RCSlider 
 							className='slider-appearance' 
-							min={0} 
-							max={100} 
+							min={0.0} 
+							max={100.0}
+							step={0.1} 
 							range 
 							value={[min, max]} 
 							onChange={this.rangeChange.bind(this)} 
@@ -231,7 +232,7 @@ class SortBar extends React.Component {
 	
 	filterSimilarity({min, max}) {
 		this.initDimensions();
-		this.similarityDim.filter([min, max]);
+		this.similarityDim.filter([min, max + 0.1]); //bug
 		DC.redrawAll();
 	}
 
@@ -246,7 +247,7 @@ class SortBar extends React.Component {
 		let {crossFilter} = this.props;
 		if(this.oldCrossFilter !== crossFilter) {
 			this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
-			this.similarityDim = crossFilter.dimension(function(d) {return Math.round(d.similarity*100); });
+			this.similarityDim = crossFilter.dimension(function(d) {return Math.floor(d.similarity*1000) / 10; });
 			this.oldCrossFilter = crossFilter;
 		}
 	}

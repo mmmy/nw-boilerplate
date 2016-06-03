@@ -12,7 +12,8 @@
 
 .container-toggle{
 	position: absolute;
-	width: 100%;
+	width: 50%;
+	left: 25%;
 	z-index: 101;
 	* {
   	cursor: pointer;
@@ -26,12 +27,12 @@
 
 	.btn-container{
 		position: relative;
-		width: 20%;
+		width: 40%;
 		height: 100%;
 		top: 0;
 		left: 0;
 		margin: auto;
-		background: url(@logo_url) no-repeat;
+		background: url(@logo_url_png) no-repeat;
 		background-position: 42% 45%;
 		background-size: 3rem;
 
@@ -40,6 +41,7 @@
 		padding: 0px 8px 5px 8px;
 
 		background-color: white;
+		color: @lulu-gary2;
 		.item{
 			height: 100%;
 			display: inline-block;
@@ -50,7 +52,6 @@
 			margin-left: 52%;
 			//padding: 5px;
 			font-size: 1.3rem;
-			color: @lulu-gary2;
 		}
 
 		.timespent{

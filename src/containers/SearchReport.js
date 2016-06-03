@@ -111,13 +111,11 @@ class SearchReport extends React.Component {
 	renderWaitingPanel() {
 	
 		let { waitingForPatterns, firstStart } = this.props;
-		let node = waitingForPatterns ? <SearchWaitingWaves slow={firstStart}/> : '';
 
-		let wavesContainer = classNames('waves-container');
+		let wavesContainer = classNames('waves-container transition-all transition-duration2');
+		let node = waitingForPatterns ? <div className = { wavesContainer } ><SearchWaitingWaves slow={firstStart}/></div> : '';
 
-		return (<div className = { wavesContainer } >
-			{ node }
-		</div>);
+		return node;
 
 	}
 
