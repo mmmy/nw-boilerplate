@@ -23,6 +23,10 @@ var paths = {
 	BUILD: 		'./build',
 };
 
+var messager = function(msg) {
+	gulp.src('')
+		.pipe($.shell(['terminal-notifier -message "' + msg + '" -sound Glass -appIcon ~/Pictures/13.jpg']));
+};
 
 var watchJsFile = (e) => {
 	let filePath = e.path;
@@ -31,7 +35,8 @@ var watchJsFile = (e) => {
 	return gulp.src(relativePath, {base: paths.BASE})
 			.pipe($.plumber(function(error){
 				$.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
-		      	this.emit('end');
+		    messager(error.message);
+		    this.emit('end');
 			}))
 			.pipe($.babel())
 			.pipe(gulp.dest(paths.BUILD));
@@ -51,7 +56,8 @@ gulp.task('scripts', [], function(){
 	return gulp.src(paths.SCRIPTS)
 				.pipe($.plumber(function(error){
 					$.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
-			      	this.emit('end');
+		    	messager(error.message);
+			    this.emit('end');
 				}))
 				.pipe($.babel())
 				.pipe(gulp.dest(paths.BUILD));
@@ -74,6 +80,7 @@ gulp.task('styles', [], function(){
 	gulp.src('src/styles/main.less')
 	.pipe($.plumber(function(error){
 		$.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
+		    messager(error.message);
       	this.emit('end');
 	}))
 	.pipe($.less())
@@ -121,6 +128,7 @@ gulp.task('release', ['build'], function() {
   return gulp.src(['./build/**/*'])
 		.pipe($.plumber(function(error){
 			$.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
+					messager(error.message);
 	      	this.emit('end');
 		}))
     .pipe(builder({
