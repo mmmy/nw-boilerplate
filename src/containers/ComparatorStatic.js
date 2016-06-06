@@ -169,6 +169,11 @@ class ComparatorStatic extends React.Component {
           viewId={ STOCK_VIEW }
           init={ logined }
           options={ options } />
+
+        <div className={'prediction-transparent-overlay top-left'}></div>
+        <div className={'prediction-transparent-overlay bottom-left'}></div>
+        <div className={'prediction-transparent-overlay bottom-right'}></div>
+
         <div className={ comparatorPredictionContainerClass }>
           <div className={ predictionMainClassName }>
             <div className={ 'comparator-header' }>
