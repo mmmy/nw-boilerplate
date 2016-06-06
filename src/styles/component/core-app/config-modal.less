@@ -24,7 +24,7 @@
 .config-modal-container {
 	position: relative;
 	width: 480px;
-	top: 50px;
+	// top: 50px;
 	height: 480px;
 	margin: 0 auto;
 	z-index: 10001;
@@ -143,10 +143,17 @@
 			background-color: @config-modal-button-background-color;
 		}
 		span{
-			color: red;
+			color: @lulu-red1;
 			cursor: pointer;
 			margin-left: 40px;
 			font-size: 12px;
 		}
+	}
+}
+
+//datepicker
+.datepicker-dropdown {
+	.active {
+		background-color: @lulu-red1 !important;
 	}
 }

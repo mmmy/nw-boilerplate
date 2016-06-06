@@ -101,8 +101,7 @@ class SearchConfigModal extends React.Component {
 	}
 
 	render(){
-		return <div> 
-			<div className='modal-overlay'></div>
+		return <div className='modal-overlay flex-center'>
 
 			<div className='config-modal-container'>
 				<div className='close-icon' onClick={this.closeModal.bind(this)}><span className='fa fa-close'></span></div>
