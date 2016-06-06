@@ -75,7 +75,8 @@ class ComparatorStatic extends React.Component {
       scaleMinValue,
       scaleMaxValue,
       dispatch,
-      activeId } = this.props;
+      activeId,
+      logined } = this.props;
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
       'comparator-chart-static-show': this.props.stretchView,
@@ -168,7 +169,8 @@ class ComparatorStatic extends React.Component {
       <div className={ comparatorChartClassName } id='__comparator_prediction_container'>
         <ReactTradingView
           viewId={ STOCK_VIEW }
-          options={ options } />
+          options={ options } 
+          init={ logined }/>
         <div className={ 'comparator-prediction-container' }>
 
           <div className={ predictionMainClassName }>
@@ -209,10 +211,11 @@ ComparatorStatic.propTypes = propTypes;
 ComparatorStatic.defaultProps = defaultProps;
 
 var stateToProps = function(state) {
-	const {layout, patterns, filter, prediction, active} = state;
+	const {layout, patterns, filter, prediction, active, account} = state;
 	const {stockView, isPredictionShow} = layout;
   const {lastClosePrice, predictionpriceScaleMarks, predictionLastClosePrices, heatmapYAxis, scaleMaxValue, scaleMinValue} = prediction;
   const {id} = active;
+  let logined = account.username !== '';
 	return {
 		stretchView: !stockView,
     isPredictionShow: isPredictionShow,
@@ -222,7 +225,8 @@ var stateToProps = function(state) {
     heatmapYAxis: heatmapYAxis,
     scaleMinValue: scaleMinValue,
     scaleMaxValue: scaleMaxValue,
-    activeId: id
+    activeId: id,
+    logined
 	};
 };
 export default connect(stateToProps)(ComparatorStatic);
