@@ -25,8 +25,8 @@ class StockView extends React.Component {
 
 	}
 
-	shouldComponentUpdate(){
-		return false; //不需要更新
+	shouldComponentUpdate(newProps){
+		return newProps.logined !== this.props.logined;
 	}
 
 	componentWillUnmount(){
@@ -34,7 +34,7 @@ class StockView extends React.Component {
 	}
 
 	render() {
-		let { stockView } = this.props;
+		let { stockView, logined } = this.props;
 		let options = {
 				symbol: '000001.SZ',
 				interval: 'D',
@@ -48,7 +48,7 @@ class StockView extends React.Component {
       			theme: "Black",
 				//	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
 				drawings_access: { type: 'black', tools: [ { name: "Regression Trend" } ] },
-				disabled_features: ["use_localstorage_for_settings"],
+				disabled_features: ['control_bar','timeframes_toolbar', 'remove_library_container_border', 'chart_property_page_style'],
 				enabled_features: ["study_templates"],
 				charts_storage_url: 'http://saveload.tradingview.com',
         		charts_storage_api_version: "1.1",
@@ -77,6 +77,8 @@ class StockView extends React.Component {
 						"mainSeriesProperties.candleStyle.wickDownColor": '#6A6A6A',
 						"mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
 
+						"scalesProperties.lineColor" : "rgba(255,255,255,0)",
+						"scalesProperties.textColor" : "rgba(255,255,255,1)"
 				},
 				studies_overrides: {
 
@@ -85,6 +87,19 @@ class StockView extends React.Component {
 					"ksSplitView": false,
 					volume: false,
 					OHLCBarBorderColor: true,
+					ksSearch: true,
+					lineToolTimeAxisView: {
+						background: '#b61c15',
+						// activeBackground: 'green',
+						color: '#fff',
+						borderColor: '#b61c15',
+					},
+					lineToolPriceAxisView: {
+						background: '#b61c15',
+						// activeBackground: 'green',
+						color: '#fff',
+						borderColor: '#b61c15',
+					}
 				}
 			};
 
@@ -92,7 +107,8 @@ class StockView extends React.Component {
 	      <div className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
 	        <ReactTradingView
 	          viewId={ STOCK_VIEW }
-	          options={ options } />
+	          options={ options } 
+	          init={ logined } />
 	      </div>
 	    );
 	}
@@ -102,10 +118,12 @@ StockView.propTypes = propTypes;
 
 let mapStateToProps = function mapStateToProps(state) {
 	console.log('state changed');
-	const { layout } = state;
+	const { layout, account } = state;
 	const { stockView } = layout;
+	let logined = account.username !== '';
 	return {
-	  stockView
+	  stockView,
+	  logined
 	};
 }
 

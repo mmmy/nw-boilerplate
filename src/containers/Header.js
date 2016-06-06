@@ -33,7 +33,15 @@ class Header extends React.Component {
 
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps){
+		if(newProps.account !== this.props.account){
+			if(newProps.account.username === '') {
+				this.setState({showLogin: true});
+			}else{
+				this.refs.login_panel.startClose();
+			}
+			return false;
+		}
 		return true;
 	}
 
@@ -52,11 +60,11 @@ class Header extends React.Component {
 	}
 
 	render(){
-		// let {showLogin} = this.state;
-		let showLogin = this.props.account.username === '';
+		let {showLogin} = this.state;
+		// let showLogin = this.props.account.username === '';
 		return <div className="container-header">
 			{this.renderToolbar()}
-			{showLogin ? <Login onLogined={this.handleLogined.bind(this)}/> : ''}
+			{showLogin ? <Login ref='login_panel' onLogined={this.handleLogined.bind(this)} close={this.closeLogModal.bind(this)}/> : '' }
 		</div>;
 	}
 
@@ -78,6 +86,9 @@ class Header extends React.Component {
 		let {dispatch} = this.props;
 		dispatch(accountActions.setUser(username, password, autoLogin));
 		$('.container-toggle').css('z-index', '');
+	}
+
+	closeLogModal() {
 		this.setState({showLogin: false});
 	}
 

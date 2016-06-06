@@ -64,7 +64,10 @@ class Login extends React.Component {
 		this.initUI();
 		this.handleRiseze();
 		window.addEventListener('resize', this.handleRiseze);
-		this.autoLogin();
+		let autoLogin = this.autoLogin.bind(this);
+		$(this.refs.login_panel_container).one('webkitAnimationEnd animationed', () => {
+			autoLogin();
+		});
 	}
 
 	componentWillReceiveProps(){
@@ -77,14 +80,13 @@ class Login extends React.Component {
 
 	componentWillUnmount(){
 		window.removeEventListener('resize', this.handleRiseze);
-		this.resetUI();
 	}
 
 	render(){
 		let { isLogining, username, password, autoLogin } = this.state;
 		let innerBtn = isLogining ? <i className='fa fa-spinner fa-spin'></i> : '登陆';
 		return (
-      <div className='login-panel-container' ref='login_panel_container'>
+      <div className='login-panel-container animated slideInUp' ref='login_panel_container'>
       	<div className='body-container'>
       		<div className='logo'></div>
       		<div>
@@ -130,6 +132,14 @@ class Login extends React.Component {
 			autoLogin ? storageAccount(username, password) : removeAccount();
 			onLogined && onLogined(username, password, autoLogin);
 		}, 2000);
+	}
+
+	startClose() {
+		let {close} = this.props;
+		this.resetUI();
+		$(this.refs.login_panel_container).removeClass('slideInUp').addClass('slideOutDown').one('webkitAnimationEnd animationed', () => {
+			close && close();
+		});
 	}
 
 	changeUsernamne(e) {
