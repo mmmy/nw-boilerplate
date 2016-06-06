@@ -82,9 +82,7 @@ class ComparatorStatic extends React.Component {
       'comparator-chart-static-hide': !this.props.stretchView,
     });
 
-    const predictionMainClassName = classNames('prediction-main', {
-      'comparator-prediction-hide': !isPredictionShow
-    });
+    const predictionMainClassName = classNames('prediction-main');
 
     const STOCK_VIEW = 'comparator-chart';
 
@@ -169,8 +167,7 @@ class ComparatorStatic extends React.Component {
         <ReactTradingView
           viewId={ STOCK_VIEW }
           options={ options } />
-        <div className={ 'comparator-prediction-container' }>
-
+        <div className={ comparatorPredictionContainerClass }>
           <div className={ predictionMainClassName }>
             <div className={ 'comparator-header' }>
               <span>走势预测</span>
@@ -182,23 +179,21 @@ class ComparatorStatic extends React.Component {
               lastClosePrice={ lastClosePrice }
               activeId={ activeId }/>
           </div>
+        </div>
 
-          <div className={'prediction-panel'}>
-            <button
-              className={ 'prediction-toggle' }
-              onClick={ this.togglePredictionPanel.bind(this) }>
-              <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
-            </button>
-
-            <ComparatorHeatmap
-              lastClosePrice={ lastClosePrice }
-              heatmapYAxis={ heatmapYAxis }
-              filter={ filter }
-              patterns={ patterns }
-              scaleMinValue={ scaleMinValue }
-              scaleMaxValue={ scaleMaxValue } />
-          </div>
-
+        <div className={'prediction-panel'}>
+          <button
+            className={ 'prediction-toggle' }
+            onClick={ this.togglePredictionPanel.bind(this) }>
+            <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
+          </button>
+          <ComparatorHeatmap
+            lastClosePrice={ lastClosePrice }
+            heatmapYAxis={ heatmapYAxis }
+            filter={ filter }
+            patterns={ patterns }
+            scaleMinValue={ scaleMinValue }
+            scaleMaxValue={ scaleMaxValue } />
         </div>
       </div>
     );
