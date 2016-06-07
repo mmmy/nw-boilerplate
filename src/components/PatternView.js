@@ -36,6 +36,7 @@ class PatternView extends React.Component {
 	componentDidMount() {
 		this.bindResizeFunc = this.handleResize.bind(this);
 		window.addEventListener('resize', this.bindResizeFunc);
+		console.debug('patternView did update');
 	}
 
 	componentWillReceiveProps(newProps){

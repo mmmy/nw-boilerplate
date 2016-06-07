@@ -60,6 +60,7 @@ class EChart extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {};
+		this.chart = null;
 		this.canvasNode = window.document.createElement('canvas');
 		this.canvasNode.height = 200;
 		this.canvasNode.width = 200;
@@ -74,15 +75,14 @@ class EChart extends React.Component {
 		this.oldKline = kLine;
 		let node = this.canvasNode;
 
-		let chart = echarts.init(node);
+		// let chart = this.chart || echarts.init(node);
 		let index = this.props.index;
-		this.chart = chart;
-		if(index===0){
-			window.chart = chart;
-		}
+		// if(index===0){
+		// 	window.chart = chart;
+		// }
 		//candleChart
 		if (candleChart) {
-
+			this.chart = this.chart || echarts.init(node);//&& this.chart.dispose();
 			let data0 = splitData(kLine, baseBars);
 			let candleOption = factorCandleOption(kLine.length < 50);
 			candleOption.xAxis.data = data0.categoryData;
@@ -93,8 +93,8 @@ class EChart extends React.Component {
 			candleOption.yAxis.max = data0.yMax;
 			//console.log(data0.values[0]);
 			//setTimeout(function(){
-	        	chart.setOption(candleOption);
-	        	let imgUrl = chart.getDataURL();
+	        	this.chart.setOption(candleOption);
+	        	let imgUrl = this.chart.getDataURL();
 	        	this.refs['echart'+this.props.index].firstChild.src = imgUrl;
 			//debugger;
 			//},0);
@@ -113,9 +113,7 @@ class EChart extends React.Component {
 				chart.setOption(lineOption);
 			});
 		}
-
 		callback &&  setTimeout(callback, 5);
-
 	}
 
 	componentDidMount() {
@@ -162,7 +160,9 @@ class EChart extends React.Component {
 	}
 
 	componentWillUnmount(){
-
+		delete this.canvasNode;
+		this.chart.dispose && this.chart.dispose();
+		delete this.chart;
 	}
 
 	render(){

@@ -199,6 +199,26 @@ class CrossfilterView extends React.Component {
 		console.info('^-^crossFilter view did update', new Date() - this.renderDate);
 	}
 
+resizeChart1() {
+		
+		let wrapper = $(this.refs.position_bubble_chart_wrapper);
+
+		let	targetH = 0;
+
+		if(wrapper.hasClass('full')) {
+			// targetW = curW * 2;
+			targetH = this.refs.root.clientHeight - 33.609 - 67.234 - 30;
+		} else {
+			// targetW = curW / 2;
+			targetH = this.refs.dc_chart_row_2.clientHeight - 18.484 - 30;
+		}
+		console.debug(targetH);
+		let that = this;
+		setTimeout(() => {that.yieldDateScatterChart.height(targetH).redraw(); });
+		setTimeout(()=> {that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart) });
+		setTimeout(() => {that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart) });
+	}
+
 	resizeChart2() {
 		
 		let a = 2.03, b = - 143.59;
@@ -262,7 +282,7 @@ class CrossfilterView extends React.Component {
 		});
 		//wrapper.css('padding', '');
 		$(this.refs.toggle_btn1).toggleClass('larger');
-		// this.resizeChart2();
+		this.resizeChart1();
 		// setTimeout(this.handleResize.bind(this), 500);
 	}	
 
@@ -324,7 +344,7 @@ class CrossfilterView extends React.Component {
 		  		<strong>{toggleBtn1}历史时间分布</strong>
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
-		    <div className="dc-chart-row">
+		    <div className="dc-chart-row" ref='dc_chart_row_2'>
 		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{toggleBtn2}饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"><div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
 		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{toggleBtn3}收益率统计</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>

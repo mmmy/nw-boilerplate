@@ -81,7 +81,7 @@ let searchPattern = ({ symbol, dateRange, bars, additionDate}, cb, errorCb) => {
 
 	let postData = JSON.stringify(postObj);
 	console.log(postData);
-	request(options, callback, errorCb, postData);
+	return request(options, callback, errorCb, postData);
 }
 
 module.exports = {

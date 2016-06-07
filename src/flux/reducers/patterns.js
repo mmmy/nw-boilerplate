@@ -26,6 +26,7 @@ export default function patterns(state = getInitialState(), actions){
 	switch (actions.type) {
 
 		case types.CHANGE_PATTERNS:
+			actions.patterns.crossFilter = actions.patterns.crossFilter || crossfilter([]);
 			return actions.patterns || [];
 
 		case types.GET_PATTERNS_ERROR:

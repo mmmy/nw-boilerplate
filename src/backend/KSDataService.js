@@ -129,7 +129,7 @@ let postSymbolData = (startIndex, args, bars, cb, errorCb) => {
 
 	};
 
-	request(options, dataCb, errorCb, postData);
+	return request(options, dataCb, errorCb, postData);
 }
 
 module.exports = {
