@@ -169,7 +169,7 @@ class ComparatorPrediction extends React.Component {
               width: 0.5
             }
           },
-          z: i === 5 ? 9999 : 2
+          z: i === 5 ? 1 : -1 
         });
       });
     }
@@ -206,8 +206,8 @@ class ComparatorPrediction extends React.Component {
       grid: {
         x: 0,
         x2: 0,
-        y: 9,
-        y2: 10
+        y: 0,
+        y2: 0,
       },
       tooltip: {
         show: false,
@@ -230,17 +230,31 @@ class ComparatorPrediction extends React.Component {
         // data: this.xAxisData
       },
       yAxis: {
-        show: false,
+        show: true,
+        axisLine: {
+          show: false,
+        },
+        axisLabel: {
+          formatter: '{value} %',
+          textStyle: {
+            color: '#656565',
+            fontStyle: 'italic',
+            fontWeight: 'lighter',
+            fontSize: 10
+          },
+          margin: -40
+        },
+        axisTick: {
+          show: false
+        },
         position: 'right',
         type: 'value',
         boundaryGap: [0, '100%'],
         splitLine: {
           show: false
         },
-        // scale: true,
-        // interval: 0.5,
-        // max: 100,
-        // min: -100
+        minInterval: 1,
+        splitNumber: 6,
       },
       // series: this.generateSeriesDataFromDimension()
       series: this.generateSeriesDataFromClosePrice()

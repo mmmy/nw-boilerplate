@@ -6,7 +6,7 @@ import echarts from 'echarts';
 const propTypes = {
   patterns: PropTypes.object.isRequired,
   filter: PropTypes.object.isRequired,
-  heatmapYAxis: PropTypes.array.isRequired,
+  // heatmapYAxis: PropTypes.array.isRequired,
   lastClosePrice: PropTypes.number.isRequired
 };
 
