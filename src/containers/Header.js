@@ -96,6 +96,13 @@ class Header extends React.Component {
 		let {dispatch} = this.props;
 		removeAccount();
 		dispatch(accountActions.setUser('', '', false));
+		// let patterns = {
+		// 	rawData: [],
+		// 	closePirce: [],
+		// 	error: null,
+		// 	searchConfig: null,
+		// };
+		// dispatch({type: 'CHANGE_PATTERNS', patterns, searchTimeSpent:0});
 	}
 }
 
