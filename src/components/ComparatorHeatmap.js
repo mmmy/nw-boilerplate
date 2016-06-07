@@ -29,19 +29,19 @@ class ComparatorHeatmap extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let { heatmapYAxis, scaleMaxValue, scaleMinValue } = nextProps;
-    let option = window.heatmap.getOption();
-    const count = Math.round(scaleMaxValue - scaleMinValue);
-    let gap = 1;
-    option.yAxis[0].data = [scaleMinValue];
-    let value = scaleMinValue;
-    for (let i = 0; i < count; i++) {
-      option.yAxis[0].data.push(value + gap);
-      value = value + gap;
-    }
-
-    option.series[0].data = this.generateSeriesData(option.yAxis[0].data);
-
-    window.heatmap.setOption(option);
+    // let option = window.heatmap.getOption();
+    // const count = Math.round(scaleMaxValue - scaleMinValue);
+    // let gap = 1;
+    // option.yAxis[0].data = [scaleMinValue];
+    // let value = scaleMinValue;
+    // for (let i = 0; i < count; i++) {
+    //   option.yAxis[0].data.push(value + gap);
+    //   value = value + gap;
+    // }
+    //
+    // option.series[0].data = this.generateSeriesData(option.yAxis[0].data);
+    //
+    // window.heatmap.setOption(option);
   }
 
   shouldComponentUpdate(){
