@@ -28,7 +28,7 @@ class ComparatorHeatmap extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let { heatmapYAxis, scaleMaxValue, scaleMinValue } = nextProps;
+    let { scaleMaxValue, scaleMinValue } = nextProps;
     // let option = window.heatmap.getOption();
     // const count = Math.round(scaleMaxValue - scaleMinValue);
     // let gap = 1;
@@ -41,30 +41,80 @@ class ComparatorHeatmap extends React.Component {
     //
     // option.series[0].data = this.generateSeriesData(option.yAxis[0].data);
     //
-    let option = heatmapYAxis;
+    // let option = heatmapYAxis;
+    //
+    // let seriesData = [];
+    // let yAxisData = [];
+    //
+    // if (option && option.series) {
+    //
+    //   option.series[0].data.forEach((e, i) => {
+    //     let temp = [];
+    //     e.forEach((number) => {
+    //       temp.push(number);
+    //     });
+    //     seriesData.push(temp);
+    //   })
+    //
+    //   option.yAxis[0].data.forEach((e) => {
+    //     yAxisData.push(e)
+    //   })
+    //
+    //   option.series[0].data = seriesData;
+    //   option.yAxis[0].data = yAxisData;
+    // option.series[0].data
 
-    let seriesData = [];
-    let yAxisData = [];
+    var range = 28;
+    var partCount = scaleMaxValue / range;
+    var eachBlockHeight = scaleMaxValue / partCount;
+    var yAxisData = [];
+    var min = scaleMaxValue / 2 * -1;
+    min = scaleMinValue;
 
-    if (option && option.series) {
-
-      option.series[0].data.forEach((e, i) => {
-        let temp = [];
-        e.forEach((number) => {
-          temp.push(number);
-        });
-        seriesData.push(temp);
-      })
-
-      option.yAxis[0].data.forEach((e) => {
-        yAxisData.push(e)
-      })
-
-      option.series[0].data = seriesData;
-      option.yAxis[0].data = yAxisData;
-      // option.series[0].data
-      window.heatmap.setOption(option);
+    for (var i = 0; i < partCount; i++) {
+      yAxisData.push(min = min + eachBlockHeight);
     }
+
+    var rawData = window.parent.eChart.getOption().series.map(function (serie, idx) {
+      return serie.data[serie.data.length - 1];
+    });
+
+    rawData.sort(function (a, b) {return a - b}); // sort numerically
+    var bunch = rawData;
+
+    var eChartSeriesData = [];
+
+    yAxisData.forEach(function (value, idx) {
+      var count = 0;
+      for (var i = 0; i < bunch.length; i++) {
+        if (i > 0) {
+          if (bunch[i] < value && bunch[i] > yAxisData[idx - 1]) {
+            count = i + 1;
+          }
+          else {
+            break;
+          }
+        } else {
+          if (bunch[i] < value) {
+            count = i + 1;
+          } else {
+            break
+          }
+        }
+      }
+      eChartSeriesData.push([0, idx, count])
+      bunch = bunch.slice(count);
+      count = 0;
+    });
+
+    var option = window.heatmap.getOption();
+    option.yAxis[0].data = yAxisData;
+    option.series[0].data = eChartSeriesData;
+    // window.parent.heatmapOption = option;
+    // window.parent.heatmap.setOption(window.parent.heatmapOption, true);
+
+
+    window.heatmap.setOption(option);
   }
 
   shouldComponentUpdate(){
