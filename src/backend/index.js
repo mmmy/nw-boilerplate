@@ -5,6 +5,19 @@ import store from '../store';
 import lodash from 'lodash';
 import { callFunc } from '../components/helper/updateEchartImage';
 
+let __ksSearchXhr = null;
+let __ksDataXhr_1 = null;
+let __ksDataXhr_2 = null;
+let cancelSearch = () => {
+	__ksSearchXhr && __ksSearchXhr.abort && __ksSearchXhr.abort();
+	__ksDataXhr_1 && __ksDataXhr_1.abort && __ksDataXhr_1.abort();
+	__ksDataXhr_2 && __ksDataXhr_2.abort && __ksDataXhr_2.abort();
+
+	__ksSearchXhr = null;
+	__ksDataXhr_1 = null;
+	__ksDataXhr_2 = null;
+};
+
 let __data = [];
 /**
  * args: {symbol: , bars: , dateRange:{from: , to: }, additionDate:{type:'days', value: 30} }
@@ -82,11 +95,11 @@ let searchPattern = (args, cb, errorCb) => {
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
 		let startIndex = 0,
 				nextIndex = 5;
-		KSDataService.postSymbolData(startIndex, args.slice(0, nextIndex), bars, dataCb, (err) => {
+		__ksDataXhr_1 =  KSDataService.postSymbolData(startIndex, args.slice(0, nextIndex), bars, dataCb, (err) => {
 			console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);
 		});
-		KSDataService.postSymbolData(nextIndex, args.slice(nextIndex), bars, dataCb, (err) => {
+		__ksDataXhr_2 = KSDataService.postSymbolData(nextIndex, args.slice(nextIndex), bars, dataCb, (err) => {
 			console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);
 		});
@@ -94,8 +107,10 @@ let searchPattern = (args, cb, errorCb) => {
 	};
 	
 	console.info('第一步: 搜索 [ 开始 ]');
+	//	取消已有的搜索
+	cancelSearch();
 	//获取搜索结果
-	KSSearch.searchPattern(searchArgs, searchCb, (err) => { 
+	__ksSearchXhr = KSSearch.searchPattern(searchArgs, searchCb, (err) => { 
 		console.warn(`第一步: 搜索 [ 失败 ]`, err);
 		errorCb && errorCb(err);
 	});

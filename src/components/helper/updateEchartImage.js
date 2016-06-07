@@ -1,3 +1,4 @@
+import store from '../../store';
 
 let _setImageFuncs = [];
 
@@ -6,11 +7,12 @@ let setFunc = (index, func) => {
 };
 
 let callFunc = (indexRange) => {
+	// return;
 	// let funcArr = _setImageFuncs.slice(indexRange[0], indexRange[1]);
 	$('.pattern-toolbar-container').css('z-index', '5');
 	try {
 		let sequenCall = (index, lastIndex) => {
-			if(index >= lastIndex || !_setImageFuncs[index]) {
+			if(index >= lastIndex || !_setImageFuncs[index] || store.getState().layout.waitingForPatterns) {
 				$('.pattern-toolbar-container').css('z-index', '5');  //sortbar 显示bug
 				return;
 			}

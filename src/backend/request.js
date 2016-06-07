@@ -19,7 +19,7 @@ import http from 'http';
 
 let request = (options, cb, errorCb, postData) => {
 	//使用浏览器ajax请求
-	$.ajax({
+	let xhr = $.ajax({
 		url: options.url,
 		type: options.method,
 		//dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
@@ -29,15 +29,18 @@ let request = (options, cb, errorCb, postData) => {
 		//console.log("success =======", data);
 		cb && cb(data);
 	})
-	.fail(function(error) {
-		console.log("error");
-		errorCb && errorCb(error);
+	.fail(function(jqXHR, textStatus, errorThrown) {
+		console.log("request error", errorThrown);
+		if(errorThrown === 'abort') { 
+			return; 
+		}
+		errorCb && errorCb(errorThrown);
 	})
 	.always(function() {
 		// console.log("complete");
 	});
 	
-	return;
+	return xhr;
 
 	// let requestOption = {
 	// 	...options,
