@@ -41,7 +41,8 @@ class ComparatorHeatmap extends React.Component {
     //
     // option.series[0].data = this.generateSeriesData(option.yAxis[0].data);
     //
-    // window.heatmap.setOption(option);
+    let option = heatmapYAxis;
+    window.heatmap.setOption(option);
   }
 
   shouldComponentUpdate(){
