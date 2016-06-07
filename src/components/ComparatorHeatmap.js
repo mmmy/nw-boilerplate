@@ -42,7 +42,29 @@ class ComparatorHeatmap extends React.Component {
     // option.series[0].data = this.generateSeriesData(option.yAxis[0].data);
     //
     let option = heatmapYAxis;
-    window.heatmap.setOption(option);
+
+    let seriesData = [];
+    let yAxisData = [];
+
+    if (option && option.series) {
+
+      option.series[0].data.forEach((e, i) => {
+        let temp = [];
+        e.forEach((number) => {
+          temp.push(number);
+        });
+        seriesData.push(temp);
+      })
+
+      option.yAxis[0].data.forEach((e) => {
+        yAxisData.push(e)
+      })
+
+      option.series[0].data = seriesData;
+      option.yAxis[0].data = yAxisData;
+      // option.series[0].data
+      window.heatmap.setOption(option);
+    }
   }
 
   shouldComponentUpdate(){
@@ -132,7 +154,7 @@ class ComparatorHeatmap extends React.Component {
       visualMap: {
         show: false,
         min: 0,
-        max: 50,
+        max: 80,
         calculable: false,
         orient: 'vertical',
         left: 'center',
