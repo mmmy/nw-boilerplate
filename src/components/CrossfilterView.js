@@ -329,6 +329,15 @@ resizeChart1() {
 		// setTimeout(this.handleResize.bind(this), 500);
 	}
 
+	selectGainedYield(gained = true) {
+		let chart = this.yieldDimCountChart;
+		let dim = this.yieldDimCountChart.dimension();
+		let range = gained ? [barChartBars/2 , barChartBars + 1] : [0, barChartBars/2];
+		chart.filter(range);
+		dim.filter(range);
+		DC.redrawAll();
+	}
+
 	render() {
 		this.renderDate = new Date();
 		const className = classnames('crossfilter-container', {
@@ -341,6 +350,9 @@ resizeChart1() {
 		let toggleBtn1 = <button ref='toggle_btn1' className={toggleBtnClass} onClick={this.toggleChart1.bind(this)}></button>;
 		let toggleBtn2 = <button ref='toggle_btn2' className={toggleBtnClass} onClick={this.toggleChart2.bind(this)}></button>;
 		let toggleBtn3 = <button ref='toggle_btn3' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
+		
+		let yiledBtns = <span className='yield-btns-container'><button onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
+		
 		return (
 		  <div ref='root' className={ className }>
 		  	<div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='position_bubble_chart_wrapper'>
@@ -349,7 +361,7 @@ resizeChart1() {
 		    </div>
 		    <div className="dc-chart-row" ref='dc_chart_row_2'>
 		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{toggleBtn2}饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"><div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{toggleBtn3}收益率统计</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{toggleBtn3}收益率统计{yiledBtns}</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>
 		  </div>
 		);

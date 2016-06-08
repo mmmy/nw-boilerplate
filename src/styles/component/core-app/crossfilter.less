@@ -59,7 +59,26 @@
 		height: @chartTitleH;
 		font-size: 1.4rem;
 		color: @lulu-black;
-     font-weight: normal;
+    font-weight: normal;
+    .yield-btns-container {
+    	// border: 1px solid @ks-color-gray-4;
+    	float: right;
+    	margin-right: 20px;
+    	padding: 1px 4px;
+    	box-shadow: 0 3px 10px 0 @ks-color-gray-8;
+    	border-radius: 2px;
+    	button {
+    		font-size: 1.3rem;
+    		border: none;
+    		outline: none;
+    		background-color: transparent;
+    		color: @ks-color-gray-4;
+    		padding: 2px 3px;
+    		&:hover {
+    			color: @lulu-red1;
+    		}
+    	}
+    }
 	}
 	.inline-chart-wrapper {
 		display: inline-block;
