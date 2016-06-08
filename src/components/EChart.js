@@ -89,7 +89,7 @@ class EChart extends React.Component {
 			candleOption.series[0].data = data0.values;
 			candleOption.series[1].data = data0.lineData;
 			candleOption.series[2].data = data0.areaData;
-			candleOption.yAxis.min = data0.yMin;
+			// candleOption.yAxis.min = data0.yMin;
 			candleOption.yAxis.max = data0.yMax;
 			//console.log(data0.values[0]);
 			//setTimeout(function(){

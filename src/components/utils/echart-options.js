@@ -51,9 +51,9 @@ var factorCandleOption=function(candleBorder = true){
 		    },
 		    grid: {
 		    	show: false,
-		        left: '0',
-		        right: '0',
-		        bottom: '0'
+		        left: '3px',
+		        right: '3px',
+		        bottom: '3px'
 		    },
 		    xAxis: {
 		        type: 'category',
@@ -88,7 +88,9 @@ var factorCandleOption=function(candleBorder = true){
 		        },
 		        splitArea: {
 		            show: false
-		        }
+		        },
+		        min: 'dataMin',
+		        max: 'dataMax'
 		    },
 		    series: [
 		        {
