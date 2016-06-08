@@ -214,6 +214,7 @@ resizeChart1() {
 		}
 		console.debug(targetH);
 		let that = this;
+		this.yieldDateScatterChart.transitionDuration(transitionDuration);
 		setTimeout(() => {that.yieldDateScatterChart.height(targetH).redraw(); });
 		setTimeout(()=> {that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart) });
 		setTimeout(() => {that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart) });
@@ -237,6 +238,7 @@ resizeChart1() {
 			targetH = this.refs.yield_count_chart.clientHeight;
 		}
 		let that = this;
+		this.industryPieChart.transitionDuration(transitionDuration);
 		let pieChartR = Math.min(targetW,targetH)/2 - 10;
 		setTimeout(() => {that.industryPieChart.width(targetW).height(targetH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); });
 		// setTimeout(()=> {that.industryPieChart.renderYAxis(that.industryPieChart) });
@@ -261,6 +263,7 @@ resizeChart1() {
 			targetH = this.refs.industry_quarter_chart.clientHeight;
 		}
 		let that = this;
+		this.yieldDimCountChart.transitionDuration(transitionDuration);
 		setTimeout(() => {that.yieldDimCountChart.width(targetW).height(targetH).redraw(); });
 		setTimeout(()=> {that.yieldDimCountChart.renderYAxis(that.yieldDimCountChart) });
 		setTimeout(() => {that.yieldDimCountChart.renderXAxis(that.yieldDimCountChart) });

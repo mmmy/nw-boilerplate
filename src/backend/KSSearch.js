@@ -76,7 +76,7 @@ let searchPattern = ({ symbol, dateRange, bars, additionDate}, cb, errorCb) => {
 		},
 		samples:[],
 		topN: 200,
-		nLookForward: additionDate.value,
+		nLookForward: parseInt(additionDate.value),
 	};
 
 	let postData = JSON.stringify(postObj);
