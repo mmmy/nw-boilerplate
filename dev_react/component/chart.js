@@ -1,7 +1,7 @@
 import React from 'react';
 import echarts from 'echarts';
 import {factorCandleOption, factorLineOption} from '../../src/components/utils/echart-options';
-import {randomPartterns} from '../../src/flux/util/randomKline';
+import {randomPatterns} from '../../src/flux/util/randomKline';
 
 var data = [
 		    ['2013/1/24', 2320.26,2320.26,2287.3,2362.94],
@@ -431,7 +431,7 @@ lineOption.series[0].data = data1;
 
 
 
-let patterns = randomPartterns(10),
+let { patterns } = randomPatterns(10),
 	candleOptions = [],
 	lineOptions = [];
 patterns.forEach((e, i) => {
