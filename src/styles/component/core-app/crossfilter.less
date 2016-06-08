@@ -96,7 +96,7 @@
 				top: -95%;
 				height: 190%;
 				width: 100%;
-				padding: 30% 0;
+				padding: 10% 0;
 				z-index: 10;
 			}
 		}
@@ -123,9 +123,19 @@
 }
 
 .industry-quarter-chart{
-	height: calc(~"88% - "@chartTitleH);
-	width: 88%;
+	// height: calc(~"88% - "@chartTitleH);
+	// width: 88%;
+	width: calc(~"1vw*35/3 - 1px");
+	height: calc(~"1vw*35/3 - 1px");
+
+	max-height: calc(~"1vh*23.6 - 12px");
+	max-width: calc(~"1vh*23.6 - 12px");
+	
 	position: relative;
+	&.larger {
+		transform: scale(1.8);
+		transform-origin: -25% 0;
+	}
 }
 
 .yield-count-chart{
@@ -136,7 +146,7 @@
 
 .industry-info-container {
 	
-	@width-mm: 30%;
+	@width-mm: 34%;
 
 	text-align: center;
 	position: absolute;
@@ -144,17 +154,17 @@
 	height: @width-mm;
 
 	left: (100% - @width-mm) / 2;
-	top: (90% - @width-mm) / 2;
+	top: (100% - @width-mm) / 2;
 
 	h4 {
 		.font-number();
-		font-size: 1.2rem;
-	
+		font-size: 1.8rem;
+		margin-top: 10%;
 	}
 
 	p {
 		color: @ks-color-gray-7;
-		font-size: 1rem
+		font-size: 1.3rem
 	}
 }
 

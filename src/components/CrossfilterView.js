@@ -222,25 +222,25 @@ resizeChart1() {
 
 	resizeChart2() {
 		
-		let a = 2.03, b = - 143.59;
-		let curW = this.refs.industry_quarter_chart.clientWidth,
-				curH = this.refs.industry_quarter_chart.clientHeight;
-		let wrapper = $(this.refs.industry_quarter_chart_wrapper);
+		// let a = 2.03, b = - 143.59;
+		// let curW = this.refs.industry_quarter_chart.clientWidth,
+		// 		curH = this.refs.industry_quarter_chart.clientHeight;
+		// let wrapper = $(this.refs.industry_quarter_chart_wrapper);
 
-		let targetW = 0,
-				targetH = 0;
+		// let targetW = 0,
+		// 		targetH = 0;
 
-		if(wrapper.hasClass('full')) {
-			targetW = curW * 2;
-			targetH = curH * a + b;
-		} else {
-			targetW = curW / 2;
-			targetH = this.refs.yield_count_chart.clientHeight;
-		}
-		let that = this;
-		this.industryPieChart.transitionDuration(transitionDuration);
-		let pieChartR = Math.min(targetW,targetH)/2 - 10;
-		setTimeout(() => {that.industryPieChart.width(targetW).height(targetH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); });
+		// if(wrapper.hasClass('full')) {
+		// 	targetW = curW * 2;
+		// 	targetH = curH * a + b;
+		// } else {
+		// 	targetW = curW / 2;
+		// 	targetH = this.refs.yield_count_chart.clientHeight;
+		// }
+		// let that = this;
+		// this.industryPieChart.transitionDuration(transitionDuration);
+		// let pieChartR = Math.min(targetW,targetH)/2 - 10;
+		// setTimeout(() => {that.industryPieChart.width(targetW).height(targetH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); });
 		// setTimeout(()=> {that.industryPieChart.renderYAxis(that.industryPieChart) });
 		// setTimeout(() => {that.industryPieChart.renderXAxis(that.industryPieChart) });
 	}
@@ -305,7 +305,8 @@ resizeChart1() {
 		});
 		//wrapper.css('padding', '');
 		$(this.refs.toggle_btn2).toggleClass('larger');
-		this.resizeChart2();
+		$(this.refs.industry_quarter_chart).toggleClass('larger');
+		//this.resizeChart2();
 		// setTimeout(this.handleResize.bind(this), 500);
 	}
 
@@ -360,7 +361,7 @@ resizeChart1() {
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
 		    <div className="dc-chart-row" ref='dc_chart_row_2'>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{toggleBtn2}饼状图</strong><div ref='industry_quarter_chart' className="industry-quarter-chart"><div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{toggleBtn2}标的类型</strong><div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3"><div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
 		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{toggleBtn3}收益率统计{yiledBtns}</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>
 		  </div>
@@ -595,8 +596,8 @@ resizeChart1() {
 		let containerWidth = this.refs.industry_percent.clientWidth;
 
 		let fontSize = (containerWidth / baseWidth) * 100;
-		this.refs.industry_percent.style.fontSize = fontSize + '%';
-		this.refs.industry_name.style.fontSize = fontSize * 0.7 + '%';
+		// this.refs.industry_percent.style.fontSize = fontSize + '%';
+		// this.refs.industry_name.style.fontSize = fontSize * 0.7 + '%';
 	}
 
 	drawIndustryPieChart() {
@@ -632,6 +633,8 @@ resizeChart1() {
 			.colorDomain([0, this.industryGroup.size() - 1])
 			.minAngleForLabel(30)
 			.colorAccessor(function(d, i){ return i })
+			// .slicesCap(8)
+			// .othersLabel('其他行业')
 			//.gap(3)
 			//.label(() => { return 'aaa'; })
 			//.title((e) => { console.log('title', e); return e.key + e.value; })
