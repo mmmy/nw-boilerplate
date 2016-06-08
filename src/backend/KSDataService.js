@@ -53,14 +53,14 @@ let postSymbolData = (startIndex, args, bars, cb, errorCb) => {
 		...patternOptions
 	};
 
-	let batchCondition = args.map(({symbol, dateRange, timeUnit='d', category='cs', additionDate = { type:'days', value: 30 } }) => {
+	let batchCondition = args.map(({symbol, dateRange, lastDate, timeUnit='d', category='cs', additionDate = { type:'days', value: 30 } }) => {
 		
 		return {
 			dataCategory: category,
 			dataTimeUnit: timeUnit,
 			id: symbol,
 			begin: moment.utc(dateRange[0]).toISOString(),
-	        end: moment.utc(dateRange[1]).add(additionDate.value, additionDate.type).toISOString()
+	    end: lastDate && moment.utc(lastDate).toISOString() || moment.utc(dateRange[1]).add(additionDate.value, additionDate.type).toISOString()
 		};
 	});
 

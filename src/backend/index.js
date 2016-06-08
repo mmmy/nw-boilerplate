@@ -39,6 +39,7 @@ let searchPattern = (args, cb, errorCb) => {
 		__data = resObj.results.map((pattern, i) => {
 
 			const {id, similarity= resObj.similarities && resObj.similarities[i] || (0.95 - 0.01*i), begin, end, industry=getIndustry(id), type='D'} = pattern;
+			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = {};
 			//let id = i;
@@ -49,6 +50,7 @@ let searchPattern = (args, cb, errorCb) => {
 				similarity,
 				begin: begin.time,
 				end: end.time,
+				lastDate,
 				industry,
 				type,
 				baseBars: bars,
@@ -80,13 +82,14 @@ let searchPattern = (args, cb, errorCb) => {
 		};
 
 		//let args = [{'symbol':'ss600000',dateRange:[3, 5]}, {'symbol':'ss600000', dateRange:[7, 8]}];
-		let args = resObj.results.map((pattern) => {
+		let args = resObj.results.map((pattern, i) => {
 			
 			const {id, begin, end} = pattern;
 
 			return {
 				'symbol':id,
 				'dateRange': [begin.time, end.time],
+				'lastDate': resObj.lastDates && resObj.lastDates[i],
 				'additionDate': additionDate,
 				'bars': bars,
 			};
