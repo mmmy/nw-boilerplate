@@ -59,7 +59,7 @@ let postSymbolData = (startIndex, args, bars, cb, errorCb) => {
 			dataCategory: category,
 			dataTimeUnit: timeUnit,
 			id: symbol,
-			begin: moment.utc(dateRange[0]).toISOString(),
+			begin: moment.utc(dateRange[0]).add(-1, 'days').toISOString(),
 	    end: lastDate && moment.utc(lastDate).toISOString() || moment.utc(dateRange[1]).add(additionDate.value, additionDate.type).toISOString()
 		};
 	});

@@ -26,10 +26,10 @@ function splitData(rawData, baseBars) {
 
     var arange10 = [];
     for (var i=0; i < 40; i++) {
-    	arange10.push([categoryData[baseBars], min + (max - min) / 23 * i]);
+    	arange10.push([categoryData[baseBars-1], min + (max - min) / 23 * i]);
     }
 
-    var areaData = categoryData.slice(baseBars).map((e) => {
+    var areaData = categoryData.slice(baseBars-1).map((e) => {
     	return [e, max * 2];
     });
 
