@@ -48,7 +48,7 @@ class Comparator extends React.Component {
 
 
 	render() {
-		let { stretchView, screenshotTvURL, screenshotEChartURL } = this.props;
+		let { stretchView, screenshotTvURL, screenshotEChartURL, screenshotHeatmapURL } = this.props;
     const containerClassName = classNames('transition-all', 'container-comparator', {
       'container-comparator-stretch': this.props.stretchView,
       // 'container-comparator-hide': this.props.stretchView,
@@ -59,11 +59,17 @@ class Comparator extends React.Component {
       const screenshotEchartClassName = classNames('comparator-echart-screenshot transition-all', {
       	'stretch':stretchView
       });
+      const screenshotHeatmapClassName = classNames('comparator-heatmap-screenshot transition-all', {
+      	'stretch':stretchView
+      });
 
 		return (
       <div className={ containerClassName } >
         { screenshotTvURL ? <img ref='img1' key={ screenshotTvURL } src={ screenshotTvURL } className={ screenshotTvClassName }/> : '' }
-        { screenshotEChartURL ? <img ref='img2' key={ screenshotEChartURL } src={ screenshotEChartURL } className={ screenshotEchartClassName }/> : '' }
+        <div className={'prediction-heatmap-container'}>
+          { screenshotEChartURL ? <img ref='img2' key={ screenshotEChartURL } src={ screenshotEChartURL } className={ screenshotEchartClassName }/> : '' }
+          {/*{ screenshotHeatmapURL ? <img ref='img3' key={ screenshotHeatmapURL } src={ screenshotHeatmapURL } className={ screenshotHeatmapClassName }/> : '' }*/}
+        </div>
       </div>
     );
 	}
@@ -73,13 +79,14 @@ Comparator.propTypes = propTypes;
 Comparator.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const {layout} = state;
-	const {stockView, hasNewScreenshot, screenshotTvURL, screenshotEChartURL} = layout;
+	const { layout } = state;
+	const { stockView, hasNewScreenshot, screenshotTvURL, screenshotEChartURL, screenshotHeatmapURL } = layout;
 	return {
 		stretchView: !stockView,
     hasNewScreenshot: hasNewScreenshot,
     screenshotTvURL: screenshotTvURL,
-    screenshotEChartURL: screenshotEChartURL
+    screenshotEChartURL: screenshotEChartURL,
+    screenshotHeatmapURL: screenshotHeatmapURL,
 	};
 };
 export default connect(stateToProps)(Comparator);
