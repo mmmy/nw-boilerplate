@@ -28,13 +28,19 @@ class ComparatorHeatmap extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let { heatmapYAxis, scaleMaxValue, scaleMinValue } = nextProps;
+  }
+
+  shouldComponentUpdate(){
+    return true;
+  }
+
+  componentDidUpdate() {
+    let { heatmapYAxis, scaleMaxValue, scaleMinValue } = this.props;
 
     let range = 15;
     let partCount = heatmapYAxis / range;
     let eachBlockHeight = heatmapYAxis / partCount;
     let yAxisData = [];
-    // let min = heatmapYAxis / 2 * -1;
     let min = scaleMinValue;
 
     for (let i = 0; i < partCount; i++) {
@@ -56,33 +62,12 @@ class ComparatorHeatmap extends React.Component {
       let count = 0;
       range = value.split(':');
       for (let i = 0; i < bunch.length; i++) {
-        // if (i > 0) {
-        //   if (bunch[i] < value && bunch[i] > yAxisData[idx - 1]) {
-        //     count = i + 1;
-        //   }
-        //   else {
-        //     break;
-        //   }
-        // } else {
-        //   if (bunch[i] < value) {
-        //     count = i + 1;
-        //   } else {
-        //     break
-        //   }
-        // }
         if (bunch[i] >= range[0] && bunch[i] <= range[1]) count = i + 1;
       }
       eChartSeriesData.push([0, idx, count])
       bunch = bunch.slice(count);
       count = 0;
     });
-
-    // let option = window.heatmap.getOption();
-    // option.yAxis[0].data = yAxisData;
-    // option.series[0].data = eChartSeriesData;
-    // window.parent.heatmapOption = option;
-    // window.parent.heatmap.setOption(window.parent.heatmapOption, true);
-
 
     window.heatmap.setOption({
       yAxis: {
@@ -93,11 +78,6 @@ class ComparatorHeatmap extends React.Component {
       }]
     });
   }
-
-  shouldComponentUpdate(){
-    return true;
-  }
-
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
   }
