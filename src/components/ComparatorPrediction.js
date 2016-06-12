@@ -259,7 +259,7 @@ class ComparatorPrediction extends React.Component {
         splitNumber: 6,
       },
       // series: this.generateSeriesDataFromDimension()
-      series: this.generateSeriesDataFromClosePrice()
+      series: []
       // series: predictionRandomData()
     };
 
