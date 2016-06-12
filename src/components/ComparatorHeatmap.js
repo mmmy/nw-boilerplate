@@ -29,64 +29,30 @@ class ComparatorHeatmap extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let { scaleMaxValue, scaleMinValue } = nextProps;
-    // let option = window.heatmap.getOption();
-    // const count = Math.round(scaleMaxValue - scaleMinValue);
-    // let gap = 1;
-    // option.yAxis[0].data = [scaleMinValue];
-    // let value = scaleMinValue;
-    // for (let i = 0; i < count; i++) {
-    //   option.yAxis[0].data.push(value + gap);
-    //   value = value + gap;
-    // }
-    //
-    // option.series[0].data = this.generateSeriesData(option.yAxis[0].data);
-    //
-    // let option = heatmapYAxis;
-    //
-    // let seriesData = [];
-    // let yAxisData = [];
-    //
-    // if (option && option.series) {
-    //
-    //   option.series[0].data.forEach((e, i) => {
-    //     let temp = [];
-    //     e.forEach((number) => {
-    //       temp.push(number);
-    //     });
-    //     seriesData.push(temp);
-    //   })
-    //
-    //   option.yAxis[0].data.forEach((e) => {
-    //     yAxisData.push(e)
-    //   })
-    //
-    //   option.series[0].data = seriesData;
-    //   option.yAxis[0].data = yAxisData;
-    // option.series[0].data
 
-    var range = 28;
-    var partCount = scaleMaxValue / range;
-    var eachBlockHeight = scaleMaxValue / partCount;
-    var yAxisData = [];
-    var min = scaleMaxValue / 2 * -1;
+    let range = 28;
+    let partCount = scaleMaxValue / range;
+    let eachBlockHeight = scaleMaxValue / partCount;
+    let yAxisData = [];
+    let min = scaleMaxValue / 2 * -1;
     min = scaleMinValue;
 
-    for (var i = 0; i < partCount; i++) {
+    for (let i = 0; i < partCount; i++) {
       yAxisData.push(min = min + eachBlockHeight);
     }
 
-    var rawData = window.parent.eChart.getOption().series.map(function (serie, idx) {
+    let rawData = window.parent.eChart.getOption().series.map((serie, idx) => {
       return serie.data[serie.data.length - 1];
     });
 
-    rawData.sort(function (a, b) {return a - b}); // sort numerically
-    var bunch = rawData;
+    rawData.sort((a, b) => {return a - b}); // sort numerically
+    let bunch = rawData;
 
-    var eChartSeriesData = [];
+    let eChartSeriesData = [];
 
-    yAxisData.forEach(function (value, idx) {
-      var count = 0;
-      for (var i = 0; i < bunch.length; i++) {
+    yAxisData.forEach((value, idx) => {
+      let count = 0;
+      for (let i = 0; i < bunch.length; i++) {
         if (i > 0) {
           if (bunch[i] < value && bunch[i] > yAxisData[idx - 1]) {
             count = i + 1;
@@ -107,7 +73,7 @@ class ComparatorHeatmap extends React.Component {
       count = 0;
     });
 
-    var option = window.heatmap.getOption();
+    let option = window.heatmap.getOption();
     option.yAxis[0].data = yAxisData;
     option.series[0].data = eChartSeriesData;
     // window.parent.heatmapOption = option;
@@ -132,7 +98,7 @@ class ComparatorHeatmap extends React.Component {
   initDimensions() {
     let { crossFilter } = this.props.patterns;
     if(this.oldCrossFilter !== crossFilter) {
-      this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
+      this.symbolDim = crossFilter.dimension((d) => { return d.symbol });
       this.oldCrossFilter = crossFilter;
     }
   }
@@ -233,10 +199,10 @@ class ComparatorHeatmap extends React.Component {
     };
 
     if (option && typeof option === "object") {
-      var startTime = +new Date();
+      let startTime = +new Date();
       window.heatmap.setOption(option, true);
-      var endTime = +new Date();
-      var updateTime = endTime - startTime;
+      let endTime = +new Date();
+      let updateTime = endTime - startTime;
       console.log("Time used:", updateTime);
     }
   }
