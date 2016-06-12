@@ -169,7 +169,7 @@ class ComparatorPrediction extends React.Component {
               width: 0.5
             }
           },
-          z: i === 5 ? 1 : -1 
+          z: i === 5 ? 1 : -1
         });
       });
     }
@@ -186,7 +186,7 @@ class ComparatorPrediction extends React.Component {
     window.eChartMaxValue = maxValue;
     window.eChartMinValue = minValue;
     let scaleMax = Math.max(Math.abs(maxValue), Math.abs(minValue));
-    window.eChartScale = scaleMax * 1.2; // scale top/bottom margin
+    window.eChartScale = scaleMax; // scale top/bottom margin
 
     return series;
   }
@@ -208,6 +208,8 @@ class ComparatorPrediction extends React.Component {
         x2: 0,
         y: 0,
         y2: 0,
+        top: 0,
+        bottom: 0
       },
       tooltip: {
         show: false,
