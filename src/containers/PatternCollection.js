@@ -41,6 +41,18 @@ let _setIdTrashed = (idArr, isTrashed) => {   //批量设置
 
 _setIdTrashed.proptotype={_patterncollection: null};
 
+let __visibleNumber = 0;
+
+let generatePlaceHolder = (count = 5) => { //1,2,3,4,5
+	let largerHolder = `<div class='pattern-view column larger holder'></div>`,
+			smallerHolder1 = `<div class='pattern-view column smaller s1 holder'></div>`,
+			smallerHolder2 = `<div class='pattern-view column smaller s2 holder'></div>`,
+			smallerHolder3 = `<div class='pattern-view column smaller s3 holder'></div>`,
+			smallerHolder4 = `<div class='pattern-view column smaller s4 holder'></div>`;
+	let arr = [largerHolder, smallerHolder1, smallerHolder2, smallerHolder3, smallerHolder3];
+	return arr.slice(arr.length - count);
+};
+
 class PatternCollection extends React.Component {
 
 	constructor(props) {
@@ -192,6 +204,8 @@ class PatternCollection extends React.Component {
 		if(!this.props.fullView) {
 			//console.log('patternCollection did update');
 			this.refs.container.scrollTop = 0;
+			let parent = $(this.refs.container);
+			console.debug(__visibleNumber);
 		}
 	}
 
@@ -284,6 +298,7 @@ class PatternCollection extends React.Component {
 			let index = 0; //显示出来的index, -1为隐藏的
 			//sortedData = sortedData.slice(0 ,5);
 			let dataArr = /*this.renderLeading5*/false ? sortedData.slice(0, 5) : sortedData;
+			__visibleNumber = 0;
 			nodes = dataArr.map((e, i) => {
 				let show = false;
 				if(showNotTrashed && showTrashed) {   //查看全部
@@ -294,6 +309,7 @@ class PatternCollection extends React.Component {
 				} else if (!showNotTrashed && showTrashed) {  //只看剔除
 					show = _idTrashed[e.id];
 				}
+				show && __visibleNumber++;
 				let isActive = id === e.id;
 				return <PatternView ref={`pattern_view_${e.id}`} filterTrashedId={this.filterTrashedId.bind(this)} id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>
 			});

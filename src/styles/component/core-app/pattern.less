@@ -80,7 +80,7 @@
 		//width: px;
 		font-size: 1.2rem;
 		color: @lulu-gary3;
-		padding: 5px 5%;
+		padding: 5px 7px;
 	}
 
 	.slider-container{
@@ -117,6 +117,7 @@
 		background-color: white;
 		left: 0;
 		box-shadow: 0 5px 15px -12px #222;
+		text-align: left;
 		&.flex {
 			display: flex;
 			justify-content: space-around;
@@ -224,7 +225,7 @@
 	float: left;
 	//padding: 10px 10px;
 	margin-top: 0.6rem;
-	padding-left: 13px;
+	padding-left: 7px;
 	font-size: 1.2rem;
 	cursor: pointer;
 	color: @ks-color-gray-6;
@@ -294,6 +295,7 @@
 	margin: 3px;
 	margin-top: 3%;
 	margin-left: 6%;
+	border-radius: 3px;
 	&:nth-child(2n) {
 		margin-left: 6%;
 	}
@@ -326,6 +328,7 @@
 		position: absolute;
 		top: 0;
 		opacity: 0.8;
+		z-index: 1;
 		&.hide-symbol{
 			top: -30px;
 		}
@@ -540,9 +543,16 @@
 		border: none;
 		background-color: white;
 		outline: none;
-		font-size: 1.5rem;
+		font-size: 1.3rem;
 		.fa-trash {
-			// padding-right: 10px;
+			color: transparent;
+			background: url('./image/trash-btn.png') no-repeat;
+			background-size: 100%;
+			background-position: 0 0;
+			padding: 0.4rem 0.6rem;
+			// padding-right: 20px;
+			margin-right: 10px;
+			// margin-top: 4px;
 		}
 	}
 	.statistics-slide-widget {
@@ -614,7 +624,7 @@
 		font-size: 2rem;
 		.trashed-number {
 			position: absolute;
-			left: 1.3rem;
+			left: 2.3rem;
 			top: -0.3rem;
 			background-color: @lulu-red1;
 			color: #fff;
