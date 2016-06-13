@@ -189,7 +189,6 @@ class ComparatorStatic extends React.Component {
             <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
           </button>
           <ComparatorHeatmap
-            lastClosePrice={ lastClosePrice }
             heatmapYAxis={ heatmapYAxis }
             filter={ filter }
             patterns={ patterns }

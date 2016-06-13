@@ -7,7 +7,6 @@ const propTypes = {
   patterns: PropTypes.object.isRequired,
   filter: PropTypes.object.isRequired,
   // heatmapYAxis: PropTypes.array.isRequired,
-  lastClosePrice: PropTypes.number.isRequired
 };
 
 const defaultProps = {
@@ -58,7 +57,8 @@ class ComparatorHeatmap extends React.Component {
 
     let eChartSeriesData = [];
 
-    yAxisData.forEach((value, idx) => {
+    for (let idx = 0; idx < yAxisData.length; idx++) {
+      let value = yAxisData[idx];
       let count = 0;
       range = value.split(':');
       for (let i = 0; i < bunch.length; i++) {
@@ -67,7 +67,7 @@ class ComparatorHeatmap extends React.Component {
       eChartSeriesData.push([0, idx, count])
       bunch = bunch.slice(count);
       count = 0;
-    });
+    }
 
     window.heatmap.setOption({
       yAxis: {
@@ -101,31 +101,33 @@ class ComparatorHeatmap extends React.Component {
 
     yAxis.unshift(yAxis[0] + yAxis[0] - yAxis[1]);
 
-    yAxis.forEach((e, i) => {
+    for (let i = 0; i < yAxis.length; i++) {
       eChartSeriesData.push([0, i, 0]);
-    });
+    }
 
     let lastPrices = [];
     let percentage = 0;
 
-    window.eChart.getOption().series.forEach((serie) => {
+    let series = window.eChart.getOption().series;
+    for (let i = 0; i < series.length; i++) {
+      let serie = series[i];
       lastPrices.push(serie.data[serie.data.length - 1]);
-    });
+    }
 
     let maxPrice = Math.max(...lastPrices);
     let minPrice = Math.min(...lastPrices);
 
-    lastPrices.forEach((price) => {
-      eChartSeriesData.forEach((item, index) => {
+    for (let i = 0; i < lastPrices.length; i++) {
+      let price = lastPrices[i];
+      for (var index = 0; index < eChartSeriesData.length; index++) {
+        let item = eChartSeriesData[index];
         if (index + 1 < yAxis.length) {
           if (price >= yAxis[index] && price < yAxis[index + 1]) {
             eChartSeriesData[index][2] = eChartSeriesData[index][2] + 1;
           }
-        } else {
-
         }
-      });
-    });
+      }
+    }
 
     return eChartSeriesData;
   }
