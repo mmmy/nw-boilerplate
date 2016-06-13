@@ -178,7 +178,6 @@ class ComparatorStatic extends React.Component {
               dispatch={ dispatch }
               filter={ filter }
               patterns={ patterns }
-              lastClosePrice={ lastClosePrice }
               activeId={ activeId }/>
           </div>
         </div>
