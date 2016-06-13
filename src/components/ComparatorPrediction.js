@@ -107,7 +107,7 @@ class ComparatorPrediction extends React.Component {
           hoverAnimation: false,
           lineStyle: {
             normal: {
-              color: e.id === activeId ? '#c23531' : '#ccc', // TODO
+              color: e.id === activeId ? '#c23531' : '#ccc',
               width: 0.5
             }
           },

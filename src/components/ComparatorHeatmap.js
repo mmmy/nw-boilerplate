@@ -184,7 +184,7 @@ class ComparatorHeatmap extends React.Component {
         itemStyle: {
           normal: {
             borderColor: '#C6C7C8',
-            borderWidth: 0.5
+            borderWidth: 1
           }
         }
       }],
