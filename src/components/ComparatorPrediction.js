@@ -75,6 +75,7 @@ class ComparatorPrediction extends React.Component {
     this.initDimensions();
     let rawData = this.symbolDim.top(Infinity);
     let { closePrice } = this.props.patterns;
+    let activeId = this.props.activeId;
     let series = [];
     let minValue = 999999;
     let maxValue = minValue * -1;
@@ -90,11 +91,11 @@ class ComparatorPrediction extends React.Component {
           hoverAnimation: false,
           lineStyle: {
             normal: {
-              color: i === 5 ? '#c23531' : '#ccc', // TODO
+              color: e.id === activeId ? '#c23531' : '#ccc', // TODO
               width: 0.5
             }
           },
-          z: i === 5 ? 1 : -1
+          z: e.id === activeId ? 1 : -1
         });
       }
     }
