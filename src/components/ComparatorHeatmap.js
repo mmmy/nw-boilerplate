@@ -36,7 +36,7 @@ class ComparatorHeatmap extends React.Component {
   componentDidUpdate() {
     let { heatmapYAxis, scaleMaxValue, scaleMinValue } = this.props;
 
-    let eachBlockValue = 30;
+    let eachBlockValue = 15;
     let eachValueInPercentage = eachBlockValue / heatmapYAxis;
     let blocksNumber = Math.ceil(1 / eachValueInPercentage);
     // let eachBlockHeight = heatmapYAxis / blocksNumber;
