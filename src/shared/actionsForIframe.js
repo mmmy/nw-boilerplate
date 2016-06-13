@@ -29,9 +29,11 @@ export default function(store) {
       const canvas = canvasContainer.getElementsByTagName('canvas')[2];
       const tvSS = canvas.toDataURL();
       const eChartSS = window.eChart.getDataURL();
+      const heatmapSS = window.heatmap.getDataURL();
 
       _saveScreenshot(tvSS, 'src/image/screenshot_origin');
       _saveScreenshot(eChartSS, 'src/image/screenshot_prediction');
+      _saveScreenshot(heatmapSS, 'src/image/screenshot_heatmap');
 
       // fs.writeFile('src/image/screenshot_origin.' + ext, buffer, function(err){
       //   if (err) throw err;

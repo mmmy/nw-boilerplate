@@ -10,7 +10,6 @@ import _ from 'underscore';
 const propTypes = {
   patterns: PropTypes.object.isRequired,
   filter: PropTypes.object.isRequired,
-  lastClosePrice: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
@@ -37,11 +36,26 @@ class ComparatorPrediction extends React.Component {
   }
   componentDidUpdate() {
     let option = window.eChart.getOption();
-    // option.series = this.generateSeriesDataFromDimension();
     option.series = this.generateSeriesDataFromClosePrice();
     window.eChart.setOption(option, true);
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
+
+    const updatePaneViews = _.throttle(() => {
+      let dom = window.widget_comparator && window.widget_comparator._innerWindow && window.widget_comparator._innerWindow();
+      if (dom) {
+        let m = dom.Q5 && dom.Q5.getAll()[0];
+        let model = m.model();
+        let series = model.mainSeries()
+        let ps = series.priceScale()
+
+        ps.updatePaneViews(true);
+      }
+    }, 500)
+
+    updatePaneViews();
   }
+
+
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
   }
@@ -62,87 +76,13 @@ class ComparatorPrediction extends React.Component {
       for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
 	}
 
-  splitData(kLine, baseBars) {
-    let data = [];
-    if (window.tv0_height) {
-      if (kLine && kLine.length > baseBars) {
-        let line =  kLine.slice(baseBars);
-
-        line.forEach((e, i) => {
-          let percentage = ((e[2] - line[0][2]) / line[0][2] * 100);
-          data.push(percentage);
-        });
-      }
-    }
-    return data;
-  }
-
-  generateSeriesDataFromDimension() {
-    this.initDimensions();
-    let eChartSeriesData = [];
-    let rawData = this.symbolDim.top(Infinity);
-    let activeId = this.props.activeId;
-
-    let maxValue = -9999;
-    let minValue = 9999;
-    if (rawData.length !== 0) {
-      rawData.forEach((e, i) => {
-        if (e.kLine.length > e.baseBars) {
-          let data = this.splitData(e.kLine, e.baseBars);
-          if (data.length > 0) {
-            eChartSeriesData.push({
-              data: data,
-              name: e.symbol,
-              type: 'line',
-              showSymbol: false,
-              hoverAnimation: false,
-              lineStyle: {
-                normal: {
-                  color: e.id === 5 ? '#c23531' : '#ccc', // TODO
-                  width: 0.5
-                }
-              },
-              z: e.id === 5 ? 9999 : 2
-            });
-          }
-        }
-      });
-
-      let dataMaxLength = 0;
-      eChartSeriesData.forEach((serie) => {
-        if (serie.data.length > dataMaxLength && serie.data.length !== 1) dataMaxLength = serie.data.length;
-      });
-
-
-      eChartSeriesData.forEach((serie) => {
-        let data = serie.data
-        if (data.length !== 1) {
-          while (data.length < dataMaxLength) {
-            data.push(data[data.length - 1]);
-          }
-        }
-
-        data.forEach((d) => {
-          maxValue = d >= maxValue ? d : maxValue;
-          minValue = d < minValue ? d : minValue;
-        })
-      });
-    }
-
-    window.eChartMaxValue = maxValue;
-    window.eChartMinValue = minValue;
-    let scaleMax = Math.max(Math.abs(maxValue), Math.abs(minValue));
-    window.eChartScale = scaleMax;
-
-    return eChartSeriesData;
-  }
-
   splitDataFromClosePrice(line) {
     let data = [];
-    line.forEach((e) => {
+    for (var i = 0; i < line.length; i++) {
+      let e = line[i];
       let percentage = (e - line[0]) / line[0] * 100;
       data.push(percentage);
-    })
+    }
 
     return data;
   }
@@ -151,12 +91,14 @@ class ComparatorPrediction extends React.Component {
     this.initDimensions();
     let rawData = this.symbolDim.top(Infinity);
     let { closePrice } = this.props.patterns;
+    let activeId = this.props.activeId;
     let series = [];
     let minValue = 999999;
     let maxValue = minValue * -1;
 
     if (rawData.length > 0) {
-      rawData.forEach((e, i) => {
+      for (var i = 0; i < rawData.length; i++) {
+        let e = rawData[i]
         series.push({
           data: this.splitDataFromClosePrice(closePrice[e.id]),
           name: e.symbol,
@@ -165,28 +107,30 @@ class ComparatorPrediction extends React.Component {
           hoverAnimation: false,
           lineStyle: {
             normal: {
-              color: i === 5 ? '#c23531' : '#ccc', // TODO
+              color: e.id === activeId ? '#c23531' : '#ccc',
               width: 0.5
             }
           },
-          z: i === 5 ? 1 : -1 
+          z: e.id === activeId ? 1 : -1
         });
-      });
+      }
     }
 
     // find max min values for scale
-    series.forEach((serie) => {
+    for (let i = 0; i < series.length; i++) {
+      let serie = series[i]
       let data = serie.data;
-      data.forEach((d) => {
-        maxValue = d > maxValue ? d : maxValue;
-        minValue = d < minValue ? d : minValue;
-      });
-    });
+      for (let j = 0; j < data.length; j++) {
+        let d = data[j]
+        maxValue = Math.max(d, maxValue);
+        minValue = Math.min(d, minValue);
+      }
+    }
 
     window.eChartMaxValue = maxValue;
     window.eChartMinValue = minValue;
     let scaleMax = Math.max(Math.abs(maxValue), Math.abs(minValue));
-    window.eChartScale = scaleMax * 1.2; // scale top/bottom margin
+    window.eChartScale = scaleMax; // scale top/bottom margin
 
     return series;
   }
@@ -208,6 +152,8 @@ class ComparatorPrediction extends React.Component {
         x2: 0,
         y: 0,
         y2: 0,
+        top: 0,
+        bottom: 0
       },
       tooltip: {
         show: false,
@@ -256,8 +202,7 @@ class ComparatorPrediction extends React.Component {
         minInterval: 1,
         splitNumber: 6,
       },
-      // series: this.generateSeriesDataFromDimension()
-      series: this.generateSeriesDataFromClosePrice()
+      series: []
       // series: predictionRandomData()
     };
 
