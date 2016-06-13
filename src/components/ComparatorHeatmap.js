@@ -36,33 +36,37 @@ class ComparatorHeatmap extends React.Component {
   componentDidUpdate() {
     let { heatmapYAxis, scaleMaxValue, scaleMinValue } = this.props;
 
-    let eachBlockValue = 10;
-    let blocksNumber = Math.ceil(heatmapYAxis / eachBlockValue);
-    let eachBlockHeight = heatmapYAxis / blocksNumber;
+    let eachBlockValue = 30;
+    let eachValueInPercentage = eachBlockValue / heatmapYAxis;
+    let blocksNumber = Math.ceil(1 / eachValueInPercentage);
+    // let eachBlockHeight = heatmapYAxis / blocksNumber;
     let yAxisData = [];
-    let min = scaleMinValue;
 
+    let height = window.heatmap.getHeight();
+
+    let min = 0;
     for (let i = 0; i < blocksNumber; i++) {
       // yAxisData.push(min = min + eachBlockHeight);
-      yAxisData.push(min + ':' + Math.min((min + eachBlockHeight), scaleMaxValue));
-      min += eachBlockHeight;
+      yAxisData.push(min + ':' + (min += eachValueInPercentage));
     }
 
-    let rawData = window.parent.eChart.getOption().series.map((serie, idx) => {
+    let lastPrices = window.parent.eChart.getOption().series.map((serie, idx) => {
       return serie.data[serie.data.length - 1];
     });
 
-    rawData.sort((a, b) => {return a - b}); // sort numerically
-    let bunch = rawData;
+    lastPrices.sort((a, b) => {return a - b}); // sort numerically
+    let bunch = lastPrices;
 
     let eChartSeriesData = [];
 
     for (let idx = 0; idx < yAxisData.length; idx++) {
-      let value = yAxisData[idx];
+      let range = yAxisData[idx].split(':');
       let count = 0;
-      let range = value.split(':');
       for (let i = 0; i < bunch.length; i++) {
-        if (bunch[i] > range[0] && bunch[i] <= range[1]) count = i + 1;
+        let value = bunch[i];
+        let position = (value + Math.abs(scaleMinValue)) / heatmapYAxis;
+
+        if (position > range[0] && position <= range[1]) count = i + 1;
       }
       eChartSeriesData.push([0, idx, count])
       bunch = bunch.slice(count);
@@ -180,7 +184,7 @@ class ComparatorHeatmap extends React.Component {
         itemStyle: {
           normal: {
             borderColor: '#C6C7C8',
-            borderWidth: 1
+            borderWidth: 0.5
           }
         }
       }],
