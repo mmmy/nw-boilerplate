@@ -29,15 +29,6 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    // let dom = window.widget_comparator && window.widget_comparator._innerWindow && window.widget_comparator._innerWindow();
-    // if (dom) {
-    //   let m = dom.Q5 && dom.Q5.getAll()[0];
-    //   let model = m.model();
-    //   let series = model.mainSeries()
-    //   let ps = series.priceScale()
-    //
-    //   ps.updatePaneViews();
-    // }
   }
 
   shouldComponentUpdate(){
@@ -48,7 +39,23 @@ class ComparatorPrediction extends React.Component {
     option.series = this.generateSeriesDataFromClosePrice();
     window.eChart.setOption(option, true);
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
+
+    const updatePaneViews = _.throttle(() => {
+      let dom = window.widget_comparator && window.widget_comparator._innerWindow && window.widget_comparator._innerWindow();
+      if (dom) {
+        let m = dom.Q5 && dom.Q5.getAll()[0];
+        let model = m.model();
+        let series = model.mainSeries()
+        let ps = series.priceScale()
+
+        ps.updatePaneViews(true);
+      }
+    }, 500)
+
+    updatePaneViews();
   }
+
+
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
   }
