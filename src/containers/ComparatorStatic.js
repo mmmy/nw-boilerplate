@@ -183,6 +183,8 @@ class ComparatorStatic extends React.Component {
           <div className={'linear-gradient-to-top-right'}></div>
         </div>
 
+        <div className={'pattern-tv-box-shadow'}></div>
+
         <div className={ comparatorPredictionContainerClass }>
           <div className={ predictionMainClassName }>
             <div className={ 'comparator-header' }>
