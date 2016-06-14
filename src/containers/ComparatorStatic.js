@@ -135,6 +135,7 @@ class ComparatorStatic extends React.Component {
             "symbolWatermarkProperties.color": '#fff',
             "scalesProperties.textColor" : "#333",
 
+            "mainSeriesProperties.showLastValue:true" : false,
             "mainSeriesProperties.candleStyle.upColor": "#fff",
             "mainSeriesProperties.candleStyle.downColor": "#fff",
             "mainSeriesProperties.candleStyle.drawWick": true,
@@ -171,9 +172,11 @@ class ComparatorStatic extends React.Component {
           options={ options } />
 
         <div className={'prediction-transparent-overlay top-left'}>
+          <div className={'horizon-line'}></div>
           <div className={'linear-gradient-to-top-left'}></div>
         </div>
         <div className={'prediction-transparent-overlay bottom-left'}>
+          <div className={'horizon-line'}></div>
           <div className={'linear-gradient-to-top-left'}></div>
         </div>
         <div className={'prediction-transparent-overlay bottom-right'}>
