@@ -338,6 +338,9 @@
 		height: @patternView_W;
 		width: @patternView_W*1.4;
 		margin-left: 0;
+		&:hover {
+			box-shadow: none;
+		}
 		&.larger{
 			//transform: scale(1.5,1.5);
 			height: @patternView_W * 1.08;
@@ -384,7 +387,7 @@
 
 	&.active {
 		border-radius: 2px;
-		box-shadow: 0 3px 15px 0 rgba(179, 179, 179, 0.76);
+		box-shadow:0 3px 15px 0 rgba(179, 179, 179, 0.76) !important;
 	}	
 
 	.reset-container {

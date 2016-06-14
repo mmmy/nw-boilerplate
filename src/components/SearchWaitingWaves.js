@@ -46,8 +46,8 @@ class SearchWaitingWaves extends React.Component {
 	initWaves(){
 		let { slow } = this.props;
 		let el = this.refs.waves;
-		let width = el.parentNode.clientWidth,
-			height = el.parentNode.clientHeight;
+		// let width = el.parentNode.clientWidth,
+			// height = el.parentNode.clientHeight;
 
 		const speed = slow ? slowSpeed : baseSpeed;
 		let SineWaves = getSineWaves();
@@ -57,8 +57,8 @@ class SearchWaitingWaves extends React.Component {
 
 			// General speed of entire wave system
 			speed: speed,
-	        width: width,
-	        height: height,
+	        width: () => { return el.parentNode.clientWidth; },
+	        height: () => { return  el.parentNode.clientHeight; },
 	        wavesWidth: "200%",
 	        ease: "SineInOut",
 	        waves: [{
@@ -95,7 +95,7 @@ class SearchWaitingWaves extends React.Component {
 	        }
 		});
 		this.waves = waves;
-		// window.waves = waves;
+		window.waves = waves;
 		this.shiningWave(this.waves);
 	}
 

@@ -267,8 +267,11 @@ class SortBar extends React.Component {
 		this.filterSymbol(symbol);
 	}
 
-	clearSearchInput() {
-		this.setState({searchSymbol:''});
+	clearSearchInput(e) {
+		if(this.state.searchSymbol !== '') {
+			this.setState({searchSymbol:''});
+			this.filterSymbol('');
+		}
 	}
 }
 
