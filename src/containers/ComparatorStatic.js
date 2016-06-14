@@ -172,7 +172,7 @@ class ComparatorStatic extends React.Component {
         <div className={ comparatorPredictionContainerClass }>
           <div className={ predictionMainClassName }>
             <div className={ 'comparator-header' }>
-              <span>走势预测</span>
+              <span>走势分布</span>
             </div>
             <ComparatorPrediction
               dispatch={ dispatch }
