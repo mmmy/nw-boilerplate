@@ -546,7 +546,7 @@
 	.flex {
 		display: flex;
 		align-items: center;
-		justify-content: space-around;
+		justify-content: space-between;
 	}
 	button {
 		border: none;
@@ -614,10 +614,22 @@
 		// width: 40%;
 		display: inline-block;
 		text-align: left;
+		&:nth-child(1) {
+			margin-left: 18px;
+		}
+		&:nth-child(2) {
+			margin-left: 1rem;
+		}
+		&:nth-child(3) {
+			width: 3rem;
+			margin-right: 4rem;
+			// text-align: left;
+		}
+
 	}
 	.trash-all-button {
 		position: relative;
-		margin-left: 1rem;
+		// margin-left: 1rem;
 		.trash-panel-container {
 			position: fixed;
 			right: 0;
