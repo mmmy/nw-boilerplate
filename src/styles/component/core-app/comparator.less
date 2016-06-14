@@ -118,12 +118,13 @@
 .prediction-transparent-overlay{
   position: absolute;
   width: 38%;
-  height: calc(~'50%');
+  height: calc(~'50% - 60px');
   background-color: white;
   opacity: 0.4;
   pointer-events: none;
   // box-shadow: -10px 0px 20px #DBDBDB inset;
   border-bottom: solid 1px #eee;
+  // padding: 0 100px;
 
   .linear-gradient{
     position: absolute;
@@ -134,29 +135,28 @@
   .linear-gradient-to-top-left{
     .linear-gradient();
     right: 0;
-    background: linear-gradient(to top left, #dbdbdb, white 50%);
+    background: linear-gradient(to top left, #dbdbdb, white 65%);
   }
   .linear-gradient-to-top-right{
     .linear-gradient();
     left: 0;
-    background: linear-gradient(to top right, #dbdbdb, white 50%);
+    background: linear-gradient(to top right, #dbdbdb, white 65%);
   }
 }
 
 .top-left{
-  top: -20px;
-  left: 54px;
+  top: 45px;
+  left: 51px;
 }
+
 .bottom-left{
-  height: calc(~'50%');
   bottom: 0px;
-  left: 54px;
+  left: 51px;
 }
 .bottom-right{
-  height: calc(~'50%');
-  width: 30%;
+  width: 25%;
   bottom: 0;
-  right: 0;
+  right: 32px;
   // box-shadow: 10px 0px 30px #DBDBDB inset !important;
 }
 
