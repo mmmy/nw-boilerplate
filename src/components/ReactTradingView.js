@@ -57,7 +57,7 @@ class ReactTradingView extends React.Component {
     setTimeout(() => {
       let chart = this.getChartDom();
       if ( chart && chart.W76 && chart.Q5 && chart.Q15.studyCounter > 0) {
-        chart.W76.setChartLayout(chart.Q5, '2v');
+        chart.W76.setChartLayout(chart.Q5, 'ks');
       } else {
         this.setChartLayout();
       }

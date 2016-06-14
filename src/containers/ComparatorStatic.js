@@ -135,6 +135,7 @@ class ComparatorStatic extends React.Component {
             "symbolWatermarkProperties.color": '#fff',
             "scalesProperties.textColor" : "#333",
 
+            "mainSeriesProperties.showLastValue:true" : false,
             "mainSeriesProperties.candleStyle.upColor": "#fff",
             "mainSeriesProperties.candleStyle.downColor": "#fff",
             "mainSeriesProperties.candleStyle.drawWick": true,
@@ -169,10 +170,25 @@ class ComparatorStatic extends React.Component {
           viewId={ STOCK_VIEW }
           init={ logined }
           options={ options } />
+
+        <div className={'prediction-transparent-overlay top-left'}>
+          <div className={'horizon-line'}></div>
+          <div className={'linear-gradient-to-top-left'}></div>
+        </div>
+        <div className={'prediction-transparent-overlay bottom-left'}>
+          <div className={'horizon-line'}></div>
+          <div className={'linear-gradient-to-top-left'}></div>
+        </div>
+        <div className={'prediction-transparent-overlay bottom-right'}>
+          <div className={'linear-gradient-to-top-right'}></div>
+        </div>
+
+        <div className={'pattern-tv-box-shadow'}></div>
+
         <div className={ comparatorPredictionContainerClass }>
           <div className={ predictionMainClassName }>
             <div className={ 'comparator-header' }>
-              <span>走势预测</span>
+              <span>走势分布</span>
             </div>
             <ComparatorPrediction
               dispatch={ dispatch }
