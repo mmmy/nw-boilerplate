@@ -170,9 +170,15 @@ class ComparatorStatic extends React.Component {
           init={ logined }
           options={ options } />
 
-        <div className={'prediction-transparent-overlay top-left'}></div>
-        <div className={'prediction-transparent-overlay bottom-left'}></div>
-        <div className={'prediction-transparent-overlay bottom-right'}></div>
+        <div className={'prediction-transparent-overlay top-left'}>
+          <div className={'linear-gradient-to-top-left'}></div>
+        </div>
+        <div className={'prediction-transparent-overlay bottom-left'}>
+          <div className={'linear-gradient-to-top-left'}></div>
+        </div>
+        <div className={'prediction-transparent-overlay bottom-right'}>
+          <div className={'linear-gradient-to-top-right'}></div>
+        </div>
 
         <div className={ comparatorPredictionContainerClass }>
           <div className={ predictionMainClassName }>

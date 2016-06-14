@@ -77,7 +77,7 @@
 .comparator-prediction-container{
   position: absolute;
   width: 25%;
-  height: calc(~'50%');
+  height: calc(~'50% - 15px');
   top: -1px;
   // right: calc(~'45px + 8px');
   right: 32px;
@@ -118,16 +118,33 @@
 .prediction-transparent-overlay{
   position: absolute;
   width: 38%;
-  height: calc(~'50% + 15px');
+  height: calc(~'50%');
   background-color: white;
   opacity: 0.4;
   pointer-events: none;
-  box-shadow: -10px 0px 20px #DBDBDB inset;
+  // box-shadow: -10px 0px 20px #DBDBDB inset;
+  border-bottom: solid 1px #eee;
 
+  .linear-gradient{
+    position: absolute;
+    width: 10px;
+    height: 100%;
+  }
+
+  .linear-gradient-to-top-left{
+    .linear-gradient();
+    right: 0;
+    background: linear-gradient(to top left, #dbdbdb, white 50%);
+  }
+  .linear-gradient-to-top-right{
+    .linear-gradient();
+    left: 0;
+    background: linear-gradient(to top right, #dbdbdb, white 50%);
+  }
 }
 
 .top-left{
-  top: -13px;
+  top: -20px;
   left: 54px;
 }
 .bottom-left{
@@ -140,7 +157,7 @@
   width: 30%;
   bottom: 0;
   right: 0;
-  box-shadow: 10px 0px 30px #DBDBDB inset !important;
+  // box-shadow: 10px 0px 30px #DBDBDB inset !important;
 }
 
 .prediction-panel{
@@ -176,7 +193,7 @@
     top: 30px;
     position: absolute;
     width: 100%;
-    height: calc(~'100% - 30px');
+    height: calc(~'100% - 45px');
     // height: 100%;
     background-color: #F6DADD;
   }
