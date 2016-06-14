@@ -90,7 +90,7 @@ class StockView extends React.Component {
 					ksSearch: true,
 					showLiveBtn: true,
 					lineToolTimeAxisView: {
-						background: 'transparent',
+						background: '#b61c15',
 						// activeBackground: 'green',
 						color: '#fff',
 						borderColor: '#b61c15',

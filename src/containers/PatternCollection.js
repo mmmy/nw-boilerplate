@@ -49,7 +49,7 @@ let generatePlaceHolder = (count = 5) => { //1,2,3,4,5
 			smallerHolder2 = `<div class='pattern-view column smaller s2 holder'></div>`,
 			smallerHolder3 = `<div class='pattern-view column smaller s3 holder'></div>`,
 			smallerHolder4 = `<div class='pattern-view column smaller s4 holder'></div>`;
-	let arr = [largerHolder, smallerHolder1, smallerHolder2, smallerHolder3, smallerHolder3];
+	let arr = [largerHolder, smallerHolder1, smallerHolder2, smallerHolder3, smallerHolder4];
 	return arr.slice(arr.length - count);
 };
 
@@ -206,6 +206,14 @@ class PatternCollection extends React.Component {
 			this.refs.container.scrollTop = 0;
 			let parent = $(this.refs.container);
 			console.debug(__visibleNumber);
+			if(__visibleNumber < 5) {
+				let placeHolders = generatePlaceHolder(5 - __visibleNumber);
+				placeHolders.forEach((e) => {
+					$(e).appendTo(parent);
+				});
+			}
+		} else {
+			$('.pattern-view.holder', this.refs.container).remove();
 		}
 	}
 
