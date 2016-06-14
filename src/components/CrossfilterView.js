@@ -121,7 +121,7 @@ class CrossfilterView extends React.Component {
 
 			pieChartW = industry_quarter_chart.clientWidth,
 			pieChartH = industry_quarter_chart.clientHeight,
-			pieChartR = Math.min(pieChartW,pieChartH)/2 - 10,
+			pieChartR = Math.min(pieChartW,pieChartH)/2 - 6,
 
 			yieldChartW = yield_count_chart.clientWidth,
 			yieldChartH = yield_count_chart.clientHeight;
@@ -339,6 +339,23 @@ resizeChart1() {
 		DC.redrawAll();
 	}
 
+	resetIndustyChart() {
+		let chart = this.industryPieChart;
+		let dim = chart.dimension();
+		chart.filterAll();
+		dim.filterAll();
+		DC.redrawAll();
+	}
+
+	//show reset btn ? 
+	setResetBtnVisibility(chart) {
+		if(chart.filters().length === 0) {
+			$(this.refs.reset_btn_container).hide();
+		} else {
+			$(this.refs.reset_btn_container).show();
+		}
+	}
+
 	render() {
 		this.renderDate = new Date();
 		const className = classnames('crossfilter-container', {
@@ -354,6 +371,8 @@ resizeChart1() {
 		
 		let yiledBtns = <span className='yield-btns-container'><button onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
 		
+		let whiteCircle = <div className='madan-white-circle'></div>;
+		let resetBtn = <div className='reset-btn-container flex-center' ref='reset_btn_container'><button onClick={this.resetIndustyChart.bind(this)}>重置</button></div>;
 		return (
 		  <div ref='root' className={ className }>
 		  	<div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='position_bubble_chart_wrapper'>
@@ -361,7 +380,7 @@ resizeChart1() {
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
 		    <div className="dc-chart-row" ref='dc_chart_row_2'>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{toggleBtn2}标的类型</strong><div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3"><div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{toggleBtn2}标的类型</strong><div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">{whiteCircle}{resetBtn}<div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
 		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{toggleBtn3}收益率统计{yiledBtns}</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>
 		  </div>
@@ -578,9 +597,11 @@ resizeChart1() {
 		if(!show) {
 			this.refs.industry_percent.innerHTML = '';
 			this.refs.industry_name.innerHTML = '';
+			$(this.refs.industry_percent.parentNode).hide();
 			return;
 		}
 
+		$(this.refs.industry_percent.parentNode).show();
 		let { key, value } = event.data;
 
 		//计算百分比
@@ -606,7 +627,7 @@ resizeChart1() {
 		let {industry_quarter_chart} = this.refs;
 		let width = industry_quarter_chart.clientWidth,
 			height = industry_quarter_chart.clientHeight,
-			radius = Math.min(width, height)/2 - 10;
+			radius = Math.min(width, height)/2 - 6;
 
 		//缓存
 		this.pieChartW = width;
@@ -628,7 +649,7 @@ resizeChart1() {
 			.drawPaths(false)
 			//.colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
 			//.colors(['#0f0'])
-			.linearColors(['#444','#ddd'])
+			.linearColors(['#555555','#dadada'])
 			//.linearColors(['#ddd','#333'])
 			.colorDomain([0, this.industryGroup.size() - 1])
 			.minAngleForLabel(30)
@@ -714,6 +735,7 @@ resizeChart1() {
 		console.info('onChartFiltered !!!',filter);
 		switch (chart) {
 			case this.industryPieChart: 			//行业过滤
+				this.setResetBtnVisibility(chart);
 				dispatch(filterActions.setFilterIndustry(filter));
 				break; 				
 			case this.yieldDimCountChart: 			//收益率
