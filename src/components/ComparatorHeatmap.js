@@ -29,8 +29,8 @@ class ComparatorHeatmap extends React.Component {
   componentWillReceiveProps(nextProps) {
   }
 
-  shouldComponentUpdate(){
-    return true;
+  shouldComponentUpdate(nextProps){
+    return nextProps.stretchView === this.props.stretchView;
   }
 
   componentDidUpdate() {

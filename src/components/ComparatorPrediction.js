@@ -32,8 +32,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   shouldComponentUpdate(nextProps){
-    // if (this.symbolDim.top(Infinity).length < 1) return false;
-    return true;
+    return nextProps.stretchView === this.props.stretchView;
   }
   componentDidUpdate() {
     let option = window.eChart.getOption();
