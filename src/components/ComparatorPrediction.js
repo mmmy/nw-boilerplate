@@ -98,11 +98,10 @@ class ComparatorPrediction extends React.Component {
     let activeId = this.props.activeId;
     let series = [];
     // let maxValue = 0 * -1;
-    let maxValue = 90;
-    let minValue = -maxValue;
-
+    let maxValue = this.maxValue;
+    let minValue = this.minValue;
     if (rawData.length > 0) {
-      maxValue = minValue = 0
+      maxValue =  minValue = 0;
       for (var i = 0; i < rawData.length; i++) {
         let e = rawData[i]
         series.push({
@@ -131,11 +130,13 @@ class ComparatorPrediction extends React.Component {
           minValue = Math.min(d, minValue);
         }
       }
+      this.maxValue = maxValue;
+      this.minValue = minValue;
     }
 
-    window.eChartMaxValue = maxValue;
-    window.eChartMinValue = minValue;
-    let scaleMax = Math.max(Math.abs(maxValue), Math.abs(minValue));
+    window.eChartMaxValue = this.maxValue;
+    window.eChartMinValue = this.minValue;
+    let scaleMax = Math.max(Math.abs(this.maxValue), Math.abs(this.minValue));
     window.eChartScale = scaleMax; // scale top/bottom margin
 
     return series;
