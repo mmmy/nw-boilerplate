@@ -72,12 +72,15 @@ class SearchReport extends React.Component {
 				afterSearchMessage(state.patterns.rawData.length, state.layout.searchTimeSpent);
 			}
 		});
-		_isToggled && $(this.refs.inner_searchreport).one("webkitTransitionEnd", () => {
-			setTimeout(() => {
-				$(this.refs.inner_searchreport).css('opacity', '1');
-				$('#__comparator_prediction_container').css('opacity', (fullView ? '1' : '0'));
-			}, 100);
-		});
+		if(_isToggled) { 
+			!fullView ?  $('#__comparator_prediction_container').css('opacity', '0') : '';
+			$(this.refs.inner_searchreport).one("webkitTransitionEnd", () => {
+				setTimeout(() => {
+					$(this.refs.inner_searchreport).css('opacity', '1');
+					$('#__comparator_prediction_container').css('opacity', (fullView ? '1' : '0'));
+				}, 100);
+			});
+		}
 
 	}
 
