@@ -31,7 +31,8 @@ class ComparatorPrediction extends React.Component {
   componentWillReceiveProps(nextProps){
   }
 
-  shouldComponentUpdate(){
+  shouldComponentUpdate(nextProps){
+    // if (this.symbolDim.top(Infinity).length < 1) return false;
     return true;
   }
   componentDidUpdate() {
@@ -70,10 +71,10 @@ class ComparatorPrediction extends React.Component {
 			this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
 			this.oldCrossFilter = crossFilter;
 		}
-    this.xAxisData = [];
-
-    if (this.symbolDim.top(Infinity).length !== 0)
-      for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
+    // this.xAxisData = [];
+    //
+    // if (this.symbolDim.top(Infinity).length !== 0)
+    //   for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
 	}
 
   splitDataFromClosePrice(line) {
@@ -93,10 +94,12 @@ class ComparatorPrediction extends React.Component {
     let { closePrice } = this.props.patterns;
     let activeId = this.props.activeId;
     let series = [];
-    let minValue = 999999;
-    let maxValue = minValue * -1;
+    // let maxValue = 0 * -1;
+    let maxValue = 90;
+    let minValue = -maxValue;
 
     if (rawData.length > 0) {
+      maxValue = minValue = 0
       for (var i = 0; i < rawData.length; i++) {
         let e = rawData[i]
         series.push({
@@ -114,16 +117,16 @@ class ComparatorPrediction extends React.Component {
           z: e.id === activeId ? 1 : -1
         });
       }
-    }
 
-    // find max min values for scale
-    for (let i = 0; i < series.length; i++) {
-      let serie = series[i]
-      let data = serie.data;
-      for (let j = 0; j < data.length; j++) {
-        let d = data[j]
-        maxValue = Math.max(d, maxValue);
-        minValue = Math.min(d, minValue);
+      // find max min values for scale
+      for (let i = 0; i < series.length; i++) {
+        let serie = series[i]
+        let data = serie.data;
+        for (let j = 0; j < data.length; j++) {
+          let d = data[j]
+          maxValue = Math.max(d, maxValue);
+          minValue = Math.min(d, minValue);
+        }
       }
     }
 
