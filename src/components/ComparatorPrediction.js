@@ -40,7 +40,8 @@ class ComparatorPrediction extends React.Component {
     window.eChart.setOption(option, true);
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
 
-    const updatePaneViews = _.throttle(() => {
+    const updatePaneViews = this._updatePaneViews ||  _.throttle(() => {
+      console.debug('updatePaneViews');
       let dom = window.widget_comparator && window.widget_comparator._innerWindow && window.widget_comparator._innerWindow();
       if (dom) {
         let m = dom.Q5 && dom.Q5.getAll()[0];
@@ -50,7 +51,9 @@ class ComparatorPrediction extends React.Component {
 
         ps.updatePaneViews(true);
       }
-    }, 500)
+    }, 1000);
+
+    this._updatePaneViews = updatePaneViews;
 
     updatePaneViews();
   }
