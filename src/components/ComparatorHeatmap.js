@@ -38,16 +38,15 @@ class ComparatorHeatmap extends React.Component {
 
     let eachBlockValue = 15;
     let eachValueInPercentage = eachBlockValue / heatmapYAxis;
-    let blocksNumber = Math.ceil(1 / eachValueInPercentage);
-    // let eachBlockHeight = heatmapYAxis / blocksNumber;
+    let blocksNumber = Math.round(1 / eachValueInPercentage);
     let yAxisData = [];
 
     let height = window.heatmap.getHeight();
+    let eachBlockHeight = height / blocksNumber;
 
     let min = 0;
     for (let i = 0; i < blocksNumber; i++) {
-      // yAxisData.push(min = min + eachBlockHeight);
-      yAxisData.push(min + ':' + (min += eachValueInPercentage));
+      yAxisData.push(min + ':' + (min += eachBlockHeight));
     }
 
     let lastPrices = window.parent.eChart.getOption().series.map((serie, idx) => {
@@ -64,7 +63,7 @@ class ComparatorHeatmap extends React.Component {
       let count = 0;
       for (let i = 0; i < bunch.length; i++) {
         let value = bunch[i];
-        let position = (value + Math.abs(scaleMinValue)) / heatmapYAxis;
+        let position = (value + Math.abs(scaleMinValue)) / heatmapYAxis * height;
 
         if (position > range[0] && position <= range[1]) count = i + 1;
       }
