@@ -68,6 +68,7 @@ class ComparatorStatic extends React.Component {
 	render() {
     this.d1 = new Date();
     const { patterns,
+      stretchView,
       filter,
       isPredictionShow,
       lastClosePrice,
@@ -79,8 +80,8 @@ class ComparatorStatic extends React.Component {
       logined } = this.props;
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
-      'comparator-chart-static-show': this.props.stretchView,
-      'comparator-chart-static-hide': !this.props.stretchView,
+      'comparator-chart-static-show': stretchView,
+      'comparator-chart-static-hide': !stretchView,
     });
 
     const predictionMainClassName = classNames('prediction-main');
@@ -191,6 +192,7 @@ class ComparatorStatic extends React.Component {
               <span>走势分布</span>
             </div>
             <ComparatorPrediction
+              stretchView={ stretchView }
               dispatch={ dispatch }
               filter={ filter }
               patterns={ patterns }
@@ -205,6 +207,7 @@ class ComparatorStatic extends React.Component {
             <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
           </button>
           <ComparatorHeatmap
+            stretchView={ stretchView }
             heatmapYAxis={ heatmapYAxis }
             filter={ filter }
             patterns={ patterns }
