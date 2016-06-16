@@ -152,7 +152,9 @@
 	&::-webkit-scrollbar-thumb {
 		border: @border;
 	    border-radius: @border-radius;
-	    background-color: @background-color;
+	    background: @background-color url('./image/scroll-bg.png') no-repeat;
+	    background-size: contain;
+	    background-position: center;
 	    -webkit-box-shadow: @box-shadow;
 	    cursor: pointer;
 	}

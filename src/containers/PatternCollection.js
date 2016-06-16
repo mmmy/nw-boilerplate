@@ -100,6 +100,8 @@ class PatternCollection extends React.Component {
 			this.symbolDim = crossFilter.dimension(e=>{ return e.symbol; });
 			//idDim , 剔除dimentsion
 			this.idDim = crossFilter.dimension(d=>{ return d.id; });
+			_idTrashed = [];
+			$('.trashed-number', '.pattern-statistics-panel').text('');
 		}
 
 		let hideHelper = () => {

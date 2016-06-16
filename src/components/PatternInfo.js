@@ -71,11 +71,12 @@ class PatternInfo extends React.Component {
 		let flexClass = classNames('flex-container', { 'column':  column});
 		let switchWidget = this.state.showSwitch ? <div className='pattern-info-switch-wrapper'><Switch trasded={isTrashed} onToggle={this.props.toggleTrash}/></div> : '';
 		// console.log(column,smaller, index);
+
 		return (<div className = {containerClass} onMouseEnter={this.mouseEnter.bind(this)} onMouseLeave={this.mouseLeave.bind(this)}>
 			<div className = {flexClass}>
 				<div>
 					<h5>相似度</h5>
-					<p className='font-number'>{(similarity*100 + '').slice(0, 4)+'%'}</p>
+					<p className='font-number'>{(similarity*100 + '').slice(0, 4)}{'%'}</p>
 				</div>
 				{ (column && smaller) ? [] : (<div>
 					<h5>返回</h5>
