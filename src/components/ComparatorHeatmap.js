@@ -38,7 +38,7 @@ class ComparatorHeatmap extends React.Component {
 
     let { heatmapYAxis, scaleMaxValue, scaleMinValue } = this.props;
 
-    let eachBlockValue = 15;
+    let eachBlockValue = Math.round(Math.sqrt(heatmapYAxis)); // 根据振幅幅度划分每一个小格的容量
     let eachValueInPercentage = eachBlockValue / heatmapYAxis;
     let blocksNumber = Math.round(1 / eachValueInPercentage);
     let yAxisData = [];
@@ -186,7 +186,7 @@ class ComparatorHeatmap extends React.Component {
         itemStyle: {
           normal: {
             borderColor: '#C6C7C8',
-            borderWidth: 0.5 
+            borderWidth: 0.5
           }
         }
       }],
