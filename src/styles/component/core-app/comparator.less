@@ -23,6 +23,11 @@
 
 // comparator-chart-static
 
+#comparator-chart{
+  position: absolute;
+  left: 20px;
+}
+
 .comparator-chart-static{
   position: absolute;
   width: @comparatorStretch_W;
@@ -76,11 +81,11 @@
 
 .comparator-prediction-container{
   position: absolute;
-  width: 25%;
+  width: calc(~'25% - 20px');
   height: calc(~'50% - 15px');
   top: -1px;
   // right: calc(~'45px + 8px');
-  right: 32px;
+  right: 52px;
 
   .prediction-main{
     position: absolute;
@@ -119,15 +124,16 @@
   position: absolute;
   top: 50%;
   height: 55%;
-  width: calc(~"100% - 51px");
+  width: calc(~"100% - 71px");
   right: 0;
-  // opacity: 0.3;
+  pointer-events: none;
+  border-radius: 2px;
   box-shadow: 0px 0px 20px #DBDBDB;
 }
 
 .prediction-transparent-overlay{
   position: absolute;
-  width: 38%;
+  width: calc(~'38% - 20px');
   height: calc(~'50% - 60px');
   background-color: white;
   opacity: 0.4;
@@ -144,8 +150,9 @@
   .horizon-line{
     position: absolute;
     bottom: 0;
+    left: 20%;
     // width: calc(~"300%");
-    width: 243%;
+    width: 203%;
     border-bottom: solid 2px #eee;
   }
 
@@ -163,17 +170,17 @@
 
 .top-left{
   top: 45px;
-  left: 51px;
+  left: 71px;
 }
 
 .bottom-left{
   bottom: 0px;
-  left: 51px;
+  left: 71px;
 }
 .bottom-right{
-  width: 25%;
+  width: calc(~'25% - 30px');
   bottom: 0;
-  right: 32px;
+  right: 66px;
   // box-shadow: 10px 0px 30px #DBDBDB inset !important;
 }
 
@@ -181,7 +188,7 @@
   position: absolute;
   width: 12px;
   height: calc(~'50%');
-  right: 32px;
+  right: 52px;
   color: #000;
   top: -1px;
 

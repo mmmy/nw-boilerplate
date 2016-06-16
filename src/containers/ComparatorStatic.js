@@ -167,11 +167,12 @@ class ComparatorStatic extends React.Component {
 
     return (
       <div className={ comparatorChartClassName } id='__comparator_prediction_container'>
-        <ReactTradingView
-          viewId={ STOCK_VIEW }
-          init={ logined }
-          options={ options } />
-
+        {/*<div className={ 'comparator-tv-wrapper' }>*/}
+          <ReactTradingView
+            viewId={ STOCK_VIEW }
+            init={ logined }
+            options={ options } />
+        {/*</div>*/}
         <div className={'prediction-transparent-overlay top-left'}>
           <div className={'horizon-line'}></div>
           <div className={'linear-gradient-to-top-left'}></div>
