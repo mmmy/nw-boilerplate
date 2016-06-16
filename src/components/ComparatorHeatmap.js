@@ -34,6 +34,8 @@ class ComparatorHeatmap extends React.Component {
   }
 
   componentDidUpdate() {
+    console.info('ComparatorHeatmap did update1', new Date() - this.d1);
+
     let { heatmapYAxis, scaleMaxValue, scaleMinValue } = this.props;
 
     let eachBlockValue = 15;
@@ -76,6 +78,7 @@ class ComparatorHeatmap extends React.Component {
     option.series[0].data = eChartSeriesData;
 
     window.heatmap.setOption(option, true);
+    console.info('ComparatorHeatmap did update2', new Date() - this.d1);
   }
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
@@ -200,6 +203,7 @@ class ComparatorHeatmap extends React.Component {
   }
 
   render(){
+    this.d1 = new Date();
     let className = classNames('comparator-heatmap');
 
     return (
