@@ -206,7 +206,7 @@ class ComparatorPrediction extends React.Component {
           show: false
         },
         minInterval: 1,
-        splitNumber: 6,
+        // splitNumber: 6,
       },
       series: []
       // series: predictionRandomData()

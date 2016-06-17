@@ -80,6 +80,7 @@ class ComparatorHeatmap extends React.Component {
     window.heatmap.setOption(option, true);
     console.info('ComparatorHeatmap did update2', new Date() - this.d1);
   }
+
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
   }
@@ -165,7 +166,7 @@ class ComparatorHeatmap extends React.Component {
       visualMap: {
         show: false,
         min: 0,
-        max: 80,
+        max: 100,
         calculable: false,
         orient: 'vertical',
         left: 'center',
