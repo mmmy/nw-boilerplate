@@ -5,6 +5,14 @@ import store from '../store';
 import lodash from 'lodash';
 import { callFunc } from '../components/helper/updateEchartImage';
 
+let _growSimilarity = (similarity) => {
+	if (similarity > 0.9999) {
+		return similarity;
+	} else {
+		return similarity - 0.01 * Math.log((1 - similarity) * 10000);
+	}
+}
+
 let __ksSearchXhr = null;
 let __ksDataXhr_1 = null;
 let __ksDataXhr_2 = null;
@@ -47,7 +55,7 @@ let searchPattern = (args, cb, errorCb) => {
 			return {
 				id: i,
 				symbol: id,
-				similarity,
+				similarity: _growSimilarity(similarity),
 				begin: begin.time,
 				end: end.time,
 				lastDate,
@@ -132,4 +140,5 @@ module.exports = {
 	searchPattern,
 	appendPattern,
 	getData,
+	cancelSearch,
 };
