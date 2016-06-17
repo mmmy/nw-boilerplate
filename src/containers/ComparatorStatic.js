@@ -53,15 +53,9 @@ class ComparatorStatic extends React.Component {
 
   togglePredictionPanel() {
     this.props.dispatch(layoutActions.togglePredictionPanel());
-    let chart = window.widget_comparator._innerWindow().Q5.getAll()[0];
-    let model = chart.model();
-    let priceScale = model.mainSeries().priceScale();
-    let paneState = chart._paneWidgets[0].state();
 
     if (this.props.isPredictionShow === false) {
-      // model.setPriceAutoScale(paneState, priceScale, false);
       window.widget_comparator.setVisibleRange(window.searchingRange, '0');
-      // window.widget_comparator._innerWindow().KeyStone.alignSerieToCenter();
     }
   }
 
