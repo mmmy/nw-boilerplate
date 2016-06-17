@@ -140,7 +140,7 @@ class CrossfilterView extends React.Component {
 		let that = this;
 		if (bubbleChartW != this.scatterChartW || bubbleChartH != this.scatterChartH) {
 			//this.yieldDateScatterChart 
-			let size = bubbleChartW / 40;
+			let size = bubbleChartW / 50;
 			let xTicks = 6, yTicks = 5;
 			if(bubbleChartW > 400) xTicks = 12;
 			if(bubbleChartH > 200) yTicks = 9;
@@ -519,8 +519,8 @@ resizeChart1() {
 				.transitionDuration(transitionDuration)
 		    .colors('#757575')
 		    //.colors('rgba(117, 117, 117, 1)')
-		    .symbolSize(width/40)
-		    .excludedSize(width/40)
+		    .symbolSize(width/50)
+		    .excludedSize(width/50)
 		    .excludedColor('#aFaFaF')
 		    .excludedOpacity(0.3)
 		    .renderHorizontalGridLines(true)

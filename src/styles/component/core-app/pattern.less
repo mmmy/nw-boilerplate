@@ -458,7 +458,7 @@
 	&.larger{
 		width: @patternView_W * @larger;
 		height: @patternView_W * @larger;
-		// padding: 10px;
+		padding: 20px 15px 10px 15px;
 		//transform: scale(@larger,@larger);
 		//transition-duration: 2s;
 		//animation: .3s larger;
@@ -636,12 +636,12 @@
 			color: @ks-color-gray-6;
 			font-size: 1.5rem;
 			.fa-trash {
-				font-size: 1.5rem;
+				font-size: 1.2rem;
 				color: transparent;
 				background: url('./image/trash-icon.png') no-repeat;
 				background-size: 100%;
-				background-position: 0 0;
-				transform: scale(1.3);
+				background-position: 0 -1px;
+				transform: scale(1.5);
 				transform-origin: center;
 				// padding: 0.4rem 0.6rem;
 				// padding-right: 20px;
@@ -694,6 +694,9 @@
 	.trash-all-button {
 		position: relative;
 		// margin-left: 1rem;
+		.fa-trash:hover {
+			background-position: 0 100%;
+		}
 		.trash-panel-container {
 			position: fixed;
 			right: 0;
@@ -714,7 +717,7 @@
 			background-color: @lulu-red1;
 			color: #fff;
 			border-radius: 2px;
-			font-size: 1rem;
+			font-size: 1.2rem;
 			text-align: center;
 			padding: 0 2px;
 			min-width: 1.5rem;
