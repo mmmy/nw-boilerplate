@@ -130,7 +130,11 @@ class ComparatorStatic extends React.Component {
             "symbolWatermarkProperties.color": '#fff',
             "scalesProperties.textColor" : "#333",
 
-            "mainSeriesProperties.showLastValue:true" : false,
+            "mainSeriesProperties.showCountDown": true,
+            "mainSeriesProperties.showLastValue": true,
+            "mainSeriesProperties.showPriceLine": true,
+            "mainSeriesProperties.visible": true,
+
             "mainSeriesProperties.candleStyle.upColor": "#fff",
             "mainSeriesProperties.candleStyle.downColor": "#fff",
             "mainSeriesProperties.candleStyle.drawWick": true,
