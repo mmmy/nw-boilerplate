@@ -66,11 +66,9 @@ class Comparator extends React.Component {
 		return (
       <div className={ containerClassName } >
         { screenshotTvURL ? <img ref='img1' key={ screenshotTvURL } src={ screenshotTvURL } className={ screenshotTvClassName }/> : '' }
-        <div className={'prediction-heatmap-container'}>
-          { screenshotEChartURL ? <img ref='img2' key={ screenshotEChartURL } src={ screenshotEChartURL } className={ screenshotEchartClassName }/> : '' }
-          {/*{ screenshotHeatmapURL ? <img ref='img3' key={ screenshotHeatmapURL } src={ screenshotHeatmapURL } className={ screenshotHeatmapClassName }/> : '' }*/}
+        { screenshotEChartURL ? <img ref='img2' key={ screenshotEChartURL } src={ screenshotEChartURL } className={ screenshotEchartClassName }/> : '' }
+        { screenshotHeatmapURL ? <img ref='img3' key={ screenshotHeatmapURL } src={ screenshotHeatmapURL } className={ screenshotHeatmapClassName }/> : '' }
         </div>
-      </div>
     );
 	}
 }
