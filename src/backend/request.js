@@ -34,7 +34,7 @@ let request = (options, cb, errorCb, postData) => {
 		if(errorThrown === 'abort') { 
 			return; 
 		}
-		errorCb && errorCb(errorThrown);
+		errorCb && errorCb(textStatus+errorThrown);
 	})
 	.always(function() {
 		// console.log("complete");

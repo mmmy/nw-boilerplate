@@ -1,5 +1,6 @@
 import { patternActions, layoutActions, tradingViewActions } from '../flux/actions';
 import fs from 'fs';
+import { cancelSearch } from '../backend';
 
 export default function(store) {
 
@@ -74,6 +75,10 @@ export default function(store) {
     });
   }
 
+  let searchCancel = function() {
+    cancelSearch();
+  }
+
 	window.actionsForIframe = {
 		searchSymbolDateRange,      //tv-chart.html 中 "搜索"
 		sendSymbolHistory,          //获取股票数据
@@ -81,5 +86,6 @@ export default function(store) {
     takeScreenshot,
     showConfigModal,
     scrollToOffsetAnimated,
+    searchCancel
 	};
 }

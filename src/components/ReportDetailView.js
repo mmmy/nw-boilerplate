@@ -207,11 +207,11 @@ class ReportDetailView extends React.Component {
 			<div className={daysValueClass}>{daysStr}</div>,
 			<div className={shouyiClass}>收益</div>,
 			<div className={upRateClass}>上涨比例</div>, //xiaolu
-			<div className={upRateValueClass} style={{'color': '#b61c15'}}>{ (data.upPercent*100).toFixed(1) + '%' }</div>,
+			<div className={upRateValueClass} style={{'color': '#b61c15'}}>{ (data.upPercent*100).toFixed(1) }{'%'}</div>,
 			<div className={medianClass}>中位数</div>,
-			<div className={medianValueClass}>{ (data.median*100).toFixed(2) + '%' }</div>,
+			<div className={medianValueClass}>{ (data.median*100).toFixed(2)}{'%'}</div>,
 			<div className={meanClass}>平均值</div>,
-			<div className={meanValueClass}>{ (data.mean*100).toFixed(2) + '%' }</div>,
+			<div className={meanValueClass}>{ (data.mean*100).toFixed(2)}{'%'}</div>,
 		];
 	}
 }

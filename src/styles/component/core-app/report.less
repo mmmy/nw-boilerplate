@@ -127,7 +127,9 @@
 @mama-width: 25%; 
 
 .reportdetail-container {
-
+	.fontSize50() { 
+		font-size: 50%;
+	}
 	.days {
 		//display: none;
 		opacity: 0;
@@ -184,6 +186,9 @@
 			left: @mama-width * 3;
 			font-size:  @font-size-mama;
 			width: @mama-width;
+			span:nth-child(2) {
+				.fontSize50();
+			}
 		}
 	}
 
@@ -210,6 +215,9 @@
 			left: @mama-width;
 			font-size: @font-size-mama;
 			width: @mama-width;
+			span:nth-child(2) {
+				.fontSize50();
+			}
 		}
 	}
 
@@ -236,6 +244,9 @@
 			left: @mama-width * 2;
 			font-size: @font-size-mama;
 			width: @mama-width;
+			span:nth-child(2) {
+				.fontSize50();
+			}
 		}
 	}
 }
