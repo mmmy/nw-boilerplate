@@ -3,16 +3,17 @@
   position: relative;
   float: left;
   border-right: none;
-  width: @comparator_W;
+  width: calc(~'25%');
   height: calc(~'100% - 15px');
+  padding-left: 81px;
 
 
   .comparator-tv-screenshot{
     position: absolute;
-    width: 90%;
+    width: 60%;
     height: calc(~'100% - 50px');
     margin: 20px 0 0 0;
-    left: 10%;
+    left: 81px;
     &.stretch{
       opacity: 0;
     }
@@ -20,10 +21,11 @@
 
   .comparator-echart-screenshot{
     position: absolute;
-    width: 23%;
+    width: 32%;
     height: calc(~'100% - 60px');
-    right: 0;
+    right: 5px;
     margin: 40px 0 0 0;
+    border-left: dotted 1px #333;
     &.stretch{
       opacity: 0;
     }
@@ -34,6 +36,7 @@
     right: 0;
     top: 40px;
     height: calc(~'100% - 60px');
+    width: 8px;
     &.stretch{
       opacity: 0;
     }

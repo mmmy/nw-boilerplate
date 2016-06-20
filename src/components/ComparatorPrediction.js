@@ -152,7 +152,8 @@ class ComparatorPrediction extends React.Component {
       animationDuration: '0',
       // color: ['#ccc', '#c23531', '#ccc'],
       color: ['#ccc'],
-      backgroundColor: 'RGBA(250, 251, 252, 1.00)',
+      // backgroundColor: 'RGBA(250, 251, 252, 1.00)',
+      backgroundColor: '#FFFFFF',
       grid: {
         x: 0,
         x2: 0,
