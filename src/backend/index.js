@@ -36,9 +36,9 @@ let searchPattern = (args, cb, errorCb) => {
 
 	const { symbol, bars, dateRange, searchConfig } = args;
 
-	let { additionDate } = searchConfig;
+	let { additionDate, searchLenMax } = searchConfig;
 
-	let searchArgs = { symbol, dateRange, bars, additionDate };
+	let searchArgs = { symbol, dateRange, bars, additionDate, searchLenMax };
 
 	let searchCb = (resObj) => {
 		
