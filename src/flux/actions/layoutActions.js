@@ -45,7 +45,7 @@ const showConfigModal = function() {
       dispatch({
         type: types.SHOW_CONFIG_MODAL,
       });
-    });
+    }, 30);
   };
 };
 

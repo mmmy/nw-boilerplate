@@ -35,7 +35,7 @@
 	margin: 0 auto;
 	z-index: 10001;
 	background-color: #fff;
-	box-shadow: 0 0 15px 0 #aaa;
+	// box-shadow: 0 0 15px 0 #aaa;
 
 	.close-icon {
 		float: right;
@@ -46,8 +46,14 @@
 		height: 25px;
 		text-align: center;
 		cursor: pointer;
+		.fa-close {
+			color: transparent;
+			background: url(./image/close.png) no-repeat;
+		}
 		&:hover {
-			color: red;
+			.fa-close {
+				background-position: 0 100%;
+			}
 		}
 	}
 
