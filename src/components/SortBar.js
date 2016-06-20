@@ -4,6 +4,7 @@ import { sortActions, filterActions, patternTrashActions } from '../flux/actions
 import RCSlider from 'rc-slider';
 import DC from 'dc';
 import * as sortTypes from '../flux/constants/SortTypes';
+import store from '../store';
 
 const SORT_BTN_DATE = { type:'SORT_BTN_DATE', label:'按日期' };
 const SORT_BTN_SIMILARITY = { type:'SORT_BTN_SIMILARITY', label:'按相似度' };
@@ -28,7 +29,8 @@ class SortBar extends React.Component {
 			panelType: -1,  					//0,1,2,3
 			values:{min:0.0, max:100.0},
 			eyeType: 0, 								//0,1,2
-			searchSymbol: ''
+			searchSymbol: '',
+			openSearch: false,
 		};
 	}
 
@@ -150,20 +152,35 @@ class SortBar extends React.Component {
 
 	render(){
 		//let {sort} = this.props;
-		let {panelType, searchSymbol} = this.state;
+		let {panelType, searchSymbol, values, openSearch} = this.state;
+
+		let searchIconClass = classNames('transition-all transition-ease transition-duration2 icon search', {
+			'active': openSearch,
+			'red-circle': this.state.searchSymbol !== ''
+		});
+
+		let searchPanelClass = classNames('transition-all transition-ease transition-duration2 child-panel-search', {
+			'active': openSearch
+		});
+
+		let filterIconClass = classNames('icon filter', {
+			'active': panelType === 1,
+			'red-circle': (values.min > 0 || values.max < 100)
+		});
+
 		return (<div className="toolbar-container">
 				<div className='toolbar-item item0'><h5 className='left-title'>匹配图形</h5></div>
 				<div className='toolbar-item item1'>
 					<button className='pattern-bar-btn' onFocus={ this.toggleSearchPanel.bind(this, true) } onBlur={ this.toggleSearchPanel.bind(this, false) }>
-						<span className='transition-all transition-ease transition-duration2 icon search' ref='search_icon'></span>
-						<div className='transition-all transition-ease transition-duration2 child-panel-search' ref='search_panel'><input value={searchSymbol} onChange={this.changeSearchSymbol.bind(this)} ref='search_input' /><i className='fa fa-close' onClick={this.clearSearchInput.bind(this)}></i></div>
+						<span className={searchIconClass} ref='search_icon'></span>
+						<div className={searchPanelClass} ref='search_panel'><input value={searchSymbol} onChange={this.changeSearchSymbol.bind(this)} ref='search_input' /><i className='fa fa-close' onClick={this.clearSearchInput.bind(this)}></i></div>
 					</button>
 					{/*<button className='pattern-bar-btn' onFocus={ this.showChildPanel.bind(this, 2) } onBlur={ this.hideChildPanel.bind(this) }>
 						<span className={'icon eye '+(panelType===2 ? 'active' : '')}></span>
 						{this.renderChildPanel(2)}
 					</button>*/}
 					<button className='pattern-bar-btn' onClick={ this.showChildPanel.bind(this, 1) } onBlur={ this.hideChildPanel.bind(this) }>
-						<span className={'icon filter '+(panelType===1 ? 'active' : '')}></span>
+						<span className={filterIconClass}></span>
 						{this.renderChildPanel(1)}
 					</button>
 					<button className='pattern-bar-btn' onClick={ this.showChildPanel.bind(this, 0) } onBlur={ this.hideChildPanel.bind(this) }>
@@ -195,12 +212,14 @@ class SortBar extends React.Component {
 
 	toggleSearchPanel(show) {
 		if(show) {
-			$(this.refs.search_icon).addClass('active');
-			$(this.refs.search_panel).addClass('active');
+			// $(this.refs.search_icon).addClass('active');
+			// $(this.refs.search_panel).addClass('active');
+			this.setState({openSearch: true});
 			$(this.refs.search_input).focus();
 		}else{
-			$(this.refs.search_icon).removeClass('active');
-			$(this.refs.search_panel).removeClass('active');
+			// $(this.refs.search_icon).removeClass('active');
+			// $(this.refs.search_panel).removeClass('active');
+			this.setState({openSearch: false});
 		}
 	}
 

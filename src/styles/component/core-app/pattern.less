@@ -195,8 +195,22 @@
 		display: block;
 		width: 1.5rem;
 		height: 1.5rem;
+		position: relative;
 		&.active {
 			background-position: 0 100%;
+		}
+		&.red-circle {
+			&:after {
+				position: absolute;
+				content: '';
+				display: block;
+				width: 0.6rem;
+				height: 0.6rem;
+				border-radius: 0.5rem;
+				background-color: @lulu-red1;
+				right: -0.1rem;
+				top: -0.2rem;
+			}
 		}
 	}
 
@@ -647,6 +661,12 @@
 				// padding-right: 20px;
 				// margin-right: 10px;
 				// margin-top: 4px;
+			}
+			&:hover {
+				color: @lulu-red1;
+				.fa-trash {
+					background-position: 0 100%;
+				}
 			}
 		}
 		.fa-chevron-down {
