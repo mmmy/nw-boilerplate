@@ -66,10 +66,10 @@ class PatternCollection extends React.Component {
 			DC.redrawAll();
 			that.props.dispatch(filterActions.setFilterId(_idTrashed.concat([])));
 			//显示垃圾桶数目
-			setTimeout(() => {
+			// setTimeout(() => {
 				let trashedNumber = _idTrashed.reduce((pre,cur) => { return cur ? (pre + 1) : pre; }, 0);
 				$('.trashed-number', '.pattern-statistics-panel').text(trashedNumber);
-			});
+			// });
 		}, 100, {leading: true});
 		//this._idTrashed = _idTrashed;
 	}

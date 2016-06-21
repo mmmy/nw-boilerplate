@@ -70,6 +70,12 @@ class PatternView extends React.Component {
 		// 	//return false;
 		// }
 
+		if(newProps.pattern !== this.props.pattern) {
+			if(this.state.isTrashed) {
+				this.setState({isTrashed: false});
+			}
+		}
+
 		if((newProps.fullView !== this.props.fullView) && (newProps.index<0 || newProps.index>=5 ) ) return false;
 		// console.info('shouldComponentUpdate, index:', newProps.index);
 		return true;
