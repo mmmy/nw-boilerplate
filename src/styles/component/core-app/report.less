@@ -20,7 +20,7 @@
 	}
 
 	.item-title{
-		font-size: 1.2rem;
+		font-size: @font-size-ww;
 		color: @lulu-gary2;
 		text-align: center;
 		height: @title_H;
@@ -40,11 +40,11 @@
 		height: calc(~"100% - "@title_H);
 		&.s2 {
 			height: 65%;
-			font-size: 0.75em;
+			font-size: @font-size-ww;
 		}
 
 		.item-body{
-			font-size: 1.15rem;
+			font-size: @font-size-ww;
 		}
 
 		.item-name{
@@ -55,6 +55,7 @@
 
 		.item-data{
 			color: @lulu-black;
+			font-size: @font-size-ww13;
 		}
 
 	}
@@ -92,15 +93,16 @@
 .reporttype-container{
 	padding-top: 6.7%;
 	height: 100%;
-	font-size: 1.2rem;
+	.font-simsun();
+	font-size: @font-size-ww;
 	//border-left: 1px solid @ks-color-gray-8;
 	//border-right: 1px solid @ks-color-gray-8;
 	//TODO: xiaolu
 	.type-item-container{
 		padding-left: 3%;
 		padding-bottom: 4%;
-		font-size: 1.2rem;
-		color: @lulu-gary1;
+		font-size: @font-size-ww;
+		color: lighten(@lulu-gary1, 10%);
 		//width: 49%;
 		float: left;
 		&:nth-child(2n-1){
@@ -119,7 +121,8 @@
 
 
 //动画效果要人命 >__<
-@font-size-ww: 1.2rem;
+@font-size-ww: 11.5px;//1.2rem;
+@font-size-ww13: 12px;//1.2rem;
 @font-size-mama: @font-size-ww * 2.2;
 @width-bala: 30%;
 @mama-top1: 35%;
@@ -207,9 +210,10 @@
 
 	.median-value {
 		left: 0;
-		top: 32%;
-		font-size: @font-size-ww;
+		top: calc(~"24px + 20%");
+		font-size: @font-size-ww13;
 		width: @width-bala * 0.5;
+		color: black;
 		&.mama {
 			top: @mama-top2;
 			left: @mama-width;
@@ -236,9 +240,10 @@
 
 	.mean-value {
 		left: 15%;
-		top: 32%;
-		font-size: @font-size-ww;
+		top: calc(~"24px + 20%");
+		font-size: @font-size-ww13;
 		width: @width-bala * 0.5;
+		color: black;
 		&.mama {
 			top: @mama-top2;
 			left: @mama-width * 2;

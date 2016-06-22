@@ -172,6 +172,11 @@
   font-family: 'AvantGarde';
   src: url('./fonts/texgyreadventor-regular.otf') format('opentype');
 }
+@font-face {
+  font-family: 'simsun';
+  src: url('./fonts/simsun.ttf') format('truetype');
+}
+
 
 // Catchall baseclass
 .font-msyh {
@@ -182,8 +187,14 @@
 
 .font-number {
   font-family: 'AvantGarde';
-  -webkit-font-smoothing: grayscale;
-  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: antialiased !important;
+}
+
+.font-simsun {
+  font-family: 'simsun';
+  -webkit-font-smoothing: none;
+  // -moz-osx-font-smoothing: grayscale;
 }
 
 //position
