@@ -63,12 +63,17 @@ export default function layout(state = initialState, action) {
 			};
 
     case types.TAKE_SCREENSHOT:
+    let { screenshotTvURL, screenshotEChartURL, screenshotHeatmapURL } = action;
       return {
         ...state,
         hasNewScreenshot: true,
-        screenshotTvURL: '../src/image/screenshot_origin.png?random_number=' + new Date().getTime(),
-        screenshotEChartURL: '../src/image/screenshot_prediction.png?random_number=' + new Date().getTime(),
-        screenshotHeatmapURL: '../src/image/screenshot_heatmap.png?random_number=' + new Date().getTime()
+        // screenshotTvURL: '../src/image/screenshot_origin.png?random_number=' + new Date().getTime(),
+        // screenshotEChartURL: '../src/image/screenshot_prediction.png?random_number=' + new Date().getTime(),
+        // screenshotHeatmapURL: '../src/image/screenshot_heatmap.png?random_number=' + new Date().getTime()
+        screenshotTvURL,
+        screenshotEChartURL,
+        screenshotHeatmapURL
+
       };
 
     case types.RENDER_SCREENSHOT:
