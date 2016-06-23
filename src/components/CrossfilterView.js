@@ -443,6 +443,7 @@ resizeChart1() {
 				// let year = lastBar ? new Date(lastBar[0]).getFullYear() : 0;
 				let year = new Date(data.end).getFullYear();
 				let yield100 = Math.round(data.yield*100);
+				let id = data.id;
 				//缓存所有数据的年份范围 和 收益率范围
 				yearArr.push(year);
 				yield100Arr.push(yield100);
@@ -543,14 +544,14 @@ resizeChart1() {
 		let xTicks = 6, yTicks = 5;
 		if(width > 400) xTicks = 12;
 		if(height > 200) yTicks = 9;
-		 yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(5).ticks(xTicks);
-		 yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
+		yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(5).ticks(xTicks);
+		yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
 
-		 window.yieldDateScatterChart= yieldDateScatterChart;
-		 yieldDateScatterChart.on('filtered', this.onChartFiltered.bind(this));
+		window.yieldDateScatterChart= yieldDateScatterChart;
+
+		yieldDateScatterChart.on('filtered', this.onChartFiltered.bind(this));
 		 //yieldDateScatterChart.filterHandler(()=>{});
 		this.yieldDateScatterChart = yieldDateScatterChart;
- 
 	}
 
 	drawPositionBubbleChart(){
@@ -702,7 +703,7 @@ resizeChart1() {
 			//.excludedColor('#f00')
 			//.elasticY(true)
 			//.centerBar(true)
-			.gap(1)
+			.gap(2)
 			// .mouseZoomable(true)
 			// .zoomOutRestrict(false)
 			// .zoomScale([1,4])

@@ -41,6 +41,7 @@ class Login extends React.Component {
 		});
 		this._waveNode = waveNode;
 		this._logoNode = logoNode;
+		$('.container-stockview').css('opacity', 0);
 	}
 
 	resetUI() {
@@ -84,7 +85,7 @@ class Login extends React.Component {
 
 	render(){
 		let { isLogining, username, password, autoLogin } = this.state;
-		let innerBtn = isLogining ? <i className='fa fa-spinner fa-spin'></i> : '登陆';
+		let innerBtn = isLogining ? <i className='fa fa-spinner fa-spin'></i> : '登录';
 		return (
       <div className='login-panel-container animated slideInUp' ref='login_panel_container'>
       	<div className='body-container'>
@@ -93,7 +94,7 @@ class Login extends React.Component {
       			<div className='user-name' ><span className='placeholder transition-all transition-ease' ref='holder_username'>用户名</span><input onChange={this.changeUsernamne.bind(this)} onFocus={this.handleFocus.bind(this, 0)} onBlur={this.handleBlur.bind(this, 0)} type='text' value={username}/></div>
       			<div className='password' ><span className='placeholder transition-all transition-ease' ref='holder_password'>密码</span><input onChange={this.changePassword.bind(this)} onFocus={this.handleFocus.bind(this, 1)} onBlur={this.handleBlur.bind(this, 1)} type='password' value={password}/></div>
       			<div className='denglu'><button className='' onClick={this.handleLogin.bind(this)}>{innerBtn}</button></div>
-      			<div className='options'><input onChange={this.changeAutoLogin.bind(this)} type='checkbox' checked={autoLogin}/>自动登陆</div>
+      			<div className='options'><input onChange={this.changeAutoLogin.bind(this)} type='checkbox' checked={autoLogin}/>自动登录</div>
       		</div>
       	</div>
       	{/*<div className='wave-container'><Waves /></div>*/}
@@ -134,11 +135,12 @@ class Login extends React.Component {
 		}, 2000);
 	}
 
-	startClose() {
+	startClose() { //动画结束后 移除dom
 		let {close} = this.props;
 		this.resetUI();
-		$(this.refs.login_panel_container).removeClass('slideInUp').addClass('slideOutDown').one('webkitAnimationEnd animationed', () => {
+		$(this.refs.login_panel_container).removeClass('slideInUp').addClass('zoomOut').one('webkitAnimationEnd animationed', () => {
 			close && close();
+			$('.container-stockview').css('opacity', '');
 		});
 	}
 
