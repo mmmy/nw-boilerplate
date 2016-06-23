@@ -23,10 +23,14 @@ const togglePredictionPanel = function togglePredictionPanel() {
   };
 };
 
-const takeScreenshot = function takeScreenshot() {
+const takeScreenshot = function takeScreenshot(urls) {
+  let {tvChartUrl, predictionUrl, heatmapUrl} = urls;
   return (dispatch) => {
     dispatch({
       type: types.TAKE_SCREENSHOT,
+      screenshotTvURL: tvChartUrl,
+      screenshotEChartURL: predictionUrl,
+      screenshotHeatmapURL: heatmapUrl
     })
   };
 };

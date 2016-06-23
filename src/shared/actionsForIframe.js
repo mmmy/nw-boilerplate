@@ -25,24 +25,17 @@ export default function(store) {
   };
 
   let takeScreenshot = function() {
-      const canvasDom = window.widget_comparator._innerWindow();
-      const canvasContainer = canvasDom.document.getElementsByClassName('multiple')[0];
-      const canvas = canvasContainer.getElementsByTagName('canvas')[2];
-      const tvSS = canvas.toDataURL();
-      const eChartSS = window.eChart.getDataURL();
-      const heatmapSS = window.heatmap.getDataURL();
+      const chartDom = window.widget_comparator._innerWindow();
+      const tvChartUrl = chartDom.Q5.getAll()[0]._paneWidgets[0].canvas.toDataURL();
+      const predictionUrl = window.eChart.getDataURL();
+      const heatmapUrl = window.heatmap.getDataURL();
 
-      _saveScreenshot(tvSS, 'src/image/screenshot_origin');
-      _saveScreenshot(eChartSS, 'src/image/screenshot_prediction');
-      _saveScreenshot(heatmapSS, 'src/image/screenshot_heatmap');
-
-      // fs.writeFile('src/image/screenshot_origin.' + ext, buffer, function(err){
-      //   if (err) throw err;
-      //   store.dispatch({
-      //     type: 'TAKE_SCREENSHOT'
-      //   });
-      //   console.log('screenshot_origin taken, rerender...');
-      // });
+      store.dispatch({
+        type: 'TAKE_SCREENSHOT',
+        screenshotTvURL: tvChartUrl,
+        screenshotEChartURL: predictionUrl,
+        screenshotHeatmapURL: heatmapUrl
+      });
   }
 
   let scrollToOffsetAnimated = function() {
