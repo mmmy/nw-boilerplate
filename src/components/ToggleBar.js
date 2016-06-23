@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { layoutActions, patternActions } from '../flux/actions';
+import actionsForIframe from '.././shared/actionsForIframe';
 import store from '../store';
 
 const propTypes = {
@@ -40,7 +41,7 @@ class ToggleBar extends React.Component {
 
 		let {fullView, searchTimeSpent, waitingForPatterns} = this.props;
 		let { error } = store.getState().patterns;
-		
+
 		const toggleClass = classNames('container-toggle','transition-all', {
 			'full': fullView,
 		});
@@ -82,6 +83,7 @@ class ToggleBar extends React.Component {
 		let { waitingForPatterns } = this.props;
 		let { error } = store.getState().patterns;
 		if (waitingForPatterns || error) return;
+    if (this.props.fullView) window.actionsForIframe.takeScreenshot();
 		this.props.dispatch(layoutActions.toggleStockView());
 	}
 
