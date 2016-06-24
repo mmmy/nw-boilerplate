@@ -4,9 +4,11 @@ import classNames from 'classnames';
 import echarts from 'echarts';
 
 const propTypes = {
+  stretchView: PropTypes.bool,
+  heatmapYAxis: PropTypes.number,
+  scaleMinValue: PropTypes.number,
+  scaleMaxValue: PropTypes.number,
   patterns: PropTypes.object.isRequired,
-  filter: PropTypes.object.isRequired,
-  // heatmapYAxis: PropTypes.array.isRequired,
 };
 
 const defaultProps = {

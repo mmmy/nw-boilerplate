@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import ReactTradingView from '../components/ReactTradingView';
+import HeatmapContainer from './heatmapContainer'
 import ComparatorPrediction from '../components/ComparatorPrediction';
-import ComparatorHeatmap from '../components/ComparatorHeatmap';
 import { layoutActions } from '../flux/actions';
 const propTypes = {
 
@@ -43,22 +43,6 @@ class ComparatorStatic extends React.Component {
     console.info('ComparatorStatic did update in millsec: ', new Date() - this.d1);
   }
 
-  isChartPriceAutoScale() {
-    let chart = window.widget_comparator._innerWindow().Q5.getAll()[0];
-    let model = chart.model();
-    let priceScale = model.mainSeries().priceScale();
-
-    return priceScale.properties().autoScale.value()
-  }
-
-  togglePredictionPanel() {
-    this.props.dispatch(layoutActions.togglePredictionPanel());
-
-    if (this.props.isPredictionShow === false) {
-      window.widget_comparator.setVisibleRange(window.searchingRange, '0');
-    }
-  }
-
 	render() {
     this.d1 = new Date();
     const { patterns,
@@ -66,9 +50,6 @@ class ComparatorStatic extends React.Component {
       filter,
       isPredictionShow,
       lastClosePrice,
-      heatmapYAxis,
-      scaleMinValue,
-      scaleMaxValue,
       dispatch,
       activeId,
       logined } = this.props;
@@ -199,20 +180,8 @@ class ComparatorStatic extends React.Component {
           </div>
         </div>
 
-        <div className={'prediction-panel'}>
-          <button
-            className={ 'prediction-toggle' }
-            onClick={ this.togglePredictionPanel.bind(this) }>
-            <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
-          </button>
-          <ComparatorHeatmap
-            stretchView={ stretchView }
-            heatmapYAxis={ heatmapYAxis }
-            filter={ filter }
-            patterns={ patterns }
-            scaleMinValue={ scaleMinValue }
-            scaleMaxValue={ scaleMaxValue } />
-        </div>
+        <HeatmapContainer />
+
       </div>
     );
 	}
@@ -224,7 +193,7 @@ ComparatorStatic.defaultProps = defaultProps;
 var stateToProps = function(state) {
 	const {layout, patterns, filter, prediction, active, account} = state;
 	const {stockView, isPredictionShow} = layout;
-  const {lastClosePrice, predictionpriceScaleMarks, predictionLastClosePrices, heatmapYAxis, scaleMaxValue, scaleMinValue} = prediction;
+  const {lastClosePrice} = prediction;
   const {id} = active;
   let logined = account.username !== '';
 	return {
@@ -233,9 +202,6 @@ var stateToProps = function(state) {
     patterns: patterns,
     filter: filter,
     lastClosePrice: lastClosePrice,
-    heatmapYAxis: heatmapYAxis,
-    scaleMinValue: scaleMinValue,
-    scaleMaxValue: scaleMaxValue,
     activeId: id,
     logined
 	};
