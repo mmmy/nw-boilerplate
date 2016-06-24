@@ -42,7 +42,7 @@ class StockView extends React.Component {
 				//	BEWARE: no trailing slash is expected in feed URL
 				// datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
 				// datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
-				datafeed: new window.Kfeeds.UDFCompatibleDatafeed(""),
+				datafeed: new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0), //params: datafeedURL, updateFrequency, protocolVersion, id
 				library_path: "charting_library/",
 				locale: "zh",
       			theme: "Black",
@@ -108,7 +108,7 @@ class StockView extends React.Component {
 	      <div className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
 	        <ReactTradingView
 	          viewId={ STOCK_VIEW }
-	          options={ options } 
+	          options={ options }
 	          init={ logined } />
 	      </div>
 	    );
