@@ -55,7 +55,7 @@ let searchPattern = (args, cb, errorCb) => {
 			return {
 				id: i,
 				symbol: id,
-				similarity: _growSimilarity(similarity),
+				similarity: similarity,//_growSimilarity(similarity),
 				begin: begin.time,
 				end: end.time,
 				lastDate,

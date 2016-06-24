@@ -16,6 +16,7 @@ import DC from 'dc';
 import classnames from 'classnames';
 import _ from 'underscore';
 import lodash from 'lodash';
+import { setScatters, setPieCollection, setCountBars } from '../cache/crossfilterDom';
 
 import { filterActions } from '../flux/actions';
 
@@ -443,10 +444,13 @@ resizeChart1() {
 				// let year = lastBar ? new Date(lastBar[0]).getFullYear() : 0;
 				let year = new Date(data.end).getFullYear();
 				let yield100 = Math.round(data.yield*100);
+				let id = data.id;
 				//缓存所有数据的年份范围 和 收益率范围
 				yearArr.push(year);
 				yield100Arr.push(yield100);
-				return [year, yield100]; 
+				let item = [year, yield100];
+				item['id'] = id;
+				return item; 
 			});
 			//console.log(yearArr);
 			this.yearRange = [Math.min.apply(null, yearArr) || 1990, Math.max.apply(null, yearArr) || new Date().getFullYear()];     //年份的最大最小值
@@ -492,7 +496,25 @@ resizeChart1() {
 
 			this.industryPieChart.filterAll();
 			// this.industryPieChart.redraw();
-			setTimeout(DC.renderAll);
+			var that = this;
+			setTimeout(() => { 
+				DC.renderAll();
+				//行业分类hover 效果
+				var pieSlices = that.industryPieChart.selectAll('g g');
+				pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true), true);
+				pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
+
+				//缓存dom
+				let scatters = that.yieldDateScatterChart.selectAll('g.chart-body>path')[0];
+				setScatters(scatters);
+
+				let pieNodes = that.industryPieChart.selectAll('g.pie-slice')[0];
+				setPieCollection(pieNodes);
+
+				let xMin = that.yield100Range[0] / 100;
+				let bars = that.yieldDimCountChart.selectAll('rect.bar')[0];
+				setCountBars(bars, xMin, barChartBars);
+			});
 		}
 
 	}
@@ -543,14 +565,14 @@ resizeChart1() {
 		let xTicks = 6, yTicks = 5;
 		if(width > 400) xTicks = 12;
 		if(height > 200) yTicks = 9;
-		 yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(5).ticks(xTicks);
-		 yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
+		yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(5).ticks(xTicks);
+		yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
 
-		 window.yieldDateScatterChart= yieldDateScatterChart;
-		 yieldDateScatterChart.on('filtered', this.onChartFiltered.bind(this));
+		window.yieldDateScatterChart= yieldDateScatterChart;
+
+		yieldDateScatterChart.on('filtered', this.onChartFiltered.bind(this));
 		 //yieldDateScatterChart.filterHandler(()=>{});
 		this.yieldDateScatterChart = yieldDateScatterChart;
- 
 	}
 
 	drawPositionBubbleChart(){
@@ -662,21 +684,22 @@ resizeChart1() {
 			.renderTitle(false);
 
 		industryPieChart.on('filtered', this.onChartFiltered.bind(this));
-		industryPieChart.on('renderlet', (chart) => {
-			//console.log(chart, '~~~~~~~~~~~~~~~~~~~');
-			// var pieSliceDoms = document.querySelectorAll('.pie-slice');
-			// pieSliceDoms && pieSliceDoms.forEach((pieSlice) => {
-			// 	//pieSlice.addEventListener('mouseenter', function(){console.log('111')});
-			// 	//pieSlice.addEventListener('mouseleave', that.drawIndustryPieChart.bind(that, false));
-			// });
-			var pieSlices = chart.selectAll('g g');
-			pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true));
-			pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
-		});
+		// industryPieChart.on('renderlet', (chart) => {
+		// 	console.debug(chart, '~~~~~~~~~~~~~~~~~~~');
+		// 	// var pieSliceDoms = document.querySelectorAll('.pie-slice');
+		// 	// pieSliceDoms && pieSliceDoms.forEach((pieSlice) => {
+		// 	// 	//pieSlice.addEventListener('mouseenter', function(){console.log('111')});
+		// 	// 	//pieSlice.addEventListener('mouseleave', that.drawIndustryPieChart.bind(that, false));
+		// 	// });
+		// 	var pieSlices = chart.selectAll('g g');
+		// 	pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true));
+		// 	pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
+		// });
 		//industryPieChart.on('hover', (e) => { console.log(e); })
 		this.industryPieChart = industryPieChart;
 		window.industryPieChart = industryPieChart;
 		window.industryDim = this.industryDim;
+
 	}
 
 	drawYieldDimCountChart() {
@@ -702,7 +725,7 @@ resizeChart1() {
 			//.excludedColor('#f00')
 			//.elasticY(true)
 			//.centerBar(true)
-			.gap(1)
+			.gap(2)
 			// .mouseZoomable(true)
 			// .zoomOutRestrict(false)
 			// .zoomScale([1,4])

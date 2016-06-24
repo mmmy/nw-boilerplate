@@ -74,13 +74,14 @@
 .modal-content-contianer {
 	padding: 0 30px;
 	.title {
-		font-size: 15px;
+		font-size: 16px;
 	}
 	.item-title{
 		margin-top: 40px;
 		margin-bottom: 8px;
 		color: @ks-color-gray-4;
 		font-size: 13px;
+		.font-simsun();
 	}
 
 	.item-body-container {
@@ -141,18 +142,28 @@
 			input {
 				width: 20%;
 			}
+			&>span {
+				.font-simsun();
+				padding-left: 10px;
+			}
 		}
 	}
 
 	.footer {
 		margin-top: 50px;
+		.font-simsun();
 		button {
 			width: 160px;
 			margin-left: 29%;
 			border: none;
-			font-size: 11px;
+			font-size: 12px;
 			padding: 6px;
 			background-color: @config-modal-button-background-color;
+			border-radius: 2px;
+			&:hover {
+				background-color: #fff;
+				box-shadow: 0 3px 10px 0 #eee;
+			}
 		}
 		span{
 			color: @lulu-red1;

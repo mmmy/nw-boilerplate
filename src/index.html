@@ -35,7 +35,7 @@
 	<div id='app'></div>
 	<!-- <div class="fuck"></div> -->
 	<script type="text/javascript">
-		if (process.env.NODE_ENV === ('development' || 'beta')) {
+		if ((process.env.NODE_ENV === 'development') || (process.env.NODE_ENV === 'beta')) {
 			var gulp = require('gulp');
 			gulp.task('reload', function(){
 				//console.log('reload');

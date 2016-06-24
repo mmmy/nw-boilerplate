@@ -62,6 +62,7 @@ var factorCandleOption=function(candleBorder = true){
 		        boundaryGap : false,
 		        axisLine: {show: false},
 		        splitLine: {show: false},
+		        minInterval: 1,
 		        axisTick: {
 		        	show: false
 		        },
@@ -74,6 +75,7 @@ var factorCandleOption=function(candleBorder = true){
 		    },
 		    yAxis: {
 		        scale: true,
+		        minInterval: 1,
 		        axisLine: {
 		        	show: false
 		        },

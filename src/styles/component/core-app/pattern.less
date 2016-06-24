@@ -618,13 +618,14 @@
 		border: none;
 		background-color: white;
 		outline: none;
-		font-size: 1.3rem;
+		font-size: 11px;
 		.fa-trash {
 			color: transparent;
-			background: url('./image/trash-btn.png') no-repeat;
+			background: url('./image/trash-icon.png') no-repeat;
 			background-size: 100%;
 			background-position: 0 0;
-			padding: 0.4rem 0.6rem;
+			// padding: 0.4rem 0.6rem;
+			transform: scale(1.5);
 			// padding-right: 20px;
 			margin-right: 10px;
 			// margin-top: 4px;
@@ -654,11 +655,12 @@
 			font-size: 12px;
 			.font-simsun();
 			.fa-trash {
-				font-size: 1.2rem;
+				font-size: 11px;
 				color: transparent;
 				background: url('./image/trash-icon.png') no-repeat;
 				background-size: 100%;
-				background-position: 0 -1px;
+				//background-position: 0 0;
+				padding: 3.82px 5.73px;
 				transform: scale(1.5);
 				transform-origin: center;
 				// padding: 0.4rem 0.6rem;
@@ -669,7 +671,7 @@
 			&:hover {
 				color: @lulu-red1;
 				.fa-trash {
-					background-position: 0 100%;
+					background-position: 0 93%;
 				}
 			}
 		}
@@ -719,8 +721,11 @@
 	.trash-all-button {
 		position: relative;
 		// margin-left: 1rem;
-		.fa-trash:hover {
-			background-position: 0 100%;
+		.fa-trash {
+			padding: 3.82px 5.73px;
+			&:hover {
+				background-position: 0 93%;
+			}
 		}
 		.trash-panel-container {
 			position: fixed;
@@ -734,15 +739,16 @@
 			z-index: 1001;
 		}
 		// color: @lulu-red1;
-		font-size: 2rem;
+		font-size: 11px;
 		.trashed-number {
 			position: absolute;
-			left: 2.3rem;
-			top: -0.3rem;
+			left: 15px;
+			top: -9px;
+			.font-number();
 			background-color: @lulu-red1;
 			color: #fff;
 			border-radius: 2px;
-			font-size: 1.2rem;
+			font-size: 12px;
 			text-align: center;
 			padding: 0 2px;
 			min-width: 1.5rem;
