@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import ReactTradingView from '../components/ReactTradingView';
-import HeatmapContainer from './heatmapContainer'
-import ComparatorPrediction from '../components/ComparatorPrediction';
+import HeatmapContainer from './heatmapContainer';
+import PredictionContainer from './PredictionContainer';
 import { layoutActions } from '../flux/actions';
 const propTypes = {
 
@@ -33,7 +33,6 @@ class ComparatorStatic extends React.Component {
 	shouldComponentUpdate(newProps, newState){
     // return newProps.stretchView === this.props.stretchView;
 		return true;
-    // return newProps.filter === this.props.filter;
 	}
 
 	componentWillUnmount(){
@@ -47,11 +46,7 @@ class ComparatorStatic extends React.Component {
     this.d1 = new Date();
     const { patterns,
       stretchView,
-      filter,
       isPredictionShow,
-      lastClosePrice,
-      dispatch,
-      activeId,
       logined } = this.props;
 
     let comparatorChartClassName = classNames('comparator-chart-static', {
@@ -167,20 +162,19 @@ class ComparatorStatic extends React.Component {
         <div className={'pattern-tv-box-shadow'}></div>
 
         <div className={ comparatorPredictionContainerClass }>
-          <div className={ predictionMainClassName }>
+          <PredictionContainer patterns={patterns}/>
+          {/*<div className={ predictionMainClassName }>
             <div className={ 'comparator-header' }>
               <span>走势分布</span>
             </div>
             <ComparatorPrediction
               stretchView={ stretchView }
-              dispatch={ dispatch }
-              filter={ filter }
               patterns={ patterns }
               activeId={ activeId }/>
-          </div>
+          </div>*/}
         </div>
 
-        <HeatmapContainer />
+        <HeatmapContainer patterns={patterns}/>
 
       </div>
     );
@@ -191,18 +185,14 @@ ComparatorStatic.propTypes = propTypes;
 ComparatorStatic.defaultProps = defaultProps;
 
 var stateToProps = function(state) {
-	const {layout, patterns, filter, prediction, active, account} = state;
+	const {layout, patterns, prediction, active, account} = state;
 	const {stockView, isPredictionShow} = layout;
-  const {lastClosePrice} = prediction;
   const {id} = active;
   let logined = account.username !== '';
 	return {
 		stretchView: !stockView,
     isPredictionShow: isPredictionShow,
     patterns: patterns,
-    filter: filter,
-    lastClosePrice: lastClosePrice,
-    activeId: id,
     logined
 	};
 };

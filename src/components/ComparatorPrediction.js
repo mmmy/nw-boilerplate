@@ -9,7 +9,8 @@ import _ from 'underscore';
 
 const propTypes = {
   patterns: PropTypes.object.isRequired,
-  filter: PropTypes.object.isRequired,
+  stretchView: PropTypes.object.bool,
+  activeId: PropTypes.object.number,
 };
 
 const defaultProps = {
