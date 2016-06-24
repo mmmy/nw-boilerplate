@@ -3,6 +3,10 @@ import classNames from 'classnames';
 import EChart from './EChart';
 import PatternInfo from './PatternInfo';
 import { activeActions } from '../flux/actions';
+import { getScatter, getPieSlice, getCountBar } from '../cache/crossfilterDom';
+import store from '../store';
+
+let _clonedScatter = null; //dom object
 
 const propTypes = {
 	pattern: PropTypes.object.isRequired,
@@ -88,15 +92,55 @@ class PatternView extends React.Component {
 
 	handleMouseEnter(){
 
+		this.handleMouseLeave();
+		let color = '#b61c15';
 			// const showSymbol = true;
 			// this.setState({showSymbol});
+		let {id, industry} = this.props.pattern;
+		let yieldRate = this.props.pattern.yield;
+		//# 1
+		let matchScatter = getScatter(id);
+		if (matchScatter) {
+			_clonedScatter = matchScatter.cloneNode();
+			_clonedScatter.style && (_clonedScatter.style.fill = color);
+			matchScatter.parentNode.appendChild(_clonedScatter);
+		}
+		//#2
+		let matchPie = getPieSlice(industry);
+		let piePath = matchPie && matchPie.firstChild;
+		if (piePath) {
+			piePath.style.fill = color;
+			matchPie.dispatchEvent(new window.MouseEvent('mouseenter'));
+		}
+		//#3
+		let matchYieldBar = getCountBar(yieldRate);
+		if(matchYieldBar) {
+			matchYieldBar.style.fill = color;
+		}
 	}
 
 	handleMouseLeave(){
 
 			// const showSymbol = false;
 			// this.setState({showSymbol});
+			//#1
+		_clonedScatter && _clonedScatter.remove && _clonedScatter.remove();
+		_clonedScatter && (_clonedScatter = null);
+		//#2
+		let {id, industry} = this.props.pattern;
+		let yieldRate = this.props.pattern.yield;
 
+		let matchPie = getPieSlice(industry);
+		let piePath = matchPie && matchPie.firstChild;
+		if (piePath) {
+			piePath.style.fill = '';
+			matchPie.dispatchEvent(new window.MouseEvent('mouseleave'));
+		}
+			//#3
+		let matchYieldBar = getCountBar(yieldRate);
+		if(matchYieldBar) {
+			matchYieldBar.style.fill = '';
+		}
 	}
 
 	setActivePattern() {
