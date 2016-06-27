@@ -77,7 +77,7 @@ gulp.task('image', [], function() {
 });
 
 gulp.task('styles', [], function(){
-	gulp.src('src/styles/main.less')
+	gulp.src(['src/styles/main.less', 'src/styles/mac_retina.less'])
 	.pipe($.plumber(function(error){
 		$.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
 		    messager(error.message);
