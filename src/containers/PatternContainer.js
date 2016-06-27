@@ -28,7 +28,7 @@ class PatternContainer extends React.Component {
 	componentDidMount() {
 
 		let parentNode = $(this.refs.pattern_statistics_container);
-		let childNode = $(`<div class='transition-all transition-ease transition-duration1000 statistics-slide-widget flex'><button><i class='fa fa-trash'></i>一键剔除</button><i class='fa fa-chevron-down'></i></div>`);
+		let childNode = $(`<div class='transition-all transition-ease transition-duration1000 statistics-slide-widget flex'><button class='font-simsun'><i class='fa fa-trash'></i>一键剔除</button><i class='fa fa-chevron-down'></i></div>`);
 		let childrenBtn = childNode.children();
 
 		let that = this;

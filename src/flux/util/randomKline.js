@@ -4,8 +4,8 @@ let len = data.length,
 	maxIndex = len - 200;
 
 let industrys = ['行业1','行业2','行业3','行业4','行业5'];
-const BASE_BARS = 18;
-const ADDTION_DAYS = 5;
+const BASE_BARS = 30;
+const ADDTION_DAYS = 30;
 
 
 var randomKline = function(){
@@ -29,6 +29,7 @@ var randomPatterns = function(n) {
 			symbol: '000001',
 			similarity: Math.random(),
 			baseBars: BASE_BARS,
+			end: kline.kLine[BASE_BARS][0],
 			kLine: kline.kLine,
 			yield: Math.random()*3 - 1.2,  //-150% ~ 150%
 			industry: industrys[Math.round((Math.random()*industrys.length))],

@@ -10,6 +10,7 @@ const _sortScatters = () => {
 		return a.__data__.key.id - b.__data__.key.id;
 	});
 	_yieldDateScatters = result;
+	console.debug(result);
 };
 
 let setScatters = (scatters) => {

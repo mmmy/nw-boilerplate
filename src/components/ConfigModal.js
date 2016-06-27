@@ -82,19 +82,19 @@ class SearchConfigModal extends React.Component {
 
 		return <div className='modal-content-contianer'>
 			<div className='title'>搜索配置</div>
-			<div className='item-title'>选择时间</div>
+			<div className='item-title font-simsun'>选择时间</div>
 			<div className='item-body-container date'>
 				<input ref='startDate' value={dateRange[0]} onChange={this.changeStartDate.bind(this)}/><span className='date-icon fa fa-calendar-o'></span><span className='zhi'>至</span><input ref='endDate' value={dateRange[1]} onChange={this.changeEndDate.bind(this)}/><span className='date-icon fa fa-calendar-o'></span>
 			</div>
-			<div className='item-title'>标的类型</div>
+			<div className='item-title font-simsun'>标的类型</div>
 			<div className='item-body-container sid'>
 				<span className={stockClass} onClick={this.toggleType.bind(this, 'stock')}>股票</span><span className={furtureClass} onClick={this.toggleType.bind(this, 'furture')}>期货</span>
 			</div>
-			<div className='item-title'>统计天数</div>
+			<div className='item-title font-simsun'>统计天数</div>
 			<div className='item-body-container days'>
-				<button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button><span>天</span>
+				<button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button><span className='font-simsun'>天</span>
 			</div>
-			<div className='footer'>
+			<div className='footer font-simsun'>
 				<button onClick={this.handleSaveConfig.bind(this)}>保存配置</button><span onClick={this.resetState.bind(this)}>重置</span>
 			</div>
 		</div>;
