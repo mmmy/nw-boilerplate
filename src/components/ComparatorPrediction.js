@@ -10,7 +10,6 @@ import _ from 'underscore';
 const propTypes = {
   patterns: PropTypes.object.isRequired,
   stretchView: PropTypes.object.bool,
-  activeId: PropTypes.object.number,
   filter: PropTypes.object.object
 };
 
@@ -96,7 +95,6 @@ class ComparatorPrediction extends React.Component {
     this.initDimensions();
     let rawData = this.symbolDim.top(Infinity);
     let { closePrice } = this.props.patterns;
-    let activeId = this.props.activeId;
     let series = [];
     // let maxValue = 0 * -1;
     let maxValue = this.maxValue;
@@ -107,17 +105,19 @@ class ComparatorPrediction extends React.Component {
         let e = rawData[i]
         series.push({
           data: this.splitDataFromClosePrice(closePrice[e.id]),
-          name: e.symbol,
+          name: e.id,
           type: 'line',
           showSymbol: false,
           hoverAnimation: false,
           lineStyle: {
             normal: {
-              color: e.id === activeId ? '#c23531' : '#ccc',
+              color: '#ccc',
+              // color: e.id === activeId ? '#c23531' : '#ccc',
               width: 0.5
             }
           },
-          z: e.id === activeId ? 1 : -1
+          z: -1
+          // z: e.id === activeId ? 1 : -1
         });
       }
 

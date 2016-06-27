@@ -44,8 +44,7 @@ class PredictionContainer extends React.Component {
         </div>
         <ComparatorPrediction
           stretchView={ stretchView }
-          patterns={ patterns }
-          activeId={ activeId }/>
+          patterns={ patterns } />
       </div>
     );
 	}
@@ -55,13 +54,11 @@ PredictionContainer.propTypes = propTypes;
 PredictionContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-  const {layout, patterns, filter, active} = state;
+  const {layout, patterns, filter} = state;
   const {stockView} = layout;
-  const {id} = active;
 	return {
     stretchView: !stockView,
     patterns: patterns,
-    activeId: id,
     filter: filter
   };
 };
