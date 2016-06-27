@@ -106,7 +106,7 @@ class TrashModal extends React.Component {
 			<div className='title'>搜索配置</div>
 			
 			<div className='footer'>
-				<button onClick={this.handleResetAll.bind(this)}>一键恢复</button>
+				<button className='font-simsun' onClick={this.handleResetAll.bind(this)}>一键恢复</button>
 			</div>
 		</div>;
 	}

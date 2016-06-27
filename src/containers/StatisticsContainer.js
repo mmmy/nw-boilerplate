@@ -52,11 +52,11 @@ class statisticsContainer extends React.Component {
 			'larger': statisticsLarger,
 		});
 
-		const fistReportClass = classNames('transition-all', 'transition-delay2','report-container-wrap',{
+		const fistReportClass = classNames('transition-all', 'transition-delay2','report-container-wrap font-simsun',{
 			'stretch': !fullView
 		});
 		
-		const reportClass2 = classNames('report-container-wrap', {
+		const reportClass2 = classNames('report-container-wrap font-simsun', {
 			'ks-hidden': !fullView,
 			//'transition-delay0': !fullView,
 			'ks-fade-in': fullView,

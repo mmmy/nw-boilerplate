@@ -3,7 +3,18 @@
 <head>
 	<title>keystone</title>
 	<link rel="stylesheet" type="text/css" href="main.css" />
+	<script type="text/javascript">
+		// if(/macintosh/i.test(navigator.appVersion)) {  //mac
+		if (window.devicePixelRatio > 1) {                 //retina
+			(function() {
+				var node = document.createElement('link');
+				node.rel = 'stylesheet';
+				node.href	= 'mac_retina.css';
+				document.head.appendChild(node);
 
+			})();
+		}
+	</script>
 	<!-- <script type="text/javascript" src='../node_modules/jquery/dist/jquery.min.js '></script> -->
 	<!-- <script type="text/javascript" src='../tradingview/charting_library/charting_library.js'></script> -->
 	<!-- <script type="text/javascript" src='../tradingview/charting_library/datafeed/udf/datafeed.js'></script> -->

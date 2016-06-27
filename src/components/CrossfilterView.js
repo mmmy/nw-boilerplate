@@ -370,7 +370,7 @@ resizeChart1() {
 		let toggleBtn2 = <button ref='toggle_btn2' className={toggleBtnClass} onClick={this.toggleChart2.bind(this)}></button>;
 		let toggleBtn3 = <button ref='toggle_btn3' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
 		
-		let yiledBtns = <span className='yield-btns-container'><button onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
+		let yiledBtns = <span className='yield-btns-container'><button className='font-simsun' onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
 		
 		let whiteCircle = <div className='madan-white-circle'></div>;
 		let resetBtn = <div className='reset-btn-container flex-center' ref='reset_btn_container'><button onClick={this.resetIndustyChart.bind(this)}>重置</button></div>;
@@ -466,6 +466,8 @@ resizeChart1() {
 			console.assert(this.yearRange[1] > this.yearRange[0], this.yearRange);
 			console.assert(this.yield100Range[1] > this.yield100Range[0]);
 			this.yieldDateGroup = this.yieldDateDim.group();
+			window.yieldDateDim = this.yieldDateDim;
+			window.yieldDateGroup = this.yieldDateGroup;
 
 			this.yieldDim = crossFilter.dimension((data) => { return Math.floor((data.yield*100 - that.yield100Range[0]) / rangeInterval); }); //转换到 0 - (barChartBars - 1)
 			this.yieldGroup = this.yieldDim.group();

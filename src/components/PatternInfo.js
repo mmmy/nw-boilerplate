@@ -75,11 +75,11 @@ class PatternInfo extends React.Component {
 		return (<div className = {containerClass} onMouseEnter={this.mouseEnter.bind(this)} onMouseLeave={this.mouseLeave.bind(this)}>
 			<div className = {flexClass}>
 				<div>
-					<h5>相似度</h5>
+					<h5 className='font-simsun'>相似度</h5>
 					<p className='font-number'>{(similarity*100 + '').slice(0, 4)}{'%'}</p>
 				</div>
 				{ (column && smaller) ? [] : (<div>
-					<h5>返回</h5>
+					<h5 className='font-simsun'>返回</h5>
 					<p className='font-number'>{(yieldRate*100).toFixed(1)+'%'}</p>
 				</div>)}
 			</div>
