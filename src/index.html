@@ -4,7 +4,8 @@
 	<title>keystone</title>
 	<link rel="stylesheet" type="text/css" href="main.css" />
 	<script type="text/javascript">
-		if(/macintosh/i.test(navigator.appVersion)) {  //mac
+		// if(/macintosh/i.test(navigator.appVersion)) {  //mac
+		if (window.devicePixelRatio > 1) {                 //retina
 			(function() {
 				var node = document.createElement('link');
 				node.rel = 'stylesheet';
