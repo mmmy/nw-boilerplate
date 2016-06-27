@@ -44,8 +44,7 @@ class ComparatorStatic extends React.Component {
 
 	render() {
     this.d1 = new Date();
-    const { patterns,
-      stretchView,
+    const {stretchView,
       isPredictionShow,
       logined } = this.props;
 
@@ -162,19 +161,10 @@ class ComparatorStatic extends React.Component {
         <div className={'pattern-tv-box-shadow'}></div>
 
         <div className={ comparatorPredictionContainerClass }>
-          <PredictionContainer patterns={patterns}/>
-          {/*<div className={ predictionMainClassName }>
-            <div className={ 'comparator-header' }>
-              <span>走势分布</span>
-            </div>
-            <ComparatorPrediction
-              stretchView={ stretchView }
-              patterns={ patterns }
-              activeId={ activeId }/>
-          </div>*/}
+          <PredictionContainer/>
         </div>
 
-        <HeatmapContainer patterns={patterns}/>
+        <HeatmapContainer/>
 
       </div>
     );
@@ -185,15 +175,13 @@ ComparatorStatic.propTypes = propTypes;
 ComparatorStatic.defaultProps = defaultProps;
 
 var stateToProps = function(state) {
-	const {layout, patterns, prediction, active, account} = state;
+	const {layout, account} = state;
 	const {stockView, isPredictionShow} = layout;
-  const {id} = active;
   let logined = account.username !== '';
 	return {
 		stretchView: !stockView,
     isPredictionShow: isPredictionShow,
-    patterns: patterns,
-    logined
+    logined,
 	};
 };
 export default connect(stateToProps)(ComparatorStatic);

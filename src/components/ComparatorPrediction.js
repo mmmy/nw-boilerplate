@@ -11,6 +11,7 @@ const propTypes = {
   patterns: PropTypes.object.isRequired,
   stretchView: PropTypes.object.bool,
   activeId: PropTypes.object.number,
+  filter: PropTypes.object.object
 };
 
 const defaultProps = {

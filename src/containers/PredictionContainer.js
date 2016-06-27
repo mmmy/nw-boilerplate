@@ -55,13 +55,14 @@ PredictionContainer.propTypes = propTypes;
 PredictionContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-  const {layout, patterns, active} = state;
+  const {layout, patterns, filter, active} = state;
   const {stockView} = layout;
   const {id} = active;
 	return {
     stretchView: !stockView,
     patterns: patterns,
     activeId: id,
+    filter: filter
   };
 };
 
