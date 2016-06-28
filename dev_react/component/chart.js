@@ -240,8 +240,8 @@ function splitData(rawData, baseBars) {
         highArr.push(isNaN(+rawData[i][3]) ? -Infinity : +rawData[i][3]);
     }
     //console.log(highArr);
-    var min = Math.min.apply(null, lowArr);
-    var max = Math.max.apply(null, lowArr);
+    var min = Math.floor(Math.min.apply(null, lowArr));
+    var max = Math.ceil(Math.max.apply(null, highArr));
 
     var arange10 = [];
     for (var i=0; i < 30; i++) {
@@ -249,7 +249,7 @@ function splitData(rawData, baseBars) {
     }
 
     var areaData = categoryData.slice(baseBars).map((e) => {
-    	return [e, max * 2];
+    	return [e, max];
     });
 
     return {
@@ -490,7 +490,7 @@ export default React.createClass({
 		this.drawChart();
 	},
 	getInitialState(){
-		return {height: 130, width: 130};
+		return {height: 150, width: 300};
 	},
 	componentDidUpdate(){
 		setTimeout((e) => {
