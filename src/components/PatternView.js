@@ -194,8 +194,8 @@ class PatternView extends React.Component {
     if (oldSymbol !== symbol) {
       chart.KeyStone.setSymbol(symbol, '', 1);
       this._doWhenBarReceived(() => {
-        widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
         widget.setVisibleRange(dateRange, '1');
+        widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
         window.timeRange = undefined;
       });
     } else {
