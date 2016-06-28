@@ -22,7 +22,7 @@ function splitData(rawData, baseBars) {
     }
     //console.log(highArr);
     var min = Math.min.apply(null, lowArr);
-    var max = Math.max.apply(null, lowArr);
+    var max = Math.max.apply(null, highArr);
 
     var arange10 = [];
     for (var i=0; i < 40; i++) {
