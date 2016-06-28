@@ -85,6 +85,7 @@ class ToggleBar extends React.Component {
 		if (waitingForPatterns || error) return;
     if (this.props.fullView) window.actionsForIframe.takeScreenshot();
 		this.props.dispatch(layoutActions.toggleStockView());
+    window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
 	}
 
 	getPatterns() {
