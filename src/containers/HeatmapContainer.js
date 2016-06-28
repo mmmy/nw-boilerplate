@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import ComparatorHeatmap from '../components/ComparatorHeatmap';
+import layoutActions from '../flux/actions/layoutActions';
 
 const propTypes = {
 

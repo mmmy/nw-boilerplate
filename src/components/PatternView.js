@@ -99,7 +99,8 @@ class PatternView extends React.Component {
 		let {id, industry} = this.props.pattern;
 		let yieldRate = this.props.pattern.yield;
 		//# 1
-		let matchScatter = getScatter(id);
+    let matchScatter = getScatter(id);
+    getScatter(id);
 		if (matchScatter) {
 			_clonedScatter = matchScatter.cloneNode();
 			_clonedScatter.style && (_clonedScatter.style.fill = color);
@@ -117,6 +118,8 @@ class PatternView extends React.Component {
 		if(matchYieldBar) {
 			matchYieldBar.style.fill = color;
 		}
+
+    this.setHightlightPrediction(id, true);
 	}
 
 	handleMouseLeave(){
@@ -141,7 +144,26 @@ class PatternView extends React.Component {
 		if(matchYieldBar) {
 			matchYieldBar.style.fill = '';
 		}
+
+    this.setHightlightPrediction(id, false);
 	}
+
+  setHightlightPrediction(id, isHighlight) {
+    let patterns = this.props.patterns;
+    let option = window.eChart.getOption();
+    let series = option.series;
+    for (let i = 0; i < series.length; i++) {
+      let data = series[i];
+      if (data.name === id) {
+        data.lineStyle.normal.color = isHighlight ? '#c23531' : '#ccc';
+        data.z = isHighlight? 1 : -1;
+        break;
+      }
+    }
+
+    option.series = series;
+    window.eChart.setOption(option);
+  }
 
 	setActivePattern() {
 
