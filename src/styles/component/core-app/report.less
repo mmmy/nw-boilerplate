@@ -2,7 +2,7 @@
 @width1: 24%;
 @width2: 100% - @width0 - @width1;
 
-@title_H: 26px;
+@title_H: 35%;
 
 .reportdetail-container {
 	position: relative;
@@ -20,7 +20,7 @@
 	}
 
 	.item-title{
-		font-size: 0.85em;
+		font-size: @font-size-ww;
 		color: @lulu-gary2;
 		text-align: center;
 		height: @title_H;
@@ -40,20 +40,22 @@
 		height: calc(~"100% - "@title_H);
 		&.s2 {
 			height: 65%;
-			font-size: 0.75em;
+			font-size: @font-size-ww;
 		}
 
 		.item-body{
-			font-size: 0.8em;
+			font-size: @font-size-ww;
 		}
 
 		.item-name{
-			color: @lulu-gary1;
-			padding-bottom: 7px;
+			color: @lulu-gary3;
+			padding-bottom: 12%;
+			padding-top: 5%
 		}
 
 		.item-data{
 			color: @lulu-black;
+			font-size: @font-size-ww13;
 		}
 
 	}
@@ -91,26 +93,27 @@
 .reporttype-container{
 	padding-top: 6.7%;
 	height: 100%;
-	font-size: 0.85em;
+	font-size: @font-size-ww;
 	//border-left: 1px solid @ks-color-gray-8;
 	//border-right: 1px solid @ks-color-gray-8;
 	//TODO: xiaolu
 	.type-item-container{
 		padding-left: 3%;
 		padding-bottom: 4%;
-		font-size: 1em;
-		color: @lulu-gary3;
+		font-size: @font-size-ww;
+		color: lighten(@lulu-gary1, 10%);
 		//width: 49%;
 		float: left;
 		&:nth-child(2n-1){
-			width: 42%;
+			// width: 42%;
+			width: calc(~'100% - 7% - 185px');
 		}
 		&:nth-child(2n){
-			width: 58%;
+			width: calc(~'185px + 7%');
 		}
 
 		.lulu {
-			color: @ks-color-gray-4;	
+			color: @lulu-gary2;
 		}
 	}
 }
@@ -118,15 +121,18 @@
 
 
 //动画效果要人命 >__<
-@font-size-ww: 0.85em;
-@font-size-mama: @font-size-ww * 2.2;
+@font-size-ww: 11.5px;//1.2rem;
+@font-size-ww13: 12px;//1.2rem;
+@font-size-mama: 30px;//@font-size-ww * 2.2;
 @width-bala: 30%;
 @mama-top1: 35%;
 @mama-top2: 50%;
 @mama-width: 25%; 
 
 .reportdetail-container {
-
+	.fontSize50() { 
+		font-size: 50%;
+	}
 	.days {
 		//display: none;
 		opacity: 0;
@@ -153,7 +159,7 @@
 
 	.shouyi {
 		left: 0;
-		top: 7%;
+		top: 5.5%;
 		font-size: @font-size-ww;
 		width: @width-bala;
 		color: @lulu-gary2;
@@ -161,7 +167,7 @@
 
 	.up-rate {
 		left: 0;
-		top: 56%;
+		top: 57%;
 		font-size: @font-size-ww;
 		width: @width-bala;
 		color: @lulu-gary2;
@@ -183,15 +189,18 @@
 			left: @mama-width * 3;
 			font-size:  @font-size-mama;
 			width: @mama-width;
+			span:nth-child(2) {
+				.fontSize50();
+			}
 		}
 	}
 
 	.median {
 		left: 0;
-		top:22%;
+		top:20%;
 		font-size: @font-size-ww;
 		width: @width-bala * 0.5;
-		color: @lulu-gary1;
+		color: @lulu-gary3;
 		&.mama {
 			top: @mama-top1;
 			left: @mama-width;
@@ -201,23 +210,27 @@
 
 	.median-value {
 		left: 0;
-		top: 34%;
-		font-size: @font-size-ww;
+		top: calc(~"24px + 20%");
+		font-size: @font-size-ww13;
 		width: @width-bala * 0.5;
+		color: black;
 		&.mama {
 			top: @mama-top2;
 			left: @mama-width;
 			font-size: @font-size-mama;
 			width: @mama-width;
+			span:nth-child(2) {
+				.fontSize50();
+			}
 		}
 	}
 
 	.mean {
 		left: 15%;
-		top: 22%;	
+		top: 20%;	
 		font-size: @font-size-ww;	
 		width: @width-bala * 0.5;
-		color: @lulu-gary1;
+		color: @lulu-gary3;
 		&.mama {
 			top: @mama-top1;
 			left: @mama-width * 2;
@@ -227,14 +240,18 @@
 
 	.mean-value {
 		left: 15%;
-		top: 34%;
-		font-size: @font-size-ww;
+		top: calc(~"24px + 20%");
+		font-size: @font-size-ww13;
 		width: @width-bala * 0.5;
+		color: black;
 		&.mama {
 			top: @mama-top2;
 			left: @mama-width * 2;
 			font-size: @font-size-mama;
 			width: @mama-width;
+			span:nth-child(2) {
+				.fontSize50();
+			}
 		}
 	}
 }

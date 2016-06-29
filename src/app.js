@@ -6,7 +6,8 @@ import { Provider } from 'react-redux';
 import Root from './containers/Root';
 import GenerateStore from './flux/GenerateStore';
 
-let store = GenerateStore();
+import store from './store';
+
 window.store = store;
 
 module.exports = function(){

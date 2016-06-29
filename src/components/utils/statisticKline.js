@@ -43,7 +43,7 @@ module.exports = (klines) => {
 			allArr = [];
 
 		klines.forEach((kline) => {
-			if (kline.yield > 0) {
+			if (kline.yield >= 0) {
 				upYieldArr.push(kline.yield);
 			} else if (kline.yield < 0) {
 				downYieldArr.push(kline.yield);
@@ -51,9 +51,10 @@ module.exports = (klines) => {
 			allArr.push(kline.yield);
 		});
 
-		upYieldArr.sort();
-		downYieldArr.sort();
-		allArr.sort();
+		var sortFunc = (a, b) => { return a - b };
+		upYieldArr.sort(sortFunc);
+		downYieldArr.sort(sortFunc);
+		allArr.sort(sortFunc);
 
 		let upLen = upYieldArr.length,
 			downLen = downYieldArr.length;
@@ -71,7 +72,7 @@ module.exports = (klines) => {
 		
 		down.median = getMedian(downYieldArr);
 		down.mean = downLen > 0 ? (downSum / downLen) : 0;
-		down.min =  downLen > 0 ? downYieldArr[downLen - 1] : 0;
+		down.min =  downLen > 0 ? downYieldArr[0] : 0;
 
 	}
 

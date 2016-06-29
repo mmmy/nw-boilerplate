@@ -51,9 +51,9 @@ var factorCandleOption=function(candleBorder = true){
 		    },
 		    grid: {
 		    	show: false,
-		        left: '0',
-		        right: '0',
-		        bottom: '0'
+		        left: '3px',
+		        right: '3px',
+		        bottom: '3px'
 		    },
 		    xAxis: {
 		        type: 'category',
@@ -62,6 +62,7 @@ var factorCandleOption=function(candleBorder = true){
 		        boundaryGap : false,
 		        axisLine: {show: false},
 		        splitLine: {show: false},
+		        minInterval: 1,
 		        axisTick: {
 		        	show: false
 		        },
@@ -74,6 +75,7 @@ var factorCandleOption=function(candleBorder = true){
 		    },
 		    yAxis: {
 		        scale: true,
+		        minInterval: 1,
 		        axisLine: {
 		        	show: false
 		        },
@@ -88,7 +90,9 @@ var factorCandleOption=function(candleBorder = true){
 		        },
 		        splitArea: {
 		            show: false
-		        }
+		        },
+		        min: 'dataMin',
+		        max: 'dataMax'
 		    },
 		    series: [
 		        {
@@ -143,7 +147,7 @@ var factorCandleOption=function(candleBorder = true){
 		            areaStyle: {
 		                normal: {
 		                    color: 'rgb(255,255,255)',
-		                    opacity: 0.4
+		                    opacity: 0.6
                 		}
            		 	},
            		}

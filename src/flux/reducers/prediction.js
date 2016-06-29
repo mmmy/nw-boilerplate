@@ -2,9 +2,9 @@ import * as types from '../constants/ActionTypes';
 
 const initialState = {
   lastClosePrice: 0,
-  predictionLastClosePrices: [],    // 用作heatmap
-  predictionPriceScaleMarks: [],    // 用作heatmap
-  heatmapYAxis: [] 
+  heatmapYAxis: 0,
+  scaleMaxValue: 0,
+  scaleMinValue:0
 };
 
 export default function prediction(state = initialState, action) {
@@ -16,25 +16,13 @@ export default function prediction(state = initialState, action) {
         lastClosePrice: lastClosePrice
       }
 
-    case types.SET_ALL_PREDICTION_LAST_CLOSE_PRICES:
-      let predictionLastClosePrices = action.predictionLastClosePrices;
-      return {
-        ...state,
-        predictionLastClosePrices: predictionLastClosePrices
-      }
-
-    case types.SET_PREDICTION_PRICE_SCALE_MARKS:
-      let predictionPriceScaleMarks = action.predictionPriceScaleMarks;
-      return {
-        ...state,
-        predictionPriceScaleMarks: predictionPriceScaleMarks
-      }
-
     case types.SET_HEATMAP_YAXIS:
-      let heatmapYAxis = action.heatmapYAxis;
+      let { heatmapYAxis, scaleMaxValue, scaleMinValue } = action;
       return {
         ...state,
-        heatmapYAxis: heatmapYAxis
+        heatmapYAxis: heatmapYAxis,
+        scaleMaxValue: scaleMaxValue,
+        scaleMinValue: scaleMinValue
       }
 
     default:

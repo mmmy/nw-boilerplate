@@ -6,7 +6,8 @@
 	will-change: transition;
 	transition-property: all;
 	transition-duration: @transition-duration;
-	transition-timing-function: cubic-bezier(1, 0.02, 0, 0.95);
+	transition-timing-function: ease-in-out;
+	// transition-timing-function: cubic-bezier(1, 0.02, 0, 0.95);
 	transition-delay: 0s;
 }
 .transition-top{
@@ -39,10 +40,29 @@
 	transition-delay: 0s;
 }
 
-.transition-duration2 {
-	transition-duration: .3s;
+.transition-delay3 {
+	transition-delay: .3s;
 }
 
+.transition-ease {
+	transition-timing-function: ease;
+}
+
+.transition-ease-in-out {
+	transition-timing-function: ease-in-out;
+}
+
+.transition-duration2 {
+	transition-duration: .5s;
+}
+
+.transition-duration3 {
+	transition-duration: .4s;
+}
+
+.transition-duration1000{
+	transition-duration: 1s;
+}
 .ks-hidden{
   opacity: 0;
 }
@@ -52,12 +72,13 @@
 }
 
 .ks-fade-in{
-  transition: opacity @transition-duration2 ease @transition-duration + 0.3s;
+  // transition: opacity 0 ease @transition-duration + 0.1s;
+  // transition: opacity @transition-duration2 ease @transition-duration + 0.3s;
 }
 
 .ks-transition-height-opacity{
 	transition: height @transition-duration ease, 
-				opacity @transition-duration2 ease @transition-duration + 0.3;
+				opacity 0 ease @transition-duration + 0.1s;
 }
 
 .ks-no-transition {
@@ -69,11 +90,23 @@
 	justify-content: space-around;
 	text-align: center;
 	height: 100%;
-	align-items: center;
+	align-items: flex-start;
 
 	&.column {
 		flex-direction: column;
 	}
+}
+
+.flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.flex-end {
+	display: flex;
+	align-items: center;
+	justify-content: 	flex-end;
 }
 
 .chart-container{
@@ -119,7 +152,9 @@
 	&::-webkit-scrollbar-thumb {
 		border: @border;
 	    border-radius: @border-radius;
-	    background-color: @background-color;
+	    background: @background-color url('./image/scroll-bg.png') no-repeat;
+	    background-size: contain;
+	    background-position: center;
 	    -webkit-box-shadow: @box-shadow;
 	    cursor: pointer;
 	}
@@ -137,6 +172,11 @@
   font-family: 'AvantGarde';
   src: url('./fonts/texgyreadventor-regular.otf') format('opentype');
 }
+// @font-face {
+//   font-family: 'simsun';
+//   src: url('./fonts/SimSun.ttf') format('truetype');
+// }
+
 
 // Catchall baseclass
 .font-msyh {
@@ -147,8 +187,14 @@
 
 .font-number {
   font-family: 'AvantGarde';
-  -webkit-font-smoothing: grayscale;
-  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: antialiased !important;
+}
+
+.font-simsun {
+  font-family: 'simsun';
+  -webkit-font-smoothing: none;
+  // -moz-osx-font-smoothing: grayscale;
 }
 
 //position

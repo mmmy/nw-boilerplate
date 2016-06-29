@@ -5,11 +5,12 @@ import classNames from 'classnames';
 import { layoutActions } from '../flux/actions';
 import echarts from 'echarts';
 import { predictionRandomData } from './utils/comparatorPredictionEchart';
+import _ from 'underscore';
 
 const propTypes = {
   patterns: PropTypes.object.isRequired,
-  filter: PropTypes.object.isRequired,
-  lastClosePrice: PropTypes.number.isRequired,
+  stretchView: PropTypes.object.bool,
+  filter: PropTypes.object.object
 };
 
 const defaultProps = {
@@ -29,21 +30,38 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
-    let option = window.eChart.getOption();
-    option.series = this.generateSeriesData();
-    window.eChart.setOption(option, true);
   }
 
-  shouldComponentUpdate(){
-    return true;
+  shouldComponentUpdate(nextProps){
+    return nextProps.stretchView === this.props.stretchView;
   }
+  componentDidUpdate() {
+    let option = window.eChart.getOption();
+    option.series = this.generateSeriesDataFromClosePrice();
+    window.eChart.setOption(option, true);
+    console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
+
+    const updatePaneViews = this._updatePaneViews ||  _.throttle(() => {
+      console.debug('updatePaneViews');
+      let dom = window.widget_comparator && window.widget_comparator._innerWindow && window.widget_comparator._innerWindow();
+      if (dom) {
+        let m = dom.Q5 && dom.Q5.getAll()[0];
+        let model = m.model();
+        let series = model.mainSeries()
+        let ps = series.priceScale()
+
+        ps.updatePaneViews(true);
+      }
+    }, 1000);
+
+    this._updatePaneViews = updatePaneViews;
+
+    updatePaneViews();
+  }
+
 
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
-  }
-
-  getLastValueData() {
-  // TODO
   }
 
   handleResize() {
@@ -56,48 +74,73 @@ class ComparatorPrediction extends React.Component {
 			this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
 			this.oldCrossFilter = crossFilter;
 		}
-    this.xAxisData = [];
-    for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
+    // this.xAxisData = [];
+    //
+    // if (this.symbolDim.top(Infinity).length !== 0)
+    //   for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
 	}
 
-  splitData(kLine, baseBars) {
+  splitDataFromClosePrice(line) {
     let data = [];
-    let percentage = this.props.lastClosePrice / kLine[0][2];
-    data.push(kLine[0][2] * percentage);
-
-    if (kLine.length > baseBars) {
-      kLine.slice(baseBars).forEach((e, i) => {
-        data.push(e[2] * percentage);
-      });
-    } else {
-      kLine.forEach((e, i) => {
-        data.push(e[2] * percentage);
-      });
+    for (var i = 0; i < line.length; i++) {
+      let e = line[i];
+      let percentage = (e - line[0]) / line[0] * 100;
+      data.push(percentage);
     }
+
     return data;
   }
 
-  generateSeriesData() {
+  generateSeriesDataFromClosePrice() {
     this.initDimensions();
-    let eChartSeriesData = [];
-    // demo
-    this.symbolDim.top(Infinity).forEach((e, i) => {
-      eChartSeriesData.push({
-        data: this.splitData(e.kLine, e.baseBars),
-        name: '模拟数据',
-        type: 'line',
-        showSymbol: false,
-        hoverAnimation: false,
-        lineStyle: {
-          normal: {
-            color: i === 5 ? '#c23531' : '#ccc',
-            width: 0.8
-          }
-        },
-        z: i === 5 ? 9999 : 2
-      });
-    });
-    return eChartSeriesData;
+    let rawData = this.symbolDim.top(Infinity);
+    let { closePrice } = this.props.patterns;
+    let series = [];
+    // let maxValue = 0 * -1;
+    let maxValue = this.maxValue;
+    let minValue = this.minValue;
+    if (rawData.length > 0) {
+      maxValue =  minValue = 0;
+      for (var i = 0; i < rawData.length; i++) {
+        let e = rawData[i]
+        series.push({
+          data: this.splitDataFromClosePrice(closePrice[e.id]),
+          name: e.id,
+          type: 'line',
+          showSymbol: false,
+          hoverAnimation: false,
+          lineStyle: {
+            normal: {
+              color: '#ccc',
+              // color: e.id === activeId ? '#c23531' : '#ccc',
+              width: 0.5
+            }
+          },
+          z: -1
+          // z: e.id === activeId ? 1 : -1
+        });
+      }
+
+      // find max min values for scale
+      for (let i = 0; i < series.length; i++) {
+        let serie = series[i]
+        let data = serie.data;
+        for (let j = 0; j < data.length; j++) {
+          let d = data[j]
+          maxValue = Math.max(d, maxValue);
+          minValue = Math.min(d, minValue);
+        }
+      }
+      this.maxValue = maxValue;
+      this.minValue = minValue;
+    }
+
+    window.eChartMaxValue = this.maxValue;
+    window.eChartMinValue = this.minValue;
+    let scaleMax = Math.max(Math.abs(this.maxValue), Math.abs(this.minValue));
+    window.eChartScale = scaleMax; // scale top/bottom margin
+
+    return series;
   }
 
   initEchart() {
@@ -111,12 +154,15 @@ class ComparatorPrediction extends React.Component {
       animationDuration: '0',
       // color: ['#ccc', '#c23531', '#ccc'],
       color: ['#ccc'],
-      backgroundColor: 'RGBA(250, 251, 252, 1.00)',
+      // backgroundColor: 'RGBA(250, 251, 252, 1.00)',
+      backgroundColor: '#FFFFFF',
       grid: {
         x: 0,
         x2: 0,
-        y: 9,
-        y2: 10
+        y: 0,
+        y2: 0,
+        top: 0,
+        bottom: 0
       },
       tooltip: {
         show: false,
@@ -139,19 +185,33 @@ class ComparatorPrediction extends React.Component {
         // data: this.xAxisData
       },
       yAxis: {
-        show: false,
+        show: true,
+        axisLine: {
+          show: false,
+        },
+        axisLabel: {
+          formatter: '{value} %',
+          textStyle: {
+            color: '#656565',
+            fontStyle: 'italic',
+            fontWeight: 'lighter',
+            fontSize: 10
+          },
+          margin: -40
+        },
+        axisTick: {
+          show: false
+        },
         position: 'right',
         type: 'value',
         boundaryGap: [0, '100%'],
         splitLine: {
           show: false
         },
-        // scale: true,
-        // interval: 0.5,
-        max: 'maxData',
-        min: 5.5
+        minInterval: 1,
+        // splitNumber: 6,
       },
-      series: this.generateSeriesData()
+      series: []
       // series: predictionRandomData()
     };
 
@@ -165,6 +225,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   render(){
+    this.d1 = new Date();
     let className = classNames('comparator-prediction-chart');
 
     return (

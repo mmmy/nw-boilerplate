@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import echarts from 'echarts';
 import classNames from 'classnames';
+import { setFunc } from './helper/updateEchartImage';
 import {factorCandleOption , factorLineOption} from './utils/echart-options';
 
 const renderDataLen = Infinity;
@@ -16,20 +17,20 @@ function splitData(rawData, baseBars) {
     for (var i = 0; i < rawData.length; i++) {
         categoryData.push(rawData[i].slice(0, 1)[0]);
         values.push(rawData[i].slice(1));
-        lowArr.push(isNaN(+rawData[i][2]) ? Infinity : +rawData[i][2]);
-        highArr.push(isNaN(+rawData[i][3]) ? -Infinity : +rawData[i][3]);
+        lowArr.push(isNaN(+rawData[i][3]) ? Infinity : +rawData[i][3]);
+        highArr.push(isNaN(+rawData[i][4]) ? -Infinity : +rawData[i][4]);
     }
     //console.log(highArr);
     var min = Math.min.apply(null, lowArr);
-    var max = Math.max.apply(null, lowArr);
+    var max = Math.max.apply(null, highArr);
 
     var arange10 = [];
-    for (var i=0; i < 40; i++) {
-    	arange10.push([categoryData[baseBars], min + (max - min) / 23 * i]);
+    for (var i=0; i < 20; i++) {
+    	arange10.push([categoryData[baseBars-1], min + (max - min) / 20 * i]);
     }
 
-    var areaData = categoryData.slice(baseBars).map((e) => {
-    	return [e, max * 2];
+    var areaData = categoryData.slice(baseBars-1).map((e) => {
+    	return [e, max];
     });
 
     return {
@@ -46,6 +47,8 @@ const propTypes = {
 	pattern: PropTypes.object.isRequired,
 	index: PropTypes.number.isRequired,
 	fullView: PropTypes.bool.isRequired,
+	isTrashed: PropTypes.bool,
+	id: PropTypes.number.isRequired,
 };
 
 const defaultProps = {
@@ -57,12 +60,13 @@ class EChart extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {};
+		this.chart = null;
 		this.canvasNode = window.document.createElement('canvas');
-		this.canvasNode.height = 200;
+		this.canvasNode.height = 140;
 		this.canvasNode.width = 200;
 	}
 
-	drawChart() {
+	drawChart(callback) {
 		// let node = this.refs['echart'+this.props.index];
 		const { kLine, baseBars } = this.props.pattern;
 		if (this.oldKline === kLine) {
@@ -71,28 +75,33 @@ class EChart extends React.Component {
 		this.oldKline = kLine;
 		let node = this.canvasNode;
 
-		let chart = echarts.init(node);
+		// let chart = this.chart || echarts.init(node);
 		let index = this.props.index;
-		this.chart = chart;
-		if(index===0){
-			window.chart = chart;
-		}
+		// if(index===0){
+		// 	window.chart = chart;
+		// }
 		//candleChart
 		if (candleChart) {
-
+			this.chart = this.chart || echarts.init(node);//&& this.chart.dispose();
 			let data0 = splitData(kLine, baseBars);
-			let candleOption = factorCandleOption(kLine.length < 50);
+			let candleOption = factorCandleOption(true);
 			candleOption.xAxis.data = data0.categoryData;
 			candleOption.series[0].data = data0.values;
 			candleOption.series[1].data = data0.lineData;
 			candleOption.series[2].data = data0.areaData;
-			candleOption.yAxis.min = data0.yMin;
+			// candleOption.yAxis.min = data0.yMin;
 			candleOption.yAxis.max = data0.yMax;
 			//console.log(data0.values[0]);
 			//setTimeout(function(){
-	        	chart.setOption(candleOption);
-	        	let imgUrl = chart.getDataURL();
+	        	this.chart.setOption(candleOption);
+	        	let imgUrl = this.chart.getDataURL();
 	        	this.refs['echart'+this.props.index].firstChild.src = imgUrl;
+	    this._imgNormal = imgUrl;
+
+	    // this.canvasNode.height = 97;
+	    // this.canvasNode.width = 80;
+	    // this.chart.resize();
+	    // this._imgSmall = this.chart.getDataURL();
 			//debugger;
 			//},0);
 
@@ -110,12 +119,12 @@ class EChart extends React.Component {
 				chart.setOption(lineOption);
 			});
 		}
-
-
+		callback &&  setTimeout(callback, 5);
 	}
 
 	componentDidMount() {
 		this.drawChart();
+		setFunc(this.props.id, this.drawChart.bind(this));
 	}
 
 	componentDidUpdate() {
@@ -157,19 +166,22 @@ class EChart extends React.Component {
 	}
 
 	componentWillUnmount(){
-
+		delete this.canvasNode;
+		this.chart.dispose && this.chart.dispose();
+		delete this.chart;
 	}
 
 	render(){
 
-		let { fullView, index } = this.props;
+		let { fullView, index, isTrashed } = this.props;
 		//console.log('index', this.props.index);
 		const className = classNames('echart', 'transition-all', {
 			'larger': !fullView && index === 0,
 			'smaller': !fullView && index > 0 && index < 5,
 		});
 
-		return <div ref={'echart'+this.props.index} className={className} ><img src='' /></div>;
+		let trashInfo = isTrashed ? <div className='trashed-info'>{/*<h1>不参与</h1><h1>走势计算</h1>*/}</div> : '';
+		return <div ref={'echart'+this.props.index} className={className} ><img src='' />{trashInfo}</div>;
 
 	}
 }

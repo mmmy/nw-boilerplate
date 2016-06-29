@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { layoutActions, patternActions } from '../flux/actions';
+import actionsForIframe from '.././shared/actionsForIframe';
+import store from '../store';
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
@@ -38,7 +40,8 @@ class ToggleBar extends React.Component {
 	render(){
 
 		let {fullView, searchTimeSpent, waitingForPatterns} = this.props;
-		
+		let { error } = store.getState().patterns;
+
 		const toggleClass = classNames('container-toggle','transition-all', {
 			'full': fullView,
 		});
@@ -53,17 +56,17 @@ class ToggleBar extends React.Component {
 
 		const btnClass = classNames('item', 'btn-toggle', {
 			'rotate': fullView,
-			'ks-hidden': waitingForPatterns,
+			'ks-hidden': waitingForPatterns || error,
 			'ks-no-transition': waitingForPatterns,
 		});
 
 		const time = (searchTimeSpent/1000).toFixed(3);
 
-		return (<div className={toggleClass}>
-					<div className={btnWrapper}>
-						<div className="item title">云搜索</div>
-						<div className={timespentClass}>{ `用时:${time}秒` }</div>
-						<div className={btnClass} onClick={this.toggleView.bind(this)}><i className="fa fa-angle-up"></i></div>
+		return (<div className={toggleClass} >
+					<div className={btnWrapper} onClick={this.toggleView.bind(this)}>
+						<div className="item title">搜索</div>
+						{/*<div className={timespentClass}>{ `用时:${time}秒` }</div>*/}
+						<div className={btnClass} ><i className="fa fa-angle-up"></i></div>
 					</div>
 		          {/*<button
 		            style={{'marginLeft':'48%'}}
@@ -77,6 +80,13 @@ class ToggleBar extends React.Component {
 	}
 
 	toggleView() {
+		let { waitingForPatterns } = this.props;
+		let { error } = store.getState().patterns;
+		if (waitingForPatterns || error) return;
+    if (this.props.fullView)
+      window.actionsForIframe.takeScreenshot();
+    else
+      window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
 		this.props.dispatch(layoutActions.toggleStockView());
 	}
 

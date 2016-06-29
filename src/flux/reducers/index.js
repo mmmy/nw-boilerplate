@@ -9,6 +9,9 @@ import comparatorTv from './comparatorTv';
 import prediction from './prediction';
 import active from './active';
 import searchConfig from './searchConfig';
+import configModal from './configModal';
+import patternTrashed from './patternTrashed';
+import account from './account';
 
 export default combineReducers({
 	layout,
@@ -21,4 +24,7 @@ export default combineReducers({
 	prediction,
 	active,
 	searchConfig,
+	configModal,
+	patternTrashed,
+	account,
 });

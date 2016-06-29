@@ -47,20 +47,20 @@ let chunksToKline = (chunks) => {
  * args: [{symbol, dateRange:[]},]
  */
 
-let postSymbolData = (args, bars, cb, errorCb) => {
+let postSymbolData = (startIndex, args, bars, cb, errorCb) => {
 
 	let options = {           		
 		...patternOptions
 	};
 
-	let batchCondition = args.map(({symbol, dateRange, timeUnit='d', category='cs', additionDate = { type:'days', value: 30 } }) => {
-		
+	let batchCondition = args.map(({symbol, dateRange, lastDate, timeUnit='d', category='cs', additionDate = { type:'days', value: 30 } }) => {
+		lastDate = typeof lastDate === 'string' ? lastDate : lastDate.time;
 		return {
 			dataCategory: category,
 			dataTimeUnit: timeUnit,
 			id: symbol,
-			begin: moment.utc(dateRange[0]).toISOString(),
-	        end: moment.utc(dateRange[1]).add(additionDate.value, additionDate.type).toISOString()
+			begin: moment.utc(dateRange[0]).add(-1, 'days').toISOString(),
+	    end: lastDate && moment.utc(lastDate).add(1, 'days').toISOString() || moment.utc(dateRange[1]).add(additionDate.value, additionDate.type).toISOString()
 		};
 	});
 
@@ -97,7 +97,7 @@ let postSymbolData = (args, bars, cb, errorCb) => {
 
 				});
 
-				cb && cb(klineArr);
+				cb && cb(startIndex, klineArr);
 			};
 			//TODO:获取文件chunk, 并合并数据
 			let fileChunkCount = 0;
@@ -129,7 +129,7 @@ let postSymbolData = (args, bars, cb, errorCb) => {
 
 	};
 
-	request(options, dataCb, errorCb, postData);
+	return request(options, dataCb, errorCb, postData);
 }
 
 module.exports = {

@@ -5,7 +5,8 @@ const initialState = {
 	yieldRange: [], //收益率
 	symbol: '',
 	similarity: {min:0, max:100},
-	yieldDateRange: [[],[]],
+	yieldDateRange: [],
+	trashedIdArr: []
 };
 
 export default function filter(state = initialState, actions) {
@@ -15,6 +16,13 @@ export default function filter(state = initialState, actions) {
 
 			let industrys = state.industrys,
 				industry = actions.industry;
+
+			if(industry === null) {
+				return {
+					...state,
+					industrys:[]
+				};
+			}
 
 			if(industrys.indexOf(industry) != -1) {
 				industrys.splice(industrys.indexOf(industry), 1);
@@ -56,13 +64,25 @@ export default function filter(state = initialState, actions) {
 
 		case types.SET_FILTER_YIELDDATERANGE:
 
-			let { yieldDateRange } = actions;
+			let yieldDateRange = actions.yieldDateRange || [];
 
 			return {
 				...state,
 				yieldDateRange,
 			};
 
+		case types.SET_FILTER_ID:
+			let trashedIdArr = actions.trashedIdArr;
+			return {
+				...state,
+				trashedIdArr,
+			};
+
+		case types.WAITING_PATTERNS:
+			return {
+				...initialState
+			};
+			
 		default:
 			return state;
 	}

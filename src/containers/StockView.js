@@ -25,8 +25,8 @@ class StockView extends React.Component {
 
 	}
 
-	shouldComponentUpdate(){
-		return true;
+	shouldComponentUpdate(newProps){
+		return newProps.logined !== this.props.logined;
 	}
 
 	componentWillUnmount(){
@@ -34,7 +34,7 @@ class StockView extends React.Component {
 	}
 
 	render() {
-		let { stockView } = this.props;
+		let { stockView, logined } = this.props;
 		let options = {
 				symbol: '000001.SZ',
 				interval: 'D',
@@ -42,26 +42,27 @@ class StockView extends React.Component {
 				//	BEWARE: no trailing slash is expected in feed URL
 				// datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
 				// datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
-				datafeed: new window.Kfeeds.UDFCompatibleDatafeed(""),
+				datafeed: new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0), //params: datafeedURL, updateFrequency, protocolVersion, id
 				library_path: "charting_library/",
 				locale: "zh",
       			theme: "Black",
 				//	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
 				drawings_access: { type: 'black', tools: [ { name: "Regression Trend" } ] },
-				disabled_features: ["use_localstorage_for_settings"],
+				disabled_features: ['control_bar','timeframes_toolbar', 'remove_library_container_border', 'chart_property_page_style'],
 				enabled_features: ["study_templates"],
 				charts_storage_url: 'http://saveload.tradingview.com',
         		charts_storage_api_version: "1.1",
 				client_id: 'tradingview.com',
 				user_id: 'public_user_id',
 				autosize: true,
-        		fullscreen: false,
+        fullscreen: false,
         		// height: 300,
         		// width: 300,
-        		overrides: {
+	      overrides: {
 						"paneProperties.background": "#131313",
-                        "paneProperties.vertGridProperties.color": "#131313",
-                        "paneProperties.horzGridProperties.color": "#131313",
+	          "paneProperties.vertGridProperties.color": "#131313",
+	          "paneProperties.horzGridProperties.color": "#131313",
+	          "symbolWatermarkProperties.color": '#131313',
 						"symbolWatermarkProperties.transparency": 90,
 						"scalesProperties.textColor" : "#AAA",
 
@@ -76,9 +77,33 @@ class StockView extends React.Component {
 						"mainSeriesProperties.candleStyle.wickDownColor": '#6A6A6A',
 						"mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
 
+						"scalesProperties.lineColor" : "rgba(255,255,255,0)",
+						"scalesProperties.textColor" : "rgba(255,255,255,1)"
 				},
 				studies_overrides: {
 
+				},
+				ks_overrides: {
+					"ksSplitView": false,
+					volume: false,
+					OHLCBarBorderColor: true,
+					ksSearch: true,
+					showLiveBtn: true,
+					lineToolTimeAxisView: {
+						background: '#b61c15',
+						// activeBackground: 'green',
+						color: '#fff',
+						borderColor: '#b61c15',
+					},
+					lineToolPriceAxisView: {
+						background: '#b61c15',
+						// activeBackground: 'green',
+						color: '#fff',
+						borderColor: '#b61c15',
+					},
+					lineToolAxisRange: {
+						background: 'rgba(182,28,21,0.4)',
+					}
 				}
 			};
 
@@ -86,7 +111,8 @@ class StockView extends React.Component {
 	      <div className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
 	        <ReactTradingView
 	          viewId={ STOCK_VIEW }
-	          options={ options } />
+	          options={ options }
+	          init={ logined } />
 	      </div>
 	    );
 	}
@@ -96,10 +122,12 @@ StockView.propTypes = propTypes;
 
 let mapStateToProps = function mapStateToProps(state) {
 	console.log('state changed');
-	const { layout } = state;
+	const { layout, account } = state;
 	const { stockView } = layout;
+	let logined = account.username !== '';
 	return {
-	  stockView
+	  stockView,
+	  logined
 	};
 }
 

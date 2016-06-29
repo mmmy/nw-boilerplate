@@ -26,6 +26,16 @@ export default function active(state = initialState, action) {
       }
       return state;
 
+    case types.CHANGE_PATTERNS:
+      let pattern0 = action.patterns && action.patterns.rawData[0] || {};
+      return {
+        ...state,
+        id: 0,
+        symbol: pattern0.symbol,
+        dateStart: pattern0.begin,
+        dateEnd: pattern0.end
+      };
+
     default:
       return state;
   }

@@ -1,0 +1,253 @@
+//afterSearchMessage
+
+@-webkit-keyframes slide-up-down {
+	0% { bottom: -30px; }
+	20% { bottom: 0; }
+	80% { bottom: 0; }
+	100% { bottom: -30px; }
+}
+
+.search-message-container {
+	position: fixed;
+	bottom: -30px;
+	left: 0;
+	width: 100%;
+	height: 30px;
+	text-align: center;
+	box-shadow: 0 0 40px 0 #f7f7f7;
+	font-size: 12px;
+	padding-top: 5px;
+	color: @ks-color-gray-5;
+	.font-msyh();
+	&.slide-up-down {
+		-webkit-animation: 4s ease 0s slide-up-down;
+	}
+	.number {
+		color: @ks-color-gray-1;
+		padding: 0 5px;
+	}
+	.timespend {
+
+	}
+}
+
+
+//switch 
+.switch-contianer {
+	width: 3rem;
+	height: 3rem;
+	background-color: white;
+	position: relative;
+	box-shadow: -1px 3px 10px 0 #aaa;
+	cursor: pointer;
+	border-radius: 2px;
+	text-align: center;
+	font-size: 2rem;
+	color: @ks-color-gray-5;
+	.switch-pin {
+		position: absolute;
+		border-radius: 2px;
+		width: 1.2rem;
+		height: 1.2rem;
+		left: 0;
+		background-color: @ks-color-gray-8;
+		margin: 0.4rem;
+	}
+	.on {
+		background-color: @lulu-red1;
+		left: 2rem;
+	}
+	.fa.fa-trash {
+		// border: 1px solid red;
+		width: 26px;
+		height: 26px;
+		background: url('./image/trash-icon.png') no-repeat;
+		background-size: 100%;
+		background-position: 0 0;
+		&:before {
+			content: '';
+		}
+	}
+}
+
+
+
+.trash-modal-container {
+	position: relative;
+	width: 725px;
+	height: 480px;
+	z-index: 10001;
+	background-color: #fff;
+	box-shadow: 0 0 15px 0 #aaa;
+
+	.close-icon {
+		float: right;
+		//display: inline-block;
+		margin-right: 10px;
+		margin-top: 10px;
+		width: 30px;
+		height: 25px;
+		text-align: center;
+		cursor: pointer;
+		.fa-close {
+			color: transparent;
+			background: url(./image/close.png) no-repeat;
+		}
+		&:hover {
+			.fa-close {
+				background-position: 0 100%;
+			}
+		}
+	}
+
+	input, button{
+		outline: none;
+	}
+	.title {
+		margin-top: 30px;
+		font-size: 16px;
+		padding-left: 40px;
+		height: 40px;
+	}
+	.trash-modal-content-wrapper {
+		height: calc(~"100% - 130px");
+		// border: 1px solid red;
+		overflow: scroll;
+		.scrollbar(@width:7px);
+		.scrollbar-track(@background-color:transparent);
+		.scrollbar-thumb();
+		margin-right: 15px;
+	}
+	.footer {
+		border-top: 1px solid @ks-color-gray-9;
+		// border-bottom: 1px solid @ks-color-gray-5;
+		height: 60px;
+		button {
+			position: relative;
+			left: -25px;
+			border: none;
+			width: 160px;
+			font-size: 11.5px;
+			padding: 6px;
+			background-color: @config-modal-button-background-color;
+			border-radius: 2px;
+			&:hover {
+				background-color: #fff;
+				box-shadow: 0 3px 10px 0 #eee;
+			}
+		}
+		.info-container {
+			position: relative;
+			left: -232px;
+			font-size: 10px;
+			width: 55px;
+			color: @ks-color-gray-6;
+			.font-number {
+				display: inline-block;
+				width: 25px;
+				text-align: right;
+				color: @ks-color-gray-1;
+				padding-right: 2px;
+			}
+		}
+	}
+}
+
+.trash-modal-content-wrapper {
+
+}
+
+//login
+.login-panel-container {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+	z-index: 1000;
+	.body-container {
+		width: 280px;
+		margin: 10% auto 0 auto;
+	}
+	.logo{
+		// background: url(@logo_url_png) no-repeat;
+		width: 80px;
+		height: 80px;
+		background-size: contain;
+		margin: auto;
+		margin-bottom: 10%;
+	}
+	input[type='text'], input[type='password'] {
+		width: 100%;
+		border: none;
+		outline: none;
+		border-bottom: 1px solid @ks-color-gray-9;
+		font-size: 16px;
+		padding: 5px;
+		z-index: 1;
+		&:focus {
+			border-bottom-color: @ks-color-gray-8;
+		}
+		margin-bottom: 30px;
+		position: relative;
+		background-color: transparent;
+	}
+	.user-name {
+		position: relative;
+	}
+	.password {
+		position: relative;
+	}
+	.placeholder {
+		position: absolute;
+		left: 0;
+		top: 0;
+		padding: 6px;
+		font-size: 14px;
+		color: @ks-color-gray-6;
+		z-index: 0;
+		&.move-left{
+			left: -100%;
+		}
+	}
+	.options {
+		margin-top: 10px;
+		color: @ks-color-gray-5;
+		input {
+			font-size: 18px;
+			margin-right: 5px;
+		}
+	}
+	.denglu{
+		margin-top: 10px;
+		button{
+			border: none;
+			outline: none;
+			width: 100%;
+			font-size: 17px;
+			background-color: @config-modal-button-background-color;
+			padding: 8px;
+			border-radius: 2px;
+			&:hover {
+				background-color: #fff;
+				box-shadow: 0 3px 10px 0 #eee;
+			}
+			// letter-spacing: 10px;
+		}
+	}
+	.wave-container {
+		margin-top: 30px;
+		position: relative;
+		height: 20%;
+	}
+
+	.account-button{
+		position: relative;
+		.user-panel-container{
+			position: absolute;
+			top: 20px;
+			right: 0;
+		}
+	}
+}

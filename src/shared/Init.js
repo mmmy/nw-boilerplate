@@ -1,8 +1,24 @@
+import { setRem } from '../components/utils/layoutUtils';
+import _ from 'underscore';
 
 let initJquery = () => {
 	let $ = require('jquery');
-	window.jQeury = window.$ = $;
-	global.jQeury = global.$ = $;
+	window.jQuery = window.$ = $;
+	global.jQuery = global.$ = $;
+	require('./bootstrap-datepicker.min');
+	require('./bootstrap-datepicker.zh-CN.min');
+	//animate.css helper
+	if(!$.fn.animatedCss){
+			$.fn.extend({
+			    animateCss: function (animationName, cb) {
+			        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+			        $(this).addClass('animated ' + animationName).one(animationEnd, function() {
+			            $(this).removeClass('animated ' + animationName);
+			            cb && cb();
+			        });
+			    }
+			});
+	}
 	/*let TradingView =*/ require('../../tradingview/charting_library/charting_library');
 	/*let Datafeed =*/ require('../../tradingview/charting_library/datafeed/udf/datafeed');
   require('../../tradingview/charting_library/datafeed/udf/ks_search_result');
@@ -27,6 +43,11 @@ let initAssert = () => {
 	};
 };
 
+let initResize = () => {
+	setRem();
+	window.addEventListener('resize', _.debounce(setRem, 200));
+};
+
 module.exports = () => {
 	/******************************************
 		.showDevTools()  not work at here
@@ -47,4 +68,5 @@ module.exports = () => {
 
  	initJquery();
  	initAssert();
+ 	initResize();
 };

@@ -2,7 +2,7 @@ import * as types from '../constants/ActionTypes';
 import ajaxData from '../../backend/ajaxData';
 import backend from '../../backend';
 import crossfilter from 'crossfilter';
-
+import store from '../../store';
 /**
  * 异步获取patterns
  * @param  {string}   symbol    [股票代码]
@@ -12,9 +12,19 @@ import crossfilter from 'crossfilter';
  */
 
 const devLocal = false;
+let _lastSearch = {};
 
 let getPatterns = ({symbol, dateRange, bars}, cb) => {
 	//console.log('patternActions: getPatterns',symbol, dateRange);
+	symbol = symbol || _lastSearch.symbol;
+	dateRange = dateRange || _lastSearch.dateRange;
+	bars = bars || _lastSearch.bars;
+
+	//缓存上一次的
+	_lastSearch.symbol = symbol;
+	_lastSearch.dateRange = dateRange;
+	_lastSearch.bars = bars;
+
 	return (dispacth) => {
 
 		const startTime = new Date();
@@ -42,14 +52,18 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 
 		} else {
 
-			backend.searchPattern({symbol, dateRange, bars}, 
+			let { searchConfig } = store.getState();
 
-				(resArr) => {
+			backend.searchPattern({symbol, dateRange, bars, searchConfig}, 
+
+				(resArr, closePrice) => {
 
 					let patterns = {
 						rawData: resArr,
+						closePrice: closePrice || [],
 					};
 					patterns.crossFilter = crossfilter(patterns.rawData);
+					patterns.searchConfig = searchConfig;
 					let searchTimeSpent = new Date() - startTime;
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 					cb && cb();
@@ -63,8 +77,13 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 		}
 
 	};
-}
+};
+
+let resetError = () => {
+	return {type: types.RESET_ERROR};
+};
 
 module.exports = {
 	getPatterns,
+	resetError,
 };

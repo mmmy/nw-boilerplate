@@ -1,0 +1,179 @@
+@config-modal-input-background-color:#F6F7FA;
+@config-modal-button-background-color:#EBF0F3;
+
+.datepicker-dropdown{
+	font-family: 'AvantGarde';
+	border: none;
+	padding: 20px !important;
+	font-size: 12px;
+	&:before {
+		border-bottom: none !important;
+	}
+}
+
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.2);
+	opacity: 1;
+	z-index: 1000;
+	&.flex{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+
+.config-modal-container {
+	position: relative;
+	width: 480px;
+	// top: 50px;
+	height: 480px;
+	margin: 0 auto;
+	z-index: 10001;
+	background-color: #fff;
+	// box-shadow: 0 0 15px 0 #aaa;
+
+	.close-icon {
+		float: right;
+		//display: inline-block;
+		margin-right: 20px;
+		margin-top: 20px;
+		width: 30px;
+		height: 25px;
+		text-align: center;
+		cursor: pointer;
+		.fa-close {
+			color: transparent;
+			background: url(./image/close.png) no-repeat;
+		}
+		&:hover {
+			.fa-close {
+				background-position: 0 100%;
+			}
+		}
+	}
+
+	input, button{
+		outline: none;
+	}
+}
+
+.modal-content-wrapper {
+	position: absolute;
+	width: 90%;
+	margin-left: 30px;
+	height: 80%;
+	margin-top: 10%;
+	// margin-top: 10%;
+}
+
+.modal-content-contianer {
+	padding: 0 30px;
+	.title {
+		font-size: 16px;
+	}
+	.item-title{
+		margin-top: 40px;
+		margin-bottom: 8px;
+		color: @ks-color-gray-4;
+		font-size: 13px;
+	}
+
+	.item-body-container {
+		.stock{
+			cursor: pointer;
+			font-size: 13px;
+			margin-right: 20px;
+			color: @ks-color-gray-6;
+			&:before {
+				width: 14px;
+				display: inline-block;
+			}
+		}
+		.furture{
+			cursor: pointer;
+			font-size: 13px;
+			color: @ks-color-gray-6;
+			&:before {
+				width: 14px;
+				display: inline-block;
+			}
+		}
+		.selected{
+			color: @ks-color-gray-2;
+		}
+		
+		input {
+			font-size: 11px;
+			font-family: 'AvantGarde';
+			width: 30%;
+			padding: 5px 7px;
+			color: @ks-color-gray-4;
+			background-color: @config-modal-input-background-color;
+			box-shadow: none;
+			border: none;
+		}
+		.date-icon {
+			font-size: 11px;
+			color: @ks-color-gray-6;
+			background-color: @config-modal-input-background-color;
+			padding: 7px 9px 4px 5px;
+			display: inline-block;
+			//margin-bottom: 2px;
+			line-height: 15.71px;
+		}
+		.zhi {
+			color: @ks-color-gray-6;
+			font-size: 12px;
+			margin: auto 10px;
+		}
+		&.days{
+			button {
+				border: none;
+				width: 25px;
+				background-color: @config-modal-button-background-color;
+				padding-top: 3px;
+			}
+			input {
+				width: 20%;
+			}
+			&>span {
+				padding-left: 10px;
+			}
+		}
+	}
+
+	.footer {
+		margin-top: 50px;
+		button {
+			width: 160px;
+			margin-left: 29%;
+			border: none;
+			font-size: 12px;
+			padding: 6px;
+			background-color: @config-modal-button-background-color;
+			border-radius: 2px;
+			&:hover {
+				background-color: #fff;
+				box-shadow: 0 3px 10px 0 #eee;
+			}
+		}
+		span{
+			color: @lulu-red1;
+			cursor: pointer;
+			margin-left: 40px;
+			font-size: 12px;
+		}
+	}
+}
+
+//datepicker
+.datepicker-dropdown {
+	.active {
+		background-color: @lulu-red1 !important;
+	}
+}

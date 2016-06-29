@@ -1,7 +1,7 @@
 import React from 'react';
 import echarts from 'echarts';
 import {factorCandleOption, factorLineOption} from '../../src/components/utils/echart-options';
-import {randomPartterns} from '../../src/flux/util/randomKline';
+import {randomPatterns} from '../../src/flux/util/randomKline';
 
 var data = [
 		    ['2013/1/24', 2320.26,2320.26,2287.3,2362.94],
@@ -240,16 +240,16 @@ function splitData(rawData, baseBars) {
         highArr.push(isNaN(+rawData[i][3]) ? -Infinity : +rawData[i][3]);
     }
     //console.log(highArr);
-    var min = Math.min.apply(null, lowArr);
-    var max = Math.max.apply(null, lowArr);
+    var min = Math.floor(Math.min.apply(null, lowArr));
+    var max = Math.ceil(Math.max.apply(null, highArr));
 
     var arange10 = [];
-    for (var i=0; i < 30; i++) {
+    for (var i=0; i < 15; i++) {
     	arange10.push([categoryData[baseBars], min + (max - min) / 15 * i]);
     }
 
     var areaData = categoryData.slice(baseBars).map((e) => {
-    	return [e, max * 2];
+    	return [e, max];
     });
 
     return {
@@ -431,7 +431,7 @@ lineOption.series[0].data = data1;
 
 
 
-let patterns = randomPartterns(10),
+let { patterns } = randomPatterns(10),
 	candleOptions = [],
 	lineOptions = [];
 patterns.forEach((e, i) => {
@@ -490,7 +490,7 @@ export default React.createClass({
 		this.drawChart();
 	},
 	getInitialState(){
-		return {height: 130, width: 130};
+		return {height: 140, width: 200};
 	},
 	componentDidUpdate(){
 		setTimeout((e) => {
