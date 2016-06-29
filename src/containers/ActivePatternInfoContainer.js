@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 const propTypes = {
 
@@ -36,10 +37,20 @@ class ActivePatternInfoContainer extends React.Component {
     let { similarity, yieldRate } = this.props;
     similarity = Math.round(similarity * 1000) / 10;
     yieldRate = Math.round(yieldRate * 1000) / 10;
+
+    const similarityClassNames = classNames('active-pattern-info');
+
+    const yieldRateClassNames = classNames('active-pattern-info', {
+      'red-color': (yieldRate > 0)
+    });
+
+    let similarityDiv = <span className={ similarityClassNames }>{similarity + '%' }</span>
+    let yieldDiv = <span className={ yieldRateClassNames }>{ yieldRate + '%' }</span>
+
 		return (
       <div className={ 'active-pattern-info-container' }>
-        <span className={'active-pattern-info-similarity'}>相似度：{ similarity } %</span>
-        <span className={'active-pattern-info-yield'}>返回：{yieldRate} %</span>
+        <div>相似度  {similarityDiv}</div>
+        <div>返回  {yieldDiv}</div>
 		  </div>
     );
 	}
