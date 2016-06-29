@@ -180,6 +180,7 @@ class PatternCollection extends React.Component {
 	shouldComponentUpdate(newProps, newState) {
 		//return true;
 		//pattern 改变 的时候 只渲染前5个, 结局搜索后渲染时间过长的问题
+		return false;
 		if(newProps.patterns.rawData !== _oldPatternRawData) {
 			this.renderLeading5 = true;
 			_oldPatternRawData = newProps.patterns.rawData;

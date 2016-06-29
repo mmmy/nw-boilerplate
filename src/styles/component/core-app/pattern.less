@@ -1,7 +1,7 @@
 @patternToolbar_H: 40px;//80px;
 @patternStatisticsPanel_H: 8%;
 //@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 10px;
-@patternView_W: 130px; // @patternContainerStretch_W * 0.393;
+@patternView_W: 275px;//130px; // @patternContainerStretch_W * 0.393;
 
 @patternView_flat_W: @patternView_W; //130px
 
@@ -307,7 +307,7 @@
 	position: relative;
 	float: left;
 	width: @patternView_flat_W;
-	height: @patternView_flat_W * 1.4;
+	height: 120px;//@patternView_flat_W * 1.4;
 	// transition: width, height 0.3s  0 ease;
 	background-color: #fff;
 	//border: 1px solid @ks-color-gray-8;
@@ -438,8 +438,8 @@
 }
 
 .echart-row-wrapper {
-	width: 140%;
-	height: 71.4%;
+	width: 100%;//140%;
+	height: 100%;//71.4%;
 
 	&.larger{
 		width: @patternView_W * 1.4 * @larger;
@@ -456,12 +456,12 @@
 	float: left;
 	position: relative;
 	display: inline-block;
-	width: 71.4%;
+	width: 220px;//71.4%;
 	height: 100%;
 	cursor: pointer;
 	transform-origin: left top;
 	transform: scale(1,1);
-	padding: 20px 10px 0 10px;
+	padding: 10px;//20px 10px 0 10px;
 	@keyframes larger {
 		from {transform: scale(1,1);} to {transform: scale(@larger, @larger);}
 	}
@@ -489,8 +489,10 @@
 
 	img{
 		display: block;
-		width: 100%;
-		height: 100%;
+		width: 200px;
+		// height: 100%;
+		position: absolute;
+		bottom: 10px;
 	}
 
 	.trashed-info {
@@ -522,7 +524,7 @@
 	}
 	&.column {
 		height: 100%;
-		width: 28.5%;
+		width: calc(~"100% - 220px");//28.5%;
 		display: inline-block;
 		&.larger{	
 			width: @patternView_W * 0.4 * @larger;

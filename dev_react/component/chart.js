@@ -244,7 +244,7 @@ function splitData(rawData, baseBars) {
     var max = Math.ceil(Math.max.apply(null, highArr));
 
     var arange10 = [];
-    for (var i=0; i < 30; i++) {
+    for (var i=0; i < 15; i++) {
     	arange10.push([categoryData[baseBars], min + (max - min) / 15 * i]);
     }
 
@@ -490,7 +490,7 @@ export default React.createClass({
 		this.drawChart();
 	},
 	getInitialState(){
-		return {height: 150, width: 300};
+		return {height: 140, width: 200};
 	},
 	componentDidUpdate(){
 		setTimeout((e) => {

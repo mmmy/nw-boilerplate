@@ -38,8 +38,8 @@ class PatternView extends React.Component {
 	}
 
 	componentDidMount() {
-		this.bindResizeFunc = this.handleResize.bind(this);
-		window.addEventListener('resize', this.bindResizeFunc);
+		// this.bindResizeFunc = this.handleResize.bind(this);
+		// window.addEventListener('resize', this.bindResizeFunc);
 		// console.debug('patternView did update');
 	}
 
@@ -87,7 +87,7 @@ class PatternView extends React.Component {
 	}
 
 	componentWillUnmount(){
-		window.removeEventListener('resize', this.bindResizeFunc);
+		// window.removeEventListener('resize', this.bindResizeFunc);
 	}
 
 	handleMouseEnter(){
@@ -233,9 +233,9 @@ class PatternView extends React.Component {
 			'smaller': !fullView && index > 0 && index < 5  //接下来四个缩小显示
 		});
 
-		let style = (fullView || index>=5) && this.getWH() || { widht: '', height: ''};
+		// let style = (fullView || index>=5) && this.getWH() || { widht: '', height: ''};
 
-		return (<div style={style} id={ `pattern_view_${id}`} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
+		return (<div id={ `pattern_view_${id}`} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
 
 			<div className={symbolClass}>{pattern.symbol}</div>
 
