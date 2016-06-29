@@ -101,6 +101,8 @@ class ComparatorStatic extends React.Component {
             "paneProperties.background": "#fff",
             "paneProperties.vertGridProperties.color": "#fff",
             "paneProperties.horzGridProperties.color": "#fff",
+            "paneProperties.topMargin": 30,
+            "paneProperties.bottomMargin": 30,
             "symbolWatermarkProperties.transparency": 10, //TODO,
             "symbolWatermarkProperties.color": '#fff',
             "scalesProperties.textColor" : "#333",
