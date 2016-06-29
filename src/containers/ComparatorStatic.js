@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import ReactTradingView from '../components/ReactTradingView';
 import HeatmapContainer from './heatmapContainer';
 import PredictionContainer from './PredictionContainer';
+import ActivePatternInfoContainer from './ActivePatternInfoContainer';
 import { layoutActions } from '../flux/actions';
 const propTypes = {
 
@@ -160,7 +161,9 @@ class ComparatorStatic extends React.Component {
           <div className={'linear-gradient-to-top-right'}></div>
         </div>
 
-        <div className={'pattern-tv-box-shadow'}></div>
+        <div className={'pattern-tv-box-shadow'}>
+          <ActivePatternInfoContainer/>
+        </div>
 
         <div className={ comparatorPredictionContainerClass }>
           <PredictionContainer/>

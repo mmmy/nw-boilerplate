@@ -16,8 +16,9 @@ export default function active(state = initialState, action) {
     case types.SET_ACTIVE_ID:
 
       let { active } = action;
+      let { id } = active;
       if (id !== state.id){
-        let { id, symbol, dateStart, dateEnd, similarity, yieldRate } = active;
+        let { symbol, dateStart, dateEnd, similarity, yieldRate } = active;
         return {
         	...state,
         	id: id,
