@@ -100,6 +100,9 @@ class StockView extends React.Component {
 						// activeBackground: 'green',
 						color: '#fff',
 						borderColor: '#b61c15',
+					},
+					lineToolAxisRange: {
+						background: 'rgba(182,28,21,0.4)',
 					}
 				}
 			};
