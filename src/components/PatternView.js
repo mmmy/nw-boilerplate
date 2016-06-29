@@ -166,6 +166,8 @@ class PatternView extends React.Component {
   }
 
 	setActivePattern() {
+    let widget = window.widget_comparator;
+    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
 		let { dispatch, isActive, fullView } = this.props;
 		let { id, symbol, baseBars, kLine } = this.props.pattern;
@@ -178,8 +180,6 @@ class PatternView extends React.Component {
     let dateEnd = kLine[kLine.length - 5][0];
     dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
 
-    let widget = window.widget_comparator;
-    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
     let oneDay = 60 * 60 * 24;
     let dateRange = {
@@ -195,6 +195,7 @@ class PatternView extends React.Component {
       chart.KeyStone.setSymbol(symbol, '', 1);
       this._doWhenBarReceived(() => {
         widget.setVisibleRange(dateRange, '1');
+        widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
         window.timeRange = undefined;
       });
     } else {

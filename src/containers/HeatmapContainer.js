@@ -41,6 +41,7 @@ class HeatmapContainer extends React.Component {
 
     if (this.props.isPredictionShow === false) {
       window.widget_comparator.setVisibleRange(window.searchingRange, '0');
+      // window.widget_comparator.scrollToOffsetAnimated(window.ksMainChartRightOffset, 200);
     }
   }
 
