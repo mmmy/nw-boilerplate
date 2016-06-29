@@ -529,7 +529,7 @@ resizeChart1() {
 		this.scatterChartW = width;
 		this.scatterChartH = height;
 
-		let yieldDateScatterChart = DC.scatterPlot(position_bubble_chart);
+		let yieldDateScatterChart = this.yieldDateScatterChart || DC.scatterPlot(position_bubble_chart);
 
 		yieldDateScatterChart
 			.width(width)
@@ -714,7 +714,7 @@ resizeChart1() {
 		this.yieldChartH = height;
 
 		//收益率统计
-		let yieldDimCountChart = DC.barChart(yield_count_chart);
+		let yieldDimCountChart = this.yieldDimCountChart || DC.barChart(yield_count_chart);
 		yieldDimCountChart
 			.width(width)
 			.height(height)
@@ -725,7 +725,7 @@ resizeChart1() {
 			.renderHorizontalGridLines(true)
 			.colors('#4F4F4F')
 			//.excludedColor('#f00')
-			//.elasticY(true)
+			.elasticY(true)
 			//.centerBar(true)
 			.gap(2)
 			// .mouseZoomable(true)
