@@ -193,9 +193,8 @@ class PatternView extends React.Component {
 
     if (oldSymbol !== symbol) {
       chart.KeyStone.setSymbol(symbol, '', 1);
-      this._doWhenBarReceived(() => {
+      this._doWhenSeries1Completed(() => {
         widget.setVisibleRange(dateRange, '1');
-        widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
         window.timeRange = undefined;
       });
     } else {
@@ -203,15 +202,26 @@ class PatternView extends React.Component {
     }
 	}
 
-  _doWhenBarReceived(callback) {
+  _doWhenSeries0Completed(callback) {
     function run() {
       let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-      chart.Q5.getAll()[1].model().mainSeries().onBarReceived().unsubscribe(null, run);
+      chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
       callback()
     };
 
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[1].model().mainSeries().onBarReceived().subscribe(null, run);
+    chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
+  }
+
+  _doWhenSeries1Completed(callback) {
+    function run() {
+      let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+      chart.Q5.getAll()[1].model().mainSeries().onCompleted().unsubscribe(null, run);
+      callback()
+    };
+
+    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+    chart.Q5.getAll()[1].model().mainSeries().onCompleted().subscribe(null, run);
   }
 
 	render(){
