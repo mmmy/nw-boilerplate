@@ -170,7 +170,8 @@ class PatternView extends React.Component {
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
 		let { dispatch, isActive, fullView } = this.props;
-		let { id, symbol, baseBars, kLine } = this.props.pattern;
+		let { id, symbol, baseBars, kLine, similarity } = this.props.pattern;
+    let yieldRate = this.props.pattern.yield;
 
 		if(!fullView) {
 			return;
@@ -178,7 +179,7 @@ class PatternView extends React.Component {
 
     let dateStart = kLine[0][0];
     let dateEnd = kLine[kLine.length - 5][0];
-    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
+    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate));
 
 
     let oneDay = 60 * 60 * 24;

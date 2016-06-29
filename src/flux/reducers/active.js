@@ -4,7 +4,9 @@ const initialState = {
   id: 0,
   symbol: null,
   dateStart: null,
-  dateEnd: null
+  dateEnd: null,
+  similarity: null,
+  yieldRate: null
 };
 
 export default function active(state = initialState, action) {
@@ -14,27 +16,37 @@ export default function active(state = initialState, action) {
     case types.SET_ACTIVE_ID:
 
       let { active } = action;
-      let { id, symbol, dateStart, dateEnd } = active;
       if (id !== state.id){
+        let { id, symbol, dateStart, dateEnd, similarity, yieldRate } = active;
         return {
         	...state,
         	id: id,
           symbol: symbol,
           dateStart: dateStart,
-          dateEnd: dateEnd
+          dateEnd: dateEnd,
+          similarity: similarity,
+          yieldRate: yieldRate
         };
       }
       return state;
 
     case types.CHANGE_PATTERNS:
       let pattern0 = action.patterns && action.patterns.rawData[0] || {};
-      return {
-        ...state,
-        id: 0,
-        symbol: pattern0.symbol,
-        dateStart: pattern0.begin,
-        dateEnd: pattern0.end
-      };
+      if (Object.keys(pattern0).length === 0 && pattern0.constructor === Object) {
+        return state;
+      } else {
+        let { symbol, begin, end, similarity } = pattern0;
+        let yieldRate = pattern0.yield;
+        return {
+          ...state,
+          id: 0,
+          symbol: symbol,
+          dateStart: begin,
+          dateEnd: end,
+          similarity: similarity,
+          yieldRate: yieldRate
+        };
+      }
 
     default:
       return state;
