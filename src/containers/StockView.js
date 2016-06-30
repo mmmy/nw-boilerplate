@@ -66,6 +66,7 @@ class StockView extends React.Component {
 						"symbolWatermarkProperties.transparency": 90,
 						"scalesProperties.textColor" : "#AAA",
 
+            "mainSeriesProperties.showPriceLine": false,
 						"mainSeriesProperties.candleStyle.upColor": "#131313",
 						"mainSeriesProperties.candleStyle.downColor": "#131313",
 						"mainSeriesProperties.candleStyle.drawWick": true,

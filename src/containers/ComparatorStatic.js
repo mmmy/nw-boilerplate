@@ -109,8 +109,8 @@ class ComparatorStatic extends React.Component {
             "scalesProperties.textColor" : "#333",
 
             "mainSeriesProperties.showCountDown": true,
-            "mainSeriesProperties.showLastValue": true,
-            "mainSeriesProperties.showPriceLine": true,
+            "mainSeriesProperties.showLastValue": false,
+            "mainSeriesProperties.showPriceLine": false,
             "mainSeriesProperties.visible": true,
 
             "mainSeriesProperties.candleStyle.upColor": "#fff",
