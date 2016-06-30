@@ -151,17 +151,19 @@ class PatternView extends React.Component {
   setHightlightPrediction(id, isHighlight) {
     let patterns = this.props.patterns;
     let option = window.eChart.getOption();
-    let series = option.series;
-    for (let i = 0; i < series.length; i++) {
-      let data = series[i];
-      if (data.name === id) {
-        data.lineStyle.normal.color = isHighlight ? '#c23531' : '#ccc';
-        data.z = isHighlight? 1 : -1;
+    let i = option.series.length;
+
+    const changeColor = (data) => {
+      data.lineStyle.normal.color = isHighlight ? '#c23531' : '#ccc';
+      data.z = isHighlight? 1 : -1;
+    };
+    while (i--) {
+      if (option.series[i].name === id) {
+        changeColor(option.series[i]);
         break;
       }
     }
 
-    option.series = series;
     window.eChart.setOption(option);
   }
 
