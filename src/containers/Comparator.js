@@ -65,7 +65,7 @@ class Comparator extends React.Component {
 		return (
       <div className={ containerClassName } >
         {/*setting searching info from TradingView*/}
-        <div className={ 'searching-info' }><span id={'searching-info-content'}></span><span>走势预测</span></div>
+        <div className={ 'searching-info' }><span id={'searching-info-content'}></span><span className={'searching-info--prediction-lable'}>走势预测</span></div>
 
         { screenshotTvURL ? <img ref='img1' key={ screenshotTvURL } src={ screenshotTvURL } className={ screenshotTvClassName }/> : '' }
         { screenshotEChartURL ? <img ref='img2' key={ screenshotEChartURL } src={ screenshotEChartURL } className={ screenshotEchartClassName }/> : '' }
