@@ -191,7 +191,7 @@ class PatternView extends React.Component {
 
     window.timeRange = dateRange;
 
-    let oldSymbol = window.widget_comparator._innerWindow().Q5.getAll()[1].model().mainSeries().symbol().split(':')[1];
+    let oldSymbol = widget._innerWindow().Q5.getAll()[1].model().mainSeries().symbol().split(':')[1];
 
     if (oldSymbol !== symbol) {
       chart.KeyStone.setSymbol(symbol, '', 1);
@@ -200,7 +200,10 @@ class PatternView extends React.Component {
         window.timeRange = undefined;
       });
     } else {
+      widget._innerWindow().Q5.getAll()[1].model().mainSeries().restart();
+      this._doWhenSeries1Completed(() => {
         widget.setVisibleRange(dateRange, '1');
+      });
     }
 	}
 
