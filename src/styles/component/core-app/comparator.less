@@ -3,14 +3,26 @@
   position: relative;
   float: left;
   border-right: none;
-  width: calc(~'25%');
-  height: calc(~'100% - 15px');
+  width: calc(~'22%');
+  height: calc(~'100% - 55px');
   padding-left: 81px;
+  padding-top: 20px;
 
+  .searching-info{
+    position: absolute;
+    color: @ks-color-gray-6;
+    top: 40px;
+    z-index: 2;
+    font-size: 11.5px;
+
+    span{
+      margin-right: 20px
+    }
+  }
 
   .comparator-tv-screenshot{
     position: absolute;
-    width: 60%;
+    width: 64%;
     height: calc(~'100% - 50px');
     margin: 20px 0 0 0;
     left: 81px;
@@ -21,7 +33,7 @@
 
   .comparator-echart-screenshot{
     position: absolute;
-    width: 32%;
+    width: 28%;
     height: calc(~'100% - 60px');
     right: 5px;
     margin: 40px 0 0 0;
@@ -34,7 +46,7 @@
   .comparator-heatmap-screenshot{
     position: absolute;
     right: 0;
-    top: 40px;
+    top: 60px;
     height: calc(~'100% - 60px');
     width: 12px;
     &.stretch{
