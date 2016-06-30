@@ -151,13 +151,12 @@ class PatternView extends React.Component {
   setHightlightPrediction(id, isHighlight) {
     let patterns = this.props.patterns;
     let option = window.eChart.getOption();
-    let i = option.series.length;
 
     const changeColor = (data) => {
       data.lineStyle.normal.color = isHighlight ? '#c23531' : '#ccc';
       data.z = isHighlight? 1 : -1;
     };
-    while (i--) {
+    for (let i = option.series.length; i--;) {
       if (option.series[i].name === id) {
         changeColor(option.series[i]);
         break;
@@ -175,7 +174,7 @@ class PatternView extends React.Component {
 		let { id, symbol, baseBars, kLine, similarity } = this.props.pattern;
     let yieldRate = this.props.pattern.yield;
 
-		if(!fullView) {
+		if (!fullView) {
 			return;
 		}
 

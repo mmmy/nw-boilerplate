@@ -87,8 +87,7 @@ class ComparatorPrediction extends React.Component {
       data.unshift((num - firstPrice) / firstPrice * 100);
     };
 
-    let i = line.length;
-    while (i--) {
+    for (let i = line.length; i--;) {
       unShiftData(line[i]);
     }
 
@@ -122,8 +121,7 @@ class ComparatorPrediction extends React.Component {
       };
 
       maxValue = minValue = 0;
-      let i = rawData.length;
-      while (i--) {
+      for (let i = rawData.length; i--;) {
         unshiftData(rawData[i]);
       }
 
