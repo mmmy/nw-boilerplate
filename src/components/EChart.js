@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import echarts from 'echarts';
 import classNames from 'classnames';
-import { setFunc } from './helper/updateEchartImage';
+import { setFunc, setImgSrcFunc } from './helper/updateEchartImage';
 import {factorCandleOption , factorLineOption} from './utils/echart-options';
 
 const renderDataLen = Infinity;
@@ -49,10 +49,11 @@ const propTypes = {
 	fullView: PropTypes.bool.isRequired,
 	isTrashed: PropTypes.bool,
 	id: PropTypes.number.isRequired,
+	imgSize: PropTypes.bool
 };
 
 const defaultProps = {
-
+	imgSize: 0
 };
 
 class EChart extends React.Component {
@@ -66,10 +67,29 @@ class EChart extends React.Component {
 		this.canvasNode.width = 200;
 	}
 
+	setImgSrc(size) {  //0: normal, 1: median, 2: small
+		switch(size) {
+			case 0:
+	    	this.refs['echart'+this.props.index].firstChild.src = this._imgNormal;
+	    	break;
+	    case 1:
+	    	this.refs['echart'+this.props.index].firstChild.src = this._imgMedian;
+	    	break;
+	    case 2:
+	    	this.refs['echart'+this.props.index].firstChild.src = this._imgSmall;
+	    	break;
+	    default:
+	    	break;
+		}
+	}
+
 	drawChart(callback) {
 		// let node = this.refs['echart'+this.props.index];
 		const { kLine, baseBars } = this.props.pattern;
-		if (this.oldKline === kLine) {
+		if ((this.oldKline === kLine) || (!kLine.length) || (kLine.length < 1)) {
+			if(this.oldKline === kLine) {
+				this.setImgSrc(this.props.imgSize);
+			}
 			return;
 		}
 		this.oldKline = kLine;
@@ -82,7 +102,10 @@ class EChart extends React.Component {
 		// }
 		//candleChart
 		if (candleChart) {
-			this.chart = this.chart || echarts.init(node);//&& this.chart.dispose();
+			node.height = 140;
+			node.width = 200;
+			this.chart && this.chart.dispose();
+			this.chart = echarts.init(node);//&& this.chart.dispose();
 			let data0 = splitData(kLine, baseBars);
 			let candleOption = factorCandleOption(true);
 			candleOption.xAxis.data = data0.categoryData;
@@ -95,16 +118,34 @@ class EChart extends React.Component {
 			//setTimeout(function(){
 	        	this.chart.setOption(candleOption);
 	        	let imgUrl = this.chart.getDataURL();
-	        	this.refs['echart'+this.props.index].firstChild.src = imgUrl;
+
 	    this._imgNormal = imgUrl;
 
-	    // this.canvasNode.height = 97;
-	    // this.canvasNode.width = 80;
+	    node.height = 102;
+	    node.width = 90;
 	    // this.chart.resize();
-	    // this._imgSmall = this.chart.getDataURL();
+	    this.chart.dispose();
+	    this.chart = echarts.init(node);
+	    this.chart.setOption(candleOption);
+	    // this.chart.resize(100,100);
+	    this._imgSmall = this.chart.getDataURL();
+
+	    node.height = 110;
+	    node.width = 120;
+	    this.chart.dispose();
+	    this.chart =echarts.init(node);
+	    this.chart.setOption(candleOption);
+	    this._imgMedian = this.chart.getDataURL();
+
+	    if(index == 0) {
+	    	window._imgSmall = this._imgSmall;
+	    	window._imgMedian = this._imgMedian;
+	    	window._imgNormal = this._imgNormal;
+	    	window._chart = this.chart;
+	    }
 			//debugger;
 			//},0);
-
+			this.setImgSrc(this.props.imgSize);
 		} else {
 
 			let lineOption = factorLineOption();
@@ -125,6 +166,7 @@ class EChart extends React.Component {
 	componentDidMount() {
 		this.drawChart();
 		setFunc(this.props.id, this.drawChart.bind(this));
+		setImgSrcFunc(this.props.id, this.setImgSrc.bind(this));
 	}
 
 	componentDidUpdate() {

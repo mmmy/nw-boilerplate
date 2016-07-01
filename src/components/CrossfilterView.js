@@ -19,6 +19,7 @@ import lodash from 'lodash';
 import { setScatters, setPieCollection, setCountBars } from '../cache/crossfilterDom';
 
 import { filterActions } from '../flux/actions';
+import store from '../store';
 
 const propTypes = {
   stretchView: PropTypes.bool.isRequired,
@@ -370,7 +371,7 @@ resizeChart1() {
 		let toggleBtn2 = <button ref='toggle_btn2' className={toggleBtnClass} onClick={this.toggleChart2.bind(this)}></button>;
 		let toggleBtn3 = <button ref='toggle_btn3' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
 		
-		let yiledBtns = <span className='yield-btns-container'><button className='font-simsun' onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
+		let yiledBtns = <span className='yield-btns-container font-simsun'><button onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
 		
 		let whiteCircle = <div className='madan-white-circle'></div>;
 		let resetBtn = <div className='reset-btn-container flex-center' ref='reset_btn_container'><button onClick={this.resetIndustyChart.bind(this)}>重置</button></div>;
@@ -502,20 +503,23 @@ resizeChart1() {
 			setTimeout(() => { 
 				DC.renderAll();
 				//行业分类hover 效果
-				var pieSlices = that.industryPieChart.selectAll('g g');
-				pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true), true);
-				pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
+				// var pieSlices = that.industryPieChart.selectAll('g g');
+				// pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true), true);
+				// pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
 
+				let pattern0 = store.getState().patterns.rawData[0];
 				//缓存dom
-				let scatters = that.yieldDateScatterChart.selectAll('g.chart-body>path')[0];
-				setScatters(scatters);
+				let selectedScatter = that.yieldDateScatterChart.select('g.chart-body').append('path').attr('class', 'selected')[0];
+				let scatters = that.yieldDateScatterChart.selectAll('g.chart-body>path.symbol')[0];
+				setScatters(scatters, selectedScatter, 0);
 
 				let pieNodes = that.industryPieChart.selectAll('g.pie-slice')[0];
-				setPieCollection(pieNodes);
+				setPieCollection(pieNodes, pattern0 && pattern0.industry);
 
 				let xMin = that.yield100Range[0] / 100;
-				let bars = that.yieldDimCountChart.selectAll('rect.bar')[0];
-				setCountBars(bars, xMin, barChartBars);
+				let bars = that.yieldDimCountChart.selectAll('rect.outline')[0];
+				setCountBars(bars, xMin, barChartBars, pattern0 && pattern0.yield);
+
 			});
 		}
 
@@ -573,6 +577,11 @@ resizeChart1() {
 		window.yieldDateScatterChart= yieldDateScatterChart;
 
 		yieldDateScatterChart.on('filtered', this.onChartFiltered.bind(this));
+		yieldDateScatterChart.on('renderlet', (chart) => {
+			// var selectedScatter = chart.selectAll('path.selected');
+			let state = store.getState();
+			setScatters(null, null, state.active.id);
+		});
 		 //yieldDateScatterChart.filterHandler(()=>{});
 		this.yieldDateScatterChart = yieldDateScatterChart;
 	}
@@ -685,18 +694,22 @@ resizeChart1() {
 			//.title((e) => { console.log('title', e); return e.key + e.value; })
 			.renderTitle(false);
 
+		industryPieChart.drawOutline && industryPieChart.drawOutline(true);
 		industryPieChart.on('filtered', this.onChartFiltered.bind(this));
-		// industryPieChart.on('renderlet', (chart) => {
-		// 	console.debug(chart, '~~~~~~~~~~~~~~~~~~~');
-		// 	// var pieSliceDoms = document.querySelectorAll('.pie-slice');
-		// 	// pieSliceDoms && pieSliceDoms.forEach((pieSlice) => {
-		// 	// 	//pieSlice.addEventListener('mouseenter', function(){console.log('111')});
-		// 	// 	//pieSlice.addEventListener('mouseleave', that.drawIndustryPieChart.bind(that, false));
-		// 	// });
-		// 	var pieSlices = chart.selectAll('g g');
-		// 	pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true));
-		// 	pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
-		// });
+		industryPieChart.on('renderlet', (chart) => {
+			// console.debug('chart', chart, '~~~~~~~~~~~~~~~~~~~');
+			// var pieSliceDoms = document.querySelectorAll('.pie-slice');
+			// pieSliceDoms && pieSliceDoms.forEach((pieSlice) => {
+			// 	//pieSlice.addEventListener('mouseenter', function(){console.log('111')});
+			// 	//pieSlice.addEventListener('mouseleave', that.drawIndustryPieChart.bind(that, false));
+			// });
+			var pieSlices = chart.selectAll('g g');
+			pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true));
+			pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
+			let state = store.getState();
+			let pattern = state.patterns.rawData[state.active.id];
+			setPieCollection(pieSlices[0], pattern && pattern.industry);
+		});
 		//industryPieChart.on('hover', (e) => { console.log(e); })
 		this.industryPieChart = industryPieChart;
 		window.industryPieChart = industryPieChart;
@@ -727,7 +740,8 @@ resizeChart1() {
 			//.excludedColor('#f00')
 			.elasticY(true)
 			//.centerBar(true)
-			.gap(2)
+			.gap(1)
+			.drawOutline(true)
 			// .mouseZoomable(true)
 			// .zoomOutRestrict(false)
 			// .zoomScale([1,4])

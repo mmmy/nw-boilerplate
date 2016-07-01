@@ -88,14 +88,16 @@ class PatternInfo extends React.Component {
 	}
 
 	mouseEnter() {
-		let {column} = this.props;
-		if(!column) {
+		let {column, fullView} = this.props;
+		if(fullView) {
 			this.setState({showSwitch: true});
 		}
 	}
 
 	mouseLeave() {
-		this.setState({showSwitch: false});
+		if(this.state.showSwitch) {
+			this.setState({showSwitch: false});
+		}
 	}
 
 }

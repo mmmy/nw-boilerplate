@@ -2,11 +2,14 @@ import React, { PropTypes } from 'react';
 import PatternContainer from './PatternContainer';
 import StatisticsContainer from './StatisticsContainer';
 import {connect} from 'react-redux';
+import { updateImgAll } from '../components/helper/updateEchartImage';
 import classNames from 'classnames';
 
 const propTypes = {
 	shrinkView: PropTypes.bool
 };
+
+let _isSmall = null;
 
 const defaultProps = {
   
@@ -23,7 +26,10 @@ class SearchDetail extends React.Component {
 	}
 
 	componentDidMount() {
-
+		// _isSmall = window.document.body.clientWidth < 1450;
+		this._handleResize = this.handleResize.bind(this);
+		window.addEventListener('resize', this._handleResize);
+		this.handleResize();
 	}
 
 	componentWillReceiveProps(){
@@ -34,20 +40,45 @@ class SearchDetail extends React.Component {
 		return true;
 	}
 
-	componentWillUnmount(){
+	componentDidUpdate() {
+		this.relayout(_isSmall);
+	}
 
+	componentWillUnmount(){
+		window.removeEventListener('resize', this._handleResize);
 	}
 
 	render(){
 		let className = classNames('transition-all', 'container-searchdetail', {
 			'searchdetail-shrink': this.props.shrinkView,
 		});
-		return (<div className={ className }>
+		return (<div className={ className } ref='container'>
 			<StatisticsContainer />
 			<PatternContainer />
 		</div>);
 	}
 
+	handleResize() {
+		let baseW = 1450;
+		let bodyW = window.document.body.clientWidth;
+
+		let small = bodyW < baseW;
+		if(_isSmall !== small) {
+			_isSmall = small;
+			this.relayout(small);
+			this.props.shrinkView && updateImgAll(small ? 1 : 0);
+		}
+	}
+
+	relayout(small) {
+		let statisticsContianer = this.refs.container.firstChild,
+			patternContainer = this.refs.container.lastChild;
+		if (small) {
+			$(this.refs.container).addClass('small');
+		} else {
+			$(this.refs.container).removeClass('small');
+		}
+	}
 }
 
 SearchDetail.propTypes = propTypes;
