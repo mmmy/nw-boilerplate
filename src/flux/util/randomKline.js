@@ -1,7 +1,7 @@
 var data = require('../../../samples/ss600000-s');
 
 let len = data.length,
-	maxIndex = len - 200;
+	maxIndex = len - 200 ;
 
 let industrys = ['行业1','行业2','行业3','行业4','行业5'];
 const BASE_BARS = 10;
@@ -11,7 +11,7 @@ let index = 0;
 
 var randomKline = function(){
 	// let start = 3000 + index * (BASE_BARS + ADDTION_DAYS);
-	let start = Math.round(Math.random() * maxIndex);
+	let start = Math.round(Math.random() * 200) + 1000;
 	index = index + 1;
 	let dataLen = BASE_BARS + ADDTION_DAYS;
 	let kLine = data.slice(start, start + dataLen); // 返回 100 天数据

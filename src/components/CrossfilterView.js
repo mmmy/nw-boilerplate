@@ -444,14 +444,14 @@ resizeChart1() {
 				// let lastBar = data.kLine[data.kLine.length - 1];
 				// let year = lastBar ? new Date(lastBar[0]).getFullYear() : 0;
 				let year = new Date(data.end).getFullYear();
-				let yield100 = Math.round(data.yield*100);
+				let yield100 = (data.yield*100);
 				let id = data.id;
 				//缓存所有数据的年份范围 和 收益率范围
 				yearArr.push(year);
 				yield100Arr.push(yield100);
 				let item = [year, yield100];
 				item['id'] = id;
-				return item; 
+				return item;
 			});
 			//console.log(yearArr);
 			this.yearRange = [Math.min.apply(null, yearArr) || 1990, Math.max.apply(null, yearArr) || new Date().getFullYear()];     //年份的最大最小值
@@ -466,7 +466,9 @@ resizeChart1() {
 			console.info(rangeInterval);
 			console.assert(this.yearRange[1] > this.yearRange[0], this.yearRange);
 			console.assert(this.yield100Range[1] > this.yield100Range[0]);
-			this.yieldDateGroup = this.yieldDateDim.group();
+			this.yieldDateGroup = this.yieldDateDim.group((d) => { 
+				return d;
+			});
 			window.yieldDateDim = this.yieldDateDim;
 			window.yieldDateGroup = this.yieldDateGroup;
 

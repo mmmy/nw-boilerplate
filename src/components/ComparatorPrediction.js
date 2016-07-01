@@ -82,10 +82,13 @@ class ComparatorPrediction extends React.Component {
 
   splitDataFromClosePrice(line) {
     let data = [];
-    for (var i = 0; i < line.length; i++) {
-      let e = line[i];
-      let percentage = (e - line[0]) / line[0] * 100;
-      data.push(percentage);
+    const firstPrice = line[0];
+    const unShiftData = (num) => {
+      data.unshift((num - firstPrice) / firstPrice * 100);
+    };
+
+    for (let i = line.length; i--;) {
+      unShiftData(line[i]);
     }
 
     return data;
@@ -96,41 +99,43 @@ class ComparatorPrediction extends React.Component {
     let rawData = this.symbolDim.top(Infinity);
     let { closePrice } = this.props.patterns;
     let series = [];
-    // let maxValue = 0 * -1;
     let maxValue = this.maxValue;
     let minValue = this.minValue;
+
     if (rawData.length > 0) {
-      maxValue =  minValue = 0;
-      for (var i = 0; i < rawData.length; i++) {
-        let e = rawData[i]
-        series.push({
-          data: this.splitDataFromClosePrice(closePrice[e.id]),
-          name: e.id,
+      const unshiftData = (data) => {
+        series.unshift({
+          data: this.splitDataFromClosePrice(closePrice[data.id]),
+          name: data.id,
           type: 'line',
           showSymbol: false,
           hoverAnimation: false,
           lineStyle: {
             normal: {
               color: '#ccc',
-              // color: e.id === activeId ? '#c23531' : '#ccc',
               width: 0.5
             }
           },
           z: -1
-          // z: e.id === activeId ? 1 : -1
         });
+      };
+
+      maxValue = minValue = 0;
+      for (let i = rawData.length; i--;) {
+        unshiftData(rawData[i]);
       }
 
       // find max min values for scale
-      for (let i = 0; i < series.length; i++) {
-        let serie = series[i]
-        let data = serie.data;
-        for (let j = 0; j < data.length; j++) {
-          let d = data[j]
-          maxValue = Math.max(d, maxValue);
-          minValue = Math.min(d, minValue);
+      const maxMinValue = (num) => {
+        maxValue = Math.max(num, maxValue);
+        minValue = Math.min(num, minValue);
+      };
+      for (let i = series.length; i--;) {
+        for (let j = series[i].data.length; j--;) {
+           maxMinValue(series[i].data[j]);
         }
       }
+
       this.maxValue = maxValue;
       this.minValue = minValue;
     }

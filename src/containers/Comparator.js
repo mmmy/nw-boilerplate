@@ -51,7 +51,6 @@ class Comparator extends React.Component {
 		let { stretchView, screenshotTvURL, screenshotEChartURL, screenshotHeatmapURL } = this.props;
     const containerClassName = classNames('transition-all', 'container-comparator', {
       'container-comparator-stretch': this.props.stretchView,
-      // 'container-comparator-hide': this.props.stretchView,
     });
       const screenshotTvClassName = classNames('comparator-tv-screenshot transition-all', {
       	'stretch': stretchView
@@ -65,10 +64,13 @@ class Comparator extends React.Component {
 
 		return (
       <div className={ containerClassName } >
+        {/*setting searching info from TradingView*/}
+        <div className={ 'searching-info' }><span id={'searching-info-content'}></span><span className={'searching-info--prediction-lable'}>走势预测</span></div>
+
         { screenshotTvURL ? <img ref='img1' key={ screenshotTvURL } src={ screenshotTvURL } className={ screenshotTvClassName }/> : '' }
         { screenshotEChartURL ? <img ref='img2' key={ screenshotEChartURL } src={ screenshotEChartURL } className={ screenshotEchartClassName }/> : '' }
         { screenshotHeatmapURL ? <img ref='img3' key={ screenshotHeatmapURL } src={ screenshotHeatmapURL } className={ screenshotHeatmapClassName }/> : '' }
-        </div>
+      </div>
     );
 	}
 }

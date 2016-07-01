@@ -42,26 +42,8 @@ class ReactTradingView extends React.Component {
 
       if (this.props.viewId === 'comparator-chart') window.widget_comparator = widget;
 
-      if (this.props.viewId === 'comparator-chart') {
-        this.setChartLayout();
-      }
       this._inited = true;
     }
-  }
-
-  getChartDom() {
-    return window.widget_comparator;
-  }
-
-  setChartLayout() {
-    setTimeout(() => {
-      let chart = this.getChartDom();
-      if ( chart && chart.W76 && chart.Q5 && chart.Q15.studyCounter > 0) {
-        chart.W76.setChartLayout(chart.Q5, 'ks');
-      } else {
-        this.setChartLayout();
-      }
-    }, 0)
   }
 
 	render(){

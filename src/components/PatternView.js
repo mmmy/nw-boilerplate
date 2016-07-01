@@ -175,24 +175,19 @@ class PatternView extends React.Component {
   	let d1 = new Date();
     let patterns = this.props.patterns;
     let option = window.eChart.getOption();
-    let series = option.series;
-    console.debug('setHightlightPrediction 1', new Date() - d1);
-    for (let i = 0; i < series.length; i++) {
-      let data = series[i];
-      if (data.name === id) {
-        data.lineStyle.normal.color = isHighlight ? '#c23531' : '#ccc';
-        data.z = isHighlight? 1 : -1;
+
+    const changeColor = (data) => {
+      data.lineStyle.normal.color = isHighlight ? '#c23531' : '#ccc';
+      data.z = isHighlight? 1 : -1;
+    };
+    for (let i = option.series.length; i--;) {
+      if (option.series[i].name === id) {
+        changeColor(option.series[i]);
         break;
       }
     }
     console.debug('setHightlightPrediction 2', new Date() - d1);
-
-    option.series = series;
-    // setTimeout(() => { 
-    	window.eChart.setOption(option); 
-    // });
-
-    console.debug('setHightlightPrediction 3', new Date() - d1);
+    window.eChart.setOption(option);
 
   }
 
@@ -201,9 +196,10 @@ class PatternView extends React.Component {
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
 		let { dispatch, isActive, fullView } = this.props;
-		let { id, symbol, baseBars, kLine, industry } = this.props.pattern;
+		let { id, symbol, baseBars, kLine, similarity, industry } = this.props.pattern;
+    let yieldRate = this.props.pattern.yield;
 
-		if(!fullView) {
+		if (!fullView) {
 			return;
 		}
 
@@ -213,7 +209,7 @@ class PatternView extends React.Component {
 
     let dateStart = kLine[0][0];
     let dateEnd = kLine[kLine.length - 5][0];
-    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
+    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate));
 
 
     let oneDay = 60 * 60 * 24;
@@ -224,29 +220,42 @@ class PatternView extends React.Component {
 
     window.timeRange = dateRange;
 
-    let oldSymbol = window.widget_comparator._innerWindow().Q5.getAll()[1].model().mainSeries().symbol().split(':')[1];
+    let oldSymbol = widget._innerWindow().Q5.getAll()[1].model().mainSeries().symbol().split(':')[1];
 
     if (oldSymbol !== symbol) {
       chart.KeyStone.setSymbol(symbol, '', 1);
-      this._doWhenBarReceived(() => {
+      this._doWhenSeries1Completed(() => {
         widget.setVisibleRange(dateRange, '1');
-        widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
         window.timeRange = undefined;
       });
     } else {
+      widget._innerWindow().Q5.getAll()[1].model().mainSeries().restart();
+      this._doWhenSeries1Completed(() => {
         widget.setVisibleRange(dateRange, '1');
+      });
     }
 	}
 
-  _doWhenBarReceived(callback) {
+  _doWhenSeries0Completed(callback) {
     function run() {
       let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-      chart.Q5.getAll()[1].model().mainSeries().onBarReceived().unsubscribe(null, run);
+      chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
       callback()
     };
 
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[1].model().mainSeries().onBarReceived().subscribe(null, run);
+    chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
+  }
+
+  _doWhenSeries1Completed(callback) {
+    function run() {
+      let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+      chart.Q5.getAll()[1].model().mainSeries().onCompleted().unsubscribe(null, run);
+      callback()
+    };
+
+    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+    chart.Q5.getAll()[1].model().mainSeries().onCompleted().subscribe(null, run);
   }
 
   getImgSize() {
