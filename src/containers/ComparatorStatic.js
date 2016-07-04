@@ -149,7 +149,7 @@ class ComparatorStatic extends React.Component {
             init={ logined }
             options={ options } />
         {/*</div>*/}
-        <div className={'prediction-transparent-overlay top-left'}>
+        {/*<div className={'prediction-transparent-overlay top-left'}>
           <div className={'horizon-line'}></div>
           <div className={'linear-gradient-to-top-left'}></div>
         </div>
@@ -159,7 +159,7 @@ class ComparatorStatic extends React.Component {
         </div>
         <div className={'prediction-transparent-overlay bottom-right'}>
           <div className={'linear-gradient-to-top-right'}></div>
-        </div>
+        </div>*/}
 
         <div className={'pattern-tv-box-shadow'}>
           <ActivePatternInfoContainer/>
