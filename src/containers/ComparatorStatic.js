@@ -161,7 +161,10 @@ class ComparatorStatic extends React.Component {
           <div className={'linear-gradient-to-top-right'}></div>
         </div>*/}
 
-        <div className={'pattern-tv-box-shadow'}>
+        <div className={'pattern-tv-box-shadow-top'}>
+        </div>
+
+        <div className={'pattern-tv-box-shadow-bottom'}>
           <ActivePatternInfoContainer/>
         </div>
 
