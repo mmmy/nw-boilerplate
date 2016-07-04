@@ -66,7 +66,7 @@ let getPieSlice = (name) => {
 };
 
 //--------------------
-let setCountBars = (bars, xMin, maxBars, selectedYield) => {
+let setCountBars = (bars, outLines, xMin, maxBars, selectedYield) => {
 	
 
 	if (typeof xMin === 'number') {
@@ -76,19 +76,23 @@ let setCountBars = (bars, xMin, maxBars, selectedYield) => {
 		_yieldCountBarData.maxBars = maxBars;
 	}
 	
-	_yieldCountBarData.nodes = [];
+	_yieldCountBarData.bars = [];
+	_yieldCountBarData.outLines = [];
 	bars.forEach((node) => {
-		_yieldCountBarData.nodes[node.__data__.data.key] = node;
+		_yieldCountBarData.bars[node.__data__.data.key] = node;
+	});
+	outLines.forEach((outline) => {
+		_yieldCountBarData.outLines[outline.__data__.data.key] = outline;
 	});
 
-	let node = getCountBar(selectedYield);
-	node && $(node).addClass('selected');
+	let outline = getCountBar(selectedYield, true);
+	outline && $(outline).addClass('selected');
 };
 
-let getCountBar = (yieldRate) => {
+let getCountBar = (yieldRate, isOutline=true) => {
 	let interval = Math.abs(_yieldCountBarData.xMin) / _yieldCountBarData.maxBars * 2;
 	let index = Math.floor((yieldRate - _yieldCountBarData.xMin) / interval);
-	return _yieldCountBarData.nodes[index];
+	return _yieldCountBarData[isOutline ? 'outLines' : 'bars'][index];
 };
 
 module.exports = {

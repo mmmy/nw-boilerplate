@@ -18,10 +18,10 @@ let _selectIndustry = (industry) => {
 };
 
 let _selectYield = (yieldRate) => {
-	let outlineNode = getCountBar(yieldRate);
-	if(outlineNode) {
-		$('rect.outline.selected', outlineNode.parentNode).removeClass('selected');
-		$(outlineNode).addClass('selected');
+	let node = getCountBar(yieldRate, true);
+	if(node) {
+		$('rect.outline.selected', node.parentNode).removeClass('selected');
+		$(node).addClass('selected');
 	}
 };
 
@@ -109,7 +109,6 @@ class PatternView extends React.Component {
 
 	handleMouseEnter(){
 
-		let d1 = new Date();
 		// this.handleMouseLeave();
 		let color = '#b61c15';
 			// const showSymbol = true;
@@ -126,20 +125,20 @@ class PatternView extends React.Component {
 		}
 		//#2
 		let matchPie = getPieSlice(industry);
-		let piePath = matchPie && matchPie.lastChild;
+		let piePath = matchPie.firstChild;// && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = color;
 			matchPie.dispatchEvent(new window.MouseEvent('mouseenter'));
 		}
 		//#3
-		let matchYieldBar = getCountBar(yieldRate);
+		let matchYieldBar = getCountBar(yieldRate, false);
 		if(matchYieldBar) {
 			matchYieldBar.style.fill = color;
 		}
-		console.debug(new Date() - d1);
+
 		let that = this;
     // this.setHightlightPrediction(id, true);
-    console.debug(new Date() - d1);
+
 	}
 
 	handleMouseLeave(){
@@ -155,13 +154,13 @@ class PatternView extends React.Component {
 		let yieldRate = this.props.pattern.yield;
 
 		let matchPie = getPieSlice(industry);
-		let piePath = matchPie && matchPie.lastChild;
+		let piePath = matchPie.firstChild;// && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = '';
 			matchPie.dispatchEvent(new window.MouseEvent('mouseleave'));
 		}
 			//#3
-		let matchYieldBar = getCountBar(yieldRate);
+		let matchYieldBar = getCountBar(yieldRate, false);
 		if(matchYieldBar) {
 			matchYieldBar.style.fill = '';
 		}

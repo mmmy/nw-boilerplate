@@ -123,7 +123,7 @@ class CrossfilterView extends React.Component {
 
 			pieChartW = industry_quarter_chart.clientWidth,
 			pieChartH = industry_quarter_chart.clientHeight,
-			pieChartR = Math.min(pieChartW,pieChartH)/2 - 6,
+			pieChartR = Math.min(pieChartW,pieChartH)/2 - 10,
 
 			yieldChartW = yield_count_chart.clientWidth,
 			yieldChartH = yield_count_chart.clientHeight;
@@ -142,12 +142,12 @@ class CrossfilterView extends React.Component {
 		let that = this;
 		if (bubbleChartW != this.scatterChartW || bubbleChartH != this.scatterChartH) {
 			//this.yieldDateScatterChart 
-			let size = bubbleChartW / 50;
+			// let size = bubbleChartW / 50;
 			let xTicks = 6, yTicks = 5;
 			if(bubbleChartW > 400) xTicks = 12;
 			if(bubbleChartH > 200) yTicks = 9;
 			setTimeout(() => { 
-				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH).symbolSize(size).excludedSize(size).redraw(); 
+				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH)/*.symbolSize(size).excludedSize(size)*/.redraw(); 
 				that.yieldDateScatterChart.xAxis().ticks(xTicks);
 				that.yieldDateScatterChart.yAxis().ticks(yTicks);
 				that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart);
@@ -519,8 +519,10 @@ resizeChart1() {
 				setPieCollection(pieNodes, pattern0 && pattern0.industry);
 
 				let xMin = that.yield100Range[0] / 100;
-				let bars = that.yieldDimCountChart.selectAll('rect.outline')[0];
-				setCountBars(bars, xMin, barChartBars, pattern0 && pattern0.yield);
+
+				let bars = that.yieldDimCountChart.selectAll('rect.bar')[0];
+				let outLines = that.yieldDimCountChart.selectAll('rect.outline')[0];
+				setCountBars(bars, outLines, xMin, barChartBars, pattern0 && pattern0.yield);
 
 			});
 		}
@@ -549,8 +551,8 @@ resizeChart1() {
 				.transitionDuration(transitionDuration)
 		    .colors('#757575')
 		    //.colors('rgba(117, 117, 117, 1)')
-		    .symbolSize(width/50)
-		    .excludedSize(width/50)
+		    .symbolSize(8) //width / 50
+		    .excludedSize(8)
 		    .excludedColor('#aFaFaF')
 		    .excludedOpacity(0.3)
 		    .renderHorizontalGridLines(true)
@@ -662,7 +664,7 @@ resizeChart1() {
 		let {industry_quarter_chart} = this.refs;
 		let width = industry_quarter_chart.clientWidth,
 			height = industry_quarter_chart.clientHeight,
-			radius = Math.min(width, height)/2 - 6;
+			radius = Math.min(width, height)/2 - 10;
 
 		//缓存
 		this.pieChartW = width;
