@@ -39,14 +39,14 @@ class HeatmapContainer extends React.Component {
   togglePredictionPanel() {
     this.props.dispatch(layoutActions.togglePredictionPanel());
 
-    if (this.props.isPredictionShow === false) {
-      // window.widget_comparator.setVisibleRange(window.searchingRange, '0');
-      window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-      this._doWhenSeries0Completed(() => {
-        window.widget_comparator.setVisibleRange(window.searchingRange, '0');
-      });
-      // window.widget_comparator.scrollToOffsetAnimated(window.ksMainChartRightOffset, 200);
-    }
+    // if (this.props.isPredictionShow === false) {
+    //   // window.widget_comparator.setVisibleRange(window.searchingRange, '0');
+    //   window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+    //   this._doWhenSeries0Completed(() => {
+    //     window.widget_comparator.setVisibleRange(window.searchingRange, '0');
+    //   });
+    //   // window.widget_comparator.scrollToOffsetAnimated(window.ksMainChartRightOffset, 200);
+    // }
   }
 
   _doWhenSeries0Completed(callback) {
