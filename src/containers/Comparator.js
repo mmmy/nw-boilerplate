@@ -48,7 +48,7 @@ class Comparator extends React.Component {
 
 
 	render() {
-		let { stretchView, screenshotTvURL, screenshotEChartURL, screenshotHeatmapURL } = this.props;
+		let { stretchView, screenshotTvURL, screenshotEChartURL, screenshotHeatmapURL, searchingError } = this.props;
     const containerClassName = classNames('transition-all', 'container-comparator', {
       'container-comparator-stretch': this.props.stretchView,
     });
@@ -62,10 +62,14 @@ class Comparator extends React.Component {
       	'stretch':stretchView
       });
 
+      const searchingInfoClassNames = classNames('searching-info', {
+        'ks-hidden': searchingError
+      })
+
 		return (
       <div className={ containerClassName } >
         {/*setting searching info from TradingView*/}
-        <div className={ 'searching-info' }><span id={'searching-info-content'}></span><span className={'searching-info--prediction-lable'}>走势预测</span></div>
+        <div className={ searchingInfoClassNames }><span id={'searching-info-content'}></span><span className={'searching-info--prediction-lable'}>走势预测</span></div>
 
         { screenshotTvURL ? <img ref='img1' key={ screenshotTvURL } src={ screenshotTvURL } className={ screenshotTvClassName }/> : '' }
         { screenshotEChartURL ? <img ref='img2' key={ screenshotEChartURL } src={ screenshotEChartURL } className={ screenshotEchartClassName }/> : '' }
@@ -79,14 +83,16 @@ Comparator.propTypes = propTypes;
 Comparator.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const { layout } = state;
+	const { layout, patterns } = state;
 	const { stockView, hasNewScreenshot, screenshotTvURL, screenshotEChartURL, screenshotHeatmapURL } = layout;
+  const { error } = patterns;
 	return {
 		stretchView: !stockView,
     hasNewScreenshot: hasNewScreenshot,
     screenshotTvURL: screenshotTvURL,
     screenshotEChartURL: screenshotEChartURL,
     screenshotHeatmapURL: screenshotHeatmapURL,
+    searchingError: error
 	};
 };
 export default connect(stateToProps)(Comparator);
