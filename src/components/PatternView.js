@@ -3,10 +3,27 @@ import classNames from 'classnames';
 import EChart from './EChart';
 import PatternInfo from './PatternInfo';
 import { activeActions } from '../flux/actions';
-import { getScatter, getPieSlice, getCountBar } from '../cache/crossfilterDom';
+import { getScatter, getPieSlice, getCountBar, setScatters } from '../cache/crossfilterDom';
 import store from '../store';
 
 let _clonedScatter = null; //dom object
+
+let _selectIndustry = (industry) => {
+	let matchPie = getPieSlice(industry);
+	let piePath = matchPie && matchPie.lastChild;
+	if(piePath) {
+		$('path.outline.selected', piePath.parentNode.parentNode).removeClass('selected');
+		$(piePath).addClass('selected');
+	}
+};
+
+let _selectYield = (yieldRate) => {
+	let outlineNode = getCountBar(yieldRate);
+	if(outlineNode) {
+		$('rect.outline.selected', outlineNode.parentNode).removeClass('selected');
+		$(outlineNode).addClass('selected');
+	}
+};
 
 const propTypes = {
 	pattern: PropTypes.object.isRequired,
@@ -38,8 +55,8 @@ class PatternView extends React.Component {
 	}
 
 	componentDidMount() {
-		this.bindResizeFunc = this.handleResize.bind(this);
-		window.addEventListener('resize', this.bindResizeFunc);
+		// this.bindResizeFunc = this.handleResize.bind(this);
+		// window.addEventListener('resize', this.bindResizeFunc);
 		// console.debug('patternView did update');
 	}
 
@@ -87,12 +104,13 @@ class PatternView extends React.Component {
 	}
 
 	componentWillUnmount(){
-		window.removeEventListener('resize', this.bindResizeFunc);
+		// window.removeEventListener('resize', this.bindResizeFunc);
 	}
 
 	handleMouseEnter(){
 
-		this.handleMouseLeave();
+		let d1 = new Date();
+		// this.handleMouseLeave();
 		let color = '#b61c15';
 			// const showSymbol = true;
 			// this.setState({showSymbol});
@@ -108,7 +126,7 @@ class PatternView extends React.Component {
 		}
 		//#2
 		let matchPie = getPieSlice(industry);
-		let piePath = matchPie && matchPie.firstChild;
+		let piePath = matchPie && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = color;
 			matchPie.dispatchEvent(new window.MouseEvent('mouseenter'));
@@ -118,8 +136,10 @@ class PatternView extends React.Component {
 		if(matchYieldBar) {
 			matchYieldBar.style.fill = color;
 		}
-
-    this.setHightlightPrediction(id, true);
+		console.debug(new Date() - d1);
+		let that = this;
+    // this.setHightlightPrediction(id, true);
+    console.debug(new Date() - d1);
 	}
 
 	handleMouseLeave(){
@@ -127,6 +147,7 @@ class PatternView extends React.Component {
 			// const showSymbol = false;
 			// this.setState({showSymbol});
 			//#1
+		let d1 = new Date();
 		_clonedScatter && _clonedScatter.remove && _clonedScatter.remove();
 		_clonedScatter && (_clonedScatter = null);
 		//#2
@@ -134,7 +155,7 @@ class PatternView extends React.Component {
 		let yieldRate = this.props.pattern.yield;
 
 		let matchPie = getPieSlice(industry);
-		let piePath = matchPie && matchPie.firstChild;
+		let piePath = matchPie && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = '';
 			matchPie.dispatchEvent(new window.MouseEvent('mouseleave'));
@@ -144,11 +165,14 @@ class PatternView extends React.Component {
 		if(matchYieldBar) {
 			matchYieldBar.style.fill = '';
 		}
-
-    this.setHightlightPrediction(id, false);
+		console.debug('leave d1', new Date() - d1);
+		let that = this;
+    // this.setHightlightPrediction(id, false);
+		console.debug('leave d2', new Date() - d1);
 	}
 
   setHightlightPrediction(id, isHighlight) {
+  	let d1 = new Date();
     let patterns = this.props.patterns;
     let option = window.eChart.getOption();
 
@@ -162,8 +186,9 @@ class PatternView extends React.Component {
         break;
       }
     }
-
+    console.debug('setHightlightPrediction 2', new Date() - d1);
     window.eChart.setOption(option);
+
   }
 
 	setActivePattern() {
@@ -171,12 +196,16 @@ class PatternView extends React.Component {
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
 		let { dispatch, isActive, fullView } = this.props;
-		let { id, symbol, baseBars, kLine, similarity } = this.props.pattern;
+		let { id, symbol, baseBars, kLine, similarity, industry } = this.props.pattern;
     let yieldRate = this.props.pattern.yield;
 
 		if (!fullView) {
 			return;
 		}
+
+		_selectIndustry(industry);
+		_selectYield(this.props.pattern.yield);
+		setScatters(null, null, id);
 
     let dateStart = kLine[0][0];
     let dateEnd = kLine[kLine.length - 5][0];
@@ -229,11 +258,29 @@ class PatternView extends React.Component {
     chart.Q5.getAll()[1].model().mainSeries().onCompleted().subscribe(null, run);
   }
 
+  getImgSize() {
+		let {index, fullView, id} = this.props;
+  	let baseW = 1450;
+  	let window_W = document.body.clientWidth;
+  	let small = window_W < 1450;
+  	if(index == 0 && !fullView) {
+  		return 0;
+  	}
+  	if(!fullView && index > 0 && index < 5) {
+  		return 2;
+  	}
+  	if(small) {
+  		return 1;
+  	} else {
+  		return 0;
+  	}
+  }
+
 	render(){
 
 		let {show, pattern, dispatch, index, fullView, isActive, id} = this.props;
 
-		const className = classNames('transition-all', 'pattern-view', {
+		const className = classNames(/*'transition-all', */'pattern-view', {
 			'active': isActive,
 			'hide': !show,
 			'column': (!fullView && index>=0 && index<5 ),
@@ -248,18 +295,19 @@ class PatternView extends React.Component {
 			'smaller': !fullView && index > 0 && index < 5  //接下来四个缩小显示
 		});
 
-		let style = (fullView || index>=5) && this.getWH() || { widht: '', height: ''};
+		// let style = (fullView || index>=5) && this.getWH() || { widht: '', height: ''};
+		let imgSize = this.getImgSize();
 
-		return (<div style={style} id={ `pattern_view_${id}`} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
+		return (<div id={ `pattern_view_${id}`} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
 
 			<div className={symbolClass}>{pattern.symbol}</div>
 
 			<div className={echartWrapper} ref='echart_wrapper'>
-				<EChart {...this.props} isTrashed={this.state.isTrashed} />
-				<PatternInfo pattern={pattern} dispatch={dispatch} column fullView={fullView} index={index}/>
+				<EChart {...this.props} imgSize={imgSize} isTrashed={this.state.isTrashed} />
+				<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} column fullView={fullView} index={index}/>
 			</div>
 
-			<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} />
+			{/*<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} />*/}
 
 		</div>);
 	}

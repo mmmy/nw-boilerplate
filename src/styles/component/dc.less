@@ -11,6 +11,13 @@ div.dc-chart {
     fill-opacity: .5;
 }
 
+.dc-chart rect.outline {
+    fill: transparent;
+    &.selected {
+        fill: #c5001b;
+    }
+}
+
 .dc-chart rect.stack1 {
     stroke: none;
     fill: red;
@@ -52,8 +59,21 @@ div.dc-chart {
     fill: black;
 }
 
-.dc-chart .pie-slice:not(.deselected) :hover {
-    fill-opacity: .8;
+// .dc-chart .pie-slice:not(.deselected) :hover {
+//     fill-opacity: .2;
+//     fill: #c5001b;
+// }
+
+.dc-chart .pie-slice .outline {
+    fill: transparent;
+    &.selected {
+        fill-opacity: 1;
+        fill: #c5001b;
+    }
+}
+
+.dc-chart .pie-slice path:nth-child(1):hover {
+    fill-opacity: 1;
     fill: #c5001b;
 }
 
@@ -82,7 +102,7 @@ div.dc-chart {
 }
 
 .dc-chart .deselected path:hover {
-    fill-opacity: 1;
+    fill-opacity: 0.2 !important;
 }
 
 .dc-chart .axis path,
@@ -277,6 +297,12 @@ div.dc-chart {
 .dc-chart .fadeout {
     fill-opacity: 0.2;
     stroke-opacity: 0.2;
+}
+
+.dc-chart .chart-body path.selected {
+    fill: transparent;
+    stroke: #c5001b;
+    stroke-width: 2;
 }
 
 .dc-chart path.dc-symbol,

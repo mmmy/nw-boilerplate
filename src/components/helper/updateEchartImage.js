@@ -1,10 +1,15 @@
 import store from '../../store';
 
 let _setImageFuncs = [];
+let _setImageSrcFuncs = [];
 
 let setFunc = (index, func) => {
 	_setImageFuncs[index] = func;
 };
+let setImgSrcFunc = (index, func) => {
+	_setImageSrcFuncs[index] = func;
+};
+
 
 let callFunc = (indexRange) => {
 	// return;
@@ -25,7 +30,15 @@ let callFunc = (indexRange) => {
 	}
 };
 
+let updateImgAll = (size) => {
+	_setImageSrcFuncs.forEach((func) => {
+		func && func.call && func(size);
+	});
+};
+
 module.exports = {
 	setFunc,
 	callFunc,
+	setImgSrcFunc,
+	updateImgAll,
 };
