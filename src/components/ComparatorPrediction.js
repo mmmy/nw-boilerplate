@@ -163,11 +163,12 @@ class ComparatorPrediction extends React.Component {
       backgroundColor: '#FFFFFF',
       grid: {
         x: 0,
-        x2: 0,
+        x2: 50,
         y: 0,
         y2: 0,
         top: 0,
-        bottom: 0
+        bottom: 0,
+        left: 0
       },
       tooltip: {
         show: false,
@@ -202,7 +203,7 @@ class ComparatorPrediction extends React.Component {
             fontWeight: 'lighter',
             fontSize: 10
           },
-          margin: -40
+          margin: 10
         },
         axisTick: {
           show: false
