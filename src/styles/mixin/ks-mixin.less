@@ -16,7 +16,14 @@
 	transition-delay: 0s;
 	transition-duration: @transition-duration;
 }
-
+.transition-position {
+	will-change: transition;
+	transition-property: left, top, right, bottom;
+	transition-duration: @transition-duration;
+	transition-timing-function: ease-in-out;
+	// transition-timing-function: cubic-bezier(1, 0.02, 0, 0.95);
+	transition-delay: 0s;
+}
 .transition-opacity {
 	transition-property: opacity;
 }

@@ -7,6 +7,7 @@ import _ from 'underscore';
 import lodash from 'lodash';
 import classNames from 'classnames';
 import DC from 'dc';
+import { updateImgAll } from '../components/helper/updateEchartImage';
 
 const propTypes = {
 	patterns: PropTypes.object.isRequired,
@@ -184,6 +185,7 @@ class PatternCollection extends React.Component {
 			this.renderLeading5 = true;
 			_oldPatternRawData = newProps.patterns.rawData;
 			let that = this;
+			updateImgAll(-1); //隐藏之前的图片
 			// setTimeout(() => { that.setState({}); }, 2000);
 		} else {
 			this.renderLeading5 = false;

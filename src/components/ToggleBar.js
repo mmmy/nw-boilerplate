@@ -46,7 +46,7 @@ class ToggleBar extends React.Component {
 			'full': fullView,
 		});
 
-		const btnWrapper = classNames('btn-container','transition-all','transition-duration2', {
+		const btnWrapper = classNames('btn-container','transition-position','transition-duration2', {
 			'slide-center': waitingForPatterns,
 		});
 
