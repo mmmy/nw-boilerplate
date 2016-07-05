@@ -257,24 +257,6 @@ class PatternView extends React.Component {
     chart.Q5.getAll()[1].model().mainSeries().onCompleted().subscribe(null, run);
   }
 
-  getImgSize() {
-		let {index, fullView, id} = this.props;
-  	let baseW = 1450;
-  	let window_W = document.body.clientWidth;
-  	let small = window_W < 1450;
-  	if(index == 0 && !fullView) {
-  		return 0;
-  	}
-  	if(!fullView && index > 0 && index < 5) {
-  		return 2;
-  	}
-  	if(small) {
-  		return 1;
-  	} else {
-  		return 0;
-  	}
-  }
-
 	render(){
 
 		let {show, pattern, dispatch, index, fullView, isActive, id} = this.props;
@@ -295,14 +277,13 @@ class PatternView extends React.Component {
 		});
 
 		// let style = (fullView || index>=5) && this.getWH() || { widht: '', height: ''};
-		let imgSize = this.getImgSize();
 
 		return (<div id={ `pattern_view_${id}`} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
 
 			<div className={symbolClass}>{pattern.symbol}</div>
 
 			<div className={echartWrapper} ref='echart_wrapper'>
-				<EChart {...this.props} imgSize={imgSize} isTrashed={this.state.isTrashed} />
+				<EChart {...this.props} isTrashed={this.state.isTrashed} />
 				<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} column fullView={fullView} index={index}/>
 			</div>
 

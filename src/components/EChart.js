@@ -49,11 +49,10 @@ const propTypes = {
 	fullView: PropTypes.bool.isRequired,
 	isTrashed: PropTypes.bool,
 	id: PropTypes.number.isRequired,
-	imgSize: PropTypes.bool
 };
 
 const defaultProps = {
-	imgSize: 0
+
 };
 
 class EChart extends React.Component {
@@ -67,28 +66,58 @@ class EChart extends React.Component {
 		this.canvasNode.width = 200;
 	}
 
-	setImgSrc(size) {  //0: normal, 1: median, 2: small
+	setImgSrc(size) {  //-1: hide, 0: normal, 1: median, 2: small
+		let imgNode = this.refs['echart'+this.props.index] && this.refs['echart'+this.props.index].firstChild;
+		if(!imgNode) {
+			return;
+		}
+		if (size === undefined) {
+			size = this.getImgSize();
+		}
+		if(size === -1) {
+			imgNode.style.opacity = 0;
+			return;
+		}
+		imgNode.style.opacity = '';
 		switch(size) {
 			case 0:
-	    	this.refs['echart'+this.props.index].firstChild.src = this._imgNormal;
+	    	imgNode.src = this._imgNormal;
 	    	break;
 	    case 1:
-	    	this.refs['echart'+this.props.index].firstChild.src = this._imgMedian;
+	    	imgNode.src = this._imgMedian;
 	    	break;
 	    case 2:
-	    	this.refs['echart'+this.props.index].firstChild.src = this._imgSmall;
+	    	imgNode.src = this._imgSmall;
 	    	break;
 	    default:
 	    	break;
 		}
 	}
 
+  getImgSize() {
+		let {index, fullView, id} = this.props;
+  	let baseW = 1450;
+  	let window_W = document.body.clientWidth;
+  	let small = window_W < 1450;
+  	if(index == 0 && !fullView) {
+  		return 0;
+  	}
+  	if(!fullView && index > 0 && index < 5) {
+  		return 2;
+  	}
+  	if(small) {
+  		return 1;
+  	} else {
+  		return 0;
+  	}
+  }
+
 	drawChart(callback) {
 		// let node = this.refs['echart'+this.props.index];
 		const { kLine, baseBars } = this.props.pattern;
 		if ((this.oldKline === kLine) || (!kLine.length) || (kLine.length < 1)) {
 			if(this.oldKline === kLine) {
-				this.setImgSrc(this.props.imgSize);
+				this.setImgSrc();
 			}
 			return;
 		}
@@ -124,7 +153,7 @@ class EChart extends React.Component {
 	    node.height = 102;
 	    node.width = 90;
 	    // this.chart.resize();
-	    this.chart.dispose();
+	    this.chart && this.chart.dispose();
 	    this.chart = echarts.init(node);
 	    this.chart.setOption(candleOption);
 	    // this.chart.resize(100,100);
@@ -132,7 +161,7 @@ class EChart extends React.Component {
 
 	    node.height = 110;
 	    node.width = 120;
-	    this.chart.dispose();
+	    this.chart && this.chart.dispose();
 	    this.chart =echarts.init(node);
 	    this.chart.setOption(candleOption);
 	    this._imgMedian = this.chart.getDataURL();
@@ -145,7 +174,7 @@ class EChart extends React.Component {
 	    }
 			//debugger;
 			//},0);
-			this.setImgSrc(this.props.imgSize);
+			this.setImgSrc();
 		} else {
 
 			let lineOption = factorLineOption();
@@ -209,7 +238,7 @@ class EChart extends React.Component {
 
 	componentWillUnmount(){
 		delete this.canvasNode;
-		this.chart.dispose && this.chart.dispose();
+		this.chart && this.chart.dispose && this.chart.dispose();
 		delete this.chart;
 	}
 
