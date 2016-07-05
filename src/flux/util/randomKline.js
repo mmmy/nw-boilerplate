@@ -4,8 +4,8 @@ let len = data.length,
 	maxIndex = len - 200 ;
 
 let industrys = ['行业1','行业2','行业3','行业4','行业5'];
-const BASE_BARS = 10;
-const ADDTION_DAYS = 10;
+const BASE_BARS = 30;
+const ADDTION_DAYS = 5;
 
 let index = 0;
 
