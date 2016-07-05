@@ -122,7 +122,8 @@ class EChart extends React.Component {
 			return;
 		}
 		this.oldKline = kLine;
-		let node = this.canvasNode;
+		let node = this.canvasNode || window.document.createElement('canvas');
+		this.canvasNode = node;
 
 		// let chart = this.chart || echarts.init(node);
 		let index = this.props.index;
