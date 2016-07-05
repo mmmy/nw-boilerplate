@@ -252,8 +252,8 @@ class EChart extends React.Component {
 			'smaller': !fullView && index > 0 && index < 5,
 		});
 
-		let trashInfo = isTrashed ? <div className='trashed-info'>{/*<h1>不参与</h1><h1>走势计算</h1>*/}</div> : '';
-		return <div ref={'echart'+this.props.index} className={className} ><img src='' />{trashInfo}</div>;
+		// let trashInfo = isTrashed ? <div className='trashed-info'>{/*<h1>不参与</h1><h1>走势计算</h1>*/}</div> : '';
+		return <div ref={'echart'+this.props.index} className={className} ><img src='' />{/*trashInfo*/}</div>;
 
 	}
 }

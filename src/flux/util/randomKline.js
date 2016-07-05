@@ -10,8 +10,8 @@ const ADDTION_DAYS = 5;
 let index = 0;
 
 var randomKline = function(){
-	let start = 3000 + index * (BASE_BARS + ADDTION_DAYS);
-	// let start = Math.round(Math.random() * 200) + 1000;
+	// let start = 3000 + index * (BASE_BARS + ADDTION_DAYS);
+	let start = Math.round(Math.random() * 200) + 1000;
 	index = index + 1;
 	let dataLen = BASE_BARS + ADDTION_DAYS;
 	let kLine = data.slice(start, start + dataLen); // 返回 100 天数据
