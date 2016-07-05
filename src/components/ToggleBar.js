@@ -104,8 +104,6 @@ class ToggleBar extends React.Component {
     var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex); //  50 => width by prediction dom margin
     window.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
     window.eChart.resize();
-
-    window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().priceScale().updatePaneViews(true);
   }
 
   _doWhenSeries0Completed(callback) {
