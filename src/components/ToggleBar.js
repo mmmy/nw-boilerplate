@@ -86,13 +86,25 @@ class ToggleBar extends React.Component {
     if (this.props.fullView) window.actionsForIframe.takeScreenshot();
 		this.props.dispatch(layoutActions.toggleStockView());
 
-    if (this.props.fullView) window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-
-    this._doWhenSeries0Completed(() => {
-      window.widget_comparator.setVisibleRange(window.searchingRange, '0');
-    }, 3E3)
-
+    if (!this.props.fullView) {
+      this.resizePrediction();
+    } else {
+      window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+      this._doWhenSeries0Completed(() => {
+        window.widget_comparator.setVisibleRange(window.searchingRange, '0');
+      }, 3E3)
+    }
 	}
+
+  resizePrediction() {
+    var timeScale = window.widget_comparator._innerWindow().Q5.getAll()[0].model().timeScale();
+    const info = $('#searching-info-content')[0].innerHTML;
+    let daysCount = parseInt(info.slice(0, info.indexOf('bars')));
+    var lastDateIndex = timeScale.visibleBars().firstBar() + daysCount; // for prediction DOM width
+    var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex); //  50 => width by prediction dom margin
+    window.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
+    window.eChart.resize();
+  }
 
   _doWhenSeries0Completed(callback) {
     function run() {

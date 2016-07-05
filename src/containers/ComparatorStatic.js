@@ -102,10 +102,12 @@ class ComparatorStatic extends React.Component {
             "paneProperties.background": "#fff",
             "paneProperties.vertGridProperties.color": "#fff",
             "paneProperties.horzGridProperties.color": "#fff",
-            "paneProperties.topMargin": 40,
-            "paneProperties.bottomMargin": 40,
+            "paneProperties.topMargin": 28,
+            "paneProperties.bottomMargin": 28,
             "symbolWatermarkProperties.transparency": 10, //TODO,
             "symbolWatermarkProperties.color": '#fff',
+
+            "scalesProperties.showRightScale" : false,
             "scalesProperties.textColor" : "#333",
 
             "mainSeriesProperties.showCountDown": true,
@@ -149,7 +151,7 @@ class ComparatorStatic extends React.Component {
             init={ logined }
             options={ options } />
         {/*</div>*/}
-        <div className={'prediction-transparent-overlay top-left'}>
+        {/*<div className={'prediction-transparent-overlay top-left'}>
           <div className={'horizon-line'}></div>
           <div className={'linear-gradient-to-top-left'}></div>
         </div>
@@ -159,9 +161,12 @@ class ComparatorStatic extends React.Component {
         </div>
         <div className={'prediction-transparent-overlay bottom-right'}>
           <div className={'linear-gradient-to-top-right'}></div>
+        </div>*/}
+
+        <div className={'pattern-tv-box-shadow-top'}>
         </div>
 
-        <div className={'pattern-tv-box-shadow'}>
+        <div className={'pattern-tv-box-shadow-bottom'}>
           <ActivePatternInfoContainer/>
         </div>
 

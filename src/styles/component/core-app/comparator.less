@@ -98,9 +98,9 @@
 .comparator-prediction-container{
   position: absolute;
   width: calc(~'25% - 20px');
-  height: calc(~'50% - 15px');
-  top: -1px;
-  right: 52px;
+  height: calc(~'50% - 55px');
+  right: 12px;
+  top: 60px;
 
   .prediction-main{
     position: absolute;
@@ -116,7 +116,7 @@
       right: 0;
       z-index: 999;
       color: #000;
-      box-shadow: 0 0 20px #ccc;
+      // box-shadow: 0 0 20px #ccc;
 
       span{
         font-size: 13px;
@@ -128,9 +128,9 @@
     .comparator-prediction-chart{
       position: absolute;
       width: 100%;
-      height: calc(~'100% - 30px');
-      top: 30px;
-      box-shadow: 0 0 20px #ccc;
+      height: calc(~'100%');
+      // box-shadow: 0 0 20px #ccc;
+      border-left: 1px solid #eee;
     }
   }
 }
@@ -160,15 +160,20 @@
   }
 }
 
-.pattern-tv-box-shadow{
+.pattern-tv-box-shadow-bottom{
   position: absolute;
-  top: 50%;
-  height: 55%;
+  top: 52%;
+  height: 53%;
   width: calc(~"100% - 71px");
   right: 0;
   pointer-events: none;
   border-radius: 2px;
   box-shadow: 0px 0px 20px #DBDBDB;
+}
+.pattern-tv-box-shadow-top{
+  .pattern-tv-box-shadow-bottom();
+  height: 51%;
+  top: 0%;
 }
 
 .prediction-transparent-overlay{
@@ -225,10 +230,10 @@
 .prediction-panel{
   position: absolute;
   width: 12px;
-  height: calc(~'50%');
-  right: 52px;
+  height: calc(~'50% - 55px');
+  right: 63px;
+  top: 60px;
   color: #000;
-  top: -1px;
 
   .prediction-toggle{
     position: absolute;
@@ -252,10 +257,9 @@
 
   }
   .comparator-heatmap{
-    top: 30px;
     position: absolute;
     width: 100%;
-    height: calc(~'100% - 45px');
+    height: calc(~'100%');
     background-color: #F6DADD;
   }
 }
