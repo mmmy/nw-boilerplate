@@ -146,7 +146,6 @@ class PatternView extends React.Component {
 			// const showSymbol = false;
 			// this.setState({showSymbol});
 			//#1
-		let d1 = new Date();
 		_clonedScatter && _clonedScatter.remove && _clonedScatter.remove();
 		_clonedScatter && (_clonedScatter = null);
 		//#2
@@ -164,10 +163,10 @@ class PatternView extends React.Component {
 		if(matchYieldBar) {
 			matchYieldBar.style.fill = '';
 		}
-		console.debug('leave d1', new Date() - d1);
+
 		let that = this;
     // this.setHightlightPrediction(id, false);
-		console.debug('leave d2', new Date() - d1);
+
 	}
 
   setHightlightPrediction(id, isHighlight) {
@@ -185,7 +184,7 @@ class PatternView extends React.Component {
         break;
       }
     }
-    console.debug('setHightlightPrediction 2', new Date() - d1);
+
     window.eChart.setOption(option);
 
   }
