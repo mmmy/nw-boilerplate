@@ -162,13 +162,10 @@ class ComparatorPrediction extends React.Component {
       // backgroundColor: 'RGBA(250, 251, 252, 1.00)',
       backgroundColor: '#FFFFFF',
       grid: {
-        x: 0,
-        x2: 50,
-        y: 0,
-        y2: 0,
         top: 0,
         bottom: 0,
-        left: 0
+        left: -5,
+        right: 50
       },
       tooltip: {
         show: false,

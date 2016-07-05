@@ -64,11 +64,11 @@ class HeatmapContainer extends React.Component {
     const {stretchView, heatmapYAxis, patterns, scaleMinValue, scaleMaxValue} = this.props;
 		return (
       <div className={'prediction-panel'}>
-        <button
+        {/*<button
           className={ 'prediction-toggle' }
           onClick={ this.togglePredictionPanel.bind(this) }>
           <i className={this.props.isPredictionShow ? "fa fa-caret-right" : "fa fa-caret-left"}></i>
-        </button>
+        </button>*/}
         <ComparatorHeatmap
           stretchView={ stretchView }
           heatmapYAxis={ heatmapYAxis }
