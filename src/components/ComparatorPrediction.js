@@ -42,16 +42,7 @@ class ComparatorPrediction extends React.Component {
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
 
     const updatePaneViews = this._updatePaneViews ||  _.throttle(() => {
-      console.debug('updatePaneViews');
-      let dom = window.widget_comparator && window.widget_comparator._innerWindow && window.widget_comparator._innerWindow();
-      if (dom) {
-        let m = dom.Q5 && dom.Q5.getAll()[0];
-        let model = m.model();
-        let series = model.mainSeries()
-        let ps = series.priceScale()
-
-        ps.updatePaneViews(true);
-      }
+      window.actionsForIframe.updatePaneViews();
     }, 1000);
 
     this._updatePaneViews = updatePaneViews;
