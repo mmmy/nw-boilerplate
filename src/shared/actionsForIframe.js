@@ -4,7 +4,7 @@ import { cancelSearch } from '../backend';
 
 export default function(store) {
 
-	let searchSymbolDateRange = function({symbol, dateRange, bars}, cb) {
+	const searchSymbolDateRange = function({symbol, dateRange, bars}, cb) {
 		if (store && store.dispatch) {
 			store.dispatch(layoutActions.waitingForPatterns());                //开始等待
       store.dispatch(patternActions.resetError());
@@ -12,19 +12,19 @@ export default function(store) {
 		}
 	};
 
-  let sendSymbolHistory = function(postData, cb) {
+  const sendSymbolHistory = function(postData, cb) {
     tradingViewActions.getSymbolHistory(postData, cb);
   };
 
-  let sendSymbolSearchResult = function(postData, cb) {
+  const sendSymbolSearchResult = function(postData, cb) {
     tradingViewActions.getSymbolSearchResult(postData, cb);
   };
 
-  let showConfigModal = function() {
+  const showConfigModal = function() {
     store.dispatch(layoutActions.showConfigModal());
   };
 
-  let takeScreenshot = function() {
+  const takeScreenshot = function() {
       const chartDom = window.widget_comparator._innerWindow();
       const tvChartUrl = chartDom.Q5.getAll()[0]._paneWidgets[0].canvas.toDataURL();
       const predictionUrl = window.eChart.getDataURL();
@@ -38,7 +38,7 @@ export default function(store) {
       });
   }
 
-  let scrollToOffsetAnimated = function() {
+  const scrollToOffsetAnimated = function() {
     let widget = window.widget_comparator._innerWindow();
     let chart = widget.Q5.getAll()[0];
 
@@ -68,8 +68,12 @@ export default function(store) {
     });
   }
 
-  let searchCancel = function() {
+  const searchCancel = function() {
     cancelSearch();
+  }
+
+  const updatePaneViews = function() {
+    window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().priceScale().updatePaneViews();
   }
 
 	window.actionsForIframe = {
@@ -79,6 +83,7 @@ export default function(store) {
     takeScreenshot,
     showConfigModal,
     scrollToOffsetAnimated,
-    searchCancel
+    searchCancel,
+    updatePaneViews
 	};
 }

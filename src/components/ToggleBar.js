@@ -104,6 +104,7 @@ class ToggleBar extends React.Component {
     var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex); //  50 => width by prediction dom margin
     window.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
     window.eChart.resize();
+    window.actionsForIframe.updatePaneViews();  // align both TV and prediction
   }
 
   _doWhenSeries0Completed(callback) {
