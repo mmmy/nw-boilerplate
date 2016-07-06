@@ -80,6 +80,52 @@ export default function(store) {
     }
   }
 
+  const recalculateHeatmap = function() {
+
+        let heatmapYAxis = Math.abs(window.eChart.getOption().yAxis[0].max) + Math.abs(window.eChart.getOption().yAxis[0].min);
+        let scaleMinValue = Math.abs(window.eChart.getOption().yAxis[0].min);
+        let eachBlockValue = Math.round(Math.sqrt(heatmapYAxis)); // 根据振幅幅度划分每一个小格的容量
+        let eachValueInPercentage = eachBlockValue / heatmapYAxis;
+        let blocksNumber = Math.round(1 / eachValueInPercentage);
+        let yAxisData = [];
+
+        let height = window.heatmap.getHeight();
+        let eachBlockHeight = height / blocksNumber;
+
+        let min = 0;
+        for (let i = 0; i < blocksNumber; i++) {
+          yAxisData.push(min + ':' + (min += eachBlockHeight));
+        }
+
+        let lastPrices = window.parent.eChart.getOption().series.map((serie, idx) => {
+          return serie.data[serie.data.length - 1];
+        });
+
+        lastPrices.sort((a, b) => {return a - b}); // sort numerically
+        let bunch = lastPrices;
+
+        let eChartSeriesData = [];
+
+        for (let idx = 0; idx < yAxisData.length; idx++) {
+          let range = yAxisData[idx].split(':');
+          let count = 0;
+          for (let i = 0; i < bunch.length; i++) {
+            let value = bunch[i];
+            let position = (value + Math.abs(scaleMinValue)) / heatmapYAxis * height;
+
+            if (position > range[0] && position <= range[1]) count = i + 1;
+          }
+          eChartSeriesData.push([0, idx, count])
+          bunch = bunch.slice(count);
+          count = 0;
+        }
+        let option = window.heatmap.getOption();
+        option.yAxis[0].data = yAxisData;
+        option.series[0].data = eChartSeriesData;
+
+        window.heatmap.setOption(option, true);
+  }
+
 	window.actionsForIframe = {
 		searchSymbolDateRange,      //tv-chart.html 中 "搜索"
 		sendSymbolHistory,          //获取股票数据
@@ -88,6 +134,7 @@ export default function(store) {
     showConfigModal,
     scrollToOffsetAnimated,
     searchCancel,
-    updatePaneViews
+    updatePaneViews,
+    recalculateHeatmap
 	};
 }
