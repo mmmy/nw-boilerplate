@@ -103,7 +103,7 @@ class ComparatorStatic extends React.Component {
             "paneProperties.vertGridProperties.color": "#fff",
             "paneProperties.horzGridProperties.color": "#fff",
             "paneProperties.topMargin": 28,
-            "paneProperties.bottomMargin": 28,
+            "paneProperties.bottomMargin": 20,
             "symbolWatermarkProperties.transparency": 10, //TODO,
             "symbolWatermarkProperties.color": '#fff',
 
@@ -133,6 +133,15 @@ class ComparatorStatic extends React.Component {
           "ksSplitView": true,
           volume: true,
           OHLCBarBorderColor: true,
+          lineToolTimeAxisView: {
+            background: '#656667',
+            // activeBackground: 'green',
+            color: '#fff',
+            borderColor: '#b61c15',
+          },
+          lineToolAxisRange: {
+            background: 'RGBA(190, 191, 192, 1.00)',
+          }
         },
         debug: true
       // height: 300,

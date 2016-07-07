@@ -220,20 +220,37 @@ class PatternView extends React.Component {
     window.timeRange = dateRange;
 
     let oldSymbol = widget._innerWindow().Q5.getAll()[1].model().mainSeries().symbol().split(':')[1];
+    let timeScale = widget._innerWindow().Q5.getAll()[1].R99.timeScale();
+    widget._innerWindow().Q5.getAll()[1].R99.removeAllDrawingTools();
 
     if (oldSymbol !== symbol) {
       chart.KeyStone.setSymbol(symbol, '', 1);
       this._doWhenSeries1Completed(() => {
-        widget.setVisibleRange(dateRange, '1');
+        widget.setVisibleRange(dateRange, '1', () => {
+          var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+          widget.drawKsDateRangeLineTool(indexPoints);
+        });
         window.timeRange = undefined;
       });
     } else {
       widget._innerWindow().Q5.getAll()[1].model().mainSeries().restart();
       this._doWhenSeries1Completed(() => {
-        widget.setVisibleRange(dateRange, '1');
+        widget.setVisibleRange(dateRange, '1', () => {
+          var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+          widget.drawKsDateRangeLineTool(indexPoints);
+        });
       });
     }
 	}
+
+  _doWhenSeries1Timeframe(callback) {
+    function run() {
+      chartDom.Q5.getAll()[1].R99.mainSeries().onTimeframe().unsubscribe(null, run);
+      callback();
+    }
+    const chartDom = window.widget_comparator._innerWindow();
+    chartDom.Q5.getAll()[1].R99.mainSeries().onTimeframe().subscribe(null, run);
+  }
 
   _doWhenSeries0Completed(callback) {
     function run() {
