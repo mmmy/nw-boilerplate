@@ -274,7 +274,7 @@ class PatternCollection extends React.Component {
 		
 		let { dispatch, waitingForPatterns, fullView, active, patternTrashed } = this.props;
 
-		let { crossFilter, rawData , error} = this.props.patterns;
+		let { crossFilter, rawData , error, searchConfig} = this.props.patterns;
 		let { id } = active;
 		let { showTrashed, showNotTrashed } = patternTrashed;
 
@@ -323,7 +323,7 @@ class PatternCollection extends React.Component {
 				}
 				show && __visibleNumber++;
 				let isActive = id === e.id;
-				return <PatternView ref={`pattern_view_${e.id}`} filterTrashedId={this.filterTrashedId.bind(this)} id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>
+				return <PatternView searchConfig={searchConfig} ref={`pattern_view_${e.id}`} filterTrashedId={this.filterTrashedId.bind(this)} id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>
 			});
 			//nodes = nodes.length > 0 ? nodes.slice(0,10) : [];
 		//}

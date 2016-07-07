@@ -7,7 +7,15 @@ import {factorCandleOption , factorLineOption} from './utils/echart-options';
 const renderDataLen = Infinity;
 let candleChart = true;
 
-function splitData(rawData, baseBars) {
+let createEmptyKline = (len) => {
+	let data = [];
+	for (let i=0; i<len; i++) {
+		data.push([undefined, undefined, undefined, undefined]);
+	}
+	return data;
+};
+
+function splitData(rawData, baseBars, predictionBars) {
 	//console.log('baseBars', baseBars);
     var categoryData = [];
     var values = [];
@@ -32,7 +40,9 @@ function splitData(rawData, baseBars) {
     var areaData = categoryData.slice(baseBars-1).map((e) => {
     	return [e, max];
     });
-
+    if(values.length < baseBars + predictionBars) {
+    	values = values.concat(createEmptyKline(baseBars + predictionBars - values.length));
+    }
     return {
         categoryData: categoryData,
         values: values,
@@ -115,6 +125,7 @@ class EChart extends React.Component {
 	drawChart(callback) {
 		// let node = this.refs['echart'+this.props.index];
 		const { kLine, baseBars } = this.props.pattern;
+		const { searchConfig } = this.props;
 		if ((this.oldKline === kLine) || (!kLine.length) || (kLine.length < 1)) {
 			if(this.oldKline === kLine) {
 				this.setImgSrc();
@@ -136,7 +147,7 @@ class EChart extends React.Component {
 			node.width = 200;
 			this.chart && this.chart.dispose();
 			this.chart = echarts.init(node);//&& this.chart.dispose();
-			let data0 = splitData(kLine, baseBars);
+			let data0 = splitData(kLine, baseBars, searchConfig && searchConfig.additionDate.value);
 			let candleOption = factorCandleOption(true);
 			candleOption.xAxis.data = data0.categoryData;
 			candleOption.series[0].data = data0.values;
@@ -252,8 +263,8 @@ class EChart extends React.Component {
 			'smaller': !fullView && index > 0 && index < 5,
 		});
 
-		// let trashInfo = isTrashed ? <div className='trashed-info'>{/*<h1>不参与</h1><h1>走势计算</h1>*/}</div> : '';
-		return <div ref={'echart'+this.props.index} className={className} ><img src='' />{/*trashInfo*/}</div>;
+		let trashInfo = isTrashed ? <div className='trashed-info'>{/*<h1>不参与</h1><h1>走势计算</h1>*/}</div> : '';
+		return <div ref={'echart'+this.props.index} className={className} ><img src='' />{trashInfo}</div>;
 
 	}
 }

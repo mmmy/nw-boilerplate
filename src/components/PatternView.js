@@ -34,6 +34,7 @@ const propTypes = {
 	dispatch: PropTypes.func.isRequired,
 	id: PropTypes.number.isRequired,
 	filterTrashedId: PropTypes.func,
+	searchConfig: PropTypes.object,
 };
 
 const defaultProps = {

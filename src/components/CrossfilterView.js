@@ -92,7 +92,7 @@ class CrossfilterView extends React.Component {
 
 		this.drawDc();
 
-		this.bindResizeFunc = _.debounce(this.handleResize.bind(this), 200);
+		this.bindResizeFunc = lodash.debounce(this.handleResize.bind(this), 200, {trailing: true});
 
 		window.addEventListener('resize', this.bindResizeFunc);
 	}
@@ -161,7 +161,8 @@ class CrossfilterView extends React.Component {
 		}
 
 		if (pieChartR != this.pieChartR) {
-			setTimeout(() => { 
+			setTimeout(() => {
+				console.debug('pie chart resize !!!!'); 
 				that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); 
 				disableTrasitionOnce && that.industryPieChart.transitionDuration(transitionDuration);
 			});
@@ -367,9 +368,9 @@ resizeChart1() {
 		//console.log('crossFilter view render');
 		let { chart3larger } = this.state;
 		let toggleBtnClass = classnames('toggle-btn');
-		let toggleBtn1 = <button ref='toggle_btn1' className={toggleBtnClass} onClick={this.toggleChart1.bind(this)}></button>;
-		let toggleBtn2 = <button ref='toggle_btn2' className={toggleBtnClass} onClick={this.toggleChart2.bind(this)}></button>;
-		let toggleBtn3 = <button ref='toggle_btn3' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
+		//let toggleBtn1 = <button ref='toggle_btn1' className={toggleBtnClass} onClick={this.toggleChart1.bind(this)}></button>;
+		// let toggleBtn2 = <button ref='toggle_btn2' className={toggleBtnClass} onClick={this.toggleChart2.bind(this)}></button>;
+		// let toggleBtn3 = <button ref='toggle_btn3' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
 		
 		let yiledBtns = <span className='yield-btns-container font-simsun'><button onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
 		
@@ -378,12 +379,12 @@ resizeChart1() {
 		return (
 		  <div ref='root' className={ className }>
 		  	<div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='position_bubble_chart_wrapper'>
-		  		<strong>{toggleBtn1}历史时间分布</strong>
+		  		<strong>{/*toggleBtn1*/}历史时间分布</strong>
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
 		    <div className="dc-chart-row" ref='dc_chart_row_2'>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{toggleBtn2}标的类型</strong><div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">{whiteCircle}{resetBtn}<div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{toggleBtn3}收益率统计{yiledBtns}</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{/*toggleBtn2*/}标的类型</strong><div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">{whiteCircle}{resetBtn}<div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{/*toggleBtn3*/}收益率统计{yiledBtns}</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>
 		  </div>
 		);
