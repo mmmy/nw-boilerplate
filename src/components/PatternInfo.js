@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import Switch from './Switch';
 import classNames from 'classnames';
+import store from '../store';
 
 const propTypes = {
 	pattern: PropTypes.object.isRequired,
@@ -88,7 +89,8 @@ class PatternInfo extends React.Component {
 	}
 
 	mouseEnter() {
-		let {column, fullView} = this.props;
+		let {column} = this.props;
+		let fullView = !store.getState().layout.stockView;
 		if(fullView) {
 			this.setState({showSwitch: true});
 		}
