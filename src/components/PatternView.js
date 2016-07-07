@@ -226,19 +226,19 @@ class PatternView extends React.Component {
     if (oldSymbol !== symbol) {
       chart.KeyStone.setSymbol(symbol, '', 1);
       this._doWhenSeries1Completed(() => {
-        widget.setVisibleRange(dateRange, '1');
-        // this._doWhenSeries1Timeframe(() => {
-        var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
-        widget.drawKsDateRangeLineTool(indexPoints);
-        // });
+        widget.setVisibleRange(dateRange, '1', () => {
+          var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+          widget.drawKsDateRangeLineTool(indexPoints);
+        });
         window.timeRange = undefined;
       });
     } else {
       widget._innerWindow().Q5.getAll()[1].model().mainSeries().restart();
       this._doWhenSeries1Completed(() => {
-        widget.setVisibleRange(dateRange, '1');
-        var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
-        widget.drawKsDateRangeLineTool(indexPoints);
+        widget.setVisibleRange(dateRange, '1', () => {
+          var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+          widget.drawKsDateRangeLineTool(indexPoints);
+        });
       });
     }
 	}
