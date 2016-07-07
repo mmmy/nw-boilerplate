@@ -97,12 +97,15 @@ class PatternCollection extends React.Component {
 		if(this.oldCrossFilter !== crossFilter) {
 
 			console.info('crossFilter changed!');
+			updateImgAll(-1); //隐藏之前的图片
 			this.oldCrossFilter = crossFilter;
 			this.symbolDim = crossFilter.dimension(e=>{ return e.symbol; });
 			//idDim , 剔除dimentsion
 			this.idDim = crossFilter.dimension(d=>{ return d.id; });
 			_idTrashed = [];
 			$('.trashed-number', '.pattern-statistics-panel').text('');
+			
+
 		}
 
 		let hideHelper = () => {
@@ -185,7 +188,6 @@ class PatternCollection extends React.Component {
 			this.renderLeading5 = true;
 			_oldPatternRawData = newProps.patterns.rawData;
 			let that = this;
-			updateImgAll(-1); //隐藏之前的图片
 			// setTimeout(() => { that.setState({}); }, 2000);
 		} else {
 			this.renderLeading5 = false;

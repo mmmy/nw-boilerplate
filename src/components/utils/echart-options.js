@@ -40,6 +40,7 @@ var factorCandleOption=function(candleBorder = true){
 	};
 
 	let option = {
+		backgroundColor: '#fff',
 			animation: false,
 		    title: { show: false },
 		    tooltip: {

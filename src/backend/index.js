@@ -16,14 +16,25 @@ let _growSimilarity = (similarity) => {
 let __ksSearchXhr = null;
 let __ksDataXhr_1 = null;
 let __ksDataXhr_2 = null;
+
+let __ksDataXhr_3 = null; //50 - 100
+let __ksDataXhr_4 = null; //101 - 150
+let __ksDataXhr_5 = null; //151 - 200
+
 let cancelSearch = () => {
 	__ksSearchXhr && __ksSearchXhr.abort && __ksSearchXhr.abort();
 	__ksDataXhr_1 && __ksDataXhr_1.abort && __ksDataXhr_1.abort();
 	__ksDataXhr_2 && __ksDataXhr_2.abort && __ksDataXhr_2.abort();
+	__ksDataXhr_3 && __ksDataXhr_3.abort && __ksDataXhr_3.abort();
+	__ksDataXhr_4 && __ksDataXhr_4.abort && __ksDataXhr_4.abort();
+	__ksDataXhr_3 && __ksDataXhr_3.abort && __ksDataXhr_3.abort();
 
 	__ksSearchXhr = null;
 	__ksDataXhr_1 = null;
 	__ksDataXhr_2 = null;
+	__ksDataXhr_3 = null;
+	__ksDataXhr_4 = null;
+	__ksDataXhr_5 = null;
 };
 
 let __data = [];
@@ -85,7 +96,7 @@ let searchPattern = (args, cb, errorCb) => {
 			if(startIndex === 0) { //获取到前五个 刷新state
 				cb && cb(__data, __closePrice);
 			} else {
-				callFunc([startIndex, __data.length]);
+				callFunc([startIndex, startIndex + klineArr.length]);
 			}
 		};
 
@@ -110,11 +121,28 @@ let searchPattern = (args, cb, errorCb) => {
 			console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);
 		});
-		__ksDataXhr_2 = KSDataService.postSymbolData(nextIndex, args.slice(nextIndex), bars, dataCb, (err) => {
+		__ksDataXhr_2 = KSDataService.postSymbolData(nextIndex, args.slice(nextIndex, 31), bars, dataCb, (err) => {
 			console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);
 		});
-
+		if(args.length > 30) {
+			__ksDataXhr_3 = KSDataService.postSymbolData(31, args.slice(31), bars, dataCb, (err) => {
+				console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
+				errorCb && errorCb(err);
+			});
+		}		
+		// if(args.length > 100) {
+		// 	__ksDataXhr_4 = KSDataService.postSymbolData(101, args.slice(101, 151), bars, dataCb, (err) => {
+		// 		console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
+		// 		errorCb && errorCb(err);
+		// 	});
+		// }		
+		// if(args.length > 150) {
+		// 	__ksDataXhr_5 = KSDataService.postSymbolData(151, args.slice(151, 201), bars, dataCb, (err) => {
+		// 		console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
+		// 		errorCb && errorCb(err);
+		// 	});
+		// }
 	};
 	
 	console.info('第一步: 搜索 [ 开始 ]');

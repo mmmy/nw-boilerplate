@@ -77,7 +77,7 @@ class EChart extends React.Component {
 	}
 
 	setImgSrc(size) {  //-1: hide, 0: normal, 1: median, 2: small
-		let imgNode = this.refs['echart'+this.props.index] && this.refs['echart'+this.props.index].firstChild;
+		let imgNode = this.refs['img'];
 		if(!imgNode) {
 			return;
 		}
@@ -147,7 +147,7 @@ class EChart extends React.Component {
 			node.width = 200;
 			this.chart && this.chart.dispose();
 			this.chart = echarts.init(node);//&& this.chart.dispose();
-			let data0 = splitData(kLine, baseBars, searchConfig && searchConfig.additionDate.value);
+			let data0 = splitData(kLine, baseBars, searchConfig && parseInt(searchConfig.additionDate.value));
 			let candleOption = factorCandleOption(true);
 			candleOption.xAxis.data = data0.categoryData;
 			candleOption.series[0].data = data0.values;
@@ -264,7 +264,7 @@ class EChart extends React.Component {
 		});
 
 		let trashInfo = isTrashed ? <div className='trashed-info'>{/*<h1>不参与</h1><h1>走势计算</h1>*/}</div> : '';
-		return <div ref={'echart'+this.props.index} className={className} ><img src='' />{trashInfo}</div>;
+		return <div ref={'echart'+this.props.index} className={className} ><h3 style={{color: '#aaa', width:'100px'}}>加载中...</h3><img ref='img' src='' />{trashInfo}</div>;
 
 	}
 }
