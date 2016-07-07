@@ -133,6 +133,15 @@ class ComparatorStatic extends React.Component {
           "ksSplitView": true,
           volume: true,
           OHLCBarBorderColor: true,
+          lineToolTimeAxisView: {
+            background: '#656667',
+            // activeBackground: 'green',
+            color: '#fff',
+            borderColor: '#b61c15',
+          },
+          lineToolAxisRange: {
+            background: 'RGBA(190, 191, 192, 1.00)',
+          }
         },
         debug: true
       // height: 300,
