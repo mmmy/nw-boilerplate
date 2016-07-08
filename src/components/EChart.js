@@ -3,6 +3,7 @@ import echarts from 'echarts';
 import classNames from 'classnames';
 import { setFunc, setImgSrcFunc } from './helper/updateEchartImage';
 import {factorCandleOption , factorLineOption} from './utils/echart-options';
+import store from '../store';
 
 const renderDataLen = Infinity;
 let candleChart = true;
@@ -124,6 +125,8 @@ class EChart extends React.Component {
 
 	drawChart(callback) {
 		// let node = this.refs['echart'+this.props.index];
+		// let pattern = store.getState().patterns.rawData[this.props.id];
+		// if(!pattern) return;
 		const { kLine, baseBars } = this.props.pattern;
 		const { searchConfig } = this.props;
 		if ((this.oldKline === kLine) || (!kLine.length) || (kLine.length < 1)) {
@@ -212,7 +215,8 @@ class EChart extends React.Component {
 
 	componentDidUpdate() {
 
-			setTimeout(this.drawChart.bind(this));
+			// setTimeout(this.drawChart.bind(this));
+			this.drawChart();
 			//this.drawChart()	
 		//console.log('echart componentDidUpdate');
 		/*******************************************

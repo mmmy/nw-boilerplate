@@ -28,6 +28,21 @@ let callFunc = (indexRange) => {
 	} catch (e) {
 		console.log(e);
 	}
+	// if(indexRange[1] == _setImageFuncs.length) {
+	// 	setTimeout(() => {
+	// 		let alert = false;
+	// 		$('.echart img').each((i, e) => {
+	// 			if ((e.width != 120) && (e.width != 200)) {
+	// 				alert = true;
+	// 			}
+	// 		});
+	// 		if(alert) {
+	// 			var exec = require('child_process').exec;
+	// 			var cmd = 'terminal-notifier -message "error! no img" -sound Glass -appIcon ~/Pictures/13.jpg';
+	// 			exec(cmd);
+	// 		}
+	// 	},2000)
+	// }
 };
 
 let updateImgAll = (size) => {

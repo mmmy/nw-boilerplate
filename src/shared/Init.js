@@ -20,7 +20,7 @@ let initJquery = () => {
 			});
 	}
 	/*let TradingView =*/ require('../../tradingview/charting_library/charting_library');
-	/*let Datafeed =*/ require('../../tradingview/charting_library/datafeed/udf/datafeed');
+	/*let Datafeed =*/ //require('../../tradingview/charting_library/datafeed/udf/datafeed');
   require('../../tradingview/charting_library/datafeed/udf/ks_search_result');
   require('../../tradingview/charting_library/datafeed/udf/ks_symbols_database');
   require('../../tradingview/charting_library/datafeed/udf/mock_request');
