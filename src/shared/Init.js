@@ -48,6 +48,20 @@ let initResize = () => {
 	window.addEventListener('resize', _.debounce(setRem, 200));
 };
 
+let initGolbalKeyEvent = () => {
+	window.addEventListener('keydown', (e)=>{
+		if(e.altKey && e.ctrlKey && e.shiftKey) {
+			switch(e.keyCode) {
+				case 73: //i
+					window._gui && window._gui.Window.get().showDevTools();
+					break;
+				default:
+					break;
+			}
+		}
+	});
+};
+
 module.exports = () => {
 	/******************************************
 		.showDevTools()  not work at here
@@ -69,4 +83,5 @@ module.exports = () => {
  	initJquery();
  	initAssert();
  	initResize();
+ 	initGolbalKeyEvent();
 };
