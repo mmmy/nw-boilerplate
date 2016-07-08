@@ -761,8 +761,8 @@ resizeChart1() {
 		    minYield100 = this.yield100Range[0];
 
 		yieldDimCountChart.xAxis().tickFormat((v) => {return (v * rangeInterval + minYield100 ).toFixed(0) + '%'; }).ticks(6).innerTickSize(5);
-		yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(5);
-		//yield.yAxis().tickFromat((v) => {return v+'%'});
+		// yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(5);
+		yieldDimCountChart.yAxis().tickFormat(d3.format('d')).ticks(5).innerTickSize(5);
 		//yieldDimCountChart.on('filtered', _.debounce(this.onChartFiltered.bind(this)));
 		yieldDimCountChart.on('filtered', this.onChartFiltered.bind(this));
 		//yieldDimCountChart.filterHandler(debounceFilter);

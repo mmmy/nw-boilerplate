@@ -89,7 +89,7 @@ class StockView extends React.Component {
 					volume: false,
 					OHLCBarBorderColor: true,
 					ksSearch: true,
-					ksSearchRange: [10, 32],
+					ksSearchRange: [10, 50],
 					showLiveBtn: true,
 					lineToolTimeAxisView: {
 						background: '#b61c15',
