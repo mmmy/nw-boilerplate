@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import Waves from './SearchWaitingWaves';
 import classNames from 'classnames';
 import { storageAccount, getAccount, removeAccount } from '../backend/localStorage';
+import store from '../store';
 
 const propTypes = {
 	onLogined: PropTypes.func,
@@ -18,6 +19,7 @@ class Login extends React.Component {
 		this.state = {isLogining: false, username: '', password:'', autoLogin: false};
 		let that = this;
 		this.handleRiseze = (e) => {
+			if(store.getState().account.username) return;
 			let height = $(that.refs.login_panel_container).height();
 			let waveNode = that._waveNode || $('.waves-container');
 			let logoNode = that._logoNode || $('.btn-container');
