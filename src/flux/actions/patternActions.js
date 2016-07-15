@@ -3,6 +3,7 @@ import ajaxData from '../../backend/ajaxData';
 import backend from '../../backend';
 import crossfilter from 'crossfilter';
 import store from '../../store';
+// import { setComparatorVisibleRange } from '../../shared/actionTradingview';
 /**
  * 异步获取patterns
  * @param  {string}   symbol    [股票代码]
@@ -14,12 +15,12 @@ import store from '../../store';
 const devLocal = false;
 let _lastSearch = {};
 
-let getPatterns = ({symbol, dateRange, bars}, cb) => {
+let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate}, cb) => {
 	//console.log('patternActions: getPatterns',symbol, dateRange);
 	symbol = symbol || _lastSearch.symbol;
 	dateRange = dateRange || _lastSearch.dateRange;
 	bars = bars || _lastSearch.bars;
-
+	// setComparatorVisibleRange({from: +new Date(dateRange[0])/1000, to: +new Date(lastDate)/1000}, '0');
 	//缓存上一次的
 	_lastSearch.symbol = symbol;
 	_lastSearch.dateRange = dateRange;
@@ -67,7 +68,7 @@ let getPatterns = ({symbol, dateRange, bars}, cb) => {
 					let searchTimeSpent = new Date() - startTime;
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 					cb && cb();
-
+					
 				}, (error) => {
 					//请求错误后的处理
 					console.error(error);

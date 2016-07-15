@@ -7,6 +7,7 @@ import store from '../store';
 
 const renderDataLen = Infinity;
 let candleChart = true;
+let _showPrediction = false;
 
 let createEmptyKline = (len) => {
 	let data = [];
@@ -16,10 +17,11 @@ let createEmptyKline = (len) => {
 	return data;
 };
 
-function splitData(rawData, baseBars, predictionBars) {
+function splitData(rawData, baseBars, predictionBars, showPrediction) {
 	//console.log('baseBars', baseBars);
     var categoryData = [];
     var values = [];
+    rawData = showPrediction ? rawData : rawData.slice(0, baseBars);
 
     var lowArr = [], highArr = [];
 
@@ -34,14 +36,16 @@ function splitData(rawData, baseBars, predictionBars) {
     var max = Math.max.apply(null, highArr);
 
     var arange10 = [];
-    for (var i=0; i < 20; i++) {
-    	arange10.push([categoryData[baseBars-1], min + (max - min) / 20 * i]);
+    if(showPrediction) {
+	    for (var i=0; i < 20; i++) {
+	    	arange10.push([categoryData[baseBars-1], min + (max - min) / 20 * i]);
+	    }
     }
 
-    var areaData = categoryData.slice(baseBars-1).map((e) => {
+    var areaData = !showPrediction ? [] : categoryData.slice(baseBars-1).map((e) => {
     	return [e, max];
     });
-    if(values.length < baseBars + predictionBars) {
+    if(showPrediction && (values.length < baseBars + predictionBars)) {
     	values = values.concat(createEmptyKline(baseBars + predictionBars - values.length));
     }
     return {
@@ -133,6 +137,9 @@ class EChart extends React.Component {
 			if(this.oldKline === kLine) {
 				this.setImgSrc();
 			}
+			if(callback){
+				console.error('EChart img error');
+			}
 			return;
 		}
 		this.oldKline = kLine;
@@ -150,7 +157,7 @@ class EChart extends React.Component {
 			node.width = 200;
 			this.chart && this.chart.dispose();
 			this.chart = echarts.init(node);//&& this.chart.dispose();
-			let data0 = splitData(kLine, baseBars, searchConfig && parseInt(searchConfig.additionDate.value));
+			let data0 = splitData(kLine, baseBars, searchConfig && parseInt(searchConfig.additionDate.value), _showPrediction);
 			let candleOption = factorCandleOption(true);
 			candleOption.xAxis.data = data0.categoryData;
 			candleOption.series[0].data = data0.values;

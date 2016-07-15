@@ -7,6 +7,48 @@ import echarts from 'echarts';
 import { predictionRandomData } from './utils/comparatorPredictionEchart';
 import _ from 'underscore';
 
+let _isMouseDowned = false;
+let _cursorY = 0;
+
+let _echartMouseEvent = (echart, event) => {
+  switch(event.type) {
+    case 'mousedown':
+      _isMouseDowned = true;
+      echart.getDom().firstChild.style.cursor = 'ns-resize';
+      _cursorY = event.y;
+      break;
+    case 'mousemove':
+      try{
+        if(_isMouseDowned){
+          let predictionState = window.store.getState().prediction;
+          let chartDom = echart.getDom();
+          let domHeight = chartDom.height;
+          let option = echart.getOption();
+          chartDom.firstChild.style.cursor = 'ns-resize';
+          let cursorY = event.y;
+          let offset = (cursorY - _cursorY);
+          _cursorY = cursorY;
+          let rate = option.yAxis[0].min / option.yAxis[0].max;
+          option.yAxis[0].max += offset;
+          option.yAxis[0].min = option.yAxis[0].max * rate;
+          let manulScale = option.yAxis[0].max / predictionState.scaleMaxValue;
+          predictionState.manulScale = manulScale;
+          echart.setOption(option);
+          window.store.dispatch({type: 'SET_HEATMAP_YAXIS', heatmapYAxis: option.yAxis[0].max + Math.abs(option.yAxis[0].min)});
+        }
+      }catch(e){
+        console.error(e);
+      }
+      break;
+    case 'mouseup':
+      _isMouseDowned = false;
+      echart.getDom().firstChild.style.cursor = 'default';
+      break
+    default:
+      break;
+  }
+};
+
 const propTypes = {
   patterns: PropTypes.object.isRequired,
   stretchView: PropTypes.object.bool,
@@ -30,6 +72,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   componentWillReceiveProps(nextProps){
+    console.info(nextProps);
   }
 
   shouldComponentUpdate(nextProps){
@@ -38,11 +81,15 @@ class ComparatorPrediction extends React.Component {
   componentDidUpdate() {
     let option = window.eChart.getOption();
     option.series = this.generateSeriesDataFromClosePrice();
-    window.eChart.setOption(option, true);
+    let d1 = new Date();
+    //setTimeout(() => { 
+      window.eChart.setOption(option, true); 
+    //});
+    console.info('window.eChart.setOption in', new Date() - d1);
     console.info('ComparatorPrediction did update in millsec: ', new Date() - this.d1);
 
     // const updatePaneViews = this._updatePaneViews ||  _.throttle(() => {
-    window.actionsForIframe.updatePaneViews();
+    // window.actionsForIframe.updatePaneViews();
     // }, 1000);
 
     // this._updatePaneViews = updatePaneViews;
@@ -100,11 +147,18 @@ class ComparatorPrediction extends React.Component {
           name: data.id,
           type: 'line',
           showSymbol: false,
+          smooth: false,
           hoverAnimation: false,
           lineStyle: {
             normal: {
-              color: '#ccc',
-              width: 0.5
+              color: 'rgba(0, 0, 0, 0.2)',
+              width: 1
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: 'green',
+              borderColor: 'green'
             }
           },
           z: -1
@@ -216,6 +270,9 @@ class ComparatorPrediction extends React.Component {
       var updateTime = endTime - startTime;
       console.log("Time used:", updateTime);
     }
+    dom.addEventListener('mousedown', _echartMouseEvent.bind(null, window.eChart));
+    dom.addEventListener('mousemove', _echartMouseEvent.bind(null, window.eChart));
+    dom.addEventListener('mouseup', _echartMouseEvent.bind(null, window.eChart));
   }
 
   render(){

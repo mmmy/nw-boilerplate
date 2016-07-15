@@ -3,6 +3,7 @@ import * as types from '../constants/ActionTypes';
 const initialState = {
   lastClosePrice: 0,
   heatmapYAxis: 0,
+  manulScale: 1,
   scaleMaxValue: 0,
   scaleMinValue:0
 };
@@ -20,9 +21,9 @@ export default function prediction(state = initialState, action) {
       let { heatmapYAxis, scaleMaxValue, scaleMinValue } = action;
       return {
         ...state,
-        heatmapYAxis: heatmapYAxis,
-        scaleMaxValue: scaleMaxValue,
-        scaleMinValue: scaleMinValue
+        heatmapYAxis: heatmapYAxis || state.heatmapYAxis,
+        scaleMaxValue: scaleMaxValue || state.scaleMaxValue,
+        scaleMinValue: scaleMinValue || state.scaleMinValue
       }
 
     default:

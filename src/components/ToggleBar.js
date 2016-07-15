@@ -85,28 +85,30 @@ class ToggleBar extends React.Component {
 		if (waitingForPatterns || error) return;
     if (this.props.fullView) window.actionsForIframe.takeScreenshot();
 		this.props.dispatch(layoutActions.toggleStockView());
-
+// return;
     if (!this.props.fullView) {
-      this.resizePrediction();
+      // this.resizePrediction();
     } else {
-      window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-      this._doWhenSeries0Completed(() => {
+      // this._doWhenSeries0Completed(() => {
+      	// window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
         window.widget_comparator.setVisibleRange(window.searchingRange, '0');
-      }, 3E3)
+      	window._ksResizePrediction && window._ksResizePrediction(window);
+
+      // }, 200)
     }
 	}
 
-  resizePrediction() {
-    var timeScale = window.widget_comparator._innerWindow().Q5.getAll()[0].model().timeScale();
-    const info = $('#searching-info-content')[0].innerHTML;
-    let daysCount = parseInt(info.slice(0, info.indexOf('bars')));
-    var lastDateIndex = timeScale.visibleBars().firstBar() + daysCount; // for prediction DOM width
-    var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex); //  50 => width by prediction dom margin
-    window.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
-    window.eChart.resize();
-    window.actionsForIframe.updatePaneViews();  // align both TV and prediction
-    // window.actionsForIframe.recalculateHeatmap();
-  }
+  // resizePrediction() {
+  //   var timeScale = window.widget_comparator._innerWindow().Q5.getAll()[0].model().timeScale();
+  //   const info = $('#searching-info-content')[0].innerHTML;
+  //   let daysCount = parseInt(info.slice(0, info.indexOf('bars')));
+  //   var lastDateIndex = timeScale.visibleBars().firstBar() + daysCount - 1; // for prediction DOM width
+  //   var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex); //  50 => width by prediction dom margin
+  //   window.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
+  //   window.eChart.resize();
+  //   window.actionsForIframe.updatePaneViews();  // align both TV and prediction
+  //   // window.actionsForIframe.recalculateHeatmap();
+  // }
 
   _doWhenSeries0Completed(callback) {
     function run() {

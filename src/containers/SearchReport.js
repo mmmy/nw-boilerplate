@@ -15,6 +15,9 @@ let afterSearchMessage = (number, timeSpent) => {
 	msgNode.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
 		//console.log('afterSearchMessage container animation ended----====-----');
 		msgNode.remove();
+		// if(document.querySelector('.pattern-view img').style.opacity === ''){
+		// 				setTimeout(window._restartSearch, 5000);
+		// }
 	});
 };
 
@@ -43,6 +46,7 @@ class SearchReport extends React.Component {
 	componentDidMount() {
 		//afterSearchMessage(200, 0.001);
 		$('#__comparator_prediction_container').css('opacity', 0);
+		window._restartSearch = this.restartSearch.bind(this);
 	}
 
 	componentWillReceiveProps(newProps){

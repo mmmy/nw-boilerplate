@@ -6,6 +6,8 @@ import HeatmapContainer from './heatmapContainer';
 import PredictionContainer from './PredictionContainer';
 import ActivePatternInfoContainer from './ActivePatternInfoContainer';
 import { layoutActions } from '../flux/actions';
+import _ from 'underscore';
+
 const propTypes = {
 
 };
@@ -13,6 +15,29 @@ const propTypes = {
 const defaultProps = {
 
 };
+
+function resizePrediction(context) {
+  try{
+    var timeScale = context.widget_comparator._innerWindow().Q5.getAll()[0].model().timeScale();
+    const info = $('#searching-info-content')[0].innerHTML;
+    let daysCount = parseInt(info.slice(0, info.indexOf('bars')));
+    var offset = 45;
+    var range = context.searchingRange;
+    var rangeStartIndex = range && (timeScale.timePointToIndex(range.from) + range.baseBars);
+    var lastDateIndex = rangeStartIndex || (timeScale.visibleBars().firstBar() + daysCount - 1); // for prediction DOM width
+    var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex) + offset; //  50 => width by prediction dom margin
+    var wrapperWidth = context.eChart.getDom().parentNode.parentNode.parentNode.clientWidth;
+    pixel = ((pixel > (wrapperWidth - 130)) || (pixel < 50)) ? 300 : pixel;
+    context.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
+    context.eChart.resize();
+    // context.actionsForIframe.updatePaneViews();  // align both TV and prediction
+    // window.actionsForIframe.recalculateHeatmap();
+  }catch(e){
+    console.error(e);
+  }
+}
+
+window._ksResizePrediction = resizePrediction;
 
 class ComparatorStatic extends React.Component {
 
@@ -25,6 +50,15 @@ class ComparatorStatic extends React.Component {
 	}
 
 	componentDidMount() {
+    this.handleResize = _.debounce(
+      () => {
+        try {
+          window.widget_comparator && window.widget_comparator.setVisibleRange(window.searchingRange, '0');
+          resizePrediction(window);
+        } catch (e) {}
+      },
+      400);
+    window.addEventListener('resize', this.handleResize);
 	}
 
 	componentWillReceiveProps(){
@@ -37,7 +71,7 @@ class ComparatorStatic extends React.Component {
 	}
 
 	componentWillUnmount(){
-
+    window.removeEventListener('resize', this.handleResize);
 	}
   componentDidUpdate() {
     console.info('ComparatorStatic did update in millsec: ', new Date() - this.d1);
@@ -59,12 +93,12 @@ class ComparatorStatic extends React.Component {
     const STOCK_VIEW = 'comparator-chart';
 
     let options = {
-      symbol: '000003.SZ',
+      symbol: '300336.SZ',
       interval: 'D',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
       // datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
-      datafeed: new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 1),
+      datafeed: new window.Kfeeds.UDFCompatibleDatafeed("", 1000 * 1000, 2, 1),
       library_path: "charting_library/",
       locale: "zh",
       //	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
@@ -102,7 +136,7 @@ class ComparatorStatic extends React.Component {
             "paneProperties.background": "#fff",
             "paneProperties.vertGridProperties.color": "#fff",
             "paneProperties.horzGridProperties.color": "#fff",
-            "paneProperties.topMargin": 28,
+            "paneProperties.topMargin": 40,
             "paneProperties.bottomMargin": 20,
             "symbolWatermarkProperties.transparency": 10, //TODO,
             "symbolWatermarkProperties.color": '#fff',
@@ -120,9 +154,9 @@ class ComparatorStatic extends React.Component {
             "mainSeriesProperties.candleStyle.drawWick": true,
             "mainSeriesProperties.candleStyle.drawBorder": true,
             "mainSeriesProperties.candleStyle.borderColor": "#378658",
-            "mainSeriesProperties.candleStyle.borderUpColor": "#8E0000",
+            "mainSeriesProperties.candleStyle.borderUpColor": "#c50017",
             "mainSeriesProperties.candleStyle.borderDownColor": "#6A6A6A",
-            "mainSeriesProperties.candleStyle.wickUpColor": '#8E0000',
+            "mainSeriesProperties.candleStyle.wickUpColor": '#c50017',
             "mainSeriesProperties.candleStyle.wickDownColor": '#6A6A6A',
             "mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
             "scalesProperties.lineColor" : "transparent",
@@ -140,10 +174,10 @@ class ComparatorStatic extends React.Component {
             borderColor: '#b61c15',
           },
           lineToolAxisRange: {
-            background: 'RGBA(190, 191, 192, 1.00)',
+            background: 'rgba(190, 191, 192, 1.00)',
           }
         },
-        debug: true
+        // debug: true
       // height: 300,
       // width: 300,
     }

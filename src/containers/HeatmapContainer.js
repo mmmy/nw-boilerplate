@@ -52,7 +52,7 @@ class HeatmapContainer extends React.Component {
   }
 
 	render(){
-    const {stretchView, heatmapYAxis, patterns, scaleMinValue, scaleMaxValue} = this.props;
+    const {stretchView, heatmapYAxis, patterns, scaleMinValue, scaleMaxValue, manulScale, filter} = this.props;
 		return (
       <div className={'prediction-panel'}>
         <ComparatorHeatmap
@@ -60,7 +60,9 @@ class HeatmapContainer extends React.Component {
           heatmapYAxis={ heatmapYAxis }
           patterns={ patterns }
           scaleMinValue={ scaleMinValue }
-          scaleMaxValue={ scaleMaxValue } />
+          scaleMaxValue={ scaleMaxValue }
+          manulScale={manulScale}
+          filter={filter} />
       </div>
   );
 	}
@@ -70,9 +72,9 @@ HeatmapContainer.propTypes = propTypes;
 HeatmapContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-  const {layout, patterns, prediction} = state;
+  const {layout, patterns, prediction, filter} = state;
   const {stockView, isPredictionShow} = layout;
-  const {heatmapYAxis, scaleMaxValue, scaleMinValue} = prediction;
+  const {heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale} = prediction;
 
 	return {
     stretchView: !stockView,
@@ -81,6 +83,8 @@ let stateToProps = function(state) {
     scaleMinValue: scaleMinValue,
     scaleMaxValue: scaleMaxValue,
     patterns: patterns,
+    filter,
+    manulScale,
   };
 };
 

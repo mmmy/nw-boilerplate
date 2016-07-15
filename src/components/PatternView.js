@@ -213,22 +213,25 @@ class PatternView extends React.Component {
 
     let oneDay = 60 * 60 * 24;
     let dateRange = {
-      from: +new Date(begin) / 1000 - oneDay * 2,
-      to: +new Date(lastDate.time) / 1000 + oneDay * 2
+      from: +new Date(begin) / 1000,// - oneDay * 2,
+      to: +new Date(lastDate.time) / 1000,// + oneDay * 2
     };
 
     window.timeRange = dateRange;
 
     let oldSymbol = widget._innerWindow().Q5.getAll()[1].model().mainSeries().symbol().split(':')[1];
-    let timeScale = widget._innerWindow().Q5.getAll()[1].R99.timeScale();
     widget._innerWindow().Q5.getAll()[1].R99.removeAllDrawingTools();
 
     if (oldSymbol !== symbol) {
       chart.KeyStone.setSymbol(symbol, '', 1);
       this._doWhenSeries1Completed(() => {
         widget.setVisibleRange(dateRange, '1', () => {
-          var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
-          widget.drawKsDateRangeLineTool(indexPoints);
+    			let timeScale = widget._innerWindow().Q5.getAll()[1].R99.timeScale();
+          // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+          let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
+					indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
+          widget.drawKsDateRangeLineTool(indexPoints, 1);
+          widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[1].R99.model());
         });
         window.timeRange = undefined;
       });
@@ -236,8 +239,12 @@ class PatternView extends React.Component {
       widget._innerWindow().Q5.getAll()[1].model().mainSeries().restart();
       this._doWhenSeries1Completed(() => {
         widget.setVisibleRange(dateRange, '1', () => {
-          var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
-          widget.drawKsDateRangeLineTool(indexPoints);
+    			let timeScale = widget._innerWindow().Q5.getAll()[1].R99.timeScale();
+          // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+          let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
+					indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
+          widget.drawKsDateRangeLineTool(indexPoints, 1);
+          widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[1].R99.model());
         });
       });
     }

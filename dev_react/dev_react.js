@@ -7,6 +7,7 @@ let tabsArr = [
 	{title:'transition',component:'./component/transition'},
 	{title:'waves',component:'./component/waves'},
 	{title:'config',component:'./component/configModal'},
+	{title:'prediction',component:'./component/prediction'},
 	];
 
 

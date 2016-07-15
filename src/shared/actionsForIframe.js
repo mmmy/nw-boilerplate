@@ -4,11 +4,11 @@ import { cancelSearch } from '../backend';
 
 export default function(store) {
 
-	const searchSymbolDateRange = function({symbol, dateRange, bars}, cb) {
+	const searchSymbolDateRange = function(args, cb) {
 		if (store && store.dispatch) {
 			store.dispatch(layoutActions.waitingForPatterns());                //开始等待
       store.dispatch(patternActions.resetError());
-			store.dispatch(patternActions.getPatterns({symbol, dateRange, bars}, cb)); //从服务器获取patterns
+			store.dispatch(patternActions.getPatterns(args, cb)); //从服务器获取patterns
 		}
 	};
 

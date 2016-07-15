@@ -38,7 +38,7 @@ class ComparatorHeatmap extends React.Component {
   componentDidUpdate() {
     console.info('ComparatorHeatmap did update1', new Date() - this.d1);
 
-    let { heatmapYAxis, scaleMaxValue, scaleMinValue } = this.props;
+    let { heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale } = this.props;
 
     let eachBlockValue = Math.round(Math.sqrt(heatmapYAxis)); // 根据振幅幅度划分每一个小格的容量
     let eachValueInPercentage = eachBlockValue / heatmapYAxis;
@@ -67,7 +67,7 @@ class ComparatorHeatmap extends React.Component {
       let count = 0;
       for (let i = 0; i < bunch.length; i++) {
         let value = bunch[i];
-        let position = (value + Math.abs(scaleMinValue)) / heatmapYAxis * height;
+        let position = (value + Math.abs(scaleMinValue * manulScale)) / heatmapYAxis * height;
 
         if (position > range[0] && position <= range[1]) count = i + 1;
       }
@@ -79,7 +79,7 @@ class ComparatorHeatmap extends React.Component {
     option.yAxis[0].data = yAxisData;
     option.series[0].data = eChartSeriesData;
 
-    window.heatmap.setOption(option, true);
+    setTimeout(() => { window.heatmap.setOption(option, true); });
     console.info('ComparatorHeatmap did update2', new Date() - this.d1);
   }
 
