@@ -73,11 +73,11 @@ export default function(store) {
   }
 
   const updatePaneViews = function() {
-    if (window.widget_comparator
-      && window.widget_comparator._innerWindow
-      && window.widget_comparator._innerWindow().Q5) {
-        window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().priceScale().updatePaneViews();
-    }
+    // if (window.widget_comparator
+    //   && window.widget_comparator._innerWindow
+    //   && window.widget_comparator._innerWindow().Q5) {
+    //     window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().priceScale().updatePaneViews();
+    // }
   }
 
   const recalculateHeatmap = function() {

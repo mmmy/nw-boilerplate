@@ -99,6 +99,11 @@ var factorCandleOption=function(candleBorder = true){
 		        {
 		            name: '上证指数',
 		            type: 'candlestick',
+		            candleOverrides: {
+		            	minWidth: 1,
+		            	minNiceWidth: 3,
+		            	minGap: 0,
+		            },
 		            data: [],
 		            z: 1,
 		            itemStyle: {

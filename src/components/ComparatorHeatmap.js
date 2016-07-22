@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import echarts from 'echarts';
 
+let _yMax = 100;
+let _yMin = -100;
+
 const propTypes = {
   stretchView: PropTypes.bool,
   heatmapYAxis: PropTypes.number,
@@ -24,7 +27,7 @@ class ComparatorHeatmap extends React.Component {
 
   componentDidMount() {
     this.initEchart()
-
+    window._updateHeatMap = this.updateHeatMap.bind(this);
     window.addEventListener('resize', this.handleResize);
   }
 
@@ -35,10 +38,10 @@ class ComparatorHeatmap extends React.Component {
     return nextProps.stretchView === this.props.stretchView;
   }
 
-  componentDidUpdate() {
-    console.info('ComparatorHeatmap did update1', new Date() - this.d1);
-
-    let { heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale } = this.props;
+  updateHeatMap(heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1){
+    // console.debug('heatmap did update', heatmapYAxis, scaleMinValue, scaleMaxValue, manulScale);
+    _yMin = scaleMinValue;
+    _yMax = scaleMaxValue;
 
     let eachBlockValue = Math.round(Math.sqrt(heatmapYAxis)); // 根据振幅幅度划分每一个小格的容量
     let eachValueInPercentage = eachBlockValue / heatmapYAxis;
@@ -50,13 +53,13 @@ class ComparatorHeatmap extends React.Component {
 
     let min = 0;
     for (let i = 0; i < blocksNumber; i++) {
-      yAxisData.push(min + ':' + (min += eachBlockHeight));
+      yAxisData.push(Math.round(min) - 0.5 + ':' + (Math.round(min += eachBlockHeight)-0.5));
     }
 
-    let lastPrices = window.parent.eChart.getOption().series.map((serie, idx) => {
-      return serie.data[serie.data.length - 1];
+    let linesOption = window.parent.eChart.getOption();
+    let lastPrices = linesOption.series.slice(0, linesOption.series.length - 1).map((serie, idx) => {
+      return serie.data[serie.data.length - 1][1];
     });
-
     lastPrices.sort((a, b) => {return a - b}); // sort numerically
     let bunch = lastPrices;
 
@@ -80,6 +83,15 @@ class ComparatorHeatmap extends React.Component {
     option.series[0].data = eChartSeriesData;
 
     setTimeout(() => { window.heatmap.setOption(option, true); });
+  }
+
+  componentDidUpdate() {
+    let { heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale } = this.props;
+    
+    // this.updateHeatMap(heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale);
+
+    console.info('ComparatorHeatmap did update1', new Date() - this.d1);
+
     console.info('ComparatorHeatmap did update2', new Date() - this.d1);
   }
 
@@ -114,9 +126,9 @@ class ComparatorHeatmap extends React.Component {
     let percentage = 0;
 
     let series = window.eChart.getOption().series;
-    for (let i = 0; i < series.length; i++) {
+    for (let i = 0; i < series.length - 1; i++) {
       let serie = series[i];
-      lastPrices.push(serie.data[serie.data.length - 1]);
+      lastPrices.push(serie.data[serie.data.length - 1][1]);
     }
 
     let maxPrice = Math.max(...lastPrices);
@@ -140,7 +152,8 @@ class ComparatorHeatmap extends React.Component {
   initEchart() {
     const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionHeatmap']);
     window.heatmap = echarts.init(dom);
-
+    let that = this;
+    let $chartDom = $(this.refs.eChartPredictionHeatmap);
     const priceScale = [];
     const data = [];
     let option = {
@@ -153,7 +166,9 @@ class ComparatorHeatmap extends React.Component {
         height: '100%',
         y: 0,
         borderColor: '#000',
-        borderWidth: 0
+        borderWidth: 0,
+        right: 57.5,
+        left: 0.5
       },
       xAxis: {
         show: false,
@@ -161,9 +176,40 @@ class ComparatorHeatmap extends React.Component {
         data: ['0']
       },
       yAxis: {
-        show: false,
+        show: true,
         type: 'category',
-        data: priceScale
+        data: priceScale,
+        axisLine: {
+          show: false,
+        },
+        splitNumber: 5,
+        axisLabel: {
+          formatter: function(params){
+            // console.debug(arguments);
+            if(!params) return;
+            var points = params.split(':');
+            var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
+            var percentage = (_yMax - _yMin) / $chartDom.height() * center + _yMin;
+            return  percentage.toFixed(0) + '%';
+          },
+          textStyle: {
+            color: '#656565',
+            fontStyle: 'italic',
+            fontWeight: 'lighter',
+            fontSize: 10
+          },
+          margin: 16
+        },
+        axisTick: {
+          show: false
+        },
+        position: 'right',
+        // type: 'value',
+        boundaryGap: [0, '100%'],
+        // splitLine: {
+        //   show: false
+        // },
+        // minInterval: 1,
       },
       visualMap: {
         show: false,

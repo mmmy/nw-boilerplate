@@ -38,9 +38,9 @@ class ActivePatternInfoContainer extends React.Component {
     similarity = Math.round(similarity * 1000) / 10;
     yieldRate = Math.round(yieldRate * 1000) / 10;
 
-    const similarityClassNames = classNames('active-pattern-info');
+    const similarityClassNames = classNames('active-pattern-info font-number');
 
-    const yieldRateClassNames = classNames('active-pattern-info', {
+    const yieldRateClassNames = classNames('active-pattern-info font-number', {
       'red-color': (yieldRate > 0)
     });
 
@@ -48,9 +48,9 @@ class ActivePatternInfoContainer extends React.Component {
     let yieldDiv = <span className={ yieldRateClassNames }>{ yieldRate + '%' }</span>
 
 		return (
-      <div className={ 'active-pattern-info-container' }>
-        <div>相似度  {similarityDiv}</div>
-        <div>返回  {yieldDiv}</div>
+      <div className={ 'active-pattern-info-container font-simsun' }>
+        <div>相似度   {similarityDiv}</div>
+        <div>回报   {yieldDiv}</div>
 		  </div>
     );
 	}

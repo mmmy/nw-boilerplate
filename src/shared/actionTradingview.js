@@ -28,6 +28,39 @@ let setComparatorVisibleRange = (range, widgetIndex) => {
 	}
 }
 
+let setComparatorPosition = (unixTime, offsetIndex , y) => {
+	let context = _getComparatorWindow();
+	let Q5 = context && context.Q5;
+	if(Q5) {
+		try {
+			let chart = Q5.getAll()[0];
+			let model = chart.R99.m_model;
+			let timeScale = model.m_timeScale;
+			// let x = timeScale.timeToCoordinate(unixTime);
+			let startIndex = timeScale.timePointToIndex(unixTime);
+			let x = timeScale.indexToCoordinate(startIndex + offsetIndex);
+			model.setCurrentPosition(x, y, model.paneForSource(model.m_mainSeries));
+		} catch (e) {
+			console.error(e);
+		}
+	}
+};
+
+let setStockViewSymbol = (symbol) => {
+	let context = _getStockViewWindow();
+	let Q5 = context && context.Q5;
+	if(Q5) {
+		try {
+			let chart = Q5.getAll()[0];
+			chart.setSymbol(symbol);
+		} catch (e) {
+			console.error(e);
+		}
+	}
+};
+
 module.exports = {
 	setComparatorVisibleRange,
+	setComparatorPosition,
+	setStockViewSymbol,
 }

@@ -15,7 +15,7 @@ const defaultProps = {
 
 
 let generatePattenView = (symbol, imgSrc, similarity, yieldRate) => {
-	let infoContainer = `<div class='pattern-info-container column'><div class='flex-container column'><div><h5 class='font-simsun'>相似度</h5><p class='font-number'>${similarity}</p></div><div><h5 class='font-simsun'>返回</h5><p class='font-number'>${yieldRate}</p></div></div></div>`;
+	let infoContainer = `<div class='pattern-info-container column'><div class='flex-container column'><div><h5 class='font-simsun'>相似度</h5><p class='font-number'>${similarity}</p></div><div><h5 class='font-simsun'>回报</h5><p class='font-number'>${yieldRate}</p></div></div></div>`;
 	return `<div class='pattern-view'><div class='symbol-container'>${symbol}</div><div class='echart-row-wrapper'><div class='echart'><img src='${imgSrc}'/></div>${infoContainer}</div></div>`;
 }
 

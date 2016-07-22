@@ -83,7 +83,7 @@ class ToggleBar extends React.Component {
 		let { waitingForPatterns } = this.props;
 		let { error } = store.getState().patterns;
 		if (waitingForPatterns || error) return;
-    if (this.props.fullView) window.actionsForIframe.takeScreenshot();
+    // if (this.props.fullView) window.actionsForIframe.takeScreenshot();
 		this.props.dispatch(layoutActions.toggleStockView());
 // return;
     if (!this.props.fullView) {
@@ -91,8 +91,8 @@ class ToggleBar extends React.Component {
     } else {
       // this._doWhenSeries0Completed(() => {
       	// window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-        window.widget_comparator.setVisibleRange(window.searchingRange, '0');
-      	window._ksResizePrediction && window._ksResizePrediction(window);
+        // window.widget_comparator.setVisibleRange(window.searchingRange, '0');
+      	// window._ksResizePrediction && window._ksResizePrediction(window);
 
       // }, 200)
     }

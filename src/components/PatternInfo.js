@@ -80,7 +80,7 @@ class PatternInfo extends React.Component {
 					<p className='font-number'>{(similarity*100 + '').slice(0, 4)}{'%'}</p>
 				</div>
 				{ (column && smaller) ? [] : (<div>
-					<h5 className='font-simsun'>返回</h5>
+					<h5 className='font-simsun'>回报</h5>
 					<p className='font-number'>{(yieldRate*100).toFixed(1)+'%'}</p>
 				</div>)}
 			</div>

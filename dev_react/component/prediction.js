@@ -218,22 +218,43 @@ var data = [
 	];
 
 	var option = {
+		ksOverrides: {
+			drawKlineRange: true,
+			rangeTitle: '23根k线, 34天',
+			rangeBackground: '#ce0006',
+			rangeFont: '10px msyh',
+			rangeColor: '#fff',
+			rangeLineColor: '#eee'
+		},
 		backgroundColor: '#fff',
 			animation: false,
 		    title: { show: false },
 		    tooltip: {
 		    	show: false,
 		    	showContent: false,
+        	trigger: 'axis',
+        	formatter: function(){
+        		return false;
+        	},
+        	axisPointer: {
+	          animation: false,
+	          lineStyle: {
+	            color: '#ddd',
+	            width: 1,
+	            type:'dashed',
+	            opacity: 1
+	          }	
+        	}
 		    },
 		    toolbox: {
 		    	show: false,
 		    },
-		    grid: {
-		    	show: false,
-		        left: '3px',
-		        right: '3px',
-		        bottom: '3px'
-		    },
+      grid: {
+        top: 5,
+        bottom: 5,
+        left: 5,
+        right: 5
+      },
 		    xAxis: {
 		        type: 'category',
 		        data: [],
@@ -252,9 +273,8 @@ var data = [
 		        min: 'dataMin',
 		        max: 'dataMax'
 		    },
-		    yAxis: {
+		    yAxis: [{
 		        scale: true,
-		        minInterval: 1,
 		        axisLine: {
 		        	show: false
 		        },
@@ -270,13 +290,33 @@ var data = [
 		        splitArea: {
 		            show: false
 		        },
-		        min: 'dataMin',
-		        max: 'dataMax'
-		    },
+		    },{
+		        scale: true,
+		        axisLine: {
+		        	show: true
+		        },
+		        splitLine:{
+		        	show: false
+		        },
+		        axisLabel:{
+		        	show: false
+		        },
+		        axisTick: {
+		        	show: false
+		        },
+		        splitArea: {
+		            show: false
+		        },
+		    }],
 		    series: [
 		        {
 		            name: '上证指数',
 		            type: 'candlestick',
+		            candleOverrides: {
+		            	minWidth: 1,
+		            	minNiceWidth: 7,
+		            	minGap: 1,
+		            },
 		            data: [],
 		            z: 1,
 		            itemStyle: {
@@ -342,15 +382,21 @@ var data = [
     };
 }
 	
-	var generateSeries = function(closePricesArr) {
-		var lineSeries = [];
+	var generateSeries = function(closePricesArr, startPrice) {
+		var lineSeries = [],
+				maxPrice = -Infinity,
+				minPrice = Infinity;
+
 		lineSeries = closePricesArr.map(function(e,i) {
+			var rate = startPrice / e[0];
 			return {
-				data: e.map(function(price, i){return [i+'', price]}),
+				data: e.map(function(price, i){return [i+'', price * rate]}),
           type: 'line',
+          yAxisIndex: 1,
           showSymbol: false,
           smooth: false,
           hoverAnimation: false,
+          symbolSize: 0,
           lineStyle: {
             normal: {
               color: 'rgba(0, 0, 0, 0.2)',
@@ -359,25 +405,51 @@ var data = [
           }
 			};
 		});
-		return lineSeries;
+		lineSeries.forEach((series) => {
+			series.data.forEach((data) => {
+				var price = data[1];
+				minPrice = minPrice < price ? minPrice : price;
+				maxPrice = maxPrice > price ? maxPrice : price;
+			});
+		});
+		return {
+			lineSeries,
+			max: maxPrice,
+			min: minPrice,
+		};
 	};
 
 	export default React.createClass({
 		drawChart(){
 			var data0 = splitData(data.slice(0,30), 30);
-			var lineSeries = generateSeries([data.slice(0, 30).map(function(e){ return e[3] }),data.slice(0, 30).map(function(e){ return e[2] })]);
+			var lastClosePrice = data0.values[data0.values.length-1][1];
+			var { lineSeries, min, max } = generateSeries([data.slice(0, 30).map(function(e){ return e[3] }),data.slice(0, 30).map(function(e){ return e[2] })], lastClosePrice);
+			// var minPrice = Math.min(min, data0.yMin);
+			// var maxPrice = Math.max(max, data0.yMax);
+			//lastClosePrice 居中
+			// var offset = Math.max(maxPrice - lastClosePrice, lastClosePrice - minPrice);
+			var offset = Math.max(data0.yMax - lastClosePrice, lastClosePrice - data0.yMin);
+
 			option.series = option.series.concat(lineSeries);
 			option.series[0].data = data0.values;
 			option.xAxis.data = data0.categoryData;
-			var chart = echarts.init(this.refs.container);
+			option.yAxis[0].min = lastClosePrice - offset;
+			option.yAxis[0].max = lastClosePrice + offset;			
+			option.yAxis[1].min = lastClosePrice - offset;
+			option.yAxis[1].max = lastClosePrice + offset;
+ 			var chart = echarts.init(this.refs.container);
 			chart.setOption(option);
+			this.chart = chart;
 			window.predictionChart = chart;
 		},
 		componentDidMount() {
 			this.drawChart();
+			window.addEventListener('resize', function(){
+				window.predictionChart.resize();
+			});
 		},
 		render(){
-			return <div ref='container' style={{width:'400px', height:'250px', border:'1px solid #eee'}}>
+			return <div ref='container' style={{width:'30%', height:'250px', border:'1px solid #eee'}}>
 				
 			</div>
 		}

@@ -11,7 +11,7 @@ let setImgSrcFunc = (index, func) => {
 };
 
 
-let callFunc = (indexRange) => {
+let callFunc = (indexRange, patterns) => {
 	// return;
 	// let funcArr = _setImageFuncs.slice(indexRange[0], indexRange[1]);
 	$('.pattern-toolbar-container').css('z-index', '5');
@@ -22,7 +22,7 @@ let callFunc = (indexRange) => {
 				return;
 			}
 			// console.info('!!!!!!!!!!!!!sequenCall :', index);
-			_setImageFuncs[index](sequenCall.bind(null, index+1, indexRange[1]));
+			_setImageFuncs[index](sequenCall.bind(null, index+1, indexRange[1]), patterns[index]);
 		};
 		sequenCall(indexRange[0], indexRange[1]);
 	} catch (e) {

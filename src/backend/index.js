@@ -96,7 +96,8 @@ let searchPattern = (args, cb, errorCb) => {
 			if(startIndex === 0) { //获取到前五个 刷新state
 				cb && cb(__data, __closePrice);
 			} else {
-				callFunc([startIndex, startIndex + klineArr.length]);
+				let endIndex = startIndex + klineArr.length;
+				callFunc([startIndex, endIndex], __data);
 			}
 		};
 

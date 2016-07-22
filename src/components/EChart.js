@@ -84,6 +84,7 @@ class EChart extends React.Component {
 	setImgSrc(size) {  //-1: hide, 0: normal, 1: median, 2: small
 		let imgNode = this.refs['img'];
 		if(!imgNode) {
+			console.error('no image node:',this.props.index);
 			return;
 		}
 		if (size === undefined) {
@@ -127,20 +128,22 @@ class EChart extends React.Component {
   	}
   }
 
-	drawChart(callback) {
+	drawChart(callback, pattern) {
 		// let node = this.refs['echart'+this.props.index];
 		// let pattern = store.getState().patterns.rawData[this.props.id];
 		// if(!pattern) return;
-		const { kLine, baseBars } = this.props.pattern;
+		let { kLine, baseBars } = this.props.pattern;
 		const { searchConfig } = this.props;
-		if ((this.oldKline === kLine) || (!kLine.length) || (kLine.length < 1)) {
-			if(this.oldKline === kLine) {
-				this.setImgSrc();
+		if(!pattern) { //优先使用pattern
+			if ((this.oldKline === kLine) || (!kLine.length) || (kLine.length < 1)) {
+				if(this.oldKline === kLine) {
+					this.setImgSrc();
+				}
+				return;
 			}
-			if(callback){
-				console.error('EChart img error');
-			}
-			return;
+		}else {
+			kLine = pattern.kLine;
+			baseBars = pattern.baseBars;
 		}
 		this.oldKline = kLine;
 		let node = this.canvasNode || window.document.createElement('canvas');
@@ -275,7 +278,7 @@ class EChart extends React.Component {
 		});
 
 		let trashInfo = isTrashed ? <div className='trashed-info'>{/*<h1>不参与</h1><h1>走势计算</h1>*/}</div> : '';
-		return <div ref={'echart'+this.props.index} className={className} ><h3 style={{color: '#aaa', width:'100px'}}>加载中...</h3><img ref='img' src='' />{trashInfo}</div>;
+		return <div ref={'echart'+this.props.index} className={className} ><h3 style={{color: '#d0d0d0', width:'100px'}}>加载中...</h3><img ref='img' src='' />{trashInfo}</div>;
 
 	}
 }

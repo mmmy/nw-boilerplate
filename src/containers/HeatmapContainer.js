@@ -40,16 +40,16 @@ class HeatmapContainer extends React.Component {
     this.props.dispatch(layoutActions.togglePredictionPanel());
   }
 
-  _doWhenSeries0Completed(callback) {
-    function run() {
-      let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-      chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
-      callback()
-    };
+  // _doWhenSeries0Completed(callback) {
+  //   function run() {
+  //     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  //     chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
+  //     callback()
+  //   };
 
-    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
-  }
+  //   let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  //   chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
+  // }
 
 	render(){
     const {stretchView, heatmapYAxis, patterns, scaleMinValue, scaleMaxValue, manulScale, filter} = this.props;

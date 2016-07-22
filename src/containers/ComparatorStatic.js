@@ -7,6 +7,18 @@ import PredictionContainer from './PredictionContainer';
 import ActivePatternInfoContainer from './ActivePatternInfoContainer';
 import { layoutActions } from '../flux/actions';
 import _ from 'underscore';
+import { setStockViewSymbol } from '../shared/actionTradingview';
+import store from '../store';
+
+let _showRemainder = true;
+
+let setActiveSymol = () => {
+  let active = store.getState().active;
+  let symbol = active && active.symbol;
+  if(symbol) {
+    setStockViewSymbol(symbol);
+  }
+};
 
 const propTypes = {
 
@@ -20,7 +32,7 @@ function resizePrediction(context) {
   try{
     var timeScale = context.widget_comparator._innerWindow().Q5.getAll()[0].model().timeScale();
     const info = $('#searching-info-content')[0].innerHTML;
-    let daysCount = parseInt(info.slice(0, info.indexOf('bars')));
+    let daysCount = parseInt(info);//parseInt(info.slice(0, info.indexOf('bars')));
     var offset = 45;
     var range = context.searchingRange;
     var rangeStartIndex = range && (timeScale.timePointToIndex(range.from) + range.baseBars);
@@ -50,15 +62,15 @@ class ComparatorStatic extends React.Component {
 	}
 
 	componentDidMount() {
-    this.handleResize = _.debounce(
-      () => {
-        try {
-          window.widget_comparator && window.widget_comparator.setVisibleRange(window.searchingRange, '0');
-          resizePrediction(window);
-        } catch (e) {}
-      },
-      400);
-    window.addEventListener('resize', this.handleResize);
+    // this.handleResize = _.debounce(
+    //   () => {
+    //     try {
+    //       window.widget_comparator && window.widget_comparator.setVisibleRange(window.searchingRange, '0');
+    //       resizePrediction(window);
+    //     } catch (e) {}
+    //   },
+    //   400);
+    // window.addEventListener('resize', this.handleResize);
 	}
 
 	componentWillReceiveProps(){
@@ -71,10 +83,50 @@ class ComparatorStatic extends React.Component {
 	}
 
 	componentWillUnmount(){
-    window.removeEventListener('resize', this.handleResize);
+    // window.removeEventListener('resize', this.handleResize);
 	}
   componentDidUpdate() {
     console.info('ComparatorStatic did update in millsec: ', new Date() - this.d1);
+  }
+
+  goToSearchPage() {
+    let { dispatch } = this.props;
+    let goAction = () => {
+      dispatch(layoutActions.toggleStockView());
+      setActiveSymol();
+    };
+
+    if(_showRemainder) {
+      let title = '将此图形作为原始研究对象?';
+      let p = '选择"是"将返回首页, 当前结果将不被保存';
+      let contentStr = `<h4 style='margin-top:70px'>${title}</h4><p style='margin-top:10px'>${p}</p><p style='margin-top:30px'><button class='confirm-btn'>是</button></p><div class='footer'><i class='fa fa-square-o' style="margin-right: 10px;"></i>不再提示</div>`;
+      let modalStr = `<div class='modal-wrapper search-remainder' style='width:400px;height:250px'><div class='close-icon-container'><span class='close-btn'></span></div>${contentStr}</div>`;
+      let nodeStr = `<div class='modal-overlay flex-center font-simsun'>${modalStr}</div>`;
+
+      let $node = $(nodeStr);
+      let closeBtn = $node.find('.close-btn'),
+          confirmBtn = $node.find('.confirm-btn'),
+          squareBtn = $node.find('.fa-square-o');
+
+      closeBtn.click(() => {
+        $node.remove();
+      });
+
+      confirmBtn.click(() => {
+        $node.remove();
+        goAction();
+      });
+      
+      squareBtn.click(() => {
+        _showRemainder = !_showRemainder;
+        squareBtn.toggleClass('fa-square-o');
+        squareBtn.toggleClass('fa-check-square-o');
+      });
+
+      $(document.body).append($node);
+    } else {
+      goAction();
+    }
   }
 
 	render() {
@@ -159,19 +211,20 @@ class ComparatorStatic extends React.Component {
             "mainSeriesProperties.candleStyle.wickUpColor": '#c50017',
             "mainSeriesProperties.candleStyle.wickDownColor": '#6A6A6A',
             "mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
-            "scalesProperties.lineColor" : "transparent",
+            "scalesProperties.lineColor" : "rgba(0,0,0,0)",
 
             "mainSeriesProperties.barStyle.upColor": "#6ba583",
         },
         ks_overrides: {
-          "ksSplitView": true,
+          // "ksSplitView": true,
+          ksBottomView: true,
           volume: true,
           OHLCBarBorderColor: true,
           lineToolTimeAxisView: {
-            background: '#656667',
+            background: '#444',
             // activeBackground: 'green',
             color: '#fff',
-            borderColor: '#b61c15',
+            borderColor: '#444',
           },
           lineToolAxisRange: {
             background: 'rgba(190, 191, 192, 1.00)',
@@ -188,11 +241,16 @@ class ComparatorStatic extends React.Component {
 
     return (
       <div className={ comparatorChartClassName } id='__comparator_prediction_container'>
+        <div className='pattern-tv-box-shadow'>
+        </div>
         {/*<div className={ 'comparator-tv-wrapper' }>*/}
           <ReactTradingView
             viewId={ STOCK_VIEW }
             init={ logined }
             options={ options } />
+        <div className='start-btn-container'>
+          <button className='flat-btn' onClick={ this.goToSearchPage.bind(this) }></button>
+        </div>
         {/*</div>*/}
         {/*<div className={'prediction-transparent-overlay top-left'}>
           <div className={'horizon-line'}></div>
@@ -209,6 +267,7 @@ class ComparatorStatic extends React.Component {
         <div className={'pattern-tv-box-shadow-top'}>
         </div>
 
+        
         <div className={'pattern-tv-box-shadow-bottom'}>
           <ActivePatternInfoContainer/>
         </div>
@@ -218,6 +277,9 @@ class ComparatorStatic extends React.Component {
         </div>
 
         <HeatmapContainer/>
+
+        <div className='pattern-tv-split-line'>
+        </div>
 
       </div>
     );
