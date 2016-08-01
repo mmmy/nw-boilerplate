@@ -226,7 +226,7 @@ class Comparator extends React.Component {
       // var offset = Math.max(maxPrice - lastClosePrice, lastClosePrice - minPrice);
       var offset = Math.max(data0.yMax - lastClosePrice, lastClosePrice - data0.yMin);
       var offset1 = Math.max(max - lastClosePrice, lastClosePrice - min);
-
+      this.chart && this.chart.dispose();
       option.series = option.series.slice(0,1).concat(lineSeries);
       option.series[0].data = data0.values;
       option.xAxis.data = data0.categoryData;
@@ -236,7 +236,7 @@ class Comparator extends React.Component {
       option.yAxis[1].max = lastClosePrice + offset1;
 
       let node = this.refs.echart_container;
-      this.chart = this.chart || echarts.init(node);
+      this.chart = echarts.init(node);
       this.chart.setOption(option);
       window.comChart = this.chart;
     }

@@ -81,7 +81,7 @@ class PatternInfo extends React.Component {
 				</div>
 				{ (column && smaller) ? [] : (<div>
 					<h5 className='font-simsun'>回报</h5>
-					<p className='font-number'>{(yieldRate*100).toFixed(1)+'%'}</p>
+					<p className='font-number' style={{color: (yieldRate>0 ? '#ae0006' : '')}}>{(yieldRate*100).toFixed(1)+'%'}</p>
 				</div>)}
 			</div>
 			{switchWidget}

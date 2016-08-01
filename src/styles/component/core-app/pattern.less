@@ -1,8 +1,8 @@
 @patternToolbar_H: 40px;//80px;
 @patternStatisticsPanel_H: 8%;
 //@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 10px;
-@patternView_W: 275px;//130px; // @patternContainerStretch_W * 0.393;
-@patternView_H: 120px;
+@patternView_W: 287px;//275px;//130px; // @patternContainerStretch_W * 0.393;
+@patternView_H: 130px;
 
 @patternView_flat_W: @patternView_W; //130px
 
@@ -368,6 +368,7 @@
 			height: @patternView_H * 1.2;
 			// width: patternView_W;//@patternView_W * 1.4 * 1.08;
 			margin: 30px;
+			margin-left: 20px;
 			.symbol-container {
 				// padding-top: 5px;
 				font-size: 12px;
@@ -579,7 +580,8 @@
 			}
 			p {
 				// font-weight: bold;
-				font-size: 12px;
+				font-size: 14px !important;
+				width: 42px !important;
 				// color: @ks-color-gray-3;
 			}
 		}
@@ -594,15 +596,32 @@
 	h5{
 		color: #c1c1c1;
 		font-size: 12px;
-		padding-top: 5px;
+		padding-top: 7px;
 		margin: 0;
 		// letter-spacing: 1px;
+	}
+
+	.flex-container > div:nth-child(1) {
+		p{
+			font-size: 18px;
+			width: 60px;
+		}
+	}
+	.flex-container > div:nth-child(2) {
+		p{
+			// font-size: 15px;
+			padding-top: 1px;
+			padding-bottom: 1px;
+			background-color: #f5f5f5;
+			width: 60px;
+			font-size: 13px;
+		}
 	}
 
 	p{
 		color: @lulu-black;
 		font-size: 11px;
-		padding-top: 8%;
+		margin-top: 5%;
 		letter-spacing: 1px;
 	}
 
@@ -780,8 +799,8 @@
 	.pattern-container.full {
 		width: 240px;
 		.pattern-view {
-			width: 195px;
-			height: 92px;
+			width: 205px;//195px;
+			height: 102px;//92px;
 			.echart {
 				width: 140px;
 			}

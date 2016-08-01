@@ -3,6 +3,10 @@ import ajaxData from '../../backend/ajaxData';
 import backend from '../../backend';
 import crossfilter from 'crossfilter';
 import store from '../../store';
+
+import stockviewController from '../../ksControllers/stockviewController';
+let historyController = stockviewController.historyController;
+// window._historyController2 = historyController;
 // import { setComparatorVisibleRange } from '../../shared/actionTradingview';
 /**
  * 异步获取patterns
@@ -15,7 +19,7 @@ import store from '../../store';
 const devLocal = false;
 let _lastSearch = {};
 
-let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline}, cb) => {
+let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, edited=false, searchConfig}, cb) => {
 	//console.log('patternActions: getPatterns',symbol, dateRange);
 	let klineClone = [];
 	kline.forEach((arr) => { //消除echart 的bug
@@ -27,6 +31,11 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline}, c
 	});
 	kline = klineClone;
 	console.assert(kline[0].length == 5 && (kline instanceof Array));
+
+	//保存历史
+	let isNewSearch = false;
+	if(symbol) isNewSearch = true;
+
 	symbol = symbol || _lastSearch.symbol;
 	dateRange = dateRange || _lastSearch.dateRange;
 	bars = bars || _lastSearch.bars;
@@ -63,7 +72,8 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline}, c
 
 		} else {
 
-			let { searchConfig } = store.getState();
+			// let { searchConfig } = store.getState();
+			searchConfig = searchConfig || store.getState().searchConfig;
 
 			backend.searchPattern({symbol, dateRange, bars, searchConfig}, 
 
@@ -72,11 +82,13 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline}, c
 					let patterns = {
 						rawData: resArr,
 						closePrice: closePrice || [],
-						searchMetaData: { symbol, dateRange, bars, lastDate, kline }
+						searchMetaData: { symbol, dateRange, bars, lastDate, kline, edited }
 					};
 					patterns.crossFilter = crossfilter(patterns.rawData);
 					patterns.searchConfig = searchConfig;
 					let searchTimeSpent = new Date() - startTime;
+					//保存历史
+					setTimeout(() => { historyController.pushHistory({symbol, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig}); });
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 					cb && cb();
 

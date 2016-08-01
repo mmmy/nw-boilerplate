@@ -1,3 +1,4 @@
+
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import StockView from './StockView';
@@ -5,6 +6,7 @@ import SearchReport from './SearchReport';
 import ComparatorStatic from './ComparatorStatic';
 import classNames from 'classnames';
 import { setRem } from '../components/utils/layoutUtils';
+
 
 const propTypes = {
   // stretchView: PropTypes.bool

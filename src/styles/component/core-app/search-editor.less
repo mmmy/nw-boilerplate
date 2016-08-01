@@ -1,0 +1,44 @@
+
+
+.search-editor-wrapper {
+	position: relative;
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	.main-editor {
+		float: left;
+		width: calc(~"100% - 350px");
+		height: 100%;
+		.header {
+			height: 60px;
+		}
+		.body {
+			position: relative;
+			height:calc(~"100% - 120px");
+			border: 1px solid red;
+			.OCLH-container {
+
+			}
+			.kline-canvas-wrapper {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				.kline-canvas{
+					width: 90%;
+					height: 90%;
+					outline: 1px solid green;
+				}
+			}
+		}
+		.footer {
+			height: 60px;
+		}
+	}
+	.config-editor {
+		float: left;
+		width: 350px;
+		height: 100%;
+	}
+}

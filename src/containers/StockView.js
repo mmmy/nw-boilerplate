@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import ReactTradingView from '../components/ReactTradingView';
 import { STOCK_VIEW } from '../flux/constants/Const';
 
+import stockviewController from '../ksControllers/stockviewController';
+let historyController = stockviewController.historyController;
+let favoritesController = stockviewController.favoritesController;
+
 
 const propTypes = {
 	stockView: PropTypes.bool
@@ -18,7 +22,8 @@ class StockView extends React.Component {
 
 
 	componentDidMount() {
-
+		historyController.init(this.refs.history_nav_container, this.refs.history_body_container);
+		favoritesController.init(this.refs.favorites_nav_container, this.refs.favorites_body_container);
 	}
 
 	componentWillReceiveProps(){
@@ -110,14 +115,68 @@ class StockView extends React.Component {
 			};
 
 		return (
-	      <div className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
-	        <ReactTradingView
-	          viewId={ STOCK_VIEW }
-	          options={ options }
-	          init={ logined } />
+	      <div ref='container' className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
+	      	<div className='left-toolbar-container'>
+	      		<div><button className='flat-btn' onClick={ this.showSockView.bind(this) }>quxian</button></div>
+	      		<div><button className='flat-btn' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
+	      		<div><button className='flat-btn' onClick={ this.showHistory.bind(this) }>history</button></div>
+	      	</div>
+
+		      <div ref='stock_view' className='content-wrapper'>
+		        <ReactTradingView
+		          viewId={ STOCK_VIEW }
+		          options={ options }
+		          init={ logined } />
+		      </div>
+		      
+		      <div ref='favorites_view' className='content-wrapper favorites hide'>
+		      	<div className='nav-container'>
+		      		<h4 className='nav-title'>我的收藏夹</h4>
+		      		<div ref='favorites_nav_container' className='nav-item-container'></div>
+		      		<div className=''><input ref='favorite_input' placeholder='新建收藏夹'/><button onClick={this.handleNewFavorites.bind(this)}>+</button></div>
+		      	</div>
+		      	<div ref='favorites_body_container' className='body-container'>
+
+		      	</div>
+		      </div>
+
+		      <div ref='history_view' className='content-wrapper history hide'>
+		      	<div className='nav-container'>
+		      		<h4 className='nav-title'>历史记录</h4>
+		      		<div ref='history_nav_container' className='nav-item-container'>
+
+		      		</div>
+		      	</div>
+		      	<div ref='history_body_container' className='body-container'>
+
+		      	</div>
+		      </div> 
 	      </div>
 	    );
 	}
+
+	showSockView() {
+		$(this.refs.favorites_view).addClass('hide');
+		$(this.refs.history_view).addClass('hide');
+	}
+
+	showFavorites() {
+		$(this.refs.favorites_view).removeClass('hide');
+		$(this.refs.history_view).addClass('hide');
+	}
+
+	showHistory() {
+		$(this.refs.favorites_view).addClass('hide');
+		$(this.refs.history_view).removeClass('hide');
+		// historyController.updateNavContainer(this.refs.history_nav_container);
+	}
+
+	handleNewFavorites() {
+		let folderName = $(this.refs.favorite_input).val();
+		favoritesController.addNewFolder(folderName);
+		$(this.refs.favorite_input).val('');
+	}
+
 }
 
 StockView.propTypes = propTypes;

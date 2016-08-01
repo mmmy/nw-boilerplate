@@ -2,6 +2,7 @@ import React from 'react';
 import echarts from 'echarts';
 import {factorCandleOption, factorLineOption} from '../../src/components/utils/echart-options';
 import {randomPatterns} from '../../src/flux/util/randomKline';
+import { drawKline } from '../../src/ksControllers/painter';
 
 var data = [
 		    ['2013/1/24', 2320.26,2320.26,2287.3,2362.94],
@@ -350,11 +351,12 @@ var data = [
     var lowArr = [], highArr = [];
 
     for (var i = 0; i < rawData.length; i++) {
-        categoryData.push(rawData[i].splice(0, 1)[0]);
-        values.push(rawData[i]);
-        lowArr.push(isNaN(+rawData[i][2]) ? Infinity : +rawData[i][2]);
-        highArr.push(isNaN(+rawData[i][3]) ? -Infinity : +rawData[i][3]);
+        categoryData.push(rawData[i].slice(0, 1)[0]);
+        values.push(rawData[i].slice(1));
+        lowArr.push(isNaN(+rawData[i][3]) ? Infinity : +rawData[i][3]);
+        highArr.push(isNaN(+rawData[i][4]) ? -Infinity : +rawData[i][4]);
     }
+
     for (var i=0; i<predictionBars; i++) {
     	categoryData.push(i+'');
     	// values.push([undefined,undefined,undefined,undefined]);
@@ -447,10 +449,14 @@ var data = [
 			window.addEventListener('resize', function(){
 				window.predictionChart.resize();
 			});
+			drawKline(this.refs.canvas, data.slice(0, 100));
 		},
 		render(){
-			return <div ref='container' style={{width:'30%', height:'250px', border:'1px solid #eee'}}>
+			return <div>
+					<div ref='container' style={{width:'30%', height:'250px', border:'1px solid #eee'}}>
 				
+					</div>
+					<div><canvas ref='canvas' width='400' height='300' style={{width: '400px', height:'300px'}} /></div>
 			</div>
 		}
 	});

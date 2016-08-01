@@ -2,12 +2,96 @@
 .container-stockview{
 	//border: 1px solid #aaa;
 	position: absolute;
-	width: calc(~"100% - 30px");
+	width: calc(~"100% - 0px");
 	height: @stockViewContainer_H;
   opacity: 1;
-  padding-left: 20px;
+  padding-left: 0;//20px;
   padding-right: 10px;
+  @left-width: 60px;
+  border-bottom: 1px solid #fafafa;
+	.left-toolbar-container {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: @left-width;
+		height: 100%;
+		border-right: 1px solid #fafafa;
+		button {
+			// width: 40px;
+			// display: inline-block;
+		}
+	}
+	.content-wrapper {
+		position: absolute;
+		top: 0;
+		left: @left-width;
+		width: calc(~"100% - "@left-width);
+		height: calc(~"100% - 30px");
+
+		&.favorites {
+			background-color: #fff;
+		}
+		&.history {
+			background-color: #fff;
+		}
+	}
+
+	.nav-container {
+		float: left;
+		position: relative;
+		border: 1px solid red;
+		width: 190px;
+		height: 100%;
+	}
+
+	.body-container {
+		float: left;
+		position: relative;
+		border: 1px solid green;
+		width: calc(~"100% - 190px");
+		height: 100%;
+		overflow: scroll;
+		.scrollbar(@width:6px);
+		.scrollbar-track(@background-color:transparent);
+		.scrollbar-thumb(@background-color: @ks-color-gray-4);
+	}
 }
 
+
 .stockview-hide{
+}
+
+.history-day-wrapper {
+	// clear: both;
+	border: 1px dotted #aaa;
+	float: left;
+	padding-left: 30px;
+	margin-bottom: 20px;
+}
+
+.history-items-wrapper {
+
+	.history-item {
+		float: left;
+		width: 300px;
+		height: 270px;
+		box-shadow: 0 0 10px 0 #aaa;
+	}
+}
+
+.content-wrapper {
+
+	.detail-panel {
+		position: absolute;
+		left: 190px;
+		top: 0;
+		width: calc(~"100% - 190px");
+		height: 100%;
+		background-color: #fff;
+
+		.search-editor-container {
+			position: relative;
+			height: calc(~"100% - 40px");
+		}
+	}
 }
