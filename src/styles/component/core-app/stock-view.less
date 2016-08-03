@@ -26,7 +26,7 @@
 		top: 0;
 		left: @left-width;
 		width: calc(~"100% - "@left-width);
-		height: calc(~"100% - 30px");
+		height: calc(~"100% - 20px");
 
 		&.favorites {
 			background-color: #fff;
@@ -39,16 +39,17 @@
 	.nav-container {
 		float: left;
 		position: relative;
-		border: 1px solid red;
-		width: 190px;
+		border-right: 1px solid #ddd;
+		width: 200px;
 		height: 100%;
 	}
 
 	.body-container {
 		float: left;
 		position: relative;
-		border: 1px solid green;
-		width: calc(~"100% - 190px");
+		// border: 1px solid green;
+		background: #f9f9f9;
+		width: calc(~"100% - 200px");
 		height: 100%;
 		overflow: scroll;
 		.scrollbar(@width:6px);
@@ -80,18 +81,30 @@
 }
 
 .content-wrapper {
-
+	.nav-container {
+		.nav-title {
+			margin: 20px;
+			font-size: 15px;
+		}
+	}
+	//编辑
 	.detail-panel {
 		position: absolute;
-		left: 190px;
+		left: 200px;
 		top: 0;
-		width: calc(~"100% - 190px");
+		width: calc(~"100% - 200px");
 		height: 100%;
-		background-color: #fff;
+		background: #f9f9f9;
 
+		.head-nav {
+			height: 50px;
+		}
 		.search-editor-container {
 			position: relative;
-			height: calc(~"100% - 40px");
+			height: calc(~"100% - 50px - 40px");
+			background: #fff;
+			margin: 0 40px;
+			box-shadow: 0 0 20px #ddd;
 		}
 	}
 }

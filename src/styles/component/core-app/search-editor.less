@@ -6,16 +6,19 @@
 	width: 100%;
 	height: 100%;
 	.main-editor {
-		float: left;
-		width: calc(~"100% - 350px");
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: calc(~"100% - 380px");
 		height: 100%;
 		.header {
-			height: 60px;
+			height: 40px;
+			position: relative;
 		}
 		.body {
 			position: relative;
-			height:calc(~"100% - 120px");
-			border: 1px solid red;
+			height:calc(~"100% - 80px");
+			// border: 1px solid red;
 			.OCLH-container {
 
 			}
@@ -26,19 +29,79 @@
 				width: 100%;
 				height: 100%;
 				.kline-canvas{
-					width: 90%;
-					height: 90%;
-					outline: 1px solid green;
+					width: 100%;
+					height: 100%;
+					// outline: 1px solid green;
+					outline: none;
 				}
 			}
 		}
 		.footer {
-			height: 60px;
+			border-top: 1px solid #eee;
+			height: 40px;
+			position: relative;
 		}
 	}
 	.config-editor {
-		float: left;
-		width: 350px;
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 380px;
 		height: 100%;
 	}
+
+	.OCLH-container {
+		position: absolute;
+		top: 20px;
+		left: 20px;
+		color: @ks-color-gray-4;
+		.bars-info {
+			font-size: 13px;
+			margin-right: 20px;
+		}
+		span {
+			font-size: 10px;
+		}
+		.number {
+			padding:  0 5px;
+		}
+	}
+
+	.btn {
+		position: absolute;
+		top: 10px;
+		height: 25px;
+		width: 25px;
+		padding: 0;
+		&.select-range {
+			right: 100px;
+		}
+		&.delete-range {
+			right: 50px;
+		}
+		&.add-favorites {
+			right: 10px;
+		}
+	}
+
+	.footer {
+		.OCLH-inputs-container {
+			position: absolute;
+			.input-label {
+				font-size: 12px;
+				padding: 0 10px;
+			}
+			.OCLH-input {
+				width: 50px;
+				font-size: 12px;
+				text-align: center;
+			}
+		}
+		.search-btn {
+			position: absolute;
+			right: 10px;
+			top: 2px;
+		}
+	}
+
 }

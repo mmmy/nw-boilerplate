@@ -5,6 +5,7 @@ const aCode = 65;
 const bCode = 66;
 const dCode = 68;
 
+const RANGE_BAR_UP_DOWN = 110;
 const RANGE_MOVE = 100;
 const RANGE_LEFT = 90;
 const RANGE_RIGHT = 80;
@@ -38,6 +39,7 @@ function KlineEditor(canvasDom, kline) {
 
 	this._updateOHLC = null; //func
 	this._onMoveIndex = null; //func
+	this._onUpdateInfo = null; //func
 	this._init();
 };
 
@@ -62,6 +64,7 @@ KlineEditor.prototype.insertNewAfterSelectedIndex = function() {
 		let data = this._kline[this._selectedIndex];
 		data = data.concat && data.concat([]);           //copy
 		this._kline.splice(this._selectedIndex+1, 0, data);
+		this._onUpdateInfo && this._onUpdateInfo(this._kline.length); //跟新bars info
 		this.updateCanvas();
 	}
 }
@@ -72,6 +75,7 @@ KlineEditor.prototype.deleteAtSelectedIndex = function() {
 		if(this._selectedIndex >= this._kline.length) {
 			this._selectedIndex = this._kline.length - 1;
 		}
+		this._onUpdateInfo && this._onUpdateInfo(this._kline.length); //跟新bars info
 		this.updateCanvas();
 	}
 }
@@ -99,7 +103,7 @@ KlineEditor.prototype._keyDown = function(event) {
 			this.deleteAtSelectedIndex();
 			break;
 		case bCode:
-			this._startDrawRange();
+			this.startSelectRange();
 			break;
 		default:
 			break;
@@ -114,6 +118,7 @@ KlineEditor.prototype._mouseDown = function(event) {
 
 	if(this._clickHitTest === REGULAR) this.beginMoveAKline(event.offsetX, event.offsetY);
 	if(this._clickHitTest === RANGE_UP_DOWN) this.beginUpDownRange(event.offsetX, event.offsetY);
+	if(this._clickHitTest === RANGE_BAR_UP_DOWN) this.beginMoveAKline(event.offsetX, event.offsetY);
 	if((this._clickHitTest === RANGE_MOVE) || (this._clickHitTest === RANGE_LEFT) || (this._clickHitTest === RANGE_RIGHT)) this.beginMoveRange(x, y);
 
 	if(this._isDrawingRange()) {
@@ -145,7 +150,8 @@ KlineEditor.prototype._mouseMove = function(event){
 	let x = event.offsetX;
 	let y = event.offsetY;
 	this.movingAKline(event.offsetX, event.offsetY); 			//上下移动一个k线
-	this.movingUpDownRange(event.offsetX, event.offsetY); //上下移动区间
+	if(this._clickHitTest == RANGE_UP_DOWN) this.movingUpDownRange(event.offsetX, event.offsetY); //上下移动区间
+	if(this._clickHitTest == RANGE_BAR_UP_DOWN) this.movingUpDownRange(event.offsetX, event.offsetY, true); //上下移动区间 2
 	if(this._clickHitTest == RANGE_MOVE) this.movingRange(x, y, true, true);   //左右移动
 	if(this._clickHitTest == RANGE_LEFT) this.movingRange(x, y, true, false);   //左变宽
 	if(this._clickHitTest == RANGE_RIGHT) this.movingRange(x, y, false, true);   //左变宽
@@ -202,6 +208,26 @@ KlineEditor.prototype.beginMoveAKline = function(x,y) {
 	this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);
 }
 
+KlineEditor.prototype.movingAKline = function(x,y) {
+	if((this._moveIndex > -1) && (this._clickHitTest == REGULAR)) {
+		let { pricePerPix } = this._drawInfo;
+		let dy = this._mouseY - y;
+		let dp = dy * pricePerPix; //根据移动的像素值 计算价格变化
+		let data = this._kline[this._moveIndex];
+		data[1] += dp;
+		data[2] += dp;
+		data[3] += dp;
+		data[4] += dp;
+		// this._drawKline(this._kline, {hoverIndex:this._hoverIndex, selectedIndex:this._selectedIndex ,activeIndex:this._moveIndex, yMin:this._drawInfo.yMin, yMax:this._drawInfo.yMax});
+		this._mouseX = x;
+		this._mouseY = y;
+		// this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2]);
+		this.updateCanvas();
+
+		this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);
+	}
+}
+
 KlineEditor.prototype.setMoveIndexO = function(val) {
 	if(this._selectedIndex > -1 && val >= 0) {
 		this._kline[this._selectedIndex][1] = val;
@@ -232,26 +258,6 @@ KlineEditor.prototype.setMoveIndexC = function(val) {
 	}
 }
 
-KlineEditor.prototype.movingAKline = function(x,y) {
-	if((this._moveIndex > -1) && (this._clickHitTest == REGULAR)) {
-		let { pricePerPix } = this._drawInfo;
-		let dy = this._mouseY - y;
-		let dp = dy * pricePerPix; //根据移动的像素值 计算价格变化
-		let data = this._kline[this._moveIndex];
-		data[1] += dp;
-		data[2] += dp;
-		data[3] += dp;
-		data[4] += dp;
-		// this._drawKline(this._kline, {hoverIndex:this._hoverIndex, selectedIndex:this._selectedIndex ,activeIndex:this._moveIndex, yMin:this._drawInfo.yMin, yMax:this._drawInfo.yMax});
-		this._mouseX = x;
-		this._mouseY = y;
-		// this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2]);
-		this.updateCanvas();
-
-		this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);
-	}
-}
-
 //移动range
 KlineEditor.prototype.beginMoveRange = function(x,y) {
 	this._mouseX = x;
@@ -276,7 +282,7 @@ KlineEditor.prototype.movingRange = function(x, y, left, right) {
 					this._mouseY = y;
 				}
 			} else if(left) {
-				(index0 >=0) && (this._selectedRange[0] = index0);
+				(index0 >=0) && (index0 < this._selectedRange[1]) && (this._selectedRange[0] = index0);
 				this._mouseX = x;
 				this._mouseY = y;
 			} else if(right) {
@@ -303,18 +309,26 @@ KlineEditor.prototype.beginUpDownRange = function(x,y) {
 	this.updateCanvas();
 }
 
-KlineEditor.prototype.movingUpDownRange = function(x,y) {
-	if((this._selectedRange.length > 1) && (this._clickHitTest == RANGE_UP_DOWN)) {
+KlineEditor.prototype.movingUpDownRange = function(x, y, hasMoveIndex) {
+	if(this._selectedRange.length > 1) {
 		let { pricePerPix } = this._drawInfo;
 		let dy = this._mouseY - y;
 		let dp = dy * pricePerPix; //根据移动的像素值 计算价格变化
 		
 		for(let i=this._selectedRange[0]; i<=this._selectedRange[1]; i++) {
 			let data = this._kline[i];
-			data[1] += dp;
-			data[2] += dp;
-			data[3] += dp;
-			data[4] += dp;
+			let rate = 1;
+			if(hasMoveIndex) {
+				if(i <= this._moveIndex) {
+					rate *= (i - this._selectedRange[0]) / (this._moveIndex - this._selectedRange[0]);
+				} else {
+					rate *= (this._selectedRange[1] - i) / (this._selectedRange[1] - this._moveIndex);
+				}
+			}
+			data[1] += dp * rate;
+			data[2] += dp * rate;
+			data[3] += dp * rate;
+			data[4] += dp * rate;
 		}
 		// this._drawKline(this._kline, {hoverIndex:this._hoverIndex, selectedIndex:this._selectedIndex ,activeIndex:this._moveIndex, yMin:this._drawInfo.yMin, yMax:this._drawInfo.yMax});
 		this._mouseX = x;
@@ -332,13 +346,15 @@ KlineEditor.prototype.endUpDownRange = function(x,y) {
 	this.updateCanvas();
 }
 
-KlineEditor.prototype._startDrawRange = function() {
+KlineEditor.prototype.startSelectRange = function() {
+	$(this._canvas).css('cursor', 'crosshair');
 	this._drawingState.drawingRange = true;
 	this.resetRangeIndex();
 }
 
 KlineEditor.prototype._endDrawRange = function() {
 	this._drawingState.drawingRange = false;
+	$(this._canvas).css('cursor', 'default');
 }
 
 KlineEditor.prototype._getDrawRangePoints = function() {
@@ -381,6 +397,7 @@ KlineEditor.prototype._resetClickHitTest = function() {
 KlineEditor.prototype.getHitTest = function(x,y) {
 	let { pointToIndex, indexToPoint } = this._drawInfo;
 	let index = pointToIndex(x, false);
+	let indexWithY = pointToIndex(x, y);
 
 	let isXInRange = (index >= this._selectedRange[0]) && (index <= this._selectedRange[1]);
 	let isNearRangeLeft = Math.abs(indexToPoint(this._selectedRange[0]).x - x) < 5 ;
@@ -392,6 +409,10 @@ KlineEditor.prototype.getHitTest = function(x,y) {
 	//: indexRange right
 	if(isNearRangeRight) {
 		return RANGE_RIGHT;
+	}
+	//range bar up down
+	if(isXInRange && (indexWithY > -1)) {
+		return RANGE_BAR_UP_DOWN;
 	}
 	//: indexRange move
 	if(isXInRange && (y > 0) && (y < 20)) {
@@ -437,6 +458,10 @@ KlineEditor.prototype.onUpdateOHLC = function(func) { //func(O, H, L, C)
 
 KlineEditor.prototype.onMoveIndex = function(func) { //func(index, data);
 	this._onMoveIndex = func;
+}
+
+KlineEditor.prototype.onUpdateInfo = function(func) {
+	this._onUpdateInfo = func;
 }
 
 module.exports = KlineEditor;

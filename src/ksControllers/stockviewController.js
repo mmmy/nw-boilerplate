@@ -13,12 +13,12 @@ let _searchEditorFavorites = null;
 //显示K线编辑器
 let _createDetailPanel = (parentDom, editorCache, dataObj) => {
 	let editorContainer = $(`<div class='search-editor-container'></div>`);
-	let $newDom = $(`<div class='detail-panel'><div><button class='return'>返回</button></div></div>`).append(editorContainer);
+	let $newDom = $(`<div class='detail-panel'><div class='head-nav'><button class='return'>返回</button></div></div>`).append(editorContainer);
 	$newDom.find('button.return').click((event) => { //返回
 		_disposeDetailPanel(parentDom, editorCache);
 	});
 	$(parentDom).append($newDom);
-	editorCache = new SearchEditor(editorContainer, dataObj);
+	editorCache = new SearchEditor(editorContainer, dataObj, favoritesManager, favoritesController);
 };
 
 let _disposeDetailPanel = (parentDom, editorCache) => {

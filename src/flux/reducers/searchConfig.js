@@ -5,7 +5,7 @@ const initialState = {
 	additionDate: {type:'days', value:30},
 	searchSpace: '000010',
 	dateRange: ['1990/01/01', '2016/04/30'],
-	spaceDefinition: { stock: true, furture: false },
+	spaceDefinition: { stock: true, future: false },
 	matchType: MATCH_TYPE.MORPHO,
 	searchLenMax: 200
 };
