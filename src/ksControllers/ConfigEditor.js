@@ -8,7 +8,7 @@ let datePickerOptions = {
 
 function ConfigEditor(dom, searchConfig) {
 	this._$dom = $(dom);
-	this._$wrapper = $(`<div class='modal-content-contianer'></div>`);
+	this._$wrapper = $(`<div class='modal-content-contianer config-editor-inner'></div>`);
 	this._$dom.append(this._$wrapper);
 	this._config = searchConfig;
 	this._inputs = {startDate:null, endDate:null, typeStock:null, typeFuture:null, additionBars:null, reduceBars:null, addBars:null};

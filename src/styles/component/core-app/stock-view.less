@@ -15,10 +15,13 @@
 		top: 0;
 		width: @left-width;
 		height: 100%;
+		background-color: #535353;
 		border-right: 1px solid #fafafa;
 		button {
 			// width: 40px;
 			// display: inline-block;
+			background-color: transparent;
+			color: #fff;
 		}
 	}
 	.content-wrapper {
@@ -30,9 +33,11 @@
 
 		&.favorites {
 			background-color: #fff;
+			height: 100%;
 		}
 		&.history {
 			background-color: #fff;
+			height: 100%;
 		}
 	}
 
@@ -42,6 +47,59 @@
 		border-right: 1px solid #ddd;
 		width: 200px;
 		height: 100%;
+		.favorites-folder {
+			padding-left: 20px;
+			padding-top: 8px;
+			margin: 0;
+			height: 30px;
+			font-size: 12px;
+			button {
+				display: none;
+			}
+			&:hover {
+				background-color: #f6f6f6;
+				button{
+					float: right;
+					display: inline;
+					margin-right: 20px;
+				}
+			}
+		}
+
+		p.month {
+			margin: 0;
+			padding-left: 20px;
+			font-size: 12px;
+			button {
+				display: none;
+			}
+			&:hover {
+				button {
+					float: right;
+					margin-right: 20px;
+					display: inline;
+					&:hover {
+						border: 1px solid #ac0006;
+						color: #ac0006;
+					}
+				}
+			}
+		}
+
+		.favorites-input-wrapper {
+			border: 1px solid #eee;
+			margin: 10px 20px;
+			input {
+				width: 80%;
+				outline: none;
+				border: none;
+				padding: 2px 5px;
+				font-size: 12px;
+			}
+			button {
+
+			}
+		}
 	}
 
 	.body-container {
@@ -55,6 +113,10 @@
 		.scrollbar(@width:6px);
 		.scrollbar-track(@background-color:transparent);
 		.scrollbar-thumb(@background-color: @ks-color-gray-4);
+		>.history-items-wrapper {
+			float: left;
+			padding: 20px;
+		}
 	}
 }
 
@@ -64,19 +126,109 @@
 
 .history-day-wrapper {
 	// clear: both;
-	border: 1px dotted #aaa;
+	// border: 1px dotted #aaa;
 	float: left;
 	padding-left: 30px;
-	margin-bottom: 20px;
+	margin-top: 20px;
+	.date-string {
+		font-size: 16px;
+		padding-bottom: 8px;
+		color: @ks-color-gray-4;
+	}
 }
 
 .history-items-wrapper {
 
 	.history-item {
 		float: left;
-		width: 300px;
-		height: 270px;
-		box-shadow: 0 0 10px 0 #aaa;
+		position: relative;
+		width: 240px;
+		height: 240px;
+		font-size: 13px;
+		color: @ks-color-gray-4;
+		margin-right: 20px;
+		margin-bottom: 20px;
+		background-color: #fff;
+		box-shadow: 0 0 10px 0 #d7d7d7;
+		>* {
+			position: absolute;
+		}
+		.header-info {
+			top: 15px;
+			left: 10px;
+		}
+		.add-btn {
+			top: 15px;
+			right: 10px;
+			width: 25px;
+			height: 25px;
+			// border: 1px solid red;
+			background-image: url('./image/user.png');
+			background-repeat: no-repeat;
+			background-size: cover;
+			color: transparent;
+			.add-favorites-popup {
+				z-index: 102;
+				box-shadow: 0 0 10px #ddd;
+				position: absolute;
+				color: #000;
+				background-color: #fff;
+				width: 200px;
+				text-align: left;
+				div {
+					padding-left: 20px;
+					color: @ks-color-gray-4;
+					&:hover {
+						background-color: #f7f7f7;
+						color: @ks-color-gray-2;
+					}
+				}
+			}
+			&:hover{
+				background-position-y: 100%;
+			}
+		}
+		canvas.kline {
+			top: 50px;
+			left: 10px;
+		}
+		.daterange-info {
+			font-size: 12px;
+			left: 10px;
+			bottom: 45px;
+		}
+		.btn-wrapper {
+			left: 0;
+			bottom: 0;
+			height: 40px;
+			width: 100%;
+			button {
+				padding: 11px;
+				// padding-left: 20px;
+				padding-right: 25px;
+				text-align: right;
+				border: none;
+				border-top: 1px solid #eee;
+				background-color: transparent;
+				width: 50%;
+				height: 100%;
+				display: inline-block;
+				background-repeat: no-repeat;
+				background-clip: content-box;
+				background-position: 20px 13px;
+				outline: none;
+				&:hover {
+					// background-color: #f7f7f7;
+				}
+			}
+			.re-search {
+				border-right: 1px solid #eee;
+				background-image: url('./image/search.png');
+			}
+			.go-detail {
+				background-image: url('./image/sort.png');
+			}
+		}
 	}
 }
 
@@ -85,6 +237,13 @@
 		.nav-title {
 			margin: 20px;
 			font-size: 15px;
+		}
+		.nav-item-container {
+			max-height: calc(~"100% - 100px");
+			overflow: scroll;
+			.scrollbar(@width:6px);
+			.scrollbar-track(@background-color:transparent);
+			.scrollbar-thumb(@background-color: @ks-color-gray-4);
 		}
 	}
 	//编辑
@@ -98,6 +257,11 @@
 
 		.head-nav {
 			height: 50px;
+			padding-left: 40px;
+			.return {
+				margin-top: 10px;
+				background-color: transparent;
+			}
 		}
 		.search-editor-container {
 			position: relative;

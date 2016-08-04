@@ -138,8 +138,28 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H]
 	if(selectedRange && selectedRange[0] >= 0 && selectedRange[1] >=0) {
 		let rangeX1 = klineWhisker[selectedRange[0]][0][0][0];
 		let rangeX2 = klineWhisker[selectedRange[1]][0][0][0];
-		ctx.fillStyle = 'rgba(100,100,100,0.3)';
-		ctx.fillRect(rangeX1, 0, rangeX2 - rangeX1, height);
+		ctx.fillStyle = 'rgba(200,200,200,0.1)';
+		ctx.fillRect(rangeX1, 20.5, rangeX2 - rangeX1, height);
+		ctx.fillStyle = '#c90006';
+		ctx.fillRect(rangeX1, 0, rangeX2 - rangeX1, 20.5);
+		//text
+		ctx.beginPath();
+		let text = selectedRange[1] - selectedRange[0] + 1 + '根K线';
+		ctx.font = 'bold 10pt';
+		ctx.textAlign = 'center';
+		// ctx.lineWidth = 1;
+		ctx.fillStyle = '#fff';
+		ctx.fillText(text, (rangeX2 + rangeX1)/2, 13);
+
+		ctx.beginPath();
+		ctx.setLineDash([0, 0]);
+		ctx.strokeStyle = 'rgba(200,200,200,0.2)';
+		ctx.moveTo(rangeX1, 20);
+		ctx.lineTo(rangeX1, height);
+		ctx.stroke();
+		ctx.moveTo(rangeX2, 20);
+		ctx.lineTo(rangeX2, height);
+		ctx.stroke();
 	}
 	// if(mouse) {
 	// 	ctx.strokeStyle = '#aaa';

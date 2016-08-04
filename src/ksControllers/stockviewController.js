@@ -5,6 +5,8 @@ import store from '../store';
 import { drawKline } from './painter';
 import SearchEditor from './SearchEditor';
 import actionTradingview from '../shared/actionTradingview';
+import { handleShouCangFocus, handleShouCangBlur } from './publicHelper';
+
 let { updateTradingviewAfterSearch } = actionTradingview;
 
 let _searchEditorHistory = null;
@@ -13,7 +15,7 @@ let _searchEditorFavorites = null;
 //显示K线编辑器
 let _createDetailPanel = (parentDom, editorCache, dataObj) => {
 	let editorContainer = $(`<div class='search-editor-container'></div>`);
-	let $newDom = $(`<div class='detail-panel'><div class='head-nav'><button class='return'>返回</button></div></div>`).append(editorContainer);
+	let $newDom = $(`<div class='detail-panel'><div class='head-nav'><button class='flat-btn font-simsun return'>返回</button></div></div>`).append(editorContainer);
 	$newDom.find('button.return').click((event) => { //返回
 		_disposeDetailPanel(parentDom, editorCache);
 	});
@@ -53,7 +55,7 @@ let _handleAddFocus = (event) => {
 	let dataObj = $pattern.data('data');
 	let folders = favoritesManager.getFavoritesFolders();
 
-	let optionsNode = $(`<div style='position:absolute'></div>`);
+	let optionsNode = $(`<div class='add-favorites-popup'></div>`);
 	folders.forEach((folder) => {
 		let button = $(`<div>${folder}</div>`).click((e) => {
 			favoritesController.addFavorites(folder, dataObj);
@@ -69,15 +71,20 @@ let _handleAddBlur = (event) => {
 };
 
 let _generatePattern = (pattern) => {
-	let info = `<div>${pattern.symbol}</div>`;
-	let button = `<button class='add-btn'>add</button>`;
-	let canvas = `<canvas class='kline' width='300' height='130' style='width:300px;height:130px'/>`;
-	let range = `<div></div>`;
-	let footer = `<div><button class='re-search'>重新搜索</button><button class='go-detail'>查看详情</button></div>`;
-	let $node = $(`<div class='history-item'>${info}${button}${canvas}${range}${footer}</div>`);
+	let startDateStr = pattern.dateRange && new Date(pattern.dateRange[0]).toISOString() || '',
+			endDateStr = pattern.dateRange && new Date(pattern.dateRange[1]).toISOString() || '';
+	startDateStr = startDateStr.slice(0, 10).replace(/-/g,'.');
+	endDateStr = endDateStr.slice(0, 10).replace(/-/g,'.');
+
+	let info = `<span class='header-info'>${pattern.symbol}     ${pattern.kline.length}根K线</span>`;
+	let button = `<button class='add-btn flat-btn'>add</button>`;
+	let canvas = `<canvas class='kline' width='220' height='120' style='width:220px;height:120px'/>`;
+	let range = `<span class='daterange-info font-number'>${startDateStr} ~ ${endDateStr}</span>`;
+	let footer = `<div class='btn-wrapper'><button class='re-search'>重新搜索</button><button class='go-detail'>查看详情</button></div>`;
+	let $node = $(`<div class='history-item font-simsun'>${info}${button}${canvas}${range}${footer}</div>`);
 			$node.data('data', pattern);
 
-			$node.find('.add-btn').focus(_handleAddFocus).blur(_handleAddBlur); //添加到收藏夹
+			$node.find('.add-btn').focus(handleShouCangFocus.bind(null, favoritesManager, favoritesController, pattern)).blur(handleShouCangBlur); //添加到收藏夹
 			$node.find('.re-search').click(_handleReSearch);  //重新搜索
 			$node.find('.go-detail').click(_handleDetail);  //重新搜索
 			drawKline($node.find('canvas.kline')[0], pattern.kline);
@@ -98,9 +105,23 @@ let _generatePatterns = (dataArr) => {  //dataArr:[{symbol, dateRange, kline}]
 	return $node;
 };
 
+let dateToString = (dateObj) => {
+	let now = new Date();
+	let yesterday = new Date(now - 1000*3600*24);
+	let year = dateObj.getFullYear(),
+			month = dateObj.getMonth(),
+			date  = dateObj.getDate(),
+			day = dateObj.getDay();
+	let isToday = (year==now.getFullYear()) && (month==now.getMonth()) && (date==now.getDate());
+	let isYesterday = (year==yesterday.getFullYear()) && (month==yesterday.getMonth()) && (date==yesterday.getDate());
+	let dayChinese = ['一','二','三','四','五','六','日'];
+	return year + '年' + (month+1) + '月' + date + '日 - 星期' + dayChinese[day-1] + (isToday ? '(今天)' : '') + (isYesterday ? '(昨天)' : '') ;
+};
+
 let _generateHistoryItem = (date, data) => {
 	let patterns = _generatePatterns(data);
-	return $(`<div class='history-day-wrapper'><h5>${date}</h5></div>`).append(patterns);
+	let dateStr = dateToString(date);
+	return $(`<div class='history-day-wrapper'><h4 class='date-string'>${dateStr}</h4></div>`).append(patterns);
 };
 
 let historyController = {};
@@ -145,7 +166,7 @@ historyController.init = (navDom, bodyDom) => {
 		// 	$dom.append(`<h6 class='year'>${_year}</h6>`);
 		// 	year = _year;
 		// }
-		$navDom.append($(`<p class='month'><span>${_month}月</span></p>`).data({year:_year, month:_month}).append($('<button>delete</button>').click(_handleDeleteHistoryByMonth)));
+		$navDom.append($(`<p class='month font-simsun'><span>${_month}月</span></p>`).data({year:_year, month:_month}).append($('<button class="flat-btn">delete</button>').click(_handleDeleteHistoryByMonth)));
 	});
 
 	let now = new Date();
@@ -189,7 +210,7 @@ historyController.updateNavContainer = (dom) => {
 			// 	$dom.append(`<h6 class='year'>${_year}</h6>`);
 			// 	year = _year;
 			// }
-			$dom.append(`<p class='month'>${_month}</p>`);
+			$dom.append(`<p class='month font-simsun'>${_month}</p>`);
 		});
 	}
 };
@@ -268,7 +289,7 @@ let _handleDeleteFavoritesFolder = (event) => {
 };
 
 let _generateFolderNode = (fileName, {name, data}) => {
-	let $dom = $(`<h6 class='favorites-folder'><span>${name}<span></h6>'`).append($(`<button>delete</button>`).click(_handleDeleteFavoritesFolder));
+	let $dom = $(`<h6 class='favorites-folder font-simsun'><span>${name}<span></h6>'`).append($(`<button>delete</button>`).click(_handleDeleteFavoritesFolder));
 	$dom.data('fileName', fileName).data('name', name).data('data', data);
 	$dom.click(_handleFolderClick);
 	return $dom;

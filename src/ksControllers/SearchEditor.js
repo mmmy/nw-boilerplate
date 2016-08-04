@@ -1,6 +1,7 @@
 
 import KlineEditor from './KlineEditor';
 import ConfigEditor from './ConfigEditor';
+import { handleShouCangFocus, handleShouCangBlur } from './publicHelper';
 
 function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 	this._$root = $(dom);
@@ -11,6 +12,8 @@ function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 	this._$config = $('<div class="config-editor"></div>');
 	this._OHLC = { barsInfo:null, O:null, H:null, L:null, C:null}; //缓存dom
 	this._OHLCInputs = {O:null, H:null, L:null, C:null}; //缓存input dom
+	this._floatTools = {addBars:null};
+
 	this._klineEditor = null;
 	this._configEditor = null;
 
@@ -52,9 +55,9 @@ SearchEditor.prototype._initMain = function() {
 																											.append(`<span>L</span>`).append(this._OHLC.L)
 																											.append(`<span>C</span>`).append(this._OHLC.C);
 
-	header.append(OCLH).append($(`<button class='btn select-range'>区域</button>`).click(this._handleStartSelectRange.bind(this)))
-											.append($(`<button class='btn delete-range'>删除</button>`).click(this._handleResetSelectRange.bind(this)))
-											.append($(`<button class='btn add-favorites'>收藏</button>`).focus(this._handleShouCangFocus.bind(this)).blur(this._handleShouCangBlur.bind(this)));
+	header.append(OCLH).append($(`<button class='flat-btn tool-btn select-range'>区域</button>`).click(this._handleStartSelectRange.bind(this)))
+											.append($(`<button class='flat-btn tool-btn delete-range'>删除</button>`).click(this._handleResetSelectRange.bind(this)))
+											.append($(`<button class='flat-btn tool-btn add-favorites'>收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj)).blur(handleShouCangBlur.bind(null)));
 
 	this._OHLCInputs = {
 		O: $('<input class="OCLH-input font-number" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexO(+event.target.value) }),
@@ -69,8 +72,15 @@ SearchEditor.prototype._initMain = function() {
 									.append($('<span class="input-label font-number">H</span>')).append(this._OHLCInputs.H)
 									.append($('<span class="input-label font-number">L</span>')).append(this._OHLCInputs.L)
 									.append($('<span class="input-label font-number">C</span>')).append(this._OHLCInputs.C);
-	let footer = $(`<div class='footer'></div>`).append(OCLHInputs).append(`<button class='search-btn'>搜索</button>`);
-	this._$main.append(header).append(body).append(footer).append(footer);
+	let footer = $(`<div class='footer'></div>`).append(OCLHInputs).append(`<button class='search-btn font-simsun'>搜索</button>`);
+	
+	this._floatTools.addBars = $(`<span class='add-bars-container'></span>`)
+												.append($(`<button class='flat-btn add-bars font-simsun'>新增</button>`).click(this._hanleAddBars.bind(this)))
+												.append($(`<input type='number' value='1' min='1'/>`))
+												.hide();
+												// .append($(`<button class='flat-btn bars-count font-number'>1<i class='fa fa-caret-down'><i/></button>`));
+
+	this._$main.append(header).append(body).append(footer).append(footer).append(this._floatTools.addBars);
 	this._initKlineEditor();
 	this._initConfigEditor();
 };
@@ -91,6 +101,7 @@ SearchEditor.prototype.updateOHLC = function(O, H, L, C) {
 SearchEditor.prototype.handleMoveIndex = function(index, data) { //data:[time, O, C, L, H]
 	if(index > -1) {
 		this._OHLCInputs.O.closest('.OCLH-inputs-container').show();
+		this._floatTools.addBars.show();
 		let O = data[1],
 				C = data[2],
 				L = data[3],
@@ -102,6 +113,7 @@ SearchEditor.prototype.handleMoveIndex = function(index, data) { //data:[time, O
 		this._OHLCInputs.C.val(C.toFixed(2));
 	} else {
 		this._OHLCInputs.O.closest('.OCLH-inputs-container').hide();
+		this._floatTools.addBars.hide();
 	}
 }
 
@@ -130,26 +142,61 @@ SearchEditor.prototype._handleResetSelectRange = function(e) {
 SearchEditor.prototype._handleShouCangFocus = function(e) {
 	// this._klineEditor.resetRangeIndex();
 	let $target = $(e.target);
+	if($target.find('.shoucang-pop-menu').length > 0) {
+		return;
+	}
+	let that = this;
 	let favoritesManager = this._favoritesManager;
 	let favoritesController = this._favoritesController;
 	let dataObj = this._dataObj;
 	let folders = favoritesManager.getFavoritesFolders();
-	let optionsNode = $(`<div style='position:absolute'></div>`);
+	let optionsNode = $(`<div class='shoucang-pop-menu font-simsun'></div>`);
+
+	let $title = $(`<h4 class='title'>另存为</h4>`);
+	let $content = $(`<div class='content transition-all'></div>`);
+	let $footer = $(`<div class='footer transition-all'></div>`).append($(`<span class='name'>新建文件夹</span>`))
+																							.append($(`<i class='fa fa-plus toggle-btn'></i>`).click(function(event) {
+																								$content.toggleClass('strech', true);
+																								$footer.toggleClass('show-all', true);
+																							}))
+																							.append($(`<div class='input-wrapper'></div>`).append($(`<input />`).blur(function() { $target.focus()/* 消除bug*/})))
+																							.append($(`<i class='fa fa-plus add-btn'></i>`).click(function(event) {
+																								/* Act on the event */
+																								let name = $footer.find('input').val();
+																								if(name) {
+																									favoritesController.addNewFolder(name);
+																									let button = $(`<div class='item'>${name}</div>`).click((e) => {
+																										favoritesController.addFavorites(name, dataObj);
+																										$target.children().remove();
+																									});
+																									$content.append(button);
+																								}
+																							}));
 
 	folders.forEach((folder) => {
-		let button = $(`<div>${folder}</div>`).click((e) => {
+		let button = $(`<div class='item'>${folder}</div>`).click((e) => {
 			favoritesController.addFavorites(folder, dataObj);
 			$target.children().remove();
 		});
-		optionsNode.append(button);
+		$content.append(button);
 	});
+
+	optionsNode.append($title).append($content).append($footer);
 	$target.append(optionsNode);
 }
 
 SearchEditor.prototype._handleShouCangBlur = function(e) {
 	// this._klineEditor.resetRangeIndex();
 	let $target = $(e.target);
+	if($target.find(e.relatedTarget).length > 0) {
+		return;
+	}
 	$target.children().remove();
+}
+
+SearchEditor.prototype._hanleAddBars = function(e) {
+	let bars = $(e.target).next().val();
+	this._klineEditor.insertNewAfterSelectedIndex(bars);
 }
 
 SearchEditor.prototype.dispose = function() {

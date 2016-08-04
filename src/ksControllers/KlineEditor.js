@@ -57,13 +57,29 @@ KlineEditor.prototype._init = function() {
 	this._canvas.addEventListener('keydown', this._keyDown.bind(this));
 	this._canvas.addEventListener('keyup', this._keyUp.bind(this));
 
+	window.addEventListener('resize', this._resize.bind(this));
 };
 
-KlineEditor.prototype.insertNewAfterSelectedIndex = function() {
+KlineEditor.prototype._resize = function(e) {
+	let $canvas = $(this._canvas);
+	let height = $canvas.parent().height(),
+			width = $canvas.parent().width();
+	$canvas.attr({height, width}).css({height, width});
+	this.updateCanvas();
+}
+
+KlineEditor.prototype.dispose = function() {
+	window.removeEventListener('resize', this._resize);
+}
+
+KlineEditor.prototype.insertNewAfterSelectedIndex = function(bars) {
+	bars = bars || 1;
 	if(this._selectedIndex > -1) {
 		let data = this._kline[this._selectedIndex];
-		data = data.concat && data.concat([]);           //copy
-		this._kline.splice(this._selectedIndex+1, 0, data);
+		for(let i=0; i<bars; i++) {
+			data = data.concat && data.concat([]);           //copy
+			this._kline.splice(this._selectedIndex+1, 0, data);
+		}
 		this._onUpdateInfo && this._onUpdateInfo(this._kline.length); //跟新bars info
 		this.updateCanvas();
 	}
