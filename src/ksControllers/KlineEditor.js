@@ -40,6 +40,7 @@ function KlineEditor(canvasDom, kline) {
 	this._updateOHLC = null; //func
 	this._onMoveIndex = null; //func
 	this._onUpdateInfo = null; //func
+	this._onEndDrawRange = null; //func
 	this._init();
 };
 
@@ -93,7 +94,21 @@ KlineEditor.prototype.deleteAtSelectedIndex = function() {
 		}
 		this._onUpdateInfo && this._onUpdateInfo(this._kline.length); //跟新bars info
 		this.updateCanvas();
+		return true;
 	}
+	return false;
+}
+
+KlineEditor.prototype.deleteAtRange = function() {
+	if(this._selectedRange.length > 1) {
+		this._kline.splice(this._selectedRange[0], Math.abs(this._selectedRange[1] - this._selectedRange[0]) + 1);
+		this._hoverIndex = -1;
+		this._selectedIndex = -1;
+		this._moveIndex = -1;
+		this.resetRangeIndex();
+		return true;
+	}
+	return false;
 }
 
 KlineEditor.prototype.redo = function() {
@@ -176,7 +191,13 @@ KlineEditor.prototype._mouseMove = function(event){
 		this.setRangeIndex(1, event.offsetX, event.offsetY, 1);
 	}
 	if(this._moveIndex == -1) this.updateHover(event.offsetX, event.offsetY);
+
+	let hitTest = this.getHitTest(event.offsetX, event.offsetY);
+	if(this._clickHitTest == NONE) {
+		this.setCursorByHittest(hitTest);
+	}
 	console.log(this.getHitTest(event.offsetX, event.offsetY));
+
 	// if(this._editable) {
 	// 	if(this._isMouseDown) {
 
@@ -213,15 +234,23 @@ KlineEditor.prototype.updateCanvas = function(){
 }
 
 KlineEditor.prototype.beginMoveAKline = function(x,y) {
+	
+	if(this._drawingState.drawingRange) return;  //正在绘制range
+
 	let { pointToIndex } = this._drawInfo;
+	let index = pointToIndex(x, y); //获取需要移动的index
+	if(this._selectedRange.length > 1 && (index < this._selectedRange[0] || index > this._selectedRange[1])) {
+		return; //只能在区域内操作
+	}
+
 	this._mouseX = x;
 	this._mouseY = y;
-	this._moveIndex = pointToIndex(x, y); //获取需要移动的index
+	this._moveIndex = index; //获取需要移动的index
 	this._selectedIndex = this._moveIndex;
 	// this._drawKline(this._kline, {hoverIndex:this._hoverIndex, selectedIndex:this._selectedIndex ,activeIndex:this._moveIndex, yMin:this._drawInfo.yMin, yMax:this._drawInfo.yMax});
 	this.updateCanvas();
 
-	this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);
+  this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex], this._selectedRange.length == 0);
 }
 
 KlineEditor.prototype.movingAKline = function(x,y) {
@@ -240,7 +269,7 @@ KlineEditor.prototype.movingAKline = function(x,y) {
 		// this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2]);
 		this.updateCanvas();
 
-		this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);
+		this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex], this._selectedRange.length == 0);
 	}
 }
 
@@ -351,6 +380,8 @@ KlineEditor.prototype.movingUpDownRange = function(x, y, hasMoveIndex) {
 		this._mouseY = y;
 		// this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2]);
 		this.updateCanvas();
+		this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex], false);
+
 	}
 }
 
@@ -363,14 +394,44 @@ KlineEditor.prototype.endUpDownRange = function(x,y) {
 }
 
 KlineEditor.prototype.startSelectRange = function() {
-	$(this._canvas).css('cursor', 'crosshair');
+	this.setCursor('crosshair');
 	this._drawingState.drawingRange = true;
+	this._selectedIndex = -1;
+	this._moveIndex = -1;
+	this._onMoveIndex && this._onMoveIndex(-1);
 	this.resetRangeIndex();
+}
+
+KlineEditor.prototype.setCursorByHittest = function(hitTest) {
+	switch (hitTest) {
+		case NONE:
+			this.setCursor(); break;
+		case REGULAR:
+			this.setCursor(); break;
+		case RANGE_BAR_UP_DOWN:
+			this.setCursor('ns-resize'); break;
+		case RANGE_UP_DOWN:
+			this.setCursor('pointer'); break;
+		case RANGE_MOVE:
+			this.setCursor('ew-resize'); break;
+		case RANGE_LEFT:
+			this.setCursor('col-resize'); break;
+		case RANGE_RIGHT:
+			this.setCursor('col-resize'); break;
+		case BAR_MOVE:
+			this.setCursor('ns-resize'); break;
+	}
+}
+
+KlineEditor.prototype.setCursor = function(cursor) {
+	cursor = cursor || 'default';
+	$(this._canvas).css('cursor', cursor);
 }
 
 KlineEditor.prototype._endDrawRange = function() {
 	this._drawingState.drawingRange = false;
-	$(this._canvas).css('cursor', 'default');
+	this.setCursor();
+	this._onEndDrawRange && this._onEndDrawRange(this._selectedRange);
 }
 
 KlineEditor.prototype._getDrawRangePoints = function() {
@@ -478,6 +539,10 @@ KlineEditor.prototype.onMoveIndex = function(func) { //func(index, data);
 
 KlineEditor.prototype.onUpdateInfo = function(func) {
 	this._onUpdateInfo = func;
+}
+
+KlineEditor.prototype.onEndDrawRange = function(func) {
+	this._onEndDrawRange = func;
 }
 
 module.exports = KlineEditor;

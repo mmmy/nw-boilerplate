@@ -11,7 +11,7 @@
 		top: 0;
 		width: calc(~"100% - 380px");
 		height: 100%;
-		border-right: 1px solid #eee;
+		// border-right: 1px solid #eee;
 		.header {
 			height: 40px;
 			position: relative;
@@ -49,6 +49,7 @@
 		top: 0;
 		width: 380px;
 		height: 100%;
+		padding-left: 40px;
 		.config-editor-inner {
 			margin-top: 20px;
 			.item-title {
@@ -98,7 +99,8 @@
 			right: 10px;
 		}
 		&:hover {
-			background-position-y: 100%;
+			// background-position-y: 100%;
+			box-shadow: 0 0 1px #444 inset;
 		}
 	}
 
@@ -116,9 +118,27 @@
 				text-align: center;
 			}
 		}
+		.tool-btn {
+			position: absolute;
+			top: 10px;
+			height: 25px;
+			width: 25px;
+			padding: 0;
+			color: transparent;
+			background-size: cover;
+			background-repeat: no-repeat;
+			&.save {
+				background-image: url('./image/trash-icon.png');
+				right: 50px;
+			}
+			&.search {
+				background-image: url('./image/search.png');
+				right: 100px;
+			}
+		}
 		.search-btn {
 			position: absolute;
-			right: 20px;
+			right: 120px;
 			top: 10px;
 			width: 120px;
 			font-size: 12px;

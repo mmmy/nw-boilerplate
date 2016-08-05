@@ -145,7 +145,7 @@ class ComparatorStatic extends React.Component {
     const STOCK_VIEW = 'comparator-chart';
 
     let options = {
-      symbol: '300336.SZ',
+      symbol: '000002.SZ',
       interval: 'D',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
@@ -201,15 +201,15 @@ class ComparatorStatic extends React.Component {
             "mainSeriesProperties.showPriceLine": false,
             "mainSeriesProperties.visible": true,
 
-            "mainSeriesProperties.candleStyle.upColor": "#fff",
-            "mainSeriesProperties.candleStyle.downColor": "#fff",
+            "mainSeriesProperties.candleStyle.upColor": '#8F151C',//"#fff",
+            "mainSeriesProperties.candleStyle.downColor": '#9f9f9f',//"#fff",
             "mainSeriesProperties.candleStyle.drawWick": true,
             "mainSeriesProperties.candleStyle.drawBorder": true,
             "mainSeriesProperties.candleStyle.borderColor": "#378658",
-            "mainSeriesProperties.candleStyle.borderUpColor": "#c50017",
-            "mainSeriesProperties.candleStyle.borderDownColor": "#6A6A6A",
-            "mainSeriesProperties.candleStyle.wickUpColor": '#c50017',
-            "mainSeriesProperties.candleStyle.wickDownColor": '#6A6A6A',
+            "mainSeriesProperties.candleStyle.borderUpColor": '#8F151C',//"#c50017",
+            "mainSeriesProperties.candleStyle.borderDownColor": '#9f9f9f',//"#6A6A6A",
+            "mainSeriesProperties.candleStyle.wickUpColor": '#8F151C',//'#c50017',
+            "mainSeriesProperties.candleStyle.wickDownColor": '#9f9f9f',//'#6A6A6A',
             "mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
             "scalesProperties.lineColor" : "rgba(0,0,0,0)",
 
@@ -218,7 +218,7 @@ class ComparatorStatic extends React.Component {
         ks_overrides: {
           // "ksSplitView": true,
           ksBottomView: true,
-          volume: true,
+          volume: false,
           OHLCBarBorderColor: true,
           lineToolTimeAxisView: {
             background: '#444',

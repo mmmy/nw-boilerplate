@@ -32,6 +32,7 @@ SearchEditor.prototype._initKlineEditor = function(){
 	this._klineEditor.onUpdateOHLC(this.updateOHLC.bind(this));
 	this._klineEditor.onMoveIndex(this.handleMoveIndex.bind(this));
 	this._klineEditor.onUpdateInfo(this.updateInfo.bind(this));
+	this._klineEditor.onEndDrawRange(this.handleEndDrawRange.bind(this));
 	this.updateInfo(this._dataObj.kline.length);
 }
 
@@ -56,8 +57,7 @@ SearchEditor.prototype._initMain = function() {
 																											.append(`<span>C</span>`).append(this._OHLC.C);
 
 	header.append(OCLH).append($(`<button class='flat-btn tool-btn select-range'>区域</button>`).click(this._handleStartSelectRange.bind(this)))
-											.append($(`<button class='flat-btn tool-btn delete-range'>删除</button>`).click(this._handleResetSelectRange.bind(this)))
-											.append($(`<button class='flat-btn tool-btn add-favorites'>收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj)).blur(handleShouCangBlur.bind(null)));
+											.append($(`<button class='flat-btn tool-btn delete-range'>删除</button>`).click(this._handleDeleteBars.bind(this)));
 
 	this._OHLCInputs = {
 		O: $('<input class="OCLH-input font-number" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexO(+event.target.value) }),
@@ -72,7 +72,11 @@ SearchEditor.prototype._initMain = function() {
 									.append($('<span class="input-label font-number">H</span>')).append(this._OHLCInputs.H)
 									.append($('<span class="input-label font-number">L</span>')).append(this._OHLCInputs.L)
 									.append($('<span class="input-label font-number">C</span>')).append(this._OHLCInputs.C);
-	let footer = $(`<div class='footer'></div>`).append(OCLHInputs).append(`<button class='search-btn font-simsun'>搜索</button>`);
+	let footer = $(`<div class='footer'></div>`).append(OCLHInputs)
+																							.append(`<button class='flat-btn tool-btn search font-simsun'>搜索</button>`)
+																							.append($(`<button class='flat-btn tool-btn save'>保存</button>`))
+																							.append($(`<button class='flat-btn tool-btn add-favorites'>收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj)).blur(handleShouCangBlur.bind(null)));
+
 	
 	this._floatTools.addBars = $(`<span class='add-bars-container'></span>`)
 												.append($(`<button class='flat-btn add-bars font-simsun'>新增</button>`).click(this._hanleAddBars.bind(this)))
@@ -98,10 +102,10 @@ SearchEditor.prototype.updateOHLC = function(O, H, L, C) {
 	}
 }
 
-SearchEditor.prototype.handleMoveIndex = function(index, data) { //data:[time, O, C, L, H]
+SearchEditor.prototype.handleMoveIndex = function(index, data, showAddBtn) { //data:[time, O, C, L, H]
 	if(index > -1) {
 		this._OHLCInputs.O.closest('.OCLH-inputs-container').show();
-		this._floatTools.addBars.show();
+		showAddBtn && this._floatTools.addBars.show();
 		let O = data[1],
 				C = data[2],
 				L = data[3],
@@ -132,11 +136,15 @@ SearchEditor.prototype._init = function() {
 };
 
 SearchEditor.prototype._handleStartSelectRange = function(e) {
+	let $target = $(e.target);
+	$target.css('box-shadow','0 0 1px #444 inset');
 	this._klineEditor.startSelectRange();
 }
 
-SearchEditor.prototype._handleResetSelectRange = function(e) {
-	this._klineEditor.resetRangeIndex();
+SearchEditor.prototype._handleDeleteBars = function(e) {
+	if(!this._klineEditor.deleteAtRange()) {
+		this._klineEditor.deleteAtSelectedIndex();
+	}
 }
 
 SearchEditor.prototype._handleShouCangFocus = function(e) {
@@ -197,6 +205,10 @@ SearchEditor.prototype._handleShouCangBlur = function(e) {
 SearchEditor.prototype._hanleAddBars = function(e) {
 	let bars = $(e.target).next().val();
 	this._klineEditor.insertNewAfterSelectedIndex(bars);
+}
+
+SearchEditor.prototype.handleEndDrawRange = function(range) { //
+	this._$main.find('.select-range').css('box-shadow','');
 }
 
 SearchEditor.prototype.dispose = function() {

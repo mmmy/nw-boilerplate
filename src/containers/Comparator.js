@@ -84,10 +84,10 @@ var option = {
                 itemStyle: {
                   normal: {
                     borderWidth: true ? '1' : '0',
-                    color: true ? 'transparent' : '#aE0000',
-                    color0: true ? 'transparent' : '#5A5A5A',
-                    borderColor: '#aE0000',
-                    borderColor0: '#5A5A5A',
+                    color: true ? '#8F151C' : '#aE0000',
+                    color0: true ? '#9A9A97' : '#5A5A5A',
+                    borderColor: '#8F151C',
+                    borderColor0: '#9A9A97',
                   },
                   emphasis: {
                     borderWidth: '1'

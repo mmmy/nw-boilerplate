@@ -297,7 +297,7 @@ RequestProcessor = function(action, query, response) {
 				"ticker": _lastYahooResponse["ticker"].toUpperCase(),
 				"description": symbolInfo.description.length > 0 ? symbolInfo.description : symbolInfo.name,
 				"type": symbolInfo.type,
-				"supported_resolutions" : ["D","2D","3D","W","3W","M","6M"]
+				"supported_resolutions" : ["1","5","D","2D","3D","W","3W","M","6M"]
 			};
 
 			response.writeHead(200, defaultResponseHeader);

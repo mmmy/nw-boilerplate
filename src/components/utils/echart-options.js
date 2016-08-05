@@ -109,10 +109,10 @@ var factorCandleOption=function(candleBorder = true){
 		            itemStyle: {
 		            	normal: {
 		            		borderWidth: candleBorder ? '1' : '0',
-		            		color: candleBorder ? 'transparent' : '#aE0000',
-		            		color0: candleBorder ? 'transparent' : '#5A5A5A',
-		            		borderColor: '#aE0000',
-		            		borderColor0: '#5A5A5A',
+		            		color: candleBorder ? '#8F151C' : '#aE0000',
+		            		color0: candleBorder ? '#9f9f9f' : '#5A5A5A',
+		            		borderColor: '#8F151C',
+		            		borderColor0: '#9f9f9f',
 		            	},
 		            	emphasis: {
 		            		borderWidth: '1'

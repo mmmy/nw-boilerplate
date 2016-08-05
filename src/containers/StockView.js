@@ -90,7 +90,8 @@ class StockView extends React.Component {
 
 				},
 				ks_overrides: {
-					"ksSplitView": false,
+					// "ksSplitView": true,
+					// ksBottomView: true,
 					volume: false,
 					OHLCBarBorderColor: true,
 					ksSearch: true,

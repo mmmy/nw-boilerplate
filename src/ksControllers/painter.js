@@ -101,8 +101,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H]
 	let selectedRange = options && options.selectedRange;
 
 	//start draw
-	let upColor = options && options.upColor || '#ae0006',
-		 	downColor = options && options.downColor || '#777';
+	let upColor = options && options.upColor || '#8B171B',//'#ae0006',
+		 	downColor = options && options.downColor || '#050505';
 	ctx.clearRect(0, 0, width, height);
 	let d2 = new Date();
 	for (let i=0; i<len; i++) {
@@ -116,8 +116,10 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H]
 			ctx.lineWidth = 2.5;
 		}
 		ctx.strokeStyle = isUpCandle[i] ? upColor : downColor;
+		ctx.fillStyle = isUpCandle[i] ? '#AC1822' : 'rgba(0,0,0,0)';
 		ctx.beginPath();
 		ctx.strokeRect(rectPoints[0][0], rectPoints[0][1], rectPoints[1][0]-rectPoints[0][0], rectPoints[1][1]-rectPoints[0][1]);
+		ctx.fillRect(rectPoints[0][0], rectPoints[0][1], rectPoints[1][0]-rectPoints[0][0], rectPoints[1][1]-rectPoints[0][1]);
 		ctx.beginPath();
 		ctx.moveTo(whisker1[0][0], whisker1[0][1]);
 		ctx.lineTo(whisker1[1][0], whisker1[1][1]);
@@ -128,6 +130,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H]
 	}
 	//hoverLine
 	if(hoverIndex > -1) {
+		ctx.beginPath();
 		ctx.setLineDash([5, 5]);
 		ctx.strokeStyle = '#aaa';
 		ctx.moveTo(klineWhisker[hoverIndex][0][0][0], top);
