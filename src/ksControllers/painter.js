@@ -2,6 +2,10 @@ let _to05 = (number) => {
 	return Math.floor(number) + 0.5;
 };
 
+let _toInt = (number) => {
+	return Math.round(number);
+};
+
 let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H) => {
 	let rate = viewYHeight / (yMin - yMax);
 	let oY = (O - yMax) * rate + marginTop,
@@ -12,7 +16,7 @@ let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H) => {
 };
 
 //options: {hoverIndex: , selectedIndex: , activeIndex: , mouse:{x}, yMin: number | '200%', yMax: ,selectedRange:[]}
-let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H]
+let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C, L,H]
 	let ctx = null;
 	let d1 = new Date();
 	if(dom.getContext) {
@@ -99,11 +103,20 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H]
 	let selectedIndex = options && options.selectedIndex;
 	let hoverIndex = options && options.hoverIndex;
 	let selectedRange = options && options.selectedRange;
+	let hoverY = options && options.hoverY;
 
 	//start draw
-	let upColor = options && options.upColor || '#8B171B',//'#ae0006',
-		 	downColor = options && options.downColor || '#050505';
+	let upBorderColor = options && options.upBorderColor || '#8B171B',//'#ae0006',
+			upColor = options && options.upColor || '#AC1822',
+		 	downBorderColor = options && options.downBorderColor || '#050505',
+		 	downColor = options && options.downColor || 'rgba(0,0,0,0)';
+
+	let backgroundColor = options && options.backgroundColor || '#fff';
+
 	ctx.clearRect(0, 0, width, height);
+	ctx.fillStyle = backgroundColor;
+	ctx.fillRect(0, 0, width, height);
+
 	let d2 = new Date();
 	for (let i=0; i<len; i++) {
 		let rectPoints = klineBox[i];
@@ -113,10 +126,10 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H]
 		ctx.setLineDash([0, 0]);
 		ctx.lineWidth = 1;
 		if(mouse && mouse.x && (Math.abs(mouse.x - whisker1[0][0]) < klineW) || i===activeIndex || i===selectedIndex) {
-			ctx.lineWidth = 2.5;
+			ctx.lineWidth = 2;
 		}
-		ctx.strokeStyle = isUpCandle[i] ? upColor : downColor;
-		ctx.fillStyle = isUpCandle[i] ? '#AC1822' : 'rgba(0,0,0,0)';
+		ctx.strokeStyle = isUpCandle[i] ? upBorderColor : downBorderColor;
+		ctx.fillStyle = isUpCandle[i] ? upColor : downColor;
 		ctx.beginPath();
 		ctx.strokeRect(rectPoints[0][0], rectPoints[0][1], rectPoints[1][0]-rectPoints[0][0], rectPoints[1][1]-rectPoints[0][1]);
 		ctx.fillRect(rectPoints[0][0], rectPoints[0][1], rectPoints[1][0]-rectPoints[0][0], rectPoints[1][1]-rectPoints[0][1]);
@@ -131,10 +144,22 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H]
 	//hoverLine
 	if(hoverIndex > -1) {
 		ctx.beginPath();
-		ctx.setLineDash([5, 5]);
+		ctx.setLineDash([2, 2]);
+		ctx.lineDashOffset = 1;
 		ctx.strokeStyle = '#aaa';
 		ctx.moveTo(klineWhisker[hoverIndex][0][0][0], top);
 		ctx.lineTo(klineWhisker[hoverIndex][0][0][0], viewYheight + top);
+		ctx.stroke();
+	}
+	//hoverY
+	if(hoverY >= 0) {
+		hoverY = _to05(hoverY);
+		ctx.beginPath();
+		ctx.setLineDash([2, 2]);
+		ctx.lineDashOffset = 1;
+		ctx.strokeStyle = '#aaa';
+		ctx.moveTo(left, hoverY);
+		ctx.lineTo(width - right, hoverY);
 		ctx.stroke();
 	}
 	//drawRangeRect
@@ -198,6 +223,106 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H]
 	};
 };
 
+let _priceIntervals = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000];
+let _getPriceInterval = (priceMin, priceMax, viewHeight) => {
+	let spaceMin = 40;
+
+	let minInterval = (priceMax - priceMin) / (viewHeight / spaceMin);
+
+	let len = _priceIntervals.length;
+	if(minInterval < _priceIntervals[0]) {
+		return _priceIntervals[0];
+	}
+	for(let i=1; i<len; i++) {
+		if(_priceIntervals[i-1] <= minInterval && _priceIntervals[i] >= minInterval) {
+			return _priceIntervals[i-1];
+		}
+	}
+	return _priceIntervals[len-1];
+};
+
+let drawAxisY = (canvas, priceRange, options) => {
+	let ctx = canvas.getContext('2d');
+	let width = canvas.clientWidth || canvas.width;
+	let height = canvas.clientHeight || canvas.height;
+	let priceMin = priceRange[0],
+			priceMax = priceRange[1];
+	
+	let rate = height / (priceMin - priceMax);
+
+	let priceInterval = _getPriceInterval(priceMin, priceMax, height);
+
+	let priceShow = Math.floor(priceMin/10) * 10,
+			priceShowMax = Math.ceil(priceMax);
+	
+	//options
+	let hoverY = options && options.hoverY;
+
+	//paint
+	ctx.clearRect(0,0, width, height);
+	ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+	// ctx.fillRect(0, 0, width, height);
+	ctx.fillStyle = '#444';
+	ctx.textAlign = 'center';
+	while(priceShow < priceShowMax) {
+		let centerY = (priceShow - priceMax) * rate + 0;
+		ctx.fillText(priceShow.toFixed(2), width/2, centerY);
+		priceShow = priceShow + priceInterval;
+	}
+
+	if(hoverY >=0) {
+		let rectH = 20;
+		ctx.fillStyle = '#222';
+		let priceAtHover = hoverY /rate + priceMax;
+		ctx.fillRect(0, hoverY - rectH / 2, width, rectH);
+		ctx.fillStyle = '#fff';
+		ctx.fillText(priceAtHover.toFixed(2), width/2, hoverY+5);
+	}
+};
+
+let drawAxisX = (canvas, len, options) => {
+	len = parseInt(len) || 0;
+	if(!len) {
+		throw 'drawAxisX len is 0';
+	}
+
+	let ctx = canvas.getContext('2d');
+	let width = canvas.clientWidth || canvas.width;
+	let height = canvas.clientHeight || canvas.height;
+
+	let spaceX = width / len;
+
+	//options
+	let hoverIndex = options && options.hoverIndex;
+
+	//paint
+	ctx.clearRect(0,0, width, height);
+	// ctx.fillStyle = 'rgba(0,0,0,0.1)';
+	// ctx.fillRect(0, 0, width, height);
+	ctx.font = '10px Arial';
+	ctx.textAlign = 'center';
+	for(let i=0; i<len; i++) {
+		ctx.strokeStyle = '#444';
+		ctx.fillStyle = '#444';
+		let center = i*spaceX + spaceX/2;
+		ctx.fillText(i+1+'', center, 15);
+	}
+
+	//hoverIndex
+	if(hoverIndex>=0) {
+		let rectW = 50;
+		let center = hoverIndex*spaceX + spaceX/2;
+		center = _toInt(center);
+		ctx.fillStyle = '#222';
+		ctx.fillRect(center - rectW/2, 0, rectW, height);
+		ctx.fillStyle = '#fff';
+		ctx.fillText(hoverIndex+1+'', center, 15);
+	}
+
+};
+
 module.exports = {
-	drawKline
+	drawKline,
+	drawAxisY,
+	drawAxisX,
 };

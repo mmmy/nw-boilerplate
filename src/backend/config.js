@@ -12,7 +12,7 @@ export default {
 	},
 
 	patternOptions: {  	    //获取k线数据配置
-		host: '120.24.71.4',//'112.74.17.175',
+		host: /*'120.24.71.4',//*/'112.74.17.175',
 		port: 15501,
 		path: '/query',
 		url: 'http://112.74.17.175:15501/query',

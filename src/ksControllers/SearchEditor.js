@@ -23,12 +23,12 @@ function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 };
 
 SearchEditor.prototype._initKlineEditor = function(){
-	let canvasNode = this._$main.find('canvas.kline-canvas')[0];
-	let $canvasNode = $(canvasNode);
-	let height = $canvasNode.height();
-	let width = $canvasNode.width();
-	$canvasNode.attr({height, width}).css({height, width});
-	this._klineEditor = new KlineEditor(canvasNode, this._dataObj.kline);
+	// let canvasNode = this._$main.find('canvas.kline-canvas')[0];
+	// let $canvasNode = $(canvasNode);
+	// let height = $canvasNode.height();
+	// let width = $canvasNode.width();
+	// $canvasNode.attr({height, width}).css({height, width});
+	this._klineEditor = new KlineEditor(this._$main.find('.kline-editor-container')[0] , this._dataObj.kline);
 	this._klineEditor.onUpdateOHLC(this.updateOHLC.bind(this));
 	this._klineEditor.onMoveIndex(this.handleMoveIndex.bind(this));
 	this._klineEditor.onUpdateInfo(this.updateInfo.bind(this));
@@ -57,7 +57,9 @@ SearchEditor.prototype._initMain = function() {
 																											.append(`<span>C</span>`).append(this._OHLC.C);
 
 	header.append(OCLH).append($(`<button class='flat-btn tool-btn select-range'>区域</button>`).click(this._handleStartSelectRange.bind(this)))
-											.append($(`<button class='flat-btn tool-btn delete-range'>删除</button>`).click(this._handleDeleteBars.bind(this)));
+											// .append($(`<button class='flat-btn tool-btn delete-range'>删除</button>`).click(this._handleDeleteBars.bind(this)))
+											.append($(`<button class='flat-btn tool-btn save'>保存</button>`))
+											.append($(`<button class='flat-btn tool-btn add-favorites'>收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj)).blur(handleShouCangBlur.bind(null)));
 
 	this._OHLCInputs = {
 		O: $('<input class="OCLH-input font-number" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexO(+event.target.value) }),
@@ -65,7 +67,10 @@ SearchEditor.prototype._initMain = function() {
 		L: $('<input class="OCLH-input font-number" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexL(+event.target.value) }),
 		C: $('<input class="OCLH-input font-number" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexC(+event.target.value) }),
 	};
-	let body = $(`<div class='body'><div class='kline-canvas-wrapper flex-center'><canvas tabindex='1' class='kline-canvas'/></div></div>`);
+
+	let searchEditorContainer = $(`<div class='kline-editor-container'></div>`);
+
+	let body = $(`<div class='body'></div>`).append(searchEditorContainer);
 
 	let OCLHInputs = $(`<span style='display:none' class='OCLH-inputs-container'></span>`)
 									.append($('<span class="input-label font-number">O</span>')).append(this._OHLCInputs.O)
@@ -73,14 +78,14 @@ SearchEditor.prototype._initMain = function() {
 									.append($('<span class="input-label font-number">L</span>')).append(this._OHLCInputs.L)
 									.append($('<span class="input-label font-number">C</span>')).append(this._OHLCInputs.C);
 	let footer = $(`<div class='footer'></div>`).append(OCLHInputs)
-																							.append(`<button class='flat-btn tool-btn search font-simsun'>搜索</button>`)
-																							.append($(`<button class='flat-btn tool-btn save'>保存</button>`))
-																							.append($(`<button class='flat-btn tool-btn add-favorites'>收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj)).blur(handleShouCangBlur.bind(null)));
+																							.append(`<button class='flat-btn tool-btn search font-simsun'>搜索</button>`);
+																							// .append($(`<button class='flat-btn tool-btn save'>保存</button>`));
 
 	
 	this._floatTools.addBars = $(`<span class='add-bars-container'></span>`)
 												.append($(`<button class='flat-btn add-bars font-simsun'>新增</button>`).click(this._hanleAddBars.bind(this)))
 												.append($(`<input type='number' value='1' min='1'/>`))
+												.append($(`<button class='flat-btn delete-bars'>Del</button>`).click(this._handleDeleteBars.bind(this)))
 												.hide();
 												// .append($(`<button class='flat-btn bars-count font-number'>1<i class='fa fa-caret-down'><i/></button>`));
 

@@ -4,11 +4,22 @@ import classNames from 'classnames';
 import { setFunc, setImgSrcFunc } from './helper/updateEchartImage';
 import {factorCandleOption , factorLineOption} from './utils/echart-options';
 import store from '../store';
+import painter from '../ksControllers/painter';
+let { drawKline } = painter;
 
 const renderDataLen = Infinity;
 let candleChart = true;
 let _showPrediction = false;
-let _metaBased = true;
+let _metaBased = false;
+
+let createKlineImg = (canvas, width, height, kline, options) => {
+	canvas.style.width = width + 'px';
+	canvas.style.height = height + 'px';
+	canvas.width = width;
+	canvas.height = height;
+	drawKline(canvas, kline, options);
+	return canvas.toDataURL();
+};
 
 let _getSearchKlineRates = () => {
 	let state = store.getState();
@@ -179,10 +190,10 @@ class EChart extends React.Component {
 		// }
 		//candleChart
 		if (candleChart) {
-			node.height = 140;
-			node.width = 200;
-			this.chart && this.chart.dispose();
-			this.chart = echarts.init(node);//&& this.chart.dispose();
+			// node.height = 140;
+			// node.width = 200;
+			// this.chart && this.chart.dispose();
+			// this.chart = echarts.init(node);//&& this.chart.dispose();
 			let data0 = splitData(kLine, baseBars, searchConfig && parseInt(searchConfig.additionDate.value), _showPrediction);
 			let candleOption = factorCandleOption(true);
 			candleOption.xAxis.data = data0.categoryData;
@@ -194,27 +205,41 @@ class EChart extends React.Component {
 			candleOption.yAxis.max = rates ? rates.rateMax * data0.values[0][1] : data0.yMax;
 			//console.log(data0.values[0]);
 			//setTimeout(function(){
-	        	this.chart.setOption(candleOption);
-	        	let imgUrl = this.chart.getDataURL();
+	        	// this.chart.setOption(candleOption);
+	        	// let imgUrl = this.chart.getDataURL();
 
-	    this._imgNormal = imgUrl;
+	    // this._imgNormal = imgUrl;
+	    let drawOptions = {
+	    	// yMin: rates ? rates.rateMin * data0.values[0][1] : data0.yMin,
+	    	// yMax: rates ? rates.rateMax * data0.values[0][1] : data0.yMax,
+	    	upColor: '#BD3035',
+	    	upBorderColor: '#BD3035',
+	    	downColor: 'rgba(0, 0, 0, 0)',
+	    	downBorderColor: '#000',
+	    	backgroundColor: '#fff',
+	    };
+	    let kline = kLine.slice(0, baseBars);//data0.values;
+	    this._imgNormal = createKlineImg(node, 200, 100, kline, drawOptions);
 
-	    node.height = 102;
-	    node.width = 90;
+	    // node.height = 102;
+	    // node.width = 90;
 	    // this.chart.resize();
-	    this.chart && this.chart.dispose();
-	    this.chart = echarts.init(node);
-	    this.chart.setOption(candleOption);
+	    // this.chart && this.chart.dispose();
+	    // this.chart = echarts.init(node);
+	    // this.chart.setOption(candleOption);
 	    // this.chart.resize(100,100);
-	    this._imgSmall = this.chart.getDataURL();
+	    // this._imgSmall = this.chart.getDataURL();
+	    this._imgSmall = createKlineImg(node, 90, 45, kline, drawOptions);
 
-	    node.height = 110;
-	    node.width = 120;
-	    this.chart && this.chart.dispose();
-	    this.chart =echarts.init(node);
-	    this.chart.setOption(candleOption);
-	    this._imgMedian = this.chart.getDataURL();
-
+	    // node.height = 110;
+	    // node.width = 120;
+	    // this.chart && this.chart.dispose();
+	    // this.chart =echarts.init(node);
+	    // this.chart.setOption(candleOption);
+	    // this._imgMedian = this.chart.getDataURL();
+	    // this.chart && this.chart.dispose();
+	    this._imgMedian = createKlineImg(node, 120, 60, kline, drawOptions);
+	    
 	    if(index == 0) {
 	    	window._imgSmall = this._imgSmall;
 	    	window._imgMedian = this._imgMedian;
@@ -288,7 +313,7 @@ class EChart extends React.Component {
 
 	componentWillUnmount(){
 		delete this.canvasNode;
-		this.chart && this.chart.dispose && this.chart.dispose();
+		// this.chart && this.chart.dispose && this.chart.dispose();
 		delete this.chart;
 	}
 

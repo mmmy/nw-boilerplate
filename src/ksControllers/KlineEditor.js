@@ -1,6 +1,6 @@
 
 import painter from './painter';
-let { drawKline } = painter;
+let { drawKline, drawAxisY, drawAxisX } = painter;
 const aCode = 65;
 const bCode = 66;
 const dCode = 68;
@@ -16,13 +16,32 @@ const BAR_MOVE = 10;
 const REGULAR = 1;
 const NONE = -1;
 
-function KlineEditor(canvasDom, kline) {
-	if(!(canvasDom && canvasDom.getContext)) {
-		console.error('not a canvas dom!');
+let canvasSizeHelper = function(canvas) {
+	let $canvas = $(canvas);
+	let height = $canvas.parent().height(),
+			width = $canvas.parent().width();
+	$canvas.attr({height, width}).css({height, width});
+};
+
+function KlineEditor(container, kline) {  //container dom is div dom
+	if(!container) {
+		console.error('not a container dom!');
 		return;
 	}
-	this._canvas = canvasDom;
-	this._ctx = canvasDom.getContext('2d');
+	let $wrapper = $(`<div class='kline-editor-wrapper'></div>`).append(`<div class='kline-canvas-wrapper flex-center'><canvas tabindex='1' class='kline-canvas'/></div>`)
+														.append(`<div class='right-axis-y-wrapper'><canvas class=''/></div>`)
+														.append(`<div class='bottom-axis-x-wrapper'><canvas class=''/></div>`);
+	
+	$(container).append($wrapper);
+
+	let canvases = $wrapper.find('canvas');
+
+	this._wrapper = $wrapper[0];
+
+	this._canvas = canvases[0];
+	this._canvas_axis_y = canvases[1];
+	this._canvas_axis_x = canvases[2];
+	// this._ctx = this._canvas.getContext('2d');
 	this._kline = kline;
 	this._drawInfo = {}; //记录绘制之后的参数
 	this._isMouseDown = false;
@@ -30,12 +49,16 @@ function KlineEditor(canvasDom, kline) {
 	this._moveIndex = -1;
 	this._selectedIndex = -1;
 	this._hoverIndex = -1; //鼠标位置的k线
+	this._hoverY = -1;
 	this._mouseX = -1;
 	this._mouseY = -1;
 
 	this._drawingState = {drawingRange: false};
 	this._selectedRange = [];
 	this._clickHitTest = NONE;
+
+	//yAxis states
+	this._yAxisStates = {isMouseDown: false, y:-1};
 
 	this._updateOHLC = null; //func
 	this._onMoveIndex = null; //func
@@ -44,11 +67,15 @@ function KlineEditor(canvasDom, kline) {
 	this._init();
 };
 
-KlineEditor.prototype._drawKline = function(kline, options) {
+KlineEditor.prototype._drawKline = function(kline, options, optionsY, optionsX) {
 	this._drawInfo = drawKline(this._canvas, kline, options);
+	drawAxisY(this._canvas_axis_y, [this._drawInfo.yMin, this._drawInfo.yMax], optionsY);
+	drawAxisX(this._canvas_axis_x, this._drawInfo.dataLen, optionsX);
 }
 
 KlineEditor.prototype._init = function() {
+	this._updateCanvasSize();
+
 	this._drawKline(this._kline, {yMin:'200%', yMax:'200%'}); //预留上下的高度
 	this._canvas.addEventListener('mousedown', this._mouseDown.bind(this));
 	this._canvas.addEventListener('mouseup', this._mouseUp.bind(this));
@@ -58,14 +85,24 @@ KlineEditor.prototype._init = function() {
 	this._canvas.addEventListener('keydown', this._keyDown.bind(this));
 	this._canvas.addEventListener('keyup', this._keyUp.bind(this));
 
+	this._canvas_axis_y.addEventListener('mousedown', this._yAxisMouseDown.bind(this));
+	this._canvas_axis_y.addEventListener('mouseup', this._yAxisMouseUp.bind(this));
+	this._canvas_axis_y.addEventListener('mousemove', this._yAxisMouseMove.bind(this));
+
+	this._wrapper.addEventListener('mouseup', this._wrapperMouseUp.bind(this));
+	this._wrapper.addEventListener('mousemove', this._wrapperMouseMove.bind(this));
+
 	window.addEventListener('resize', this._resize.bind(this));
 };
 
-KlineEditor.prototype._resize = function(e) {
-	let $canvas = $(this._canvas);
-	let height = $canvas.parent().height(),
-			width = $canvas.parent().width();
-	$canvas.attr({height, width}).css({height, width});
+KlineEditor.prototype._updateCanvasSize = function() {
+	canvasSizeHelper(this._canvas);
+	canvasSizeHelper(this._canvas_axis_y);
+	canvasSizeHelper(this._canvas_axis_x);
+}
+
+KlineEditor.prototype._resize = function() {
+	this._updateCanvasSize();
 	this.updateCanvas();
 }
 
@@ -207,16 +244,49 @@ KlineEditor.prototype._mouseMove = function(event){
 	// }
 }
 
+KlineEditor.prototype._yAxisMouseDown = function(e) {
+	let y = e.offsetY;
+	this._yAxisStates.isMouseDown = true;
+	this._yAxisStates.y = y;
+}
+
+KlineEditor.prototype._yAxisMouseUp = function(e) {
+
+}
+
+KlineEditor.prototype._yAxisMouseMove = function(e) {
+
+}
+
+//important
+KlineEditor.prototype._wrapperMouseUp = function(e) {
+	this._yAxisStates.isMouseDown = false;
+	this._yAxisStates.y = -1;
+}
+
+KlineEditor.prototype._wrapperMouseMove = function(e) {
+	let y = e.offsetY;
+	if(this._yAxisStates.isMouseDown) { //scale Y
+		let { pricePerPix } = this._drawInfo;
+		let dp = (y - this._yAxisStates.y) * pricePerPix;
+		this._drawInfo.yMax += dp;
+		this._drawInfo.yMin -= dp;
+		this._yAxisStates.y = y;
+		this.updateCanvas();
+	}
+}
+
 KlineEditor.prototype.updateHover = function(x, y) {
 	let { pointToIndex } = this._drawInfo;
 	let curIndex = pointToIndex(x, false);
 	if(this._hoverIndex != curIndex) {
 		this._hoverIndex = curIndex;
-		let data = this._kline[curIndex]; // data=[time, O, C, L, H];
+		// let data = this._kline[curIndex]; // data=[time, O, C, L, H];
 		// this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2]);
 		// this._drawKline(this._kline, {hoverIndex:this._hoverIndex, selectedIndex:this._selectedIndex ,activeIndex:this._moveIndex, yMin:this._drawInfo.yMin, yMax:this._drawInfo.yMax});
-		this.updateCanvas();
 	}
+	this._hoverY = y;
+	this.updateCanvas();
 }
 
 KlineEditor.prototype.updateCanvas = function(){
@@ -224,11 +294,16 @@ KlineEditor.prototype.updateCanvas = function(){
 	data && this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2]);
 	this._drawKline(this._kline, {
 																hoverIndex:this._hoverIndex, 
-																selectedIndex:this._selectedIndex, 
+																selectedIndex:this._selectedIndex,
+																hoverY: this._hoverY,
 																activeIndex:this._moveIndex, 
 																yMin:this._drawInfo.yMin, 
 																yMax:this._drawInfo.yMax,
 																selectedRange: this._selectedRange,
+															}, {
+																hoverY: this._hoverY,
+															}, {
+																hoverIndex: this._hoverIndex,
 															});
 	// this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);
 }

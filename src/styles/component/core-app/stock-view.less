@@ -7,7 +7,7 @@
   opacity: 1;
   padding-left: 0;//20px;
   padding-right: 10px;
-  @left-width: 60px;
+  @left-width: 50px;
   border-bottom: 1px solid #fafafa;
 	.left-toolbar-container {
 		position: absolute;
@@ -16,12 +16,29 @@
 		width: @left-width;
 		height: 100%;
 		background-color: #f0f0f0;
+		background-image: linear-gradient(to top,#F6F6F6,#E7E7E7);
 		// border-right: 1px solid #fafafa;
 		button {
 			// width: 40px;
 			// display: inline-block;
 			background-color: transparent;
-			color: #000;
+			color: transparent;
+			width: 30px;
+			height: 30px;
+			margin-left: 10px;
+			margin-top: 10px;
+		}
+		.curve {
+			background-image: url('./image/index.png');
+		}
+		.favorites {
+			background-image: url('./image/folder.png');
+		}
+		.history {
+			background-image: url('./image/history.png');
+		}
+		.active {
+			background-position: 0 100%;
 		}
 	}
 	.content-wrapper {
@@ -49,20 +66,37 @@
 		height: 100%;
 		background-color: #F6F6F6;
 		.favorites-folder {
+			position: relative;
 			padding-left: 20px;
-			padding-top: 8px;
+			// padding-top: 8px;
 			margin: 0;
 			height: 30px;
 			font-size: 12px;
+			.name {
+				display: inline-block;
+				padding-top: 8px;
+			}
 			button {
 				display: none;
+				width: 20px;
+				height: 20px;
+				background-color: transparent;
+				color: transparent;
+			}
+			.rename {
+				background-image: url('./image/pencil.png');
+			}
+			.delete {
+				background-image: url('./image/trash-btn.png');
 			}
 			&:hover {
 				background-color: #f0f0f0;
+				background-image: linear-gradient(to right,#F6F6F6,#E7E7E7);
 				button{
 					float: right;
 					display: inline;
-					margin-right: 20px;
+					margin-right: 10px;
+					margin-top: 4px;
 				}
 			}
 		}
@@ -71,17 +105,30 @@
 			margin: 0;
 			padding-left: 20px;
 			font-size: 12px;
+			height: 30px;
+			.name {
+				display: inline-block;
+				margin-top: 8px;
+			}
 			button {
 				display: none;
+				width: 20px;
+				height: 20px;
+				color: transparent;
+				background-color: transparent;
+			}
+			.delete {
+				background-image: url('./image/trash-btn.png');
+				margin-top: 4px;
 			}
 			&:hover {
+				background-image: linear-gradient(to right,#F6F6F6,#E7E7E7);
 				button {
 					float: right;
 					margin-right: 20px;
 					display: inline;
 					&:hover {
-						border: 1px solid #ac0006;
-						color: #ac0006;
+						background-position: 0 100%;
 					}
 				}
 			}
@@ -90,15 +137,28 @@
 		.favorites-input-wrapper {
 			border: 1px solid #eee;
 			margin: 10px 20px;
+			background-color: #fff;
+			height: 32px;
 			input {
-				width: 80%;
+				width: 60%;
 				outline: none;
 				border: none;
 				padding: 2px 5px;
 				font-size: 12px;
 			}
 			button {
-
+				width: 30px;
+				height: 30px;
+				color: transparent;
+			}
+			.new-folder {
+				background-image: url('./image/check.png');
+			}
+			.clear {
+				background-image: url('./image/clear.png');
+				&:hover {
+					background-position: 0 100%;
+				}
 			}
 		}
 	}
@@ -144,28 +204,40 @@
 	.history-item {
 		float: left;
 		position: relative;
-		width: 240px;
-		height: 240px;
+		width: 190px;
+		height: 280px;
 		font-size: 13px;
 		color: @ks-color-gray-4;
 		margin-right: 20px;
 		margin-bottom: 20px;
 		background-color: #fff;
-		box-shadow: 0 0 10px 0 #d7d7d7;
+		box-shadow: 0 0 10px 0 #eee;
 		>* {
 			position: absolute;
 		}
+		.name {
+			top: 38px;
+			left: 0;
+			width: 100%;
+			height: 20px;
+			margin: 0;
+			font-size: 18px;
+			color: #000;
+			text-align: center;
+		}
 		.header-info {
-			top: 15px;
-			left: 10px;
+			top: 70px;
+			width: 100%;
+			// left: 10px;
+			text-align: center;
 		}
 		.add-btn {
-			top: 15px;
-			right: 10px;
-			width: 25px;
-			height: 25px;
+			top: 8px;
+			right: 40px;
+			width: 20px;
+			height: 20px;
 			// border: 1px solid red;
-			background-image: url('./image/user.png');
+			background-image: url('./image/folder.png');
 			background-repeat: no-repeat;
 			background-size: cover;
 			color: transparent;
@@ -190,14 +262,61 @@
 				background-position-y: 100%;
 			}
 		}
-		canvas.kline {
-			top: 50px;
-			left: 10px;
+		.delete-btn {
+			top: 8px;
+			right: 10px;
+			width: 20px;
+			height: 20px;
+			background-image: url('./image/trash-btn.png');
+			color: transparent;
+			&:hover{
+				background-position-y: 100%;
+			}
+		}
+		.canvas-wrapper {
+			top: 110px;
+			left: 15px;
+			canvas.kline {
+				position: absolute;
+			}
+			.btn-overlay {
+				position: absolute;
+				display: none;
+				width: 160px;
+				height: 80px;
+				// border: 1px solid red;
+				background-color: rgba(255, 255, 255, 0.85);
+				button {
+					width: 30px;
+					height: 30px;
+					background-color: transparent;
+					color: transparent;
+					&:hover {
+						background-position: 0 100%;
+					}
+				}
+				.re-search {
+					background-image: url('./image/search30.png');
+				}
+				.go-detail {
+					background-image: url('./image/search30.png');
+				}
+			}
+			&:hover {
+				.btn-overlay {
+					display: flex;
+				}
+			}
 		}
 		.daterange-info {
 			font-size: 12px;
 			left: 10px;
 			bottom: 45px;
+		}
+		.from-info {
+			bottom: 20px;
+			width: 100%;
+			text-align: center;
 		}
 		.btn-wrapper {
 			left: 0;
@@ -231,6 +350,17 @@
 				background-image: url('./image/sort.png');
 			}
 		}
+		&:hover {
+			box-shadow: 0 0 20px 0 #ccc;
+			&:before {
+				content: '';
+				background-color: #8F151C;
+				position: absolute;
+				top: 0;
+				width: 100%;
+				height: 3px;
+			}
+		}
 	}
 }
 
@@ -242,10 +372,10 @@
 		}
 		.nav-item-container {
 			max-height: calc(~"100% - 100px");
-			overflow: scroll;
-			.scrollbar(@width:6px);
-			.scrollbar-track(@background-color:transparent);
-			.scrollbar-thumb(@background-color: @ks-color-gray-4);
+			// overflow: scroll;
+			// .scrollbar(@width:6px);
+			// .scrollbar-track(@background-color:transparent);
+			// .scrollbar-thumb(@background-color: transparent);
 		}
 	}
 	//编辑

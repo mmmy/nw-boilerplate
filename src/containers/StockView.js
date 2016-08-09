@@ -118,9 +118,9 @@ class StockView extends React.Component {
 		return (
 	      <div ref='container' className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
 	      	<div className='left-toolbar-container'>
-	      		<div><button className='flat-btn' onClick={ this.showSockView.bind(this) }>quxian</button></div>
-	      		<div><button className='flat-btn' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
-	      		<div><button className='flat-btn' onClick={ this.showHistory.bind(this) }>history</button></div>
+	      		<div><button ref='curve_btn' className='flat-btn curve active' onClick={ this.showSockView.bind(this) }>quxian</button></div>
+	      		<div><button ref='favorites_btn' className='flat-btn favorites' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
+	      		<div><button ref='history_btn' className='flat-btn history' onClick={ this.showHistory.bind(this) }>history</button></div>
 	      	</div>
 
 		      <div ref='stock_view' className='content-wrapper'>
@@ -134,7 +134,11 @@ class StockView extends React.Component {
 		      	<div className='nav-container'>
 		      		<h4 className='nav-title'>我的收藏夹</h4>
 		      		<div ref='favorites_nav_container' className='nav-item-container'></div>
-		      		<div className='favorites-input-wrapper'><input ref='favorite_input' placeholder='新建收藏夹'/><button className='flat-btn' onClick={this.handleNewFavorites.bind(this)}>+</button></div>
+		      		<div className='favorites-input-wrapper'>
+		      			<input ref='favorite_input' placeholder='新建收藏夹'/>
+		      			<button className='flat-btn new-folder' onClick={this.handleNewFavorites.bind(this)}>+</button>
+		      			<button className='flat-btn clear' onClick={this.handleClearInput.bind(this)}>x</button>
+		      		</div>
 		      	</div>
 		      	<div ref='favorites_body_container' className='body-container'>
 
@@ -156,28 +160,45 @@ class StockView extends React.Component {
 	    );
 	}
 
-	showSockView() {
-		$(this.refs.favorites_view).addClass('hide');
-		$(this.refs.history_view).addClass('hide');
+	resetButton() {
+		$(this.refs.curve_btn).removeClass('active');
+		$(this.refs.history_btn).removeClass('active');
+		$(this.refs.favorites_btn).removeClass('active');
 	}
 
-	showFavorites() {
+	showSockView(e) {
+		$(this.refs.favorites_view).addClass('hide');
+		$(this.refs.history_view).addClass('hide');
+		this.resetButton();
+		$(e.target).addClass('active');
+	}
+
+	showFavorites(e) {
 		$(this.refs.favorites_view).removeClass('hide');
 		$(this.refs.history_view).addClass('hide');
+		this.resetButton();
+		$(e.target).addClass('active');
 	}
 
-	showHistory() {
+	showHistory(e) {
 		$(this.refs.favorites_view).addClass('hide');
 		$(this.refs.history_view).removeClass('hide');
+		this.resetButton();
+		$(e.target).addClass('active');
 		// historyController.updateNavContainer(this.refs.history_nav_container);
 	}
 
 	handleNewFavorites() {
 		let folderName = $(this.refs.favorite_input).val();
-		favoritesController.addNewFolder(folderName);
-		$(this.refs.favorite_input).val('');
+		if(folderName) {
+			favoritesController.addNewFolder(folderName);
+			$(this.refs.favorite_input).val('');
+		}
 	}
 
+	handleClearInput() {
+		$(this.refs.favorite_input).val('');
+	}
 }
 
 StockView.propTypes = propTypes;

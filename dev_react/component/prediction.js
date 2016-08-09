@@ -3,6 +3,7 @@ import echarts from 'echarts';
 import {factorCandleOption, factorLineOption} from '../../src/components/utils/echart-options';
 import {randomPatterns} from '../../src/flux/util/randomKline';
 import { drawKline } from '../../src/ksControllers/painter';
+import KlineEditor from '../../src/ksControllers/KlineEditor';
 
 var data = [
 		    ['2013/1/24', 2320.26,2320.26,2287.3,2362.94],
@@ -422,6 +423,9 @@ var data = [
 	};
 
 	export default React.createClass({
+		initEditor() {
+			new KlineEditor(this.refs.kline_editor, data.slice(0, 30));
+		},
 		drawChart(){
 			var data0 = splitData(data.slice(0,30), 30);
 			var lastClosePrice = data0.values[data0.values.length-1][1];
@@ -445,6 +449,7 @@ var data = [
 			window.predictionChart = chart;
 		},
 		componentDidMount() {
+			this.initEditor();
 			this.drawChart();
 			window.addEventListener('resize', function(){
 				window.predictionChart.resize();
@@ -457,6 +462,7 @@ var data = [
 				
 					</div>
 					<div><canvas ref='canvas' width='400' height='300' style={{width: '400px', height:'300px'}} /></div>
+					<div ref='kline_editor' style={{width:'500px', height:'300px', position:'relative'}}></div>
 			</div>
 		}
 	});

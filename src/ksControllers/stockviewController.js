@@ -76,12 +76,18 @@ let _generatePattern = (pattern) => {
 	startDateStr = startDateStr.slice(0, 10).replace(/-/g,'.');
 	endDateStr = endDateStr.slice(0, 10).replace(/-/g,'.');
 
-	let info = `<span class='header-info'>${pattern.symbol}     ${pattern.kline.length}根K线</span>`;
-	let button = `<button class='add-btn flat-btn'>add</button>`;
-	let canvas = `<canvas class='kline' width='220' height='120' style='width:220px;height:120px'/>`;
-	let range = `<span class='daterange-info font-number'>${startDateStr} ~ ${endDateStr}</span>`;
-	let footer = `<div class='btn-wrapper'><button class='re-search'>重新搜索</button><button class='go-detail'>查看详情</button></div>`;
-	let $node = $(`<div class='history-item font-simsun'>${info}${button}${canvas}${range}${footer}</div>`);
+	let name = `<h2 class='name font-msyh'>${pattern.name||'未命名'}</h2>`;
+	// let info = `<p class='header-info'>${pattern.symbol}     ${pattern.kline.length}根K线</p>`;
+	let info = `<p class='header-info'>${pattern.kline.length}根K线</p>`;
+	let addButton = `<button class='add-btn flat-btn'>add</button>`;
+	let deleteButton = `<button class='delete-btn flat-btn'>delete</button>`;
+	let hoverBtns = `<span class='btn-overlay flex-around'><button class='flat-btn re-search'>重新搜索</button><button class='flat-btn go-detail'>查看详情</button></span>`;
+	let canvasDiv = `<div class='canvas-wrapper'><canvas class='kline' width='160' height='80' style='width:160px;height:80px'/>${hoverBtns}</div>`;
+	// let range = `<span class='daterange-info font-number'>${startDateStr} ~ ${endDateStr}</span>`;
+	// let footer = `<div class='btn-wrapper'><button class='re-search'>重新搜索</button><button class='go-detail'>查看详情</button></div>`;
+	let fromInfo = `<p class='from-info'>来源:${pattern.symbol}</p>`;
+
+	let $node = $(`<div class='history-item font-simsun'>${name}${info}${addButton}${deleteButton}${canvasDiv}${fromInfo}</div>`);
 			$node.data('data', pattern);
 
 			$node.find('.add-btn').focus(handleShouCangFocus.bind(null, favoritesManager, favoritesController, pattern)).blur(handleShouCangBlur); //添加到收藏夹
@@ -166,7 +172,7 @@ historyController.init = (navDom, bodyDom) => {
 		// 	$dom.append(`<h6 class='year'>${_year}</h6>`);
 		// 	year = _year;
 		// }
-		$navDom.append($(`<p class='month font-simsun'><span>${_month}月</span></p>`).data({year:_year, month:_month}).append($('<button class="flat-btn">delete</button>').click(_handleDeleteHistoryByMonth)));
+		$navDom.append($(`<p class='month font-simsun'><span class='name'>${_month}月</span></p>`).data({year:_year, month:_month}).append($('<button class="flat-btn delete">delete</button>').click(_handleDeleteHistoryByMonth)));
 	});
 
 	let now = new Date();
@@ -289,7 +295,10 @@ let _handleDeleteFavoritesFolder = (event) => {
 };
 
 let _generateFolderNode = (fileName, {name, data}) => {
-	let $dom = $(`<h6 class='favorites-folder font-simsun'><span>${name}<span></h6>'`).append($(`<button>delete</button>`).click(_handleDeleteFavoritesFolder));
+	let $dom = $(`<h6 class='favorites-folder font-simsun'><span class='name'>${name}<span></h6>'`)
+						.append($(`<button class='flat-btn delete'>delete</button>`).click(_handleDeleteFavoritesFolder))
+						.append($(`<button class='flat-btn rename'>rename</button>`));
+
 	$dom.data('fileName', fileName).data('name', name).data('data', data);
 	$dom.click(_handleFolderClick);
 	return $dom;

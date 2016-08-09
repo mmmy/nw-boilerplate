@@ -88,7 +88,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 					patterns.searchConfig = searchConfig;
 					let searchTimeSpent = new Date() - startTime;
 					//保存历史
-					setTimeout(() => { historyController.pushHistory({symbol, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig}); });
+					setTimeout(() => { historyController.pushHistory({symbol, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig, name:'未命名'}); });
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 					cb && cb();
 
