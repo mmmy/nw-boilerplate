@@ -62,8 +62,13 @@ let getAllFilesFromStorage = () => {
 
 let deleteHistory = (year, month, day) => {
 	let toMonth = year + '-' + month;
+	console.assert(month.length == 2, `month is should format as 0?`);
+	console.assert(day.length == 2, `day is should format as 0?`);
 	if(day) {
 		console.warn('unlink file !');
+		let fileName = day + '.json';
+		let thisMonthFliles = _historyData[toMonth];
+		let thatDayData = thisMonthFliles[fileName];
 	} else {
 		removeDir(path.join(_historyPath, toMonth), (error, data) => {
 			if(error){
@@ -75,13 +80,32 @@ let deleteHistory = (year, month, day) => {
 	}
 };
 
+let deleteOneHistory = (date, dataObj) => {
+	let { toMonth, day } = dateFormatter(date);
+	let fileName = day + '.json';
+	let thisMonthFliles = _historyData[toMonth];
+	let thatDayData = thisMonthFliles[fileName];
+	let index = thatDayData.data.indexOf(dataObj);
+	thatDayData.data.splice(index, 1);
+
+	let len = thatDayData.data.length; //剩余长度
+	let filePath = path.join(_historyPath, toMonth, fileName);
+	if(len == 0) {
+		delete thisMonthFliles[fileName];
+		deleteFile(filePath);
+	} else {
+		saveFile(filePath, JSON.stringify(thatDayData));
+	}
+	return len;
+};
+
 let pushHistory = (dataObj) => {
 	let d1 = new Date();
 	let { toMonth, day } = dateFormatter(new Date());
 	let fileName = day + '.json';
 	let thisMonthFliles = _historyData[toMonth] || {};
 	let todayData = thisMonthFliles[fileName] || { data:[] };
-	todayData.data.push(dataObj);
+	todayData.data.unshift(dataObj);
 	thisMonthFliles[fileName] = todayData;
 
 	if(!fs.existsSync(path.join(_historyPath, toMonth))) {
@@ -128,5 +152,6 @@ module.exports = {
 	updateStorage,
 	getHistoryData,
 	getSortedHistoryMonth,
-	getSortedMonthData
+	getSortedMonthData,
+	deleteOneHistory
 };

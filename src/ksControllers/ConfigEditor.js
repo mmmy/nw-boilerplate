@@ -6,11 +6,14 @@ let datePickerOptions = {
 	autoclose: true,
 };
 
-function ConfigEditor(dom, searchConfig) {
+function ConfigEditor(dom, searchConfig, info) {
 	this._$dom = $(dom);
 	this._$wrapper = $(`<div class='modal-content-contianer config-editor-inner'></div>`);
+	this._$info = $(`<div class='search-info-container'></div>`);
 	this._$dom.append(this._$wrapper);
+	this._$dom.append(this._$info);
 	this._config = searchConfig;
+	this._info = info;
 	this._inputs = {startDate:null, endDate:null, typeStock:null, typeFuture:null, additionBars:null, reduceBars:null, addBars:null};
 
 	this._init();
@@ -54,6 +57,13 @@ ConfigEditor.prototype._init = function() {
 							.append(`<span class='font-simsun'>天</span>`);
 	this._$wrapper.append($bars);
 
+	//info
+	let symbolStartDate = this._info.dateRange[0],
+			symbolEndDate = this._info.dateRange[1];
+	let dateStr1 = new Date(symbolStartDate).toISOString().slice(0, 10).replace('-','.');
+	let dateStr2 = new Date(symbolEndDate).toISOString().slice(0, 10).replace('-','.');
+	this._$info.append(`<p class='info-p font-simsun'><span class='title'>来源:</span><span class='content font-number'>${this._info.symbol}</span></p>`)
+							.append(`<p class='info-p font-simsun'><span class='title'>时间区间:</span><span class='content font-number'>${dateStr1}~${dateStr2}</span></p>`);
 }
 
 ConfigEditor.prototype._initActions = function() {

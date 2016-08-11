@@ -63,7 +63,7 @@ class statisticsContainer extends React.Component {
 			'ks-show': fullView
 		});
 
-		const reportClass3 = classNames('reporttype-container-wrap', {
+		const reportClass3 = classNames('reporttype-container-wrap flex-center', {
 			'ks-hidden': !fullView,
 			//'transition-delay0': !fullView,
 			'ks-fade-in': fullView,
@@ -72,15 +72,17 @@ class statisticsContainer extends React.Component {
 
 	    return (
 	      <div className={ className }>
-	        <div className={fistReportClass}><ReportDetailView searchConfig={searchConfig} crossFilter={crossFilter} fullView={fullView}/></div>
-	        {/*<div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>*/}
-	        <div className={reportClass3}><ReportTypeView report={report} searchConfig={searchConfig}/></div>
-	        <div className={'crossfilter-container-wrap'}>
-	          <CrossfilterView
-	            dispatch={dispatch}
-	            crossFilter={crossFilter}
-	            stretchView={fullView} />
-	        </div>
+	      	<div className='statistics-container-inner'>
+		        <div className={fistReportClass}><ReportDetailView searchConfig={searchConfig} crossFilter={crossFilter} fullView={fullView}/></div>
+		        {/*<div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>*/}
+		        <div className={reportClass3}><ReportTypeView report={report} searchConfig={searchConfig}/></div>
+		        <div className={'crossfilter-container-wrap'}>
+		          <CrossfilterView
+		            dispatch={dispatch}
+		            crossFilter={crossFilter}
+		            stretchView={fullView} />
+		        </div>
+		      </div>
 	      </div>
 	    );
 	}

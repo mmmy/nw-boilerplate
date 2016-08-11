@@ -5,14 +5,27 @@
   border-right: none;
   // width: calc(~'22%');
   width: @comparator_W;
-  height: calc(~'100% - 30px');
-  padding-left: 60px;
+  height: 100%;//calc(~'100% - 30px');
+  // padding-left: 60px;
   padding-top: 0;//20px;
 
+  .comparator-inner {
+    position: absolute;
+    width: calc(~"100% - 20px");
+    left: 20px;
+    height: 100%;
+    padding: 10px 20px;
+    .mama-box-shadow();
+  }
+  .title {
+    font-size: 14px;
+    margin-top: 10px;
+    color: #000;
+  }
   .searching-info{
     position: absolute;
-    color: @ks-color-gray-6;
-    top: 40px;
+    color: @ks-color-gray-4;
+    top: 45px;
     z-index: 2;
     font-size: 12px;
     width: 100%;
@@ -26,8 +39,8 @@
   }
 
   .echart-container {
-    margin-top: 40px;
-    height: calc(~"100% - 40px");
+    // margin-top: 50px;
+    height: calc(~"100% - 50px");
   }
 
   .comparator-tv-screenshot{
@@ -90,7 +103,7 @@
   position: absolute;
   width: @comparatorStretch_W;
   height: @comparatorChartStatic_H ;
-  top: 22px;
+  top: 60px;//22px;
 
   .start-btn-container {
     // border: 1px solid red;

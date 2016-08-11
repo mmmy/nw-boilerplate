@@ -3,6 +3,8 @@ import ajaxData from '../../backend/ajaxData';
 import backend from '../../backend';
 import crossfilter from 'crossfilter';
 import store from '../../store';
+import datafeedCache from '../../cache/datafeedCache';
+let { getDataCategory } = datafeedCache;
 
 import stockviewController from '../../ksControllers/stockviewController';
 let historyController = stockviewController.historyController;
@@ -19,7 +21,7 @@ let historyController = stockviewController.historyController;
 const devLocal = false;
 let _lastSearch = {};
 
-let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, edited=false, searchConfig}, cb) => {
+let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, edited=false, searchConfig, dataCategory}, cb) => {
 	//console.log('patternActions: getPatterns',symbol, dateRange);
 	let klineClone = [];
 	kline.forEach((arr) => { //消除echart 的bug
@@ -39,11 +41,13 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 	symbol = symbol || _lastSearch.symbol;
 	dateRange = dateRange || _lastSearch.dateRange;
 	bars = bars || _lastSearch.bars;
+	dataCategory = dataCategory || getDataCategory();
 	// setComparatorVisibleRange({from: +new Date(dateRange[0])/1000, to: +new Date(lastDate)/1000}, '0');
 	//缓存上一次的
 	_lastSearch.symbol = symbol;
 	_lastSearch.dateRange = dateRange;
 	_lastSearch.bars = bars;
+	_lastSearch.dataCategory = dataCategory;
 
 	return (dispacth) => {
 
@@ -53,7 +57,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 			
 			ajaxData.getPatterns(
 				
-				{symbol, dateRange}, 
+				{symbol, dateRange},
 				
 				(res) => {
 					let patterns = JSON.parse(res);
@@ -75,7 +79,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 			// let { searchConfig } = store.getState();
 			searchConfig = searchConfig || store.getState().searchConfig;
 
-			backend.searchPattern({symbol, dateRange, bars, searchConfig}, 
+			backend.searchPattern({symbol, dateRange, bars, searchConfig, dataCategory},
 
 				(resArr, closePrice) => {
 
@@ -88,7 +92,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 					patterns.searchConfig = searchConfig;
 					let searchTimeSpent = new Date() - startTime;
 					//保存历史
-					setTimeout(() => { historyController.pushHistory({symbol, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig, name:'未命名'}); });
+					setTimeout(() => { historyController.pushHistory({symbol, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig, dataCategory, name:'未命名'}); });
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 					cb && cb();
 

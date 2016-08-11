@@ -123,13 +123,18 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		let whisker1 = klineWhisker[i][0],
 				whisker2 = klineWhisker[i][1];
 		// console.debug(rectPoints);
-		ctx.setLineDash([0, 0]);
-		ctx.lineWidth = 1;
-		if(mouse && mouse.x && (Math.abs(mouse.x - whisker1[0][0]) < klineW) || i===activeIndex || i===selectedIndex) {
-			ctx.lineWidth = 2;
-		}
 		ctx.strokeStyle = isUpCandle[i] ? upBorderColor : downBorderColor;
 		ctx.fillStyle = isUpCandle[i] ? upColor : downColor;
+		ctx.lineWidth = 1;
+		if(mouse && mouse.x && (Math.abs(mouse.x - whisker1[0][0]) < klineW) || i===activeIndex || i===selectedIndex) {
+			// ctx.lineWidth = 2;
+			ctx.beginPath();
+			ctx.setLineDash([2, 6]);
+			ctx.moveTo(whisker1[0][0], top);
+			ctx.lineTo(whisker1[0][0], height-bottom);
+			ctx.stroke();
+		}
+		ctx.setLineDash([0, 0]);
 		ctx.beginPath();
 		ctx.strokeRect(rectPoints[0][0], rectPoints[0][1], rectPoints[1][0]-rectPoints[0][0], rectPoints[1][1]-rectPoints[0][1]);
 		ctx.fillRect(rectPoints[0][0], rectPoints[0][1], rectPoints[1][0]-rectPoints[0][0], rectPoints[1][1]-rectPoints[0][1]);
@@ -144,6 +149,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	//hoverLine
 	if(hoverIndex > -1) {
 		ctx.beginPath();
+		ctx.lineWidth = 1;
 		ctx.setLineDash([2, 2]);
 		ctx.lineDashOffset = 1;
 		ctx.strokeStyle = '#aaa';
@@ -173,14 +179,29 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		//text
 		ctx.beginPath();
 		let text = selectedRange[1] - selectedRange[0] + 1 + '根K线';
-		ctx.font = 'bold 10pt';
+		ctx.font = '14px Arial';
 		ctx.textAlign = 'center';
 		// ctx.lineWidth = 1;
 		ctx.fillStyle = '#fff';
-		ctx.fillText(text, (rangeX2 + rangeX1)/2, 13);
-
-		ctx.beginPath();
+		ctx.strokeStyle = '#fff';
+		ctx.fillText(text, (rangeX2 + rangeX1)/2, 15);
+		// ctx.strokeText(text, (rangeX2 + rangeX1)/2, 13);
+		//close btn
+		ctx.fillStyle = '#9C1822';
+		ctx.fillRect(rangeX2 - 20, 0, 20, 20);
 		ctx.setLineDash([0, 0]);
+		ctx.lineWidth = 2;
+		let crossXCenter = rangeX2 - 10;
+		let crossYCenter = 10;
+		ctx.moveTo(crossXCenter - 3, crossYCenter - 3);
+		ctx.lineTo(crossXCenter + 3, crossYCenter + 3);
+		ctx.stroke();		
+		ctx.moveTo(crossXCenter - 3, crossYCenter + 3);
+		ctx.lineTo(crossXCenter + 3, crossYCenter - 3);
+		ctx.stroke();
+
+		ctx.lineWidth = 1;
+		ctx.beginPath();
 		ctx.strokeStyle = 'rgba(200,200,200,0.2)';
 		ctx.moveTo(rangeX1, 20);
 		ctx.lineTo(rangeX1, height);
@@ -294,6 +315,7 @@ let drawAxisX = (canvas, len, options) => {
 
 	//options
 	let hoverIndex = options && options.hoverIndex;
+	let selectedIndex = options && options.selectedIndex;
 
 	//paint
 	ctx.clearRect(0,0, width, height);
@@ -306,6 +328,17 @@ let drawAxisX = (canvas, len, options) => {
 		ctx.fillStyle = '#444';
 		let center = i*spaceX + spaceX/2;
 		ctx.fillText(i+1+'', center, 15);
+	}
+
+	//selectedIndex
+	if(selectedIndex >=0) {
+		let rectW = 50;
+		let center = selectedIndex*spaceX + spaceX/2;
+		center = _toInt(center);
+		ctx.fillStyle = '#BD3035';
+		ctx.fillRect(center - rectW/2, 0, rectW, height);
+		ctx.fillStyle = '#fff';
+		ctx.fillText(selectedIndex+1+'', center, 15);
 	}
 
 	//hoverIndex

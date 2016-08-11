@@ -375,7 +375,7 @@ resizeChart1() {
 		let yiledBtns = <span className='yield-btns-container font-simsun'><button onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
 		
 		let whiteCircle = <div className='madan-white-circle'></div>;
-		let resetBtn = <div className='reset-btn-container flex-center' ref='reset_btn_container'><button onClick={this.resetIndustyChart.bind(this)}>重置</button></div>;
+		let resetBtn = <div className='reset-btn-container flex-center font-simsun' ref='reset_btn_container'><button onClick={this.resetIndustyChart.bind(this)}>重置</button></div>;
 		return (
 		  <div ref='root' className={ className }>
 		  	<div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='position_bubble_chart_wrapper'>

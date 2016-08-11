@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ReactTradingView from '../components/ReactTradingView';
 import { STOCK_VIEW } from '../flux/constants/Const';
+import datafeedCache from '../cache/datafeedCache';
+let { setDataFeed } = datafeedCache;
 
 import stockviewController from '../ksControllers/stockviewController';
 let historyController = stockviewController.historyController;
@@ -40,6 +42,8 @@ class StockView extends React.Component {
 
 	render() {
 		let { stockView, logined } = this.props;
+		let datafeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0);
+		setDataFeed(datafeed);
 		let options = {
 				symbol: '000001.SZ',
 				interval: 'D',
@@ -47,7 +51,7 @@ class StockView extends React.Component {
 				//	BEWARE: no trailing slash is expected in feed URL
 				// datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
 				// datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://demo_feed.tradingview.com"),
-				datafeed: new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0), //params: datafeedURL, updateFrequency, protocolVersion, id
+				datafeed: datafeed, //params: datafeedURL, updateFrequency, protocolVersion, id
 				library_path: "charting_library/",
 				locale: "zh",
       			theme: "Black",

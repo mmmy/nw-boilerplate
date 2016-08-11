@@ -5,7 +5,7 @@
 @rightToolBar_H: 100%;
 @rightToolBar_W:  0px;//10px; //40px;
 
-@searchResultWrap_H: 220px;
+@searchResultWrap_H: 250px;//220px;
 @searchResultWrap_T: calc(~"100% -"@searchResultWrap_H);
 @stockViewContainer_H: calc(~"100% -"@searchResultWrap_H);
 
@@ -18,7 +18,7 @@
 
 @comparatorStretch_H: 100%;
 @comparatorStretch_W: calc(~"100% - "@searchDetail_W);
-@comparatorChartStatic_H: calc(~'100% - 8%');
+@comparatorChartStatic_H: calc(~"100% - 60px - 15px");//calc(~'100% - 8%');
 
 @patternContainer_W: 660px;//510px + 32px; //old = 50%;
 @patternContainer_H: 100%;
@@ -30,7 +30,7 @@
 
 @statisticsContainer_W: calc(~'100% - '@patternContainer_W);
 @statisticsContainer_H: 100%;
-@statisticsContainerStretch_W: calc(~'100% -'@patternContainerStretch_W);
+@statisticsContainerStretch_W: calc(~'100% - 20px -'@patternContainerStretch_W); //padding 20px;
 @statisticsContainerStretch_H: 100%;
 
 @patternContianerSmall_W: @patternContainerStretch_W/2;
@@ -48,6 +48,10 @@
 @ks-color-gray-8: lighten(#000, 80%);
 @ks-color-gray-9: lighten(#000, 90%);
 @ks-color-gray-10: lighten(#000, 100%);
+
+//红色
+@brown-red: #8D151B;
+@brown-red-light: #AC1822;
 
 //蓝色
 @ks-color-blue-dark:			#58666f;
@@ -69,5 +73,15 @@
 @logo_url: "./image/logo.jpg";
 @logo_url_png: "./image/logo.png";
 
-
 //color
+//icons all
+@icons_url: "./image/icons.png";
+
+@icons_offset_y: 10px;
+@icon_W: 30px;
+@icon_H: 30px;
+@iconSetH: 120px;
+
+.icon_position(@index:0; @x; @y; @offsetX:0px; @offsetY:0px) {
+	background-position: -( @icon_W * @x + @offsetX)  -(@icons_offset_y + @iconSetH * @index + @icon_H * (@y+1) + @offsetY);
+}

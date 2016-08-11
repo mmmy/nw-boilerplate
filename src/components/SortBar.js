@@ -88,7 +88,7 @@ class SortBar extends React.Component {
 						<span className={descClass}><i className='fa fa-sort-desc'></i></span>
 					</span>) : '';
 
-		let btnClass = classNames('sort-btn', {
+		let btnClass = classNames('sort-btn font-simsun', {
 			'active': asc || desc
 		});
 		return (<a className={btnClass} onClick={this.handleSort.bind(this, btnType.type)} >{ btnType.label } <span className='sort-icon'>{ icons }</span></a>);
@@ -114,7 +114,7 @@ class SortBar extends React.Component {
 			case 1:  //filter
 				let {min, max} = this.state.values;
 				return <div style={{zIndex: 5}} className='child-panel-container' onClick={handle}>
-					<span className='title-left' >相似度:</span>
+					<span className='title-left font-simsun' >相似度:</span>
 					<div className='slider-container'>
 						<RCSlider 
 							className='slider-appearance' 
@@ -169,7 +169,7 @@ class SortBar extends React.Component {
 		});
 
 		return (<div className="toolbar-container">
-				<div className='toolbar-item item0'><h5 className='left-title'>匹配图形</h5></div>
+				<div className='toolbar-item item0'><h5 className='left-title'>匹配结果</h5></div>
 				<div className='toolbar-item item1'>
 					<button className='pattern-bar-btn' onFocus={ this.toggleSearchPanel.bind(this, true) } onBlur={ this.toggleSearchPanel.bind(this, false) }>
 						<span className={searchIconClass} ref='search_icon'></span>

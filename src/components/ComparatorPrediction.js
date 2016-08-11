@@ -328,9 +328,9 @@ class ComparatorPrediction extends React.Component {
           itemStyle: {
             normal: {
               borderWidth: true ? '1' : '0',
-              color: true ? '#BD3035' : '#aE0000',
+              color: true ? '#AC1822' : '#aE0000',
               color0: true ? 'rgba(0,0,0,0)' : '#5A5A5A',
-              borderColor: '#BD3035',
+              borderColor: '#8D151B',
               borderColor0: '#000',
             },
             emphasis: {

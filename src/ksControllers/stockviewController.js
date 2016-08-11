@@ -1,5 +1,5 @@
 
-import { getSortedHistoryMonth, getSortedMonthData, pushHistory, getAllFilesFromStorage, deleteHistory } from '../backend/historyManager';
+import { getSortedHistoryMonth, getSortedMonthData, pushHistory, getAllFilesFromStorage, deleteHistory, deleteOneHistory } from '../backend/historyManager';
 import favoritesManager from '../backend/favoritesManager';
 import store from '../store';
 import { drawKline } from './painter';
@@ -27,6 +27,8 @@ let _disposeDetailPanel = (parentDom, editorCache) => {
 	editorCache.dispose();
 	editorCache = null;
 	$(parentDom).find('.detail-panel').remove();
+	//refresh UI
+	_refreshFavoritesBody();
 }; 
 
 let _reSearch = (dataObj, cb) => {
@@ -34,6 +36,24 @@ let _reSearch = (dataObj, cb) => {
 	store.dispatch(actions.layoutActions.waitingForPatterns());
 	store.dispatch(actions.patternActions.resetError());
 	store.dispatch(actions.patternActions.getPatterns(dataObj, cb));
+};
+
+let _handleDeleteOne = (e) => {
+	let dataObj = $(e.target).closest('.history-item').data('data');
+	let $wrapper = $(e.target).closest('.history-items-wrapper');
+	let data = $wrapper.data();
+	let type = data.type; //0:favorites, 1:history
+	if(type == 0) {
+		favoritesManager.deleteOneFavorite(data.meta.name, dataObj);
+		$(e.target).closest('.history-item').remove();
+	} else if(type == 1) {
+		let resLen = deleteOneHistory(data.meta, dataObj);
+		if(resLen == 0) {
+			$(e.target).closest('.history-day-wrapper').remove();
+		} else {
+			$(e.target).closest('.history-item').remove();
+		}
+	}
 };
 
 let _handleReSearch = (event) => {
@@ -70,7 +90,7 @@ let _handleAddBlur = (event) => {
 	$target.children().remove();
 };
 
-let _generatePattern = (pattern) => {
+let _generatePattern = (pattern, type) => {
 	let startDateStr = pattern.dateRange && new Date(pattern.dateRange[0]).toISOString() || '',
 			endDateStr = pattern.dateRange && new Date(pattern.dateRange[1]).toISOString() || '';
 	startDateStr = startDateStr.slice(0, 10).replace(/-/g,'.');
@@ -78,10 +98,14 @@ let _generatePattern = (pattern) => {
 
 	let name = `<h2 class='name font-msyh'>${pattern.name||'未命名'}</h2>`;
 	// let info = `<p class='header-info'>${pattern.symbol}     ${pattern.kline.length}根K线</p>`;
-	let info = `<p class='header-info'>${pattern.kline.length}根K线</p>`;
+	let info = `<p class='header-info'><strong>${pattern.kline.length}</strong>根K线</p>`;
 	let addButton = `<button class='add-btn flat-btn'>add</button>`;
 	let deleteButton = `<button class='delete-btn flat-btn'>delete</button>`;
-	let hoverBtns = `<span class='btn-overlay flex-around'><button class='flat-btn re-search'>重新搜索</button><button class='flat-btn go-detail'>查看详情</button></span>`;
+	let hoverBtns = (type == 0) ? 
+									`<span class='btn-overlay flex-around'><button class='flat-btn re-search'>重新搜索</button><button class='flat-btn go-detail'>查看详情</button></span>`
+									:
+									`<span class='btn-overlay flex-around'><button class='flat-btn re-search'>重新搜索</button></span>`;
+
 	let canvasDiv = `<div class='canvas-wrapper'><canvas class='kline' width='160' height='80' style='width:160px;height:80px'/>${hoverBtns}</div>`;
 	// let range = `<span class='daterange-info font-number'>${startDateStr} ~ ${endDateStr}</span>`;
 	// let footer = `<div class='btn-wrapper'><button class='re-search'>重新搜索</button><button class='go-detail'>查看详情</button></div>`;
@@ -91,6 +115,7 @@ let _generatePattern = (pattern) => {
 			$node.data('data', pattern);
 
 			$node.find('.add-btn').focus(handleShouCangFocus.bind(null, favoritesManager, favoritesController, pattern)).blur(handleShouCangBlur); //添加到收藏夹
+			$node.find('.delete-btn').click(_handleDeleteOne);
 			$node.find('.re-search').click(_handleReSearch);  //重新搜索
 			$node.find('.go-detail').click(_handleDetail);  //重新搜索
 			drawKline($node.find('canvas.kline')[0], pattern.kline);
@@ -98,9 +123,9 @@ let _generatePattern = (pattern) => {
 	return $node;
 };
 
-let _generatePatterns = (dataArr) => {  //dataArr:[{symbol, dateRange, kline}]
+let _generatePatterns = (dataArr, type, meta) => {  //dataArr:[{symbol, dateRange, kline}], type:0(fav) 1(history), meta:object
 	let patterns = dataArr.map((pattern) => {
-		return _generatePattern(pattern);
+		return _generatePattern(pattern, type);
 	});
 	// let concacted = patterns.reduce((pre, cur) => {
 	// 	pre = cur + pre;
@@ -108,6 +133,7 @@ let _generatePatterns = (dataArr) => {  //dataArr:[{symbol, dateRange, kline}]
 	// }, '');
 	let $node = $(`<div class='history-items-wrapper'></div>`);
 			$node.append(patterns);
+	$node.data({type: type, meta: meta});
 	return $node;
 };
 
@@ -125,7 +151,7 @@ let dateToString = (dateObj) => {
 };
 
 let _generateHistoryItem = (date, data) => {
-	let patterns = _generatePatterns(data);
+	let patterns = _generatePatterns(data, 1, date);
 	let dateStr = dateToString(date);
 	return $(`<div class='history-day-wrapper'><h4 class='date-string'>${dateStr}</h4></div>`).append(patterns);
 };
@@ -227,11 +253,11 @@ let _isSameDate = (date1, date2) => {
 
 let _addNewDayWrapper = (data, isInsert, $wrapper0) => {  //插入历史
 	if(isInsert) {
-		let $newHistoryItem = $(_generatePattern(data));
+		let $newHistoryItem = $(_generatePattern(data, 1));
 		drawKline($newHistoryItem.find('canvas')[0], data.kline);
 		$wrapper0.find('.history-items-wrapper').prepend($newHistoryItem);
 	}else {
-		let $newWrapper = $(_generatePatterns([data]));
+		let $newWrapper = $(_generatePatterns([dat, 0, a], 1, new Date()));
 		$newWrapper.data('date', new Date());
 		$(_bodyDom).prepend($newWrapper);
 	}
@@ -277,7 +303,25 @@ let _handleFolderClick = (event) => {
 	let $bodyDom = $(_bodyDomF);
 	_activeName = name;
 	$bodyDom.empty();
-	$bodyDom.append(_generatePatterns(data));
+	$bodyDom.append(_generatePatterns(data, 0, {name:name}));
+};
+
+let _refreshBodyItemUI = (ele) => {
+	let $ele = $(ele);
+	let data = $ele.data('data');
+	let name = data.name || '未命名';
+	let klineLen = data.kline.length;
+
+	$ele.find('.name').text(name);
+	$ele.find('.header-info').text(`${klineLen}根K线`);
+	drawKline($ele.find('canvas.kline')[0], data.kline);
+}
+
+let _refreshFavoritesBody = () => {
+	let $items = $(_bodyDomF).find('.history-item');
+	$items.each(function(index, el) {
+		_refreshBodyItemUI(el);
+	});
 };
 
 let _handleDeleteFavoritesFolder = (event) => {
@@ -313,7 +357,7 @@ let _showFolder = (index) => {
 		let $bodyDom = $(_bodyDomF);
 		_activeName = name;
 		$bodyDom.empty();
-		$bodyDom.append(_generatePatterns(data));
+		$bodyDom.append(_generatePatterns(data, 0, {name:name}));
 	}
 };
 
@@ -338,7 +382,7 @@ favoritesController.init = (navDom, bodyDom) => {
 };
 
 let _prependFavoritesBody = (dataObj) => {
-	$(_bodyDomF).find('.history-items-wrapper').prepend(_generatePattern(dataObj));
+	$(_bodyDomF).find('.history-items-wrapper').prepend(_generatePattern(dataObj, 0));
 };
 
 favoritesController.addFavorites  = (name, dataObj) => {
@@ -354,6 +398,10 @@ favoritesController.addNewFolder = (name) => {
 	let {fileName, initData} = favoritesManager.addNewClass(name);
 	let folderNode = _generateFolderNode(fileName, initData);
 	$(_navDomF).append(folderNode);
+};
+
+favoritesController.getActiveName = () => {
+	return	_activeName;
 };
 
 module.exports = {

@@ -37,7 +37,7 @@ let _loadLatestData = () => {
 		});
 };
 
-let _getDataByName = (name) => {
+let _getFileByName = (name) => {
 	let keys = Object.keys(_favoritesData);
 	for(let i=0; i<keys.length; i++) {
 		let item = _favoritesData[keys[i]];
@@ -76,12 +76,12 @@ let addNewClass = (name) => {
 
 let addFavorites = (name, dataObj) => {
 
-	let fileName = _getDataByName(name);
+	let fileName = _getFileByName(name);
 	if(!fileName) {
 		return;
 	}
 	let target = _favoritesData[fileName];
-	target.data.push(dataObj);
+	target.data.unshift(dataObj);
 	let filePath = path.join(_favoritesPath, fileName);
 	saveFile(filePath, JSON.stringify(target));
 
@@ -112,9 +112,34 @@ let getFavoritesFolders = () => {
 	return folders;
 };
 
+let deleteOneFavorite = (name, dataObj) => {
+	let fileName = _getFileByName(name);
+	let data = _favoritesData[fileName];
+	let dataArr = data && data.data;
+	let index = dataArr.indexOf(dataObj);
+	dataArr.splice(index, 1);
+	let filePath = path.join(_favoritesPath, fileName);
+	saveFile(filePath, JSON.stringify(data));
+};
+
 let deleteFavorites = (fileName, cb) => {
 	delete _favoritesData[fileName];
 	deleteFile(path.join(_favoritesPath, fileName), cb);
+};
+
+let updateFavorites = (name, dataObj) => {
+	try {
+		let fileName = _getFileByName(name);
+		let data = _favoritesData[fileName];
+		let dataArr = data && data.data;
+		let index = dataArr.indexOf(dataObj);
+		let filePath = path.join(_favoritesPath, fileName);
+		saveFile(filePath, JSON.stringify(data));
+		return true;
+	} catch (e) {
+		console.error(e);
+		return false;
+	}
 };
 
 module.exports = {
@@ -124,4 +149,6 @@ module.exports = {
 	getFavoritesList,
 	getFavoritesFolders,
 	deleteFavorites,
+	deleteOneFavorite,
+	updateFavorites,
 };

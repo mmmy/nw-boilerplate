@@ -212,8 +212,8 @@ class EChart extends React.Component {
 	    let drawOptions = {
 	    	// yMin: rates ? rates.rateMin * data0.values[0][1] : data0.yMin,
 	    	// yMax: rates ? rates.rateMax * data0.values[0][1] : data0.yMax,
-	    	upColor: '#BD3035',
-	    	upBorderColor: '#BD3035',
+	    	upColor: '#AC1822',
+	    	upBorderColor: '#8D151B',
 	    	downColor: 'rgba(0, 0, 0, 0)',
 	    	downBorderColor: '#000',
 	    	backgroundColor: '#fff',

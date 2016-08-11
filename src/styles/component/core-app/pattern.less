@@ -14,6 +14,8 @@
 	right: 0;
 	width: @patternContainer_W;
 	height: @patternContainer_H;
+	// box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	.mama-box-shadow();
 	//border-top: 1px solid @ks-color-gray-8;
 	//border-bottom: 1px solid @ks-color-gray-8;
 
@@ -62,16 +64,16 @@
 
 		h5 {
 			color: @lulu-black;
-			font-size: 1.3rem;
+			font-size: 14px;//1.3rem;
 			margin-top: 1.6rem;
 		}
 
 		&.item0 {
-			width: 25%;
+			width: 30%;
 		}
 
 		&.item1 {
-			width: 75%;
+			width: 70%;
 			z-index: 5;
 			padding-right: 20px;
 		}
@@ -80,8 +82,9 @@
 	.title-left {
 		display: inline-block;
 		//width: px;
-		font-size: 1.2rem;
+		font-size: 12px;//1.2rem;
 		color: @lulu-gary3;
+		margin-left: 6.8%;
 		padding: 5px 7px;
 	}
 
@@ -110,14 +113,14 @@
 
 	.child-panel-container {
 		position: absolute;
-		width: 100%;
-		height: 3.2rem;
+		width: 106.8%;
+		height: 34px;//3.2rem;
 		// border: 1px solid #ddd;
 		// left: -50px;
 		top: 100%;
 		z-index: 1000;
-		background-color: white;
-		left: 0;
+		background-color: rgba(255, 255, 255, 0.9);
+		left: -6.8%;
 		box-shadow: 0 5px 15px -12px #222;
 		text-align: left;
 		&.flex {
@@ -146,11 +149,11 @@
 		margin-top: 1.6rem;
 		z-index: 100;
 		&.active {
-			width: 14rem;
+			width: 13rem;
 		}
 
 		input {
-			width: 11rem;
+			width: 10rem;
 			position: absolute;
 			right: 3rem;
 			outline: none;
@@ -179,7 +182,7 @@
 	float: right;
 	//width: 1.4rem;
 	//height: 1.4rem;
-	margin-top: 1.6rem;
+	margin-top: 10px;//1.6rem;
 	font-size: 1.2rem;
 	background-color: transparent;
 	border: none;
@@ -191,15 +194,12 @@
 	}
 
 	.icon {
-		background-size: cover;
+		// background-size: cover;
 		background-repeat: no-repeat;
 		display: block;
-		width: 14px;//1.5rem;
-		height: 14px;//1.5rem;
+		width: 20px;//14px;//1.5rem;
+		height: 20px;//14px;//1.5rem;
 		position: relative;
-		&.active {
-			background-position: 0 100%;
-		}
 		&.red-circle {
 			&:after {
 				position: absolute;
@@ -216,24 +216,38 @@
 	}
 
 	.sort {
-		background-image: url('./image/sort.png');
+		background-image: url(@icons_url);
+		.icon_position(1, 0, 2, 5px, 5px);
+		&.active {
+			// background-position: 0 100%;
+			.icon_position(3, 0, 2, 5px, 5px);
+		}
 	}
 	.filter {
-		background-image: url('./image/filter.png');
+		background-image: url(@icons_url);
+		.icon_position(1, 1, 2, 5px, 5px);
+		&.active {
+			background-position: 0 100%;
+			.icon_position(3, 1, 2, 5px, 5px);
+		}
 	}
 	.eye {
-		background-image: url('./image/eye.png');
+		background-image: url(@icons_url);
+		&.active {
+			background-position: 0 100%;
+		}
 	}
 	.search {
-		background-image: url('./image/search.png');
+		background-image: url(@icons_url);
+		.icon_position(1, 5, 0, 5px, 7px);
 		position: relative;
 		background-color: white;
 		z-index: 5;
 		left: 0;
 
 		&.active {
-			left: -14rem;
-			background-position: 0 0;
+			left: -12.5rem;
+			// background-position: 0 0;
 		}
 	}
 }
@@ -242,19 +256,19 @@
 .sort-btn {
 	text-align: left;
 	display: block;
-	width: 33.3%;
+	width: 42%;//33.3%;
 	float: left;
 	//padding: 10px 10px;
-	margin-top: 0.6rem;
-	padding-left: 7px;
-	font-size: 1.2rem;
+	margin-top: 10px;//0.6rem;
+	padding-left: calc(~"6.8% + 7px");//7px;
+	font-size: 12px;//1.2rem;
 	cursor: pointer;
 	color: @ks-color-gray-6;
 	.sorticons-container {
 		color: @ks-color-gray-8;	
 		.fa-sort-desc {
 			position: relative;
-			left: -0.7rem;
+			left: -7px;//-0.7rem;
 		}
 
 		.active {
@@ -282,9 +296,20 @@
 	height: calc(~'100% + 5px - '@patternToolbar_H~' - '@patternStatisticsPanel_H);
 	padding: 0;
 	margin-bottom: -5px;
+	h3.title {
+		display: none;
+	}
 	&.stretch{
 		height: 100%;
 		//padding: 30px;
+		h3.title {
+			display: block;
+			position: absolute;
+			z-index: 10;
+			font-size: 14px;
+			margin-left: 20px;
+			color: #000;
+		}
 	}
 }
 
@@ -368,10 +393,13 @@
 			height: @patternView_H * 1.2;
 			// width: patternView_W;//@patternView_W * 1.4 * 1.08;
 			margin: 30px;
-			margin-left: 20px;
+			margin-left: 10px;
 			.symbol-container {
-				// padding-top: 5px;
+				padding-top: 18px;
 				font-size: 12px;
+			}
+			&.active {
+				box-shadow: none !important;
 			}
 		}
 
@@ -409,6 +437,9 @@
 			.symbol-container {
 				padding-top: 0;//5px;
 				font-size: 10px;
+			}
+			&.active {
+				box-shadow: none !important;
 			}
 		}
 		&.holder {
@@ -479,8 +510,11 @@
 		//transform: scale(@larger,@larger);
 		//transition-duration: 2s;
 		//animation: .3s larger;
+		h3 {
+			margin-top: 30px;
+		}
 		img {
-			bottom: 26px;
+			bottom: 15px;
 		}
 	}
 
@@ -721,7 +755,7 @@
 .pattern-statistics-panel {
 	position: absolute;
 	box-shadow: 0px -4px 11px -8px #222;
-	margin-left: 2%;
+	// margin-left: 2%;
 	// margin-right: 6.8%;
 	top: 0;
 	left: 0;
@@ -794,7 +828,7 @@
 //small !!!
 .container-searchdetail.small {
 	.statistics-container.full {
-		width: calc(~"100% - 240px");
+		width: calc(~"100% - 260px");
 	}
 	.pattern-container.full {
 		width: 240px;

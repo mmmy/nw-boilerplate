@@ -6,9 +6,9 @@
   "window": {
     "show": true,
     "width": 1277,
-    "height": 768,
+    "height": 700,
     "min_width": 1277,
-    "min_height": 660,
+    "min_height": 700,
     "resizable": true,
     "standard-window": false,
     "fullscreen": false,

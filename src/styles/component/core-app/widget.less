@@ -251,3 +251,29 @@
 		}
 	}
 }
+
+.ks-input-wrapper {
+	// background-color: #fff;
+	position: relative;
+	input{
+		width: calc(~"100% - 60px");
+		padding-left: 5px;
+		border: none;
+		outline: none;
+	}
+	button {
+		width: 30px;
+		height: 30px;
+		.flat-btn();
+		color: transparent;
+	}
+	.ks-check{
+		background-image: url(@icons_url);
+		.icon_position(2; 4; 1);
+	}
+	.ks-delete {
+		background-image: url(@icons_url);
+		.icon_position(2; 5; 1);
+	}
+}
+

@@ -6,6 +6,7 @@ const bCode = 66;
 const dCode = 68;
 
 const RANGE_BAR_UP_DOWN = 110;
+const RANGE_CLOSE = 105;
 const RANGE_MOVE = 100;
 const RANGE_LEFT = 90;
 const RANGE_RIGHT = 80;
@@ -53,7 +54,7 @@ function KlineEditor(container, kline) {  //container dom is div dom
 	this._mouseX = -1;
 	this._mouseY = -1;
 
-	this._drawingState = {drawingRange: false};
+	this._drawingState = {drawingRange: false, moveMode:0}; //moveMode:0(single) 1(linear)
 	this._selectedRange = [];
 	this._clickHitTest = NONE;
 
@@ -64,6 +65,7 @@ function KlineEditor(container, kline) {  //container dom is div dom
 	this._onMoveIndex = null; //func
 	this._onUpdateInfo = null; //func
 	this._onEndDrawRange = null; //func
+	this._onRemoveRange = null; //func
 	this._init();
 };
 
@@ -184,6 +186,7 @@ KlineEditor.prototype._mouseDown = function(event) {
 	let y = event.offsetY;
 	this._setClickHitTest(event.offsetX, event.offsetY);  //记录click hit test
 
+	if(this._clickHitTest === RANGE_CLOSE) this.removeSelectRange(); //移除range
 	if(this._clickHitTest === REGULAR) this.beginMoveAKline(event.offsetX, event.offsetY);
 	if(this._clickHitTest === RANGE_UP_DOWN) this.beginUpDownRange(event.offsetX, event.offsetY);
 	if(this._clickHitTest === RANGE_BAR_UP_DOWN) this.beginMoveAKline(event.offsetX, event.offsetY);
@@ -304,6 +307,7 @@ KlineEditor.prototype.updateCanvas = function(){
 																hoverY: this._hoverY,
 															}, {
 																hoverIndex: this._hoverIndex,
+																selectedIndex: this._selectedIndex,
 															});
 	// this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);
 }
@@ -435,14 +439,21 @@ KlineEditor.prototype.movingUpDownRange = function(x, y, hasMoveIndex) {
 		let dy = this._mouseY - y;
 		let dp = dy * pricePerPix; //根据移动的像素值 计算价格变化
 		
-		for(let i=this._selectedRange[0]; i<=this._selectedRange[1]; i++) {
+		for(let i=this._selectedRange[0]; i<=this._selectedRange[1]; i++) { //同时移动
 			let data = this._kline[i];
 			let rate = 1;
-			if(hasMoveIndex) {
-				if(i <= this._moveIndex) {
-					rate *= (i - this._selectedRange[0]) / (this._moveIndex - this._selectedRange[0]);
-				} else {
-					rate *= (this._selectedRange[1] - i) / (this._selectedRange[1] - this._moveIndex);
+			if(hasMoveIndex) { //有选中目标
+				if(this._drawingState.moveMode==0){ //单个移动
+					rate = 0;
+					if(i == this._moveIndex) {
+						rate = 1;
+					}
+				} else {          //两侧以线性移动 linear
+					if(i <= this._moveIndex) {
+						rate *= (i - this._selectedRange[0]) / (this._moveIndex - this._selectedRange[0]);
+					} else {
+						rate *= (this._selectedRange[1] - i) / (this._selectedRange[1] - this._moveIndex);
+					}
 				}
 			}
 			data[1] += dp * rate;
@@ -477,6 +488,11 @@ KlineEditor.prototype.startSelectRange = function() {
 	this.resetRangeIndex();
 }
 
+KlineEditor.prototype.removeSelectRange = function() {
+	this.resetRangeIndex();
+	this._onRemoveRange && this._onRemoveRange();
+}
+
 KlineEditor.prototype.setCursorByHittest = function(hitTest) {
 	switch (hitTest) {
 		case NONE:
@@ -486,6 +502,8 @@ KlineEditor.prototype.setCursorByHittest = function(hitTest) {
 		case RANGE_BAR_UP_DOWN:
 			this.setCursor('ns-resize'); break;
 		case RANGE_UP_DOWN:
+			this.setCursor('pointer'); break;
+		case RANGE_CLOSE:
 			this.setCursor('pointer'); break;
 		case RANGE_MOVE:
 			this.setCursor('ew-resize'); break;
@@ -552,8 +570,17 @@ KlineEditor.prototype.getHitTest = function(x,y) {
 	let indexWithY = pointToIndex(x, y);
 
 	let isXInRange = (index >= this._selectedRange[0]) && (index <= this._selectedRange[1]);
+	let isNearRangeRight20 = (x - indexToPoint(this._selectedRange[1]).x <= 0) && (x - indexToPoint(this._selectedRange[1]).x >= -20);
 	let isNearRangeLeft = Math.abs(indexToPoint(this._selectedRange[0]).x - x) < 5 ;
 	let isNearRangeRight = Math.abs(indexToPoint(this._selectedRange[1]).x - x) < 5 ;
+	//indexRange close
+	if(isXInRange && isNearRangeRight20 && (y > 0) && (y < 20)) {
+		return RANGE_CLOSE;
+	}
+	//: indexRange move
+	if(isXInRange && (y > 0) && (y < 20)) {
+		return RANGE_MOVE;
+	}
 	//: indexRange left
 	if(isNearRangeLeft) {
 		return RANGE_LEFT;
@@ -565,10 +592,6 @@ KlineEditor.prototype.getHitTest = function(x,y) {
 	//range bar up down
 	if(isXInRange && (indexWithY > -1)) {
 		return RANGE_BAR_UP_DOWN;
-	}
-	//: indexRange move
-	if(isXInRange && (y > 0) && (y < 20)) {
-		return RANGE_MOVE;
 	}
 	//: indexRange up down
 	if(isXInRange) {
@@ -618,6 +641,14 @@ KlineEditor.prototype.onUpdateInfo = function(func) {
 
 KlineEditor.prototype.onEndDrawRange = function(func) {
 	this._onEndDrawRange = func;
+}
+
+KlineEditor.prototype.setRangeMoveMode = function(mode) { //0  or 1
+	this._drawingState.moveMode = mode;
+}
+
+KlineEditor.prototype.onRemoveRange = function(func) {
+	this._onRemoveRange = func;
 }
 
 module.exports = KlineEditor;

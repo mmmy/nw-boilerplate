@@ -98,6 +98,10 @@ class ReportDetailView extends React.Component {
 			'ks-show': fullView
 		});
 		
+		let titleClassName = classNames('title font-msyh', {
+			'hide': fullView
+		});
+
 		let downClass = classNames('report-item', 'result-item-rightbottom', {
 			'ks-hidden': !fullView,
 			//'transition-delay0': !fullView,
@@ -145,7 +149,7 @@ class ReportDetailView extends React.Component {
 				}
 
 			</div>*/}
-
+			<h3 className={titleClassName}>数据统计</h3>
 			{ this.renderStuffs(data) }
 
 			<div className={upClass}>

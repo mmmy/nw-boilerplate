@@ -45,11 +45,11 @@ let __closePrice = [];
 
 let searchPattern = (args, cb, errorCb) => {
 
-	const { symbol, bars, dateRange, searchConfig } = args;
+	const { symbol, bars, dateRange, searchConfig, dataCategory } = args;
 
 	let { additionDate, searchLenMax } = searchConfig;
 
-	let searchArgs = { symbol, dateRange, bars, additionDate, searchLenMax };
+	let searchArgs = { symbol, dateRange, bars, additionDate, searchLenMax, dataCategory };
 
 	let searchCb = (resObj) => {
 		
@@ -112,6 +112,7 @@ let searchPattern = (args, cb, errorCb) => {
 				'lastDate': resObj.lastDates && resObj.lastDates[i],
 				'additionDate': additionDate,
 				'bars': bars,
+				'dataCategory': dataCategory,
 			};
 		});
 		console.info('第二步: 获取kline具体数据 [ 开始 ]');

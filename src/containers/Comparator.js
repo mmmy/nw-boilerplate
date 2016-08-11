@@ -84,9 +84,9 @@ var option = {
                 itemStyle: {
                   normal: {
                     borderWidth: true ? '1' : '0',
-                    color: true ? '#BD3035' : '#aE0000',
+                    color: true ? '#AC1822' : '#aE0000',
                     color0: true ? 'rgba(0, 0, 0, 0)' : '#5A5A5A',
-                    borderColor: '#BD3035',
+                    borderColor: '#8D151B',
                     borderColor0: '#050505',
                   },
                   emphasis: {
@@ -284,9 +284,12 @@ class Comparator extends React.Component {
 
     return (
       <div className={ containerClassName } >
-        {/*setting searching info from TradingView*/}
-        <div className={ searchingInfoClassNames }><span id={'searching-info-content'}></span><span className={'searching-info--prediction-lable'}>走势预测</span></div>
-        { _drawEchart ? this.renderEchart() : this.renderImages() }
+        <div className='comparator-inner'>
+          {/*setting searching info from TradingView*/}
+          <h3 className='title'>匹配图形&走势分布</h3>
+          <div className={ searchingInfoClassNames }><span id={'searching-info-content'}></span><span className={'searching-info--prediction-lable'}>走势分布</span></div>
+          { _drawEchart ? this.renderEchart() : this.renderImages() }
+        </div>
       </div>
     );
 	}

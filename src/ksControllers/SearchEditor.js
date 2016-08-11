@@ -12,7 +12,7 @@ function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 	this._$config = $('<div class="config-editor"></div>');
 	this._OHLC = { barsInfo:null, O:null, H:null, L:null, C:null}; //缓存dom
 	this._OHLCInputs = {O:null, H:null, L:null, C:null}; //缓存input dom
-	this._floatTools = {addBars:null};
+	this._floatTools = {addBars:null, rangeTool:null};
 
 	this._klineEditor = null;
 	this._configEditor = null;
@@ -33,11 +33,12 @@ SearchEditor.prototype._initKlineEditor = function(){
 	this._klineEditor.onMoveIndex(this.handleMoveIndex.bind(this));
 	this._klineEditor.onUpdateInfo(this.updateInfo.bind(this));
 	this._klineEditor.onEndDrawRange(this.handleEndDrawRange.bind(this));
+	this._klineEditor.onRemoveRange(this.handleRemoveRange.bind(this));
 	this.updateInfo(this._dataObj.kline.length);
 }
 
 SearchEditor.prototype._initConfigEditor = function() {
-	this._configEditor = new ConfigEditor(this._$config, this._dataObj.searchConfig);
+	this._configEditor = new ConfigEditor(this._$config, this._dataObj.searchConfig, {symbol:this._dataObj.symbol, dateRange:this._dataObj.dateRange});
 }
 
 SearchEditor.prototype._initMain = function() {
@@ -45,27 +46,34 @@ SearchEditor.prototype._initMain = function() {
 	let that = this;
 	this._OHLC = {
 		barsInfo: $(`<span class='bars-info font-simsun'>0根K线</span>`),
-		O: $('<span class="font-number number">N/A</span>'),
-		H: $('<span class="font-number number">N/A</span>'),
-		L: $('<span class="font-number number">N/A</span>'),
-		C: $('<span class="font-number number">N/A</span>'),
-	};	
-	let OCLH = $(`<span class='OCLH-container'></span>`).append(this._OHLC.barsInfo)
-																											.append(`<span>O</span>`).append(this._OHLC.O)
-																											.append(`<span>H</span>`).append(this._OHLC.H)
-																											.append(`<span>L</span>`).append(this._OHLC.L)
-																											.append(`<span>C</span>`).append(this._OHLC.C);
+		O: $('<span class="font-arial number">N/A</span>'),
+		H: $('<span class="font-arial number">N/A</span>'),
+		L: $('<span class="font-arial number">N/A</span>'),
+		C: $('<span class="font-arial number">N/A</span>'),
+	};
+	let name = this._dataObj.name||'未命名';
+	let $nameInput = $(`<span class='rename-container'><span class='ks-input-wrapper'><input value=${name} ><button class='ks-check'>check</button><button class='ks-delete'>del</button></span></span>`).hide();
+	$nameInput.find('.ks-check').click(this._handleRename.bind(this));
+	$nameInput.find('.ks-delete').click((e) => { $nameInput.hide(); });
 
-	header.append(OCLH).append($(`<button class='flat-btn tool-btn select-range'>区域</button>`).click(this._handleStartSelectRange.bind(this)))
+	let $name = $(`<span class='title-name'><span class='name-content'>${name}</span></span>`).append($(`<button class='flat-btn'>改</button>`).click((e)=>{ $nameInput.show(); }));
+
+	let OCLH = $(`<span class='OCLH-container'></span>`).append(this._OHLC.barsInfo)
+																											.append(`<span class='font-arial'>O</span>`).append(this._OHLC.O)
+																											.append(`<span class='font-arial'>H</span>`).append(this._OHLC.H)
+																											.append(`<span class='font-arial'>L</span>`).append(this._OHLC.L)
+																											.append(`<span class='font-arial'>C</span>`).append(this._OHLC.C);
+
+	header.append($name).append($nameInput).append(OCLH).append($(`<button class='flat-btn tool-btn select-range'>区域</button>`).click(this._handleStartSelectRange.bind(this)))
 											// .append($(`<button class='flat-btn tool-btn delete-range'>删除</button>`).click(this._handleDeleteBars.bind(this)))
 											.append($(`<button class='flat-btn tool-btn save'>保存</button>`))
 											.append($(`<button class='flat-btn tool-btn add-favorites'>收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj)).blur(handleShouCangBlur.bind(null)));
 
 	this._OHLCInputs = {
-		O: $('<input class="OCLH-input font-number" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexO(+event.target.value) }),
-		H: $('<input class="OCLH-input font-number" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexH(+event.target.value) }),
-		L: $('<input class="OCLH-input font-number" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexL(+event.target.value) }),
-		C: $('<input class="OCLH-input font-number" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexC(+event.target.value) }),
+		O: $('<input class="OCLH-input font-arial" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexO(+event.target.value) }),
+		H: $('<input class="OCLH-input font-arial" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexH(+event.target.value) }),
+		L: $('<input class="OCLH-input font-arial" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexL(+event.target.value) }),
+		C: $('<input class="OCLH-input font-arial" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexC(+event.target.value) }),
 	};
 
 	let searchEditorContainer = $(`<div class='kline-editor-container'></div>`);
@@ -73,23 +81,29 @@ SearchEditor.prototype._initMain = function() {
 	let body = $(`<div class='body'></div>`).append(searchEditorContainer);
 
 	let OCLHInputs = $(`<span style='display:none' class='OCLH-inputs-container'></span>`)
-									.append($('<span class="input-label font-number">O</span>')).append(this._OHLCInputs.O)
-									.append($('<span class="input-label font-number">H</span>')).append(this._OHLCInputs.H)
-									.append($('<span class="input-label font-number">L</span>')).append(this._OHLCInputs.L)
-									.append($('<span class="input-label font-number">C</span>')).append(this._OHLCInputs.C);
+									.append($('<span class="input-label font-arial">O</span>')).append(this._OHLCInputs.O)
+									.append($('<span class="input-label font-arial">H</span>')).append(this._OHLCInputs.H)
+									.append($('<span class="input-label font-arial">L</span>')).append(this._OHLCInputs.L)
+									.append($('<span class="input-label font-arial">C</span>')).append(this._OHLCInputs.C);
 	let footer = $(`<div class='footer'></div>`).append(OCLHInputs)
-																							.append(`<button class='flat-btn tool-btn search font-simsun'>搜索</button>`);
+																							.append(`<span class='tool-btn search-button-wrapper'><button class='flat-btn search font-simsun'>搜索</button></span>`);
 																							// .append($(`<button class='flat-btn tool-btn save'>保存</button>`));
 
 	
-	this._floatTools.addBars = $(`<span class='add-bars-container'></span>`)
-												.append($(`<button class='flat-btn add-bars font-simsun'>新增</button>`).click(this._hanleAddBars.bind(this)))
-												.append($(`<input type='number' value='1' min='1'/>`))
+	this._floatTools.addBars = $(`<span class='add-bars-container'></span>`).append($(`<span class='two-button-wrapper'></span>`)
+																																									.append($(`<button class='flat-btn add-bars font-simsun'>新增</button>`).click(this._handleAddBars.bind(this)))
+																																									.append($(`<input type='number' value='1' min='1'/>`)))
 												.append($(`<button class='flat-btn delete-bars'>Del</button>`).click(this._handleDeleteBars.bind(this)))
 												.hide();
 												// .append($(`<button class='flat-btn bars-count font-number'>1<i class='fa fa-caret-down'><i/></button>`));
 
-	this._$main.append(header).append(body).append(footer).append(footer).append(this._floatTools.addBars);
+	this._floatTools.rangeTool = $(`<span class='range-tools-container'></span>`).append($(`<span class='two-button-wrapper'></span>`)
+																																											.append($(`<button class='flat-btn mode-single active font-simsun'>单</button>`).click(this._handleSetRangeMode.bind(this, 0)))
+																																											.append($(`<button class='flat-btn mode-linear font-simsun'>线</button>`).click(this._handleSetRangeMode.bind(this, 1))))
+															.append($(`<button class='flat-btn delete-bars'>Del</button>`).click(this._handleDeleteBars.bind(this)))
+	this._floatTools.rangeTool.hide();															
+
+	this._$main.append(header).append(body).append(footer).append(footer).append(this._floatTools.addBars).append(this._floatTools.rangeTool);
 	this._initKlineEditor();
 	this._initConfigEditor();
 };
@@ -142,7 +156,8 @@ SearchEditor.prototype._init = function() {
 
 SearchEditor.prototype._handleStartSelectRange = function(e) {
 	let $target = $(e.target);
-	$target.css('box-shadow','0 0 1px #444 inset');
+	// $target.css('box-shadow','0 0 1px #444 inset');
+	$target.addClass('active');
 	this._klineEditor.startSelectRange();
 }
 
@@ -207,17 +222,45 @@ SearchEditor.prototype._handleShouCangBlur = function(e) {
 	$target.children().remove();
 }
 
-SearchEditor.prototype._hanleAddBars = function(e) {
+SearchEditor.prototype._handleAddBars = function(e) {
 	let bars = $(e.target).next().val();
 	this._klineEditor.insertNewAfterSelectedIndex(bars);
 }
 
+SearchEditor.prototype._handleSetRangeMode = function(mode, e) { //0:single, 1:range
+	this._klineEditor.setRangeMoveMode(mode);
+	let $target = $(e.target);
+	$target.addClass('active');
+	$target.siblings('button').removeClass('active');
+}
+
 SearchEditor.prototype.handleEndDrawRange = function(range) { //
-	this._$main.find('.select-range').css('box-shadow','');
+	// this._$main.find('.select-range').css('box-shadow','');
+	this._$main.find('.select-range').removeClass('active');
+	this._floatTools.rangeTool.show();
+}
+
+SearchEditor.prototype.handleRemoveRange = function() {
+	this._floatTools.rangeTool.hide();
+}
+
+SearchEditor.prototype._handleRename = function(e) {
+	// this._favoritesManager.updateFavorites(this._dataObj)
+	let name = $(e.target).siblings('input').val() || '';
+	name = name.trim().slice(0, 8);
+	let folderName = this._favoritesController.getActiveName();
+	if(name) {
+		this._dataObj.name = name;
+		this._$root.find('.name-content').text(name);
+		this._favoritesManager.updateFavorites(folderName, this._dataObj);
+	}
+	$(e.target).closest('.rename-container').hide();
 }
 
 SearchEditor.prototype.dispose = function() {
-
+	//save
+	let folderName = this._favoritesController.getActiveName();
+	this._favoritesManager.updateFavorites(folderName, this._dataObj);
 };
 
 module.exports = SearchEditor;
