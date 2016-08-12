@@ -25,8 +25,7 @@
 			color: transparent;
 			width: 30px;
 			height: 30px;
-			margin-left: 10px;
-			margin-top: 10px;
+			margin: 10px;
 		}
 		.curve {
 			background-image: url('./image/index.png');
@@ -66,6 +65,7 @@
 		height: 100%;
 		background-color: #F6F6F6;
 		.favorites-folder {
+			color: #000;
 			position: relative;
 			padding-left: 20px;
 			// padding-top: 8px;
@@ -136,7 +136,7 @@
 
 		.favorites-input-wrapper {
 			border: 1px solid #eee;
-			margin: 10px 20px;
+			margin: 30px 20px;
 			background-color: #fff;
 			height: 32px;
 			input {
@@ -177,7 +177,7 @@
 		.scrollbar-thumb(@background-color: @ks-color-gray-4);
 		>.history-items-wrapper {
 			float: left;
-			padding: 20px;
+			padding: 30px;
 		}
 	}
 }
@@ -211,28 +211,28 @@
 		margin-right: 20px;
 		margin-bottom: 20px;
 		background-color: #fff;
-		box-shadow: 0 0 20px 0 #f7f7f7;
+		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.06);
 		>* {
 			position: absolute;
 		}
 		.name {
-			top: 38px;
+			top: 30px;
 			left: 0;
 			width: 100%;
 			height: 20px;
 			margin: 0;
-			font-size: 18px;
+			font-size: 16px;
 			color: #000;
 			text-align: center;
 		}
 		.header-info {
-			top: 70px;
+			top: 66px;
 			width: 100%;
 			// left: 10px;
 			text-align: center;
-			color: @ks-color-gray-7;
-			strong {
-				color: #333;
+			color: #aaa;
+			.strong {
+				color: #000;
 				font-weight: normal;
 				font-size: 18px;
 				margin-right: 5px;
@@ -246,9 +246,10 @@
 			width: 20px;
 			height: 20px;
 			// border: 1px solid red;
-			background-image: url('./image/folder.png');
+			background-image: url(@icons_url);
 			background-repeat: no-repeat;
-			background-size: cover;
+			.icon_position(1, 6, 1, 5px, 5px);
+			// background-size: cover;
 			color: transparent;
 			// .add-favorites-popup {
 			// 	z-index: 102;
@@ -268,7 +269,7 @@
 			// 	}
 			// }
 			&:hover{
-				background-position-y: 100%;
+				.icon_position(3, 6, 1, 5px, 5px);
 			}
 		}
 		.delete-btn {
@@ -277,15 +278,16 @@
 			right: 10px;
 			width: 20px;
 			height: 20px;
-			background-image: url('./image/trash-btn.png');
+			background-image: url(@icons_url);
+			.icon_position(1, 1, 1, 5px, 5px);
 			color: transparent;
 			&:hover{
-				background-position-y: 100%;
+				.icon_position(3, 1, 1, 5px, 5px);
 			}
 		}
 		.canvas-wrapper {
-			top: 110px;
-			left: 15px;
+			top: 104px;
+			left: 20px;
 			canvas.kline {
 				position: absolute;
 			}
@@ -326,9 +328,11 @@
 			bottom: 45px;
 		}
 		.from-info {
-			bottom: 20px;
+			bottom: 30px;
 			width: 100%;
+			margin: 0;
 			text-align: center;
+			color: #aaa;
 		}
 		.btn-wrapper {
 			left: 0;
@@ -382,8 +386,9 @@
 .content-wrapper {
 	.nav-container {
 		.nav-title {
-			margin: 20px;
-			font-size: 15px;
+			color: #000;
+			margin: 30px 20px;
+			font-size: 16px;
 		}
 		.nav-item-container {
 			max-height: calc(~"100% - 100px");
@@ -404,10 +409,17 @@
 
 		.head-nav {
 			height: 50px;
-			padding-left: 40px;
+			padding-left: 20px;
 			.return {
 				margin-top: 10px;
 				background-color: transparent;
+				.icon-return {
+					display: inline-block;
+					width: 20px;
+					height: 20px;
+					background-image: url(@icons_url);
+					.icon_position(2, 7, 1, 5px, 5px);
+				}
 			}
 		}
 		.search-editor-container {

@@ -8,6 +8,7 @@ const HISTORY = 'history';
 const _historyPath = path.join(BASEPATH, HISTORY);
 
 let _historyData = {};
+let _latestData = null;
 
 let _createHistoryFolder = () => {
 	try{
@@ -114,6 +115,7 @@ let pushHistory = (dataObj) => {
 
 	let filePath = path.join(_historyPath, toMonth, fileName);
 	saveFile(filePath, JSON.stringify(todayData));
+	_latestData = dataObj;
 	console.debug('pushHistory timeoused:', new Date() - d1);
 };
 
@@ -145,6 +147,10 @@ let getSortedMonthData = (yearMonth) => {
 	return result;
 };
 
+let getLatestData = () => {
+	return _latestData;
+};
+
 module.exports = {
 	getAllFilesFromStorage,
 	deleteHistory,
@@ -153,5 +159,6 @@ module.exports = {
 	getHistoryData,
 	getSortedHistoryMonth,
 	getSortedMonthData,
-	deleteOneHistory
+	deleteOneHistory,
+	getLatestData
 };

@@ -15,7 +15,7 @@ let _searchEditorFavorites = null;
 //显示K线编辑器
 let _createDetailPanel = (parentDom, editorCache, dataObj) => {
 	let editorContainer = $(`<div class='search-editor-container'></div>`);
-	let $newDom = $(`<div class='detail-panel'><div class='head-nav'><button class='flat-btn font-simsun return'>返回</button></div></div>`).append(editorContainer);
+	let $newDom = $(`<div class='detail-panel'><div class='head-nav'><button class='flat-btn font-simsun return'><span class='icon-return'></span>返回</button></div></div>`).append(editorContainer);
 	$newDom.find('button.return').click((event) => { //返回
 		_disposeDetailPanel(parentDom, editorCache);
 	});
@@ -98,7 +98,7 @@ let _generatePattern = (pattern, type) => {
 
 	let name = `<h2 class='name font-msyh'>${pattern.name||'未命名'}</h2>`;
 	// let info = `<p class='header-info'>${pattern.symbol}     ${pattern.kline.length}根K线</p>`;
-	let info = `<p class='header-info'><strong>${pattern.kline.length}</strong>根K线</p>`;
+	let info = `<p class='header-info'><span class='strong'>${pattern.kline.length}</span>根K线</p>`;
 	let addButton = `<button class='add-btn flat-btn'>add</button>`;
 	let deleteButton = `<button class='delete-btn flat-btn'>delete</button>`;
 	let hoverBtns = (type == 0) ? 
@@ -106,7 +106,7 @@ let _generatePattern = (pattern, type) => {
 									:
 									`<span class='btn-overlay flex-around'><button class='flat-btn re-search'>重新搜索</button></span>`;
 
-	let canvasDiv = `<div class='canvas-wrapper'><canvas class='kline' width='160' height='80' style='width:160px;height:80px'/>${hoverBtns}</div>`;
+	let canvasDiv = `<div class='canvas-wrapper'><canvas class='kline' width='150' height='120' style='width:150px;height:120px'/>${hoverBtns}</div>`;
 	// let range = `<span class='daterange-info font-number'>${startDateStr} ~ ${endDateStr}</span>`;
 	// let footer = `<div class='btn-wrapper'><button class='re-search'>重新搜索</button><button class='go-detail'>查看详情</button></div>`;
 	let fromInfo = `<p class='from-info'>来源:${pattern.symbol}</p>`;

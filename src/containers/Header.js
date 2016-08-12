@@ -63,6 +63,7 @@ class Header extends React.Component {
 		let {showLogin} = this.state;
 		// let showLogin = this.props.account.username === '';
 		return <div className="container-header">
+			<span className='header-icon'></span>
 			{this.renderToolbar()}
 			{showLogin ? <Login ref='login_panel' onLogined={this.handleLogined.bind(this)} close={this.closeLogModal.bind(this)}/> : '' }
 		</div>;

@@ -139,7 +139,7 @@ class StockView extends React.Component {
 		      		<h4 className='nav-title'>我的收藏夹</h4>
 		      		<div ref='favorites_nav_container' className='nav-item-container'></div>
 		      		<div className='favorites-input-wrapper'>
-		      			<input ref='favorite_input' placeholder='新建收藏夹'/>
+		      			<input className='font-simsun' ref='favorite_input' placeholder='新建收藏夹'/>
 		      			<button className='flat-btn new-folder' onClick={this.handleNewFavorites.bind(this)}>+</button>
 		      			<button className='flat-btn clear' onClick={this.handleClearInput.bind(this)}>x</button>
 		      		</div>

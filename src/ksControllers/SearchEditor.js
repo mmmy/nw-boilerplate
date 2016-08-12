@@ -52,7 +52,7 @@ SearchEditor.prototype._initMain = function() {
 		C: $('<span class="font-arial number">N/A</span>'),
 	};
 	let name = this._dataObj.name||'未命名';
-	let $nameInput = $(`<span class='rename-container'><span class='ks-input-wrapper'><input value=${name} ><button class='ks-check'>check</button><button class='ks-delete'>del</button></span></span>`).hide();
+	let $nameInput = $(`<span class='rename-container'><span class='ks-input-wrapper'><input value=${name} ><button class='button ks-check'>check</button><button class='button ks-delete'>del</button></span></span>`).hide();
 	$nameInput.find('.ks-check').click(this._handleRename.bind(this));
 	$nameInput.find('.ks-delete').click((e) => { $nameInput.hide(); });
 

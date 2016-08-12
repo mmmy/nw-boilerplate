@@ -8,6 +8,10 @@ import { predictionRandomData } from './utils/comparatorPredictionEchart';
 import _ from 'underscore';
 import { setComparatorPosition } from '../shared/actionTradingview';
 import store from '../store';
+import { handleShouCangFocus, handleShouCangBlur } from '../ksControllers/publicHelper';
+import historyManager from '../backend/historyManager';
+import favoritesManager from '../backend/favoritesManager';
+import { favoritesController } from '../ksControllers/stockviewController';
 
 let _getActivePatternStartUnixTime = () => {
   let state = store.getState();
@@ -497,6 +501,15 @@ class ComparatorPrediction extends React.Component {
     }
   }
 
+  showFavoritesMenu(e) {
+    let latestHistory = historyManager.getLatestData();
+    handleShouCangFocus(favoritesManager, favoritesController, latestHistory, e);
+  }
+
+  removeFavoritesMenu(e) {
+    handleShouCangBlur(e);
+  }
+
   render(){
     this.d1 = new Date();
     let className = classNames('comparator-prediction-chart');
@@ -504,6 +517,7 @@ class ComparatorPrediction extends React.Component {
     return (<div style={{position:'absolute',height:'100%',width:'100%'}}>
       <div className='comparator-info-container'>
         <span ref='info_title' className='title font-simsun'>匹配图形</span><i ref='info_O'>O</i><i ref='info_H'>H</i><i ref='info_L'>L</i><i ref='info_C'>C</i>
+        <button className='flat-btn add-btn' onFocus={ this.showFavoritesMenu.bind(this) } onBlur={ this.removeFavoritesMenu.bind(this) }>add</button>
       </div>
       <div ref='eChartPredictionLine' className={ className }></div>
     </div>);
