@@ -28,7 +28,7 @@ let _disposeDetailPanel = (parentDom, editorCache) => {
 	editorCache = null;
 	$(parentDom).find('.detail-panel').remove();
 	//refresh UI
-	_refreshFavoritesBody();
+	// _refreshFavoritesBody();
 }; 
 
 let _reSearch = (dataObj, cb) => {
@@ -114,7 +114,7 @@ let _generatePattern = (pattern, type) => {
 	let $node = $(`<div class='history-item font-simsun'>${name}${info}${addButton}${deleteButton}${canvasDiv}${fromInfo}</div>`);
 			$node.data('data', pattern);
 
-			$node.find('.add-btn').focus(handleShouCangFocus.bind(null, favoritesManager, favoritesController, pattern)).blur(handleShouCangBlur); //添加到收藏夹
+			$node.find('.add-btn').focus(handleShouCangFocus.bind(null, favoritesManager, favoritesController, pattern, {type:2})).blur(handleShouCangBlur); //添加到收藏夹
 			$node.find('.delete-btn').click(_handleDeleteOne);
 			$node.find('.re-search').click(_handleReSearch);  //重新搜索
 			$node.find('.go-detail').click(_handleDetail);  //重新搜索
@@ -392,6 +392,12 @@ favoritesController.addFavorites  = (name, dataObj) => {
 	if(name == _activeName) {
 		_prependFavoritesBody(dataObj);
 	}
+};
+
+favoritesController.updateFavorites = (dataObj) => {
+	favoritesManager.addFavorites(_activeName, dataObj); //更新数据
+	// 更新UI
+	_refreshFavoritesBody();
 };
 
 favoritesController.addNewFolder = (name) => {

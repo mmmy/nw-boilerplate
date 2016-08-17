@@ -502,8 +502,11 @@ class ComparatorPrediction extends React.Component {
   }
 
   showFavoritesMenu(e) {
+    if(e.target.children.length>0 || e.target.nodeName=='INPUT') {
+      return;
+    }
     let latestHistory = historyManager.getLatestData();
-    handleShouCangFocus(favoritesManager, favoritesController, latestHistory, e);
+    handleShouCangFocus(favoritesManager, favoritesController, latestHistory, {type: 1}, e);
   }
 
   removeFavoritesMenu(e) {

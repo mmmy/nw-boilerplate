@@ -150,6 +150,8 @@ class ReportDetailView extends React.Component {
 
 			</div>*/}
 			<h3 className={titleClassName}>数据统计</h3>
+			{fullView ? '' : [<span className='split-line l1'></span>, <span className='split-line l2'></span>, <span className='split-line l3'></span>]}
+
 			{ this.renderStuffs(data) }
 
 			<div className={upClass}>
@@ -207,14 +209,14 @@ class ReportDetailView extends React.Component {
 		const meanValueClass = classNames('__fadeIn', 'position-ab', 'text-center', 'transition-all', 'mean-value', 'font-number', {'mama': !fullView });
 
 		return [
-			<div className={daysClass}>统计天数</div>,
+			<div className={daysClass}>统计K线数</div>,
 			<div className={daysValueClass}>{daysStr}</div>,
 			<div className={shouyiClass}>收益</div>,
 			<div className={upRateClass}>上涨比例</div>, //xiaolu
-			<div className={upRateValueClass} style={{'color': '#b61c15'}}>{ (data.upPercent*100).toFixed(1) }{'%'}</div>,
-			<div className={medianClass}>中位数</div>,
+			<div className={upRateValueClass} >{ (data.upPercent*100).toFixed(1) }{'%'}</div>,
+			<div className={medianClass}>{fullView?'':'收益'}中位数</div>,
 			<div className={medianValueClass}>{ (data.median*100).toFixed(1)}{'%'}</div>,
-			<div className={meanClass}>平均值</div>,
+			<div className={meanClass}>{fullView?'':'收益'}平均值</div>,
 			<div className={meanValueClass}>{ (data.mean*100).toFixed(1)}{'%'}</div>,
 		];
 	}

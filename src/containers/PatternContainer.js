@@ -134,8 +134,8 @@ class PatternContainer extends React.Component {
 				{/*<FilterBar dispatch={dispatch} crossFilter={patterns.crossFilter} />*/}
 			</div>
 			<div className={ collectionClass }>
-				<h3 className='title'>匹配结果</h3>
 				<PatternCollection ref='pattern_collection' dispatch={ dispatch } />
+				<h3 className='title'>匹配结果</h3>
 			</div>
 			<div ref='pattern_statistics_container' className={ patternInfoClass }>
 				<PatternStatisticsPanel showTrashPanel={this.showTrashPanel.bind(this, true)}/>

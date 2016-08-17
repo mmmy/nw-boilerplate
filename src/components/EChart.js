@@ -266,16 +266,47 @@ class EChart extends React.Component {
 		callback &&  setTimeout(callback, 5);
 	}
 
+	updateKlineCanvas() {
+		let canvas = this.refs.kline_canvas;
+		let pattern = this.props.pattern;
+		let index = this.props.index;
+		let kline = pattern && pattern.kLine || [];
+		let baseBars = pattern && pattern.baseBars || Infinity;
+
+		if(!canvas || index > 5) return;
+
+		let $canvas = $(canvas);
+		let width = $canvas.parent().width(),
+				height = (index === 0) ? 110 : 50;
+		$canvas.width(width).height(height).attr({
+			height,
+			width
+		});
+		drawKline(canvas, kline.slice(0, baseBars));
+	}
+
 	componentDidMount() {
 		this.drawChart();
 		setFunc(this.props.id, this.drawChart.bind(this));
 		setImgSrcFunc(this.props.id, this.setImgSrc.bind(this));
+		let index = this.props.index;
+		if(index>=0 && index<=4) {
+			this.updateKlineCanvas();
+			this._updateKlineCanvas = this.updateKlineCanvas.bind(this);
+			window.addEventListener('resize', this._updateKlineCanvas);
+		}
 	}
 
 	componentDidUpdate() {
 
 			// setTimeout(this.drawChart.bind(this));
 			this.drawChart();
+			let { fullView, index } = this.props;
+			if(!fullView && index>=0 && index<=4) {
+				$('.inner-searchreport').one('transitionend', () => {
+					this.updateKlineCanvas();
+				});
+			}
 			//this.drawChart()	
 		//console.log('echart componentDidUpdate');
 		/*******************************************
@@ -315,19 +346,27 @@ class EChart extends React.Component {
 		delete this.canvasNode;
 		// this.chart && this.chart.dispose && this.chart.dispose();
 		delete this.chart;
+		window.removeEventListener('resize', this._updateKlineCanvas);
 	}
 
 	render(){
 
 		let { fullView, index, isTrashed } = this.props;
 		//console.log('index', this.props.index);
+		let isLarger = !fullView && index === 0,
+				isSmaller = !fullView && index > 0 && index < 5;
 		const className = classNames('echart', 'transition-all', {
-			'larger': !fullView && index === 0,
-			'smaller': !fullView && index > 0 && index < 5,
+			'larger': isLarger,
+			'smaller': isSmaller,
 		});
-
+		let canvasWrapper = <div className='kline-canvas-wrapper'><canvas ref='kline_canvas' className='kline-canvas'/></div>;
 		let trashInfo = isTrashed ? <div className='trashed-info'>{/*<h1>不参与</h1><h1>走势计算</h1>*/}</div> : '';
-		return <div ref={'echart'+this.props.index} className={className} ><h3 style={{color: '#d0d0d0', width:'100px'}}>加载中...</h3><img ref='img' src='' />{trashInfo}</div>;
+		return <div ref={'echart'+this.props.index} className={className} >
+							<h3 style={{color: '#d0d0d0', width:'100px'}}>加载中...</h3>
+							<img ref='img' src='' />
+							{trashInfo}
+							{(isLarger || isSmaller) ? canvasWrapper : ''}
+						</div>;
 
 	}
 }

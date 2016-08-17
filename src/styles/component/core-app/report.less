@@ -123,18 +123,35 @@
 //动画效果要人命 >__<
 @font-size-ww: 12px;//1.2rem;
 @font-size-ww13: 12px;//1.2rem;
-@font-size-mama: 20px;//@font-size-ww * 2.2;
+@font-size-mama: calc(~"1rem * 5 - 20px");//3.4rem;//20px;//@font-size-ww * 2.2;
 @width-bala: 30%;
 @mama-top1: 35%;
 @mama-top2: 50%;
-@mama-width: 25%; 
+@mama-width: 25%;
 
 .reportdetail-container {
+	.split-line {
+		display: inline-block;
+		position: absolute;
+		bottom: 45px;
+		width: 1px;
+		height: 90px;
+		border-left: 1px dashed #eee;
+		&.l1 {
+			left: 25%;
+		}
+		&.l2 {
+			left: 50%;
+		}
+		&.l3 {
+			left: 75%;
+		}
+	}
 	.title {
 		float: left;
 		font-size: 14px;
 		color: #000;
-		margin-left: 20px;
+		margin-left: calc(~"100% / 12 - 16.67px");
 	}
 	.fontSize50() { 
 		font-size: 50%;
@@ -146,6 +163,8 @@
 		width: @mama-width;
 		font-size: @font-size-ww;
 		color: @ks-color-gray-6;
+		// text-align: left;
+		// padding-left: calc(~"100% / 12 - 16.67px");
 		//left: @mama-width;
 		&.mama {
 			opacity: 1;
@@ -158,6 +177,8 @@
 		top: @mama-top2;
 		width: @mama-width;
 		font-size: @font-size-mama;
+		// position: relative;
+		// left: calc(~"100% / 12 - 16.67px");
 		&.mama {
 			opacity: 1;
 		}
@@ -179,9 +200,9 @@
 		color: @lulu-gary2;
 		&.mama {
 			top: @mama-top1;
-			left: @mama-width * 3;
-			color: @lulu-gary2;
+			left: @mama-width;
 			width: @mama-width;
+			color: @lulu-gary3;
 		}
 	}
 
@@ -190,9 +211,10 @@
 		top: 73%;
 		font-size: @font-size-ww * 2.2;
 		width: @width-bala;
+		// color: #b61c15;
 		&.mama {
 			top: @mama-top2;
-			left: @mama-width * 3;
+			left: @mama-width;
 			font-size:  @font-size-mama;
 			width: @mama-width;
 			span:nth-child(2) {
@@ -209,7 +231,7 @@
 		color: @lulu-gary3;
 		&.mama {
 			top: @mama-top1;
-			left: @mama-width;
+			left: @mama-width * 2;
 			width: @mama-width;
 		}
 	}
@@ -222,7 +244,7 @@
 		color: black;
 		&.mama {
 			top: @mama-top2;
-			left: @mama-width;
+			left: @mama-width * 2;
 			font-size: @font-size-mama;
 			width: @mama-width;
 			span:nth-child(2) {
@@ -239,8 +261,10 @@
 		color: @lulu-gary3;
 		&.mama {
 			top: @mama-top1;
-			left: @mama-width * 2;
+			left: @mama-width * 3;
 			width: @mama-width;
+			// text-align: right;
+			// padding-right: calc(~"100% / 12 - 16.67px");
 		}
 	}
 
@@ -252,7 +276,7 @@
 		color: black;
 		&.mama {
 			top: @mama-top2;
-			left: @mama-width * 2;
+			left: @mama-width * 3;
 			font-size: @font-size-mama;
 			width: @mama-width;
 			span:nth-child(2) {

@@ -4,23 +4,25 @@
   float: left;
   border-right: none;
   // width: calc(~'22%');
-  width: @comparator_W;
+  width: calc(~"100% * 13 / 40 - 53.5px");//@comparator_W;
   height: 100%;//calc(~'100% - 30px');
   // padding-left: 60px;
   padding-top: 0;//20px;
 
   .comparator-inner {
     position: absolute;
-    width: calc(~"100% - 20px");
-    left: 20px;
+    width: calc(~"100% * 11 / 12 + 17.5px");
+    left: calc(~"100% / 12 - 17.5px");//20px;
     height: 100%;
-    padding: 10px 20px;
+    padding: 10px 0;
+    border-radius: 2px;
     .mama-box-shadow();
   }
   .title {
     font-size: 14px;
     margin-top: 10px;
     color: #000;
+    margin-left: calc(~"100% / 12 - 16.67px");
   }
   .searching-info{
     position: absolute;
@@ -29,6 +31,7 @@
     z-index: 2;
     font-size: 12px;
     width: 100%;
+    margin-left: calc(~"100% / 12 - 16.67px");
     span{
       // margin-right: 20px
     }
@@ -40,7 +43,10 @@
 
   .echart-container {
     // margin-top: 50px;
-    height: calc(~"100% - 50px");
+    margin-left: calc(~"100% / 12 - 16.67px");
+    width: calc(~"100% * 5 / 6 + 35.34px");
+    height: calc(~"100% - 40px");
+    margin-top: 15px;
   }
 
   .comparator-tv-screenshot{

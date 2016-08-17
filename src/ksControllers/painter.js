@@ -179,7 +179,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		//text
 		ctx.beginPath();
 		let text = selectedRange[1] - selectedRange[0] + 1 + '根K线';
-		ctx.font = '14px Arial';
+		ctx.font = 'bold 14px Microsoft Yahei';
 		ctx.textAlign = 'center';
 		// ctx.lineWidth = 1;
 		ctx.fillStyle = '#fff';

@@ -317,7 +317,7 @@ class PatternView extends React.Component {
 			[`smaller s${index}`] : index > 0 && index < 5,
 		});
 
-		const symbolClass = classNames('symbol-container', {'hide-symbol':!this.state.showSymbol && !isActive}); //hover显示symbol
+		const symbolClass = classNames('symbol-container font-arial', {'hide-symbol':!this.state.showSymbol && !isActive}); //hover显示symbol
 
 		const echartWrapper = classNames('echart-row-wrapper', {
 			'larger': !fullView && index === 0,  //第一个放大显示
@@ -328,7 +328,10 @@ class PatternView extends React.Component {
 
 		return (<div id={ `pattern_view_${id}`} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
 
-			<div className={symbolClass}>{pattern.symbol}</div>
+			<div className={symbolClass}>
+				{pattern.symbol}
+				<p className='describe font-simsun'>{pattern.metaData && pattern.metaData.name || ''}</p>
+			</div>
 
 			<div className={echartWrapper} ref='echart_wrapper'>
 				<EChart {...this.props} isTrashed={this.state.isTrashed} />

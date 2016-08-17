@@ -196,6 +196,8 @@ class Comparator extends React.Component {
 	}
 
 	componentDidMount() {
+    this._resizeChart = this.resizeChart.bind(this);
+    window.addEventListener('resize', this._resizeChart);
 	}
 
 	componentWillReceiveProps(){
@@ -207,6 +209,9 @@ class Comparator extends React.Component {
   	if(!stretchView) {
   		//$(this.refs.img1).animateCss('slideInLeft');
   		//$(this.refs.img2).animateCss('slideInLeft');
+      $('.inner-searchreport').one('transitionend', () => {
+        this.resizeChart();
+      });
   	}
     let patterns = this.props.patterns;
     if(_drawEchart && this._oldPatterns !== patterns) {
@@ -247,8 +252,12 @@ class Comparator extends React.Component {
 	}
 
 	componentWillUnmount(){
-
+    window.removeEventListener('resize', this._resizeChart);
 	}
+
+  resizeChart() {
+    this.chart && this.chart.resize();
+  }
 
   renderImages() {
     let { stretchView, screenshotTvURL, screenshotEChartURL, screenshotHeatmapURL, searchingError } = this.props;

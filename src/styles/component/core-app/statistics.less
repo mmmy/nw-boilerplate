@@ -5,7 +5,7 @@
 .statistics-container{
 	float: left;
 	position: relative;
-	width: @statisticsContainer_W;
+	width: calc(~"100% * 6 / 13 - 47.7px");//@statisticsContainer_W;
 	height: @statisticsContainer_H;
 	//border-top: 1px solid @ks-color-gray-8;
 	padding: 0;
@@ -17,6 +17,7 @@
 		width: calc(~"100% - 20px");
 		left: 10px;
 		height: 100%;
+		border-radius: 2px;
 		// box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 		.mama-box-shadow();
 	}
@@ -37,7 +38,7 @@
 	height: @reportContainer_H;
 	margin: 0;
 	&.stretch{
-		height: calc(@searchResultWrap_H~" - 33px");
+		height: 100%;//calc(@searchResultWrap_H~" - 33px");
 		//margin: 5px;
 		margin-top: 0;//10px;
 	}

@@ -67,7 +67,7 @@ SearchEditor.prototype._initMain = function() {
 	header.append($name).append($nameInput).append(OCLH).append($(`<button class='flat-btn tool-btn select-range'>区域</button>`).click(this._handleStartSelectRange.bind(this)))
 											// .append($(`<button class='flat-btn tool-btn delete-range'>删除</button>`).click(this._handleDeleteBars.bind(this)))
 											.append($(`<button class='flat-btn tool-btn save'>保存</button>`))
-											.append($(`<button class='flat-btn tool-btn add-favorites'>收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj)).blur(handleShouCangBlur.bind(null)));
+											.append($(`<button class='flat-btn tool-btn add-favorites'>收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj, {type:0})).blur(handleShouCangBlur.bind(null)));
 
 	this._OHLCInputs = {
 		O: $('<input class="OCLH-input font-arial" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexO(+event.target.value) }),

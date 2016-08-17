@@ -7,7 +7,7 @@ const initialState = {
 	dateRange: ['1990/01/01', '2016/04/30'],
 	spaceDefinition: { stock: true, future: false },
 	matchType: MATCH_TYPE.MORPHO,
-	searchLenMax: 200
+	searchLenMax: 50
 };
 
 export default function searchConfig(state=initialState, action) {

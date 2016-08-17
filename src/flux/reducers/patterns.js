@@ -6,7 +6,7 @@ import crossfilter from 'crossfilter';
 let d1 = new Date();
 
 let getInitialState = () => {
-	let randomData = (process.env.NODE_ENV == 'development') ? randomPatterns(200) : randomPatterns(0);
+	let randomData = (process.env.NODE_ENV == 'development') ? randomPatterns(10) : randomPatterns(0);
 	let initialState = {
 		searchMetaData: null,
 		rawData: randomData.patterns,
