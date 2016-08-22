@@ -8,6 +8,21 @@ import ToggleBar from '../components/ToggleBar';
 import SearchWaitingWaves from '../components/SearchWaitingWaves';
 import store from '../store';
 import { callFunc } from '../components/helper/updateEchartImage';
+import painter from '../ksControllers/painter';
+
+let getKlineImgSrc = (kline) => {
+	if(!kline || kline.length==0) {
+		return './image/kline.png';
+	}
+	let len = kline.length;
+	let perfectW = len * 5;
+	perfectW = perfectW > 500 ? 500 : perfectW;
+	let canvas = document.createElement('canvas');
+	canvas.height = 100;
+	canvas.width = perfectW;
+	painter.drawKline(canvas, kline);
+	return canvas.toDataURL();
+};
 
 let afterSearchMessage = (number, timeSpent) => {
 	const time = (timeSpent/1000).toFixed(3);
@@ -137,7 +152,8 @@ class SearchReport extends React.Component {
 	renderDataPanels() {
 		let state = store.getState();
 		let {error} = state.patterns;
-		let errorPanel = error ? <div className='error-panel flex-center'><img src='./image/kline.png' /><div><h2>本次搜索失败了</h2><p>请您尝试<button onClick={this.restartSearch.bind(this)}>重新搜索</button>或返回<button onClick={this.resetError.bind(this)}>上一次搜索</button></p></div></div> : '';
+		let kline = patternActions.getLastKline();
+		let errorPanel = error ? <div className='error-panel flex-center'><img src={ getKlineImgSrc(kline) } /><div><h2>本次搜索失败了</h2><p>请您尝试<button onClick={this.restartSearch.bind(this)}>重新搜索</button>或返回<button onClick={this.resetError.bind(this)}>上一次搜索</button></p></div></div> : '';
 		let dataPanelClass = classNames('search-report-wrapper', 'transition-top', 'transition-duration2', {
 			'slide-down': this.props.waitingForPatterns,
 			'transition-delay3': !this.props.waitingForPatterns,

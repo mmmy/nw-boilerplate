@@ -274,6 +274,7 @@
 		position: absolute;
 		width: 30px;
 		height: 30px;
+		cursor: pointer;
 		.flat-btn();
 		color: transparent;
 	}
@@ -289,3 +290,29 @@
 	}
 }
 
+.ks-messager-container {
+	position: fixed;
+	z-index: 200;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+	border-radius: 2px;
+	background-color: #fff;
+	padding: 10px 20px;
+	.success-icon {
+		float: left;
+		width: 50px;
+		height: 50px;
+		background-image: url(@icons_url);
+		.icon_position(5, 0, 0, 5px, -4px);
+		vertical-align: middle;
+	}
+	.success-message {
+		float: left;
+		vertical-align: middle;
+		font-size: 20px;
+		margin-top: 10px;
+		margin-left: 10px;
+	}
+}

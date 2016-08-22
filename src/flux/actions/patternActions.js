@@ -21,7 +21,7 @@ let historyController = stockviewController.historyController;
 const devLocal = false;
 let _lastSearch = {};
 
-let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, edited=false, searchConfig, dataCategory}, cb) => {
+let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, edited=false, searchConfig, dataCategory, name='未命名', favoriteFolder='', state={isTrashed: false, trashDate:null}}, cb) => {
 	//console.log('patternActions: getPatterns',symbol, dateRange);
 	let klineClone = [];
 	kline.forEach((arr) => { //消除echart 的bug
@@ -48,6 +48,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 	_lastSearch.dateRange = dateRange;
 	_lastSearch.bars = bars;
 	_lastSearch.dataCategory = dataCategory;
+	_lastSearch.kline = kline;
 
 	return (dispacth) => {
 
@@ -92,7 +93,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 					patterns.searchConfig = searchConfig;
 					let searchTimeSpent = new Date() - startTime;
 					//保存历史
-					setTimeout(() => { historyController.pushHistory({symbol, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig, dataCategory, name:'未命名'}); });
+					setTimeout(() => { historyController.pushHistory({symbol, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig, dataCategory, name, favoriteFolder, state}); });
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 					cb && cb();
 
@@ -111,7 +112,12 @@ let resetError = () => {
 	return {type: types.RESET_ERROR};
 };
 
+let getLastKline = () => {
+	return _lastSearch.kline;
+};
+
 module.exports = {
 	getPatterns,
 	resetError,
+	getLastKline,
 };

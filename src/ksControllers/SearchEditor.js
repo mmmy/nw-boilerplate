@@ -2,6 +2,7 @@
 import KlineEditor from './KlineEditor';
 import ConfigEditor from './ConfigEditor';
 import { handleShouCangFocus, handleShouCangBlur } from './publicHelper';
+import ConfirmModal from './ConfirmModal';
 
 function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 	this._$root = $(dom);
@@ -162,9 +163,11 @@ SearchEditor.prototype._handleStartSelectRange = function(e) {
 }
 
 SearchEditor.prototype._handleDeleteBars = function(e) {
-	if(!this._klineEditor.deleteAtRange()) {
-		this._klineEditor.deleteAtSelectedIndex();
-	}
+	new ConfirmModal('确认删除?', 'kline-editor-delete', () => {
+		if(!this._klineEditor.deleteAtRange()) {
+			this._klineEditor.deleteAtSelectedIndex();
+		}
+	});
 }
 
 SearchEditor.prototype._handleShouCangFocus = function(e) {

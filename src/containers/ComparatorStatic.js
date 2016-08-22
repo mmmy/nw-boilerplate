@@ -86,7 +86,7 @@ class ComparatorStatic extends React.Component {
     // window.removeEventListener('resize', this.handleResize);
 	}
   componentDidUpdate() {
-    console.info('ComparatorStatic did update in millsec: ', new Date() - this.d1);
+    // console.info('ComparatorStatic did update in millsec: ', new Date() - this.d1);
   }
 
   goToSearchPage() {

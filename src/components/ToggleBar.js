@@ -61,10 +61,10 @@ class ToggleBar extends React.Component {
 		});
 
 		const time = (searchTimeSpent/1000).toFixed(3);
-
+		let title = waitingForPatterns ? '搜索' : '搜索结果';
 		return (<div className={toggleClass} >
 					<div className={btnWrapper} onClick={this.toggleView.bind(this)}>
-						<div className="item title">搜索</div>
+						<div className="item title">{title}</div>
 						{/*<div className={timespentClass}>{ `用时:${time}秒` }</div>*/}
 						<div className={btnClass} ><i className="fa fa-angle-up"></i></div>
 					</div>

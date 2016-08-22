@@ -21,6 +21,7 @@ let _getActivePatternStartUnixTime = () => {
 };
 
 function splitData(rawData, predictionBars) {
+    predictionBars += 1;
     var categoryData = [];
     var values = [];
 
@@ -261,7 +262,7 @@ class ComparatorPrediction extends React.Component {
           hoverAnimation: false,
           lineStyle: {
             normal: {
-              color: '#aaa',//'rgba(0, 0, 0, 0.2)',
+              color: (data.id==0) ? '#862020' : 'rgba(200, 200, 200, 0.5)',
               width: 1
             }
           },
@@ -271,7 +272,7 @@ class ComparatorPrediction extends React.Component {
               borderColor: 'green'
             }
           },
-          z: -1
+          z: (data.id==0) ? 1 : -1
         });
       };
 

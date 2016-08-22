@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import echarts from 'echarts';
+import { generateHeatMapOption } from './utils/heatmap-options';
 
 let _yMax = 100;
 let _yMin = -100;
@@ -43,9 +44,10 @@ class ComparatorHeatmap extends React.Component {
     _yMin = scaleMinValue;
     _yMax = scaleMaxValue;
 
-    let eachBlockValue = Math.round(Math.sqrt(heatmapYAxis)); // 根据振幅幅度划分每一个小格的容量
-    let eachValueInPercentage = eachBlockValue / heatmapYAxis;
-    let blocksNumber = Math.round(1 / eachValueInPercentage);
+    // let eachBlockValue = Math.round(Math.sqrt(heatmapYAxis)); // 根据振幅幅度划分每一个小格的容量
+    // let eachValueInPercentage = eachBlockValue / heatmapYAxis;
+    // let blocksNumber = Math.round(1 / eachValueInPercentage);
+    let blocksNumber = 7;
     let yAxisData = [];
 
     let height = window.heatmap.getHeight();
@@ -64,6 +66,7 @@ class ComparatorHeatmap extends React.Component {
     let bunch = lastPrices;
 
     let eChartSeriesData = [];
+    let countMax = 0;
 
     for (let idx = 0; idx < yAxisData.length; idx++) {
       let range = yAxisData[idx].split(':');
@@ -76,8 +79,17 @@ class ComparatorHeatmap extends React.Component {
       }
       eChartSeriesData.push([0, idx, count])
       bunch = bunch.slice(count);
-      count = 0;
+      countMax = Math.max(count, countMax);
     }
+
+    //将eChartSeriesData 的 count 标准到[0 , 100]
+    if(countMax > 0) {
+      for(let i=0; i<eChartSeriesData.length; i++) {
+        let count = eChartSeriesData[i][2];
+        eChartSeriesData[i][2] = count / countMax * 100;
+      }
+    }
+
     let option = window.heatmap.getOption();
     option.yAxis[0].data = yAxisData;
     option.series[0].data = eChartSeriesData;
@@ -154,8 +166,8 @@ class ComparatorHeatmap extends React.Component {
     window.heatmap = echarts.init(dom);
     let that = this;
     let $chartDom = $(this.refs.eChartPredictionHeatmap);
-    const priceScale = [];
-    const data = [];
+    // const priceScale = [];
+    // const data = [];
     let option = {
       tooltip: {
         show: false,
@@ -178,7 +190,7 @@ class ComparatorHeatmap extends React.Component {
       yAxis: {
         show: true,
         type: 'category',
-        data: priceScale,
+        data: [],//priceScale,
         axisLine: {
           show: false,
         },
@@ -226,7 +238,7 @@ class ComparatorHeatmap extends React.Component {
       series: [{
         name: 'Punch Card',
         type: 'heatmap',
-        data: data,
+        data: [],//data,
         label: {
           normal: {
             show: false
@@ -241,6 +253,15 @@ class ComparatorHeatmap extends React.Component {
       }],
       // backgroundColor: '#C6C7C8',
     };
+    option = generateHeatMapOption();
+    option.yAxis.axisLabel.formatter = function(params){
+            // console.debug(arguments);
+            if(!params) return;
+            var points = params.split(':');
+            var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
+            var percentage = (_yMax - _yMin) / $chartDom.height() * center + _yMin;
+            return  percentage.toFixed(0) + '%';
+          };
 
     if (option && typeof option === "object") {
       let startTime = +new Date();

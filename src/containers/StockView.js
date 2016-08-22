@@ -57,8 +57,8 @@ class StockView extends React.Component {
       			theme: "Black",
 				//	Regression Trend-related functionality is not implemented yet, so it's hidden for a while
 				drawings_access: { type: 'black', tools: [ { name: "Regression Trend" } ] },
-				disabled_features: ['control_bar','timeframes_toolbar', 'remove_library_container_border', 'chart_property_page_style'],
-				enabled_features: ["study_templates"],
+				disabled_features: ['left_toolbar','control_bar','timeframes_toolbar', 'remove_library_container_border', 'chart_property_page_style'],
+				enabled_features: ["study_templates", "narrow_chart_enabled"],
 				charts_storage_url: 'http://saveload.tradingview.com',
         		charts_storage_api_version: "1.1",
 				client_id: 'tradingview.com',
@@ -76,15 +76,15 @@ class StockView extends React.Component {
 						"scalesProperties.textColor" : "#AAA",
 
             "mainSeriesProperties.showPriceLine": false,
-						"mainSeriesProperties.candleStyle.upColor": "#131313",
+						"mainSeriesProperties.candleStyle.upColor": "#6A000B",//"#131313",
 						"mainSeriesProperties.candleStyle.downColor": "#131313",
 						"mainSeriesProperties.candleStyle.drawWick": true,
 						"mainSeriesProperties.candleStyle.drawBorder": true,
 						"mainSeriesProperties.candleStyle.borderColor": "#378658",
-						"mainSeriesProperties.candleStyle.borderUpColor": "#8E0000",
-						"mainSeriesProperties.candleStyle.borderDownColor": "#6A6A6A",
-						"mainSeriesProperties.candleStyle.wickUpColor": '#8E0000',
-						"mainSeriesProperties.candleStyle.wickDownColor": '#6A6A6A',
+						"mainSeriesProperties.candleStyle.borderUpColor": "#6A000B",//"#8E0000",
+						"mainSeriesProperties.candleStyle.borderDownColor": "#434343",//"#6A6A6A",
+						"mainSeriesProperties.candleStyle.wickUpColor": "#6A000B",//'#8E0000',
+						"mainSeriesProperties.candleStyle.wickDownColor": "#434343",//'#6A6A6A',
 						"mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
 
 						"scalesProperties.lineColor" : "rgba(255,255,255,0)",
@@ -99,6 +99,7 @@ class StockView extends React.Component {
 					volume: false,
 					OHLCBarBorderColor: true,
 					ksSearch: true,
+					ksSearchFloat: true,
 					ksSearchRange: [10, 50],
 					showLiveBtn: true,
 					lineToolTimeAxisView: {
@@ -143,6 +144,11 @@ class StockView extends React.Component {
 		      			<button className='flat-btn new-folder' onClick={this.handleNewFavorites.bind(this)}>+</button>
 		      			<button className='flat-btn clear' onClick={this.handleClearInput.bind(this)}>x</button>
 		      		</div>
+		      		<h6 className='trash-panel-btn font-simsun' onClick={this.handleShowTrashedPatterns.bind(this)}>
+		      			<span className='name'>回收站</span>
+		      			<span className='trash-number'></span>
+		      			<button className='flat-btn clear' onClick={this.handleClearTrashedPatterns.bind(this)}>清空</button>
+		      		</h6>
 		      	</div>
 		      	<div ref='favorites_body_container' className='body-container'>
 
@@ -202,6 +208,15 @@ class StockView extends React.Component {
 
 	handleClearInput() {
 		$(this.refs.favorite_input).val('');
+	}
+
+	handleShowTrashedPatterns(e) {
+		favoritesController.showTrashedPatterns(e);
+	}
+
+	handleClearTrashedPatterns(e) {
+		e.stopPropagation();
+		favoritesController.clearTrashedPatterns();
 	}
 }
 

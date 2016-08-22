@@ -334,7 +334,6 @@ class PatternCollection extends React.Component {
 	}
 
 	render(){
-		
 		this.renderDate = new Date();
 		const className = classNames('pattern-collection', {'scroll-hidden': !this.props.fullView});
 

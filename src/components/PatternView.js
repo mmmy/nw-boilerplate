@@ -5,6 +5,7 @@ import PatternInfo from './PatternInfo';
 import { activeActions } from '../flux/actions';
 import { getScatter, getPieSlice, getCountBar, setScatters } from '../cache/crossfilterDom';
 import store from '../store';
+import { setHightlightPrediction } from './helper/echartHelper';
 
 let _clonedScatter = null; //dom object
 
@@ -178,26 +179,6 @@ class PatternView extends React.Component {
 
 	}
 
-  setHightlightPrediction(id, isHighlight) {
-  	let d1 = new Date();
-    let patterns = this.props.patterns;
-    let option = window.eChart.getOption();
-
-    const changeColor = (data) => {
-      data.lineStyle.normal.color = isHighlight ? '#c23531' : '#ccc';
-      data.z = isHighlight? 1 : -1;
-    };
-    for (let i = option.series.length; i--;) {
-      if (option.series[i].name === id) {
-        changeColor(option.series[i]);
-        break;
-      }
-    }
-
-    window.eChart.setOption(option);
-
-  }
-
 	setActivePattern() {
     let widget = window.widget_comparator;
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
@@ -208,6 +189,13 @@ class PatternView extends React.Component {
 
 		if (!fullView) {
 			return;
+		}
+
+		try { 
+			setHightlightPrediction(window.eChart, id);
+			setHightlightPrediction(window.comChart, id);
+		} catch(e) {
+			console.error(e);
 		}
 
 		_selectIndustry(industry);
