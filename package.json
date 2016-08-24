@@ -12,8 +12,8 @@
     "resizable": true,
     "standard-window": false,
     "fullscreen": false,
-    "frame": true,
-    "toolbar": true
+    "frame": false,
+    "toolbar": false
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

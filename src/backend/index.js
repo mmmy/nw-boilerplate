@@ -53,7 +53,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 	let searchCb = (resObj) => {
 		
-		console.info(`第一步: 搜索 [ 正常结束 ], 匹配到 ${resObj.results.length} 个`);
+		// console.info(`第一步: 搜索 [ 正常结束 ], 匹配到 ${resObj.results.length} 个`);
 
 		__data = resObj.results.map((pattern, i) => {
 
@@ -83,7 +83,7 @@ let searchPattern = (args, cb, errorCb) => {
 		//获取kline具体数据
 		let dataCb = (startIndex, klineArr) => {
 			
-			console.info(`第二步: 获取kline具体数据 [ 正常结束 ], 返回 ${klineArr.length} 条记录`);
+			// console.info(`第二步: 获取kline具体数据 [ 正常结束 ], 返回 ${klineArr.length} 条记录`);
 
 			klineArr.forEach(({ metaData, kLine, yieldRate }, i) => {
 				let index = i + startIndex;
@@ -115,21 +115,21 @@ let searchPattern = (args, cb, errorCb) => {
 				'dataCategory': dataCategory,
 			};
 		});
-		console.info('第二步: 获取kline具体数据 [ 开始 ]');
+		// console.info('第二步: 获取kline具体数据 [ 开始 ]');
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
 		let startIndex = 0,
 				nextIndex = 5;
 		__ksDataXhr_1 =  KSDataService.postSymbolData(startIndex, args.slice(0, nextIndex), bars, dataCb, (err) => {
-			console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
+			// console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);
 		});
 		__ksDataXhr_2 = KSDataService.postSymbolData(nextIndex, args.slice(nextIndex, 31), bars, dataCb, (err) => {
-			console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
+			// console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);
 		});
 		if(args.length > 30) {
 			__ksDataXhr_3 = KSDataService.postSymbolData(31, args.slice(31), bars, dataCb, (err) => {
-				console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
+				// console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 				errorCb && errorCb(err);
 			});
 		}		
@@ -147,7 +147,7 @@ let searchPattern = (args, cb, errorCb) => {
 		// }
 	};
 	
-	console.info('第一步: 搜索 [ 开始 ]');
+	// console.info('第一步: 搜索 [ 开始 ]');
 	//	取消已有的搜索
 	cancelSearch();
 	//获取搜索结果

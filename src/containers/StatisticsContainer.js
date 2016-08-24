@@ -31,21 +31,21 @@ class statisticsContainer extends React.Component {
 
 	}
 
-	shouldComponentUpdate(newProps, newState){
-		return true;
-		return newProps.filter === this.props.filter;
-	}
+	// shouldComponentUpdate(newProps, newState){
+	// 	// return true;
+	// 	return newProps.filter === this.props.filter;
+	// }
 
 	componentWillUnmount(){
 
 	}
 
 	componentDidUpdate() {
-		console.info('statisticsContainer did update', new Date() - this.renderDate);
+		// console.info('statisticsContainer did update', new Date() - this.renderDate);
 	}
 
 	render(){
-		this.renderDate = new Date();
+		// this.renderDate = new Date();
 		const { fullView, statisticsLarger, report, crossFilter, dispatch, filter, searchConfig} = this.props;
 		const className = classNames('transition-all', 'statistics-container', {
 			'full': fullView,

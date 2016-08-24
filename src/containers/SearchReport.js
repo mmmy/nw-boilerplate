@@ -80,19 +80,19 @@ class SearchReport extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.info('SearchReport did update in:', new Date() - this.d1);
+		// console.info('SearchReport did update in:', new Date() - this.d1);
 		let { fullView, waitingForPatterns } = this.props;
 		let { error } = store.getState().patterns;
 
 		if(_patternChanged && !waitingForPatterns && ($('.pattern-view img').css('opacity') == '0')) { //fix bugs
-				console.debug('fix bugs update first 5 EChart images');
+				// console.debug('fix bugs update first 5 EChart images');
 				let state = store.getState();
 				callFunc([0, 5], state.patterns && state.patterns.rawData.slice(0, 5));
 		}
 
 		$(this.refs.container).one("webkitTransitionEnd oTransitionEnd MSTransitionEnd", (e) => {
 			if(!fullView && !waitingForPatterns && !_isToggled && !error && _patternChanged) {
-				console.info('SearchReport animation over');
+				// console.info('SearchReport animation over');
 				// console.log(e);
 				let state = store.getState();
 				afterSearchMessage(state.patterns.rawData.length, state.layout.searchTimeSpent);

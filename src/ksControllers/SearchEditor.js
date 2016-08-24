@@ -262,8 +262,8 @@ SearchEditor.prototype._handleRename = function(e) {
 
 SearchEditor.prototype.dispose = function() {
 	//save
-	let folderName = this._favoritesController.getActiveName();
-	this._favoritesManager.updateFavorites(folderName, this._dataObj);
+	// let folderName = this._favoritesController.getActiveName();
+	// this._favoritesManager.updateFavorites(folderName, this._dataObj);
 };
 
 module.exports = SearchEditor;

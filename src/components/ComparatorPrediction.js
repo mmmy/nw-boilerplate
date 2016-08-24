@@ -185,12 +185,12 @@ class ComparatorPrediction extends React.Component {
         option.yAxis[0].max = max;
         option.yAxis[1].min = -y2diff;
         option.yAxis[1].max = y2diff;
-        let d1 = new Date();
+        // let d1 = new Date();
         //setTimeout(() => { 
         window.eChart.setOption(option, true); 
         //});
-        console.info('window.eChart.setOption in', new Date() - d1);
-        console.info('ComparatorPrediction did update in millsec: ', new Date() - that.d1);
+        // console.info('window.eChart.setOption in', new Date() - d1);
+        // console.info('ComparatorPrediction did update in millsec: ', new Date() - that.d1);
         window._updateHeatMap && window._updateHeatMap(y2diff * 2, y2diff, -y2diff);
       }, isInit ? 3000 : 0);
 
@@ -363,8 +363,8 @@ class ComparatorPrediction extends React.Component {
        ksOverrides: {
         drawKlineRange: true,
         rangeTitle: '',
-        rangeBackground: '#ce0006',
-        rangeFont: '10px',
+        rangeBackground: '#AC1822',
+        rangeFont: '12px sans-serif',
         rangeColor: '#fff',
         rangeLineColor: '#eee'
       },
@@ -380,8 +380,8 @@ class ComparatorPrediction extends React.Component {
       grid: {
         top: 0,
         bottom: 0,
-        left: 1,
-        right: 54
+        left: 0,
+        right: -5
       },
       tooltip: {
         show: false,
@@ -441,7 +441,7 @@ class ComparatorPrediction extends React.Component {
         axisLine: {
           show: false,
         },
-        splitNumber: 5,
+        // splitNumber: 5,
         axisLabel: {
           formatter: '',
           textStyle: {
@@ -450,7 +450,7 @@ class ComparatorPrediction extends React.Component {
             fontWeight: 'lighter',
             fontSize: 10
           },
-          margin: 10
+          // margin: 10
         },
         axisTick: {
           show: false
@@ -515,7 +515,7 @@ class ComparatorPrediction extends React.Component {
   }
 
   render(){
-    this.d1 = new Date();
+    // this.d1 = new Date();
     let className = classNames('comparator-prediction-chart');
 
     return (<div style={{position:'absolute',height:'100%',width:'100%'}}>

@@ -59,7 +59,7 @@ let searchPattern = ({ symbol, dateRange, bars, additionDate, searchLenMax, data
 			let resObj = JSON.parse(resStr);
 			//TODO: 处理resObj
 			let dataObj = resObj;
-			console.info('++++++++++++++++++++++++++++++++++', resObj);
+			// console.info('++++++++++++++++++++++++++++++++++', resObj);
 			cb && cb(dataObj);
 		} catch (e) {
 			errorCb(e);
@@ -81,7 +81,7 @@ let searchPattern = ({ symbol, dateRange, bars, additionDate, searchLenMax, data
 	};
 
 	let postData = JSON.stringify(postObj);
-	console.log(postData);
+	// console.log(postData);
 	return request(options, callback, errorCb, postData);
 }
 

@@ -205,8 +205,8 @@ class PatternCollection extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.info('patterns collections view  did update', new Date() - this.renderDate);
-		console.info('patterns collections view  did update2', new Date() - this.renderDate2);
+		// console.info('patterns collections view  did update', new Date() - this.renderDate);
+		// console.info('patterns collections view  did update2', new Date() - this.renderDate2);
 		if(!this.props.fullView) {
 			//console.log('patternCollection did update');
 			this.refs.container.scrollTop = 0;
@@ -329,12 +329,12 @@ class PatternCollection extends React.Component {
 			});
 			//nodes = nodes.length > 0 ? nodes.slice(0,10) : [];
 		//}
-		this.renderDate2 = new Date();
+		// this.renderDate2 = new Date();
 		return nodes;
 	}
 
 	render(){
-		this.renderDate = new Date();
+		// this.renderDate = new Date();
 		const className = classNames('pattern-collection', {'scroll-hidden': !this.props.fullView});
 
 		return (<div ref='container' className={className}>

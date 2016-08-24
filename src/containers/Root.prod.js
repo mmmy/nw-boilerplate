@@ -6,6 +6,7 @@ import Header from './Header';
 import RightToolBar from './RightToolBar';
 import SearchConfigModal from './SearchConfigModal';
 import CoreApp from './CoreApp';
+import TitleBar from './TitleBar';
 
 //import StockView from './StockView';
 //import SearchReport from './SearchReport';
@@ -18,17 +19,24 @@ class Root extends React.Component {
 
 	render(){
 
-		return (<MainContainer>
+		return (
+			<div className='app-wrapper'>
+				
+				<TitleBar />
 
-			<Header />
+				<MainContainer>
 
-			<RightToolBar />
+					<Header />
 
-			<CoreApp />
+					<RightToolBar />
 
-			<SearchConfigModal />
+					<CoreApp />
 
-		</MainContainer>);
+					<SearchConfigModal />
+
+				</MainContainer>
+			</div>
+		);
 	}
 
 }

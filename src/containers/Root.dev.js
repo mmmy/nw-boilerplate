@@ -5,6 +5,7 @@ import MainContainer from './MainContainer';
 import Header from './Header';
 import RightToolBar from './RightToolBar';
 import CoreApp from './CoreApp';
+import TitleBar from './TitleBar';
 import SearchConfigModal from './SearchConfigModal';
 import DevTools from './DevTools';
 
@@ -19,19 +20,26 @@ class Root extends React.Component {
 
 	render(){
 
-		return (<MainContainer>
+		return (
+			<div className='app-wrapper'>
+				
+				<TitleBar />
 
-			<Header />
+				<MainContainer>
 
-			<RightToolBar />
+					<Header />
 
-			<CoreApp />
+					<RightToolBar />
 
-			<SearchConfigModal />
+					<CoreApp />
 
-      <DevTools />
+					<SearchConfigModal />
 
-		</MainContainer>);
+		      <DevTools />
+
+				</MainContainer>
+			</div>
+			);
 	}
 
 }

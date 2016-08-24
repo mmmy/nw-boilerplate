@@ -102,9 +102,9 @@ class ComparatorHeatmap extends React.Component {
     
     // this.updateHeatMap(heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale);
 
-    console.info('ComparatorHeatmap did update1', new Date() - this.d1);
+    // console.info('ComparatorHeatmap did update1', new Date() - this.d1);
 
-    console.info('ComparatorHeatmap did update2', new Date() - this.d1);
+    // console.info('ComparatorHeatmap did update2', new Date() - this.d1);
   }
 
   componentWillUnmount(){
@@ -273,7 +273,7 @@ class ComparatorHeatmap extends React.Component {
   }
 
   render(){
-    this.d1 = new Date();
+    // this.d1 = new Date();
     let className = classNames('comparator-heatmap');
 
     return (

@@ -60,10 +60,10 @@ ConfigEditor.prototype._init = function() {
 	//info
 	let symbolStartDate = this._info.dateRange[0],
 			symbolEndDate = this._info.dateRange[1];
-	let dateStr1 = new Date(symbolStartDate).toISOString().slice(0, 10).replace('-','.');
-	let dateStr2 = new Date(symbolEndDate).toISOString().slice(0, 10).replace('-','.');
-	this._$info.append(`<p class='info-p font-simsun'><span class='title'>来源:</span><span class='content font-number'>${this._info.symbol}</span></p>`)
-							.append(`<p class='info-p font-simsun'><span class='title'>时间区间:</span><span class='content font-number'>${dateStr1}~${dateStr2}</span></p>`);
+	let dateStr1 = new Date(symbolStartDate).toISOString().slice(0, 10).replace(/-/g,'.');
+	let dateStr2 = new Date(symbolEndDate).toISOString().slice(0, 10).replace(/-/g,'.');
+	this._$info.append(`<p class='info-p font-simsun'><span class='title'>来源:</span><span class='content font-arial'>${this._info.symbol}</span></p>`)
+							.append(`<p class='info-p font-simsun'><span class='title'>时间区间:</span><span class='content font-arial'>${dateStr1} - ${dateStr2}</span></p>`);
 }
 
 ConfigEditor.prototype._initActions = function() {

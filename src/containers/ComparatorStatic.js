@@ -183,7 +183,7 @@ class ComparatorStatic extends React.Component {
       //     "mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
 
       // },
-      disabled_features: ["header_widget","border_around_the_chart",'control_bar','timeframes_toolbar', 'display_market_status', 'remove_library_container_border', 'chart_property_page_style'],
+      disabled_features: ["left_toolbar","header_widget","border_around_the_chart",'control_bar','timeframes_toolbar', 'display_market_status', 'remove_library_container_border', 'chart_property_page_style'],
      overrides: {
             "paneProperties.background": "#fff",
             "paneProperties.vertGridProperties.color": "#fff",
@@ -217,9 +217,11 @@ class ComparatorStatic extends React.Component {
         },
         ks_overrides: {
           // "ksSplitView": true,
-          ksBottomView: true,
+          // ksBottomView: true,
+          ksLeftView: true,
           volume: false,
           OHLCBarBorderColor: true,
+          fixPaneLegend: true,
           lineToolTimeAxisView: {
             background: '#444',
             // activeBackground: 'green',
@@ -230,7 +232,7 @@ class ComparatorStatic extends React.Component {
             background: 'rgba(190, 191, 192, 1.00)',
           }
         },
-        // debug: true
+        debug: false,
       // height: 300,
       // width: 300,
     }

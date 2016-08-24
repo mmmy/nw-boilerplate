@@ -206,7 +206,7 @@ let _generateHistoryItem = (date, data) => {
 let historyController = {};
 let _navDom = null;
 let _bodyDom = null;
-console.debug('_navDom is null -0-0-0-0-');
+// console.debug('_navDom is null -0-0-0-0-');
 let _initDayDom = ($dayDom, dataArr) => {
 	let $canvas = $dayDom.find('canvas.kline');
 	for(let i=0, len=$canvas.length; i<len; i++) {
@@ -260,7 +260,7 @@ historyController.init = (navDom, bodyDom) => {
 		let sortedDays = dataByMonth.keys;
 		let data = dataByMonth.data;
 		sortedDays.forEach((key) => {
-			console.log(yearMonth, key, data[key]);
+			// console.log(yearMonth, key, data[key]);
 			let day = key.replace('.json','');
 			let theDate = new Date(`${yearMonth}-${day}`);
 			let newDomStr = _generateHistoryItem(theDate, data[key].data);

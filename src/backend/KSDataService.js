@@ -55,8 +55,8 @@ let postSymbolData = (startIndex, args, bars, cb, errorCb) => {
 
 	let batchCondition = args.map(({symbol, dateRange, lastDate, timeUnit='d', dataCategory='cs', additionDate = { type:'days', value: 30 } }) => {
 		lastDate = typeof lastDate === 'string' ? lastDate : lastDate.time;
-		let begin = moment.utc(dateRange[0]).add(-1, 'minutes').toISOString();
-		let end = lastDate && moment.utc(lastDate).add(1, 'minutes').toISOString() || moment.utc(dateRange[1]).add(additionDate.value, additionDate.type).toISOString();
+		let begin = moment.utc(dateRange[0]).add(-1, 'seconds').toISOString();
+		let end = lastDate && moment.utc(lastDate).add(1, 'seconds').toISOString() || moment.utc(dateRange[1]).add(additionDate.value, additionDate.type).toISOString();
 		return {
 			dataCategory: dataCategory,
 			dataTimeUnit: timeUnit,
@@ -74,7 +74,7 @@ let postSymbolData = (startIndex, args, bars, cb, errorCb) => {
 	// 	'pt': args.map(({symbol, dateRange}) => { return path.join('/', symbol, ''+dateRange[0], ''+dateRange[1]); })
 	// });
 	let postData = JSON.stringify(postObj);
-	console.log('--------------------------------------', postData);
+	// console.log('--------------------------------------', postData);
 
 	let dataCb = (resStr) => {
 		
@@ -112,7 +112,7 @@ let postSymbolData = (startIndex, args, bars, cb, errorCb) => {
 							chunkObj.data = data;
 							fileChunkCount -= 1;
 							if(fileChunkCount === 0) {
-								console.log('got all chunks');
+								// console.log('got all chunks');
 								mergeData();
 							}
 						}, errorCb);

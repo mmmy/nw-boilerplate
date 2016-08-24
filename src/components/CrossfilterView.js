@@ -162,7 +162,7 @@ class CrossfilterView extends React.Component {
 
 		if (pieChartR != this.pieChartR) {
 			setTimeout(() => {
-				console.debug('pie chart resize !!!!'); 
+				// console.debug('pie chart resize !!!!'); 
 				that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); 
 				disableTrasitionOnce && that.industryPieChart.transitionDuration(transitionDuration);
 			});
@@ -199,7 +199,7 @@ class CrossfilterView extends React.Component {
 		});
 
 		//setTimeout(this.handleResize.bind(this), 300);
-		console.info('^-^crossFilter view did update', new Date() - this.renderDate);
+		// console.info('^-^crossFilter view did update', new Date() - this.renderDate);
 	}
 
 resizeChart1() {
@@ -215,7 +215,7 @@ resizeChart1() {
 			// targetW = curW / 2;
 			targetH = this.refs.dc_chart_row_2.clientHeight - 18.484 - 30;
 		}
-		console.debug(targetH);
+		// console.debug(targetH);
 		let that = this;
 		this.yieldDateScatterChart.transitionDuration(transitionDuration);
 		setTimeout(() => {that.yieldDateScatterChart.height(targetH).redraw(); });
@@ -459,14 +459,15 @@ resizeChart1() {
 			this.yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)]; //收益率的最大最小值
 			//this.yield100Range[0] = Math.floor(this.yield100Range[0] / 20) * 20; // -23 => -4, 34 => 20
 			//this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 20) * 20; // 88 => 100, 129 => 140
-			this.yield100Range[0] = Math.floor(this.yield100Range[0] / 50) * 50; // -23 => -50, 34 => 50
-			this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 50) * 50; // 88 => 100, 129 => 150
+			let inter = 1;
+			this.yield100Range[0] = Math.floor(this.yield100Range[0] / inter) * inter; // -2 => -5, 3 => 5
+			this.yield100Range[1] = Math.ceil(this.yield100Range[1] / inter) * inter; // 88 => 100, 129 => 130
 			this.yield100Range = scalize(this.yield100Range);
 			let rangeInterval = ( this.yield100Range[1] -  this.yield100Range[0] ) / barChartBars;
-			console.info(this.yield100Range);
-			console.info(rangeInterval);
-			console.assert(this.yearRange[1] > this.yearRange[0], this.yearRange);
-			console.assert(this.yield100Range[1] > this.yield100Range[0]);
+			// console.info(this.yield100Range);
+			// console.info(rangeInterval);
+			// console.assert(this.yearRange[1] > this.yearRange[0], this.yearRange);
+			// console.assert(this.yield100Range[1] > this.yield100Range[0]);
 			this.yieldDateGroup = this.yieldDateDim.group((d) => { 
 				return d;
 			});
@@ -590,7 +591,7 @@ resizeChart1() {
 		 //yieldDateScatterChart.filterHandler(()=>{});
 		this.yieldDateScatterChart = yieldDateScatterChart;
 	}
-
+	//弃用, 使用上面的函数
 	drawPositionBubbleChart(){
 
 		let {position_bubble_chart} = this.refs;
@@ -776,7 +777,7 @@ resizeChart1() {
 		//_dimensionFilter(chart.dimension(), chart.filters());
 		// return;
 		let { dispatch } = this.props;
-		console.info('onChartFiltered !!!',filter);
+		// console.info('onChartFiltered !!!',filter);
 		switch (chart) {
 			case this.industryPieChart: 			//行业过滤
 				this.setResetBtnVisibility(chart);
