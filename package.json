@@ -5,8 +5,8 @@
   "main": "./build/index.html",
   "window": {
     "show": true,
-    "width": 1277,
-    "height": 600,
+    "width": 400,
+    "height": 470,
     "min_width": 1200,
     "min_height": 600,
     "resizable": true,

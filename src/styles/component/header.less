@@ -19,7 +19,7 @@
 
 .header-toolbar-container {
 	position: absolute;
-	right: 20px;
+	right: 120px;
 	// width: 50%;
 	top: 0;
 	height: 100%;
@@ -56,5 +56,39 @@
 				}
 			}
 		}
+	}
+}
+
+.app-drag-area {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.app-tool-container {
+
+	position: absolute;
+	height: 40px;
+	top: 5px;
+	right: 20px;
+	.button {
+		width: 30px;
+		height: 30px;
+		background-image: url(@icons_url);
+		margin-top: 5px;
+		margin-left: 0;//10px;
+		float: left;
+	}
+
+	.app-minimize {
+		.icon_position(0,0,3);
+	}
+
+	.app-maximize {
+		.icon_position(0,1,3);
+	}
+
+	.app-close {
+		.icon_position(0,2,3);
 	}
 }

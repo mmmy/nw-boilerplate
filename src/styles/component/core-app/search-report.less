@@ -16,7 +16,7 @@
 	width: 50%;
 	left: 25%;
 	top: 12px;//-15px;
-	z-index: 101;
+	z-index: 99;//101;
 	* {
   	cursor: pointer;
   }
@@ -110,17 +110,7 @@
 	overflow: hidden;
 	// overflow-x: scroll;
 	// overflow-y: hidden;
-	&:before {
-		content: '';
-		display: block;
-		width: 100%;//1400px;
-		height: 3px;
-		background-color: @brown-red;
-		border-top-left-radius: 3px;
-		border-top-right-radius: 3px;
-		// position: absolute;
-		// top: 0;
-	}
+	.top-red-line();
 	//padding: 20px 5px 10px 5px;
 	//border: 1px solid red;
 	//margin: 10px 5px 5px 5px;

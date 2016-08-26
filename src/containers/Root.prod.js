@@ -6,7 +6,6 @@ import Header from './Header';
 import RightToolBar from './RightToolBar';
 import SearchConfigModal from './SearchConfigModal';
 import CoreApp from './CoreApp';
-import TitleBar from './TitleBar';
 
 //import StockView from './StockView';
 //import SearchReport from './SearchReport';
@@ -20,12 +19,8 @@ class Root extends React.Component {
 	render(){
 
 		return (
-			<div className='app-wrapper'>
-				
-				<TitleBar />
-
 				<MainContainer>
-
+					<div className='fix-drag-bug'></div>
 					<Header />
 
 					<RightToolBar />
@@ -35,7 +30,6 @@ class Root extends React.Component {
 					<SearchConfigModal />
 
 				</MainContainer>
-			</div>
 		);
 	}
 

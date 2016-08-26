@@ -253,6 +253,185 @@
 	}
 }
 
+.login-panelsmall-container {
+	position: fixed;
+	left: 0;
+	top: 0;//50px;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+	z-index: 150;
+	.login-titlebar-container {
+		// position: absolute;
+		height: 40px;
+		width: 470px;
+		position: relative;
+		// border-bottom: 1px solid #eee;
+		// width: 100%;
+		.top-red-line();
+		.app-close {
+			width: 20px;
+			height: 20px;
+			background-image: url(@icons_url);
+			.icon_position(1,7,0,5px,5px);
+			margin: 10px;
+			margin-left: 370px;
+		}
+		// &:hover {
+		// 	background-color: red;
+		// }
+	}
+	.body-container {
+		// -webkit-app-region: no-drag;
+		width: 240px;//280px;
+		margin: 0 auto 0 auto;
+	}
+	.logo{
+		background: url(@logo_url_png) no-repeat;
+		width: 70px;
+		height: 36px;
+		// border: 1px solid red;
+		background-position: 0 0;
+		background-size: 70px;
+		margin: auto;
+		margin-top: 30px;
+		margin-bottom: 10%;
+	}
+	input[type='text'], input[type='password'] {
+		width: 100%;
+		height: 36px;
+		border: none;
+		outline: none;
+		// -webkit-app-region: no-drag;
+		// border-bottom: 1px solid @ks-color-gray-9;
+		font-size: 14px;
+		padding: 5px 10px;
+		z-index: 1;
+		&:focus {
+			background-color: #fff;
+			box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+		}
+		margin-bottom: 10px;
+		position: relative;
+		background-color: #F1F1F1;
+	}
+	.user-name {
+		margin-top: 80px;
+		position: relative;
+		.username-list-container {
+			position: absolute;
+			width: 100%;
+			height: 200px;
+			top: 36px;
+			background-color: #fff;
+			border: 1px solid #eee;
+			z-index: 2;
+			.user-name-item {
+				list-style: none;
+				height: 30px;
+				// background-color: red;
+				font-size: 14px;
+				padding-left: 10px;
+				&:hover {
+					background-color: #eee;
+					.delete-user {
+						display: block;
+					}
+				}
+				.delete-user{
+					float: right;
+					display: none;
+					width: 20px;
+					height: 20px;
+					margin-top: 5px;
+					margin-right: 10px;
+					background-image: url(@icons_url);
+					background-color: transparent;
+					.icon_position(3,8,2,5px,5px);
+				}
+			}
+		}
+	}
+	.password {
+		position: relative;
+	}
+	.placeholder {
+		position: absolute;
+		left: 0;
+		top: 0;
+		padding: 6px;
+		font-size: 14px;
+		color: @ks-color-gray-6;
+		z-index: 0;
+		&.move-left{
+			left: -100%;
+		}
+	}
+	.options {
+		margin-top: 30px;
+		color: @ks-color-gray-5;
+		font-size: 12px;
+		text-align: center;
+		input {
+			font-size: 12px;
+			margin-right: 5px;
+		}
+		.autologin-button {
+		  // -webkit-app-region: no-drag;
+		  &.checked {
+		  	color: @brown-red-light;
+		  }
+		}
+		.icon-not-check {
+			display: inline-block;
+			width: 12px;
+			height: 12px;
+			margin-right: 10px;
+			background-image: url(@icons_url);
+			// border: 1px solid red;
+			.icon_position(2,11,2,8px,9px);
+			vertical-align: middle;
+			&.checked {
+				.icon_position(3,10,2,9px,9px);
+			}
+		}
+	}
+	.denglu{
+		margin-top: 30px;
+		button{
+			border: none;
+			outline: none;
+			width: 100%;
+			height: 36px;
+			font-size: 16px;
+			color: #fff;
+			background-color: @brown-red;//@config-modal-button-background-color;
+			padding: 2px;
+			letter-spacing: 10px;
+			border-radius: 2px;
+			&:hover {
+				background-color: lighten(@brown-red, 10%);
+				// box-shadow: 0 3px 10px 0 #eee;
+			}
+			// letter-spacing: 10px;
+		}
+	}
+	.wave-container {
+		margin-top: 30px;
+		position: relative;
+		height: 20%;
+	}
+
+	.account-button{
+		position: relative;
+		.user-panel-container{
+			position: absolute;
+			top: 20px;
+			right: 0;
+		}
+	}
+}
+
 .ks-input-wrapper {
 	// background-color: #fff;
 	position: absolute;

@@ -5,7 +5,6 @@ import MainContainer from './MainContainer';
 import Header from './Header';
 import RightToolBar from './RightToolBar';
 import CoreApp from './CoreApp';
-import TitleBar from './TitleBar';
 import SearchConfigModal from './SearchConfigModal';
 import DevTools from './DevTools';
 
@@ -21,12 +20,8 @@ class Root extends React.Component {
 	render(){
 
 		return (
-			<div className='app-wrapper'>
-				
-				<TitleBar />
-
 				<MainContainer>
-
+					<div className='fix-drag-bug'></div>
 					<Header />
 
 					<RightToolBar />
@@ -38,7 +33,6 @@ class Root extends React.Component {
 		      <DevTools />
 
 				</MainContainer>
-			</div>
 			);
 	}
 
