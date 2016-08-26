@@ -303,9 +303,9 @@ class EChart extends React.Component {
 			this.drawChart();
 			let { fullView, index } = this.props;
 			if(!fullView && index>=0 && index<=4) {
-				$('.inner-searchreport').one('transitionend', () => {
+				// $('.inner-searchreport').one('transitionend', () => {
 					this.updateKlineCanvas();
-				});
+				// });
 			}
 			//this.drawChart()	
 		//console.log('echart componentDidUpdate');

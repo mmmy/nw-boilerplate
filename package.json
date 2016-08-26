@@ -8,11 +8,11 @@
     "width": 400,
     "height": 470,
     "min_width": 1200,
-    "min_height": 600,
-    "resizable": true,
+    "min_height": 700,
+    "resizable": false,
     "standard-window": false,
     "fullscreen": false,
-    "frame": false,
+    "frame": true,
     "toolbar": false
   },
   "scripts": {

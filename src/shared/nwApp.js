@@ -59,6 +59,10 @@ let appMoveTo = (x, y) => {
 	getNwWindow().moveTo(x, y);
 };
 
+let appSetCenter = () => {
+	getNwWindow().setPosition('center');
+};
+
 module.exports = {
 	appMaximize,
 	appMinimize,
@@ -67,4 +71,5 @@ module.exports = {
 	appSetResizable,
 	updateAppDragable,
 	appMoveTo,
+	appSetCenter,
 };

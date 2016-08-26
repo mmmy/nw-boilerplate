@@ -102,7 +102,7 @@ class Header extends React.Component {
 			<div className='app-drag-area' ref='drag_area'></div>
 			<span className='header-icon'></span>
 			{this.renderToolbar()}
-			{this.renderAppTool()}
+			{/*this.renderAppTool()*/}
 			{showLogin ? <LoginSmall ref='login_panel' onLogined={this.handleLogined.bind(this)} close={this.closeLogModal.bind(this)}/> : '' }
 		</div>;
 	}
