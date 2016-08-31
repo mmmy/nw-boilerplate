@@ -8,6 +8,12 @@
 	width: 100%;
 	height: @searchResultWrap_H;
   background-color: white;
+  z-index: 0;
+  &.static {
+  	z-index: 1;
+  	top: auto;
+  	bottom: 0;
+  }
   // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -17,6 +23,13 @@
 	left: 25%;
 	top: 12px;//-15px;
 	z-index: 99;//101;
+	&.float {
+		top: auto;
+		bottom: 220px;
+	}
+	&.up {
+		bottom: calc(~"100% - 50px");
+	}
 	* {
   	cursor: pointer;
   }
@@ -100,6 +113,7 @@
 
 .inner-searchreport{
 	position: absolute;
+	z-index: 1;
 	top: 0;//2.2%;
 	left: 10px;
 	height: 100%;//calc(~"100% - 10px");//calc(~'97.8%');
@@ -140,6 +154,7 @@
 	height: calc(~"100% - 70px");
 	top: 50px;
 	background-color: #fff;
+	z-index: 2;
 	//.transition-delay(.2s);
 	&.small {
 		// height: calc(~"100% - 65px - 20px");
@@ -167,6 +182,7 @@
 		p{
 			color: @ks-color-gray-4;
 			margin-top: 15px;
+			font-size: 12px;
 		}
 		button{
 			outline: none;

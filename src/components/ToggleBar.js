@@ -62,11 +62,11 @@ class ToggleBar extends React.Component {
 
 		const time = (searchTimeSpent/1000).toFixed(3);
 		let title = waitingForPatterns ? '搜索' : '搜索结果';
-		return (<div className={toggleClass} >
+		return (<div className={toggleClass} ref='container_toggle'>
 					<div className={btnWrapper} onClick={this.toggleView.bind(this)}>
 						<div className="item title">{title}</div>
 						{/*<div className={timespentClass}>{ `用时:${time}秒` }</div>*/}
-						<div className={btnClass} ><i className="fa fa-angle-up"></i></div>
+						<div className={btnClass} ref='btn_toggle'><i className="fa fa-angle-up"></i></div>
 					</div>
 		          {/*<button
 		            style={{'marginLeft':'48%'}}
@@ -84,7 +84,11 @@ class ToggleBar extends React.Component {
 		let { error } = store.getState().patterns;
 		if (waitingForPatterns || error) return;
     // if (this.props.fullView) window.actionsForIframe.takeScreenshot();
-		this.props.dispatch(layoutActions.toggleStockView());
+    let that = this;
+    // $reportWrapper.one('transitionend', ()=>{
+			that.props.dispatch(layoutActions.toggleStockView());
+    // });
+    // $('.container-searchreport').toggleClass('searchreport-full');
 // return;
     if (!this.props.fullView) {
       // this.resizePrediction();

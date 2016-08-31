@@ -6,9 +6,9 @@ let getPatternSmallView = function() {
 }
 
 const initialState = {
-	stockView: true, 							               //主stock view 视图
+	stockView: false, 							               //主stock view 视图 // 弃用2016-08-30
 	patternSmallView: getPatternSmallView(),     //patterns 一列 or 两列 视图
-	waitingForPatterns: true,//(process.env.NODE_ENV !== 'development'), 	//等待 getPatterns 返回结果
+	waitingForPatterns: false,//(process.env.NODE_ENV !== 'development'), 	//等待 getPatterns 返回结果 //弃用2016-08-30
 	firstStart: true,
   isPredictionShow: true,                      // 走势预测面板显示
 	searchTimeSpent: 0, 						             //毫秒
@@ -20,6 +20,8 @@ const initialState = {
 export default function layout(state = initialState, action) {
 
 	switch (action.type) {
+		// case types.BEFORE_TOGGLE_STOCK_VIEW: //切换主视图之前的动画
+		// 	return state;
 
 		case types.TOGGLE_STOCK_VIEW: //切换主视图
 			return {
@@ -84,8 +86,8 @@ export default function layout(state = initialState, action) {
     	if(username === ''){
     		return {
     			...state,
-    			stockView: true,
-    			waitingForPatterns: true,
+    			// stockView: true,
+    			// waitingForPatterns: true,
     			firstStart: true,
     		};
     	} else {

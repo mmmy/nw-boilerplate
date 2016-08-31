@@ -5,6 +5,7 @@ import path from 'path';
 import ComparatorPrediction from '../components/ComparatorPrediction';
 import echarts from 'echarts';
 import { generateHeatMapOption } from '../components/utils/heatmap-options';
+import searchResultController from '../ksControllers/searchResultController';
 
 let _yMax = 200;
 let _yMin = 0;
@@ -320,7 +321,9 @@ class Comparator extends React.Component {
       if(!patterns.rawData || !patterns.searchMetaData) 
         return;
       this._oldPatterns = patterns;
-
+      searchResultController.updatePrediction(patterns);
+      searchResultController.updateStatistics(patterns);
+      searchResultController.updatePatterns(patterns.rawData);
       let { searchMetaData, closePrice, searchConfig } = patterns;
       
       let { kline } = searchMetaData;
@@ -412,7 +415,7 @@ class Comparator extends React.Component {
         <div className='comparator-inner'>
           {/*setting searching info from TradingView*/}
           <h3 className='title'>匹配图形&走势分布</h3>
-          <div className={ searchingInfoClassNames }><span id={'searching-info-content'}></span><span className={'searching-info--prediction-lable'}>走势分布</span></div>
+          <div className={ searchingInfoClassNames }><span className={'searching-info-content'}></span><span className={'searching-info--prediction-lable'}>走势分布</span></div>
           { _drawEchart ? this.renderEchart() : this.renderImages() }
         </div>
       </div>

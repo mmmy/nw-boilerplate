@@ -57,7 +57,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 		__data = resObj.results.map((pattern, i) => {
 
-			const {id, similarity= resObj.similarities && resObj.similarities[i] || (0.95 - 0.01*i), begin, end, industry=getIndustry(id), type='D'} = pattern;
+			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type='D'} = pattern;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = {};

@@ -35,8 +35,8 @@ let _disposeDetailPanel = (parentDom, editorCache) => {
 let _reSearch = (dataObj, cb, {favoriteFolder=''}) => {  //当从收藏夹过来的 favoriteFolder 为收藏夹名
 	let actions = require('../flux/actions');
 	dataObj.favoriteFolder = favoriteFolder;
-	store.dispatch(actions.layoutActions.waitingForPatterns());
-	store.dispatch(actions.patternActions.resetError());
+	// store.dispatch(actions.layoutActions.waitingForPatterns());
+	// store.dispatch(actions.patternActions.resetError());
 	store.dispatch(actions.patternActions.getPatterns(dataObj, cb));
 };
 

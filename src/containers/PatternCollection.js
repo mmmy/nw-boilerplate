@@ -8,6 +8,7 @@ import lodash from 'lodash';
 import classNames from 'classnames';
 import DC from 'dc';
 import { updateImgAll } from '../components/helper/updateEchartImage';
+import searchResultController from '../ksControllers/searchResultController';
 
 const propTypes = {
 	patterns: PropTypes.object.isRequired,
@@ -281,6 +282,7 @@ class PatternCollection extends React.Component {
 		let { showTrashed, showNotTrashed } = patternTrashed;
 
 		let sortedData = this.sortData(rawData);
+		// searchResultController.updatePatterns(sortedData);
 
 		let nodes = null;
 

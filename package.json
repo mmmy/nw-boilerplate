@@ -7,7 +7,7 @@
     "show": true,
     "width": 400,
     "height": 470,
-    "min_width": 1200,
+    "min_width": 800,
     "min_height": 700,
     "resizable": false,
     "standard-window": false,

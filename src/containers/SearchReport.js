@@ -9,33 +9,8 @@ import SearchWaitingWaves from '../components/SearchWaitingWaves';
 import store from '../store';
 import { callFunc } from '../components/helper/updateEchartImage';
 import painter from '../ksControllers/painter';
-
-let getKlineImgSrc = (kline) => {
-	if(!kline || kline.length==0) {
-		return './image/kline.png';
-	}
-	let len = kline.length;
-	let perfectW = len * 5;
-	perfectW = perfectW > 500 ? 500 : perfectW;
-	let canvas = document.createElement('canvas');
-	canvas.height = 100;
-	canvas.width = perfectW;
-	painter.drawKline(canvas, kline);
-	return canvas.toDataURL();
-};
-
-let afterSearchMessage = (number, timeSpent) => {
-	const time = (timeSpent/1000).toFixed(3);
-	let msgNode = $(`<div class="search-message-container slide-up-down">拱石为你找到匹配图形<span class="number">${number}</span>个，用时<span>${time}</span>秒</div>`);
-	msgNode.appendTo(window.document.body);
-	msgNode.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
-		//console.log('afterSearchMessage container animation ended----====-----');
-		msgNode.remove();
-		// if(document.querySelector('.pattern-view img').style.opacity === ''){
-		// 				setTimeout(window._restartSearch, 5000);
-		// }
-	});
-};
+import { afterSearchMessage } from '../ksControllers/messager.js';
+import { getKlineImgSrc } from '../ksControllers/publicHelper';
 
 let _isToggled = false;
 let _patternChanged = false;
@@ -61,7 +36,7 @@ class SearchReport extends React.Component {
 
 	componentDidMount() {
 		//afterSearchMessage(200, 0.001);
-		$('#__comparator_prediction_container').css('opacity', 0);
+		// $('#__comparator_prediction_container').css('opacity', 0);
 		window._restartSearch = this.restartSearch.bind(this);
 	}
 
@@ -121,15 +96,15 @@ class SearchReport extends React.Component {
 	render(){
 		this.d1 = new Date();
 		const { fullView, statisticsLarger} = this.props;
-		const className = classNames('transition-all', 'container-searchreport', {
+		const className = classNames('container-searchreport', {
 			'searchreport-full': fullView,
 		});
-		const toggleClass = classNames('container-toggle', {
-			'full': fullView
-		});
+		// const toggleClass = classNames('container-toggle', {
+		// 	'full': fullView
+		// });
 	    return (
 	      <div className={ className }>
-	        <ToggleBar {...this.props} />
+	        {/*<ToggleBar {...this.props} />*/}
 	        <div ref='inner_searchreport' className="inner-searchreport">
 	          { this.renderWaitingPanel() }
 	          { this.renderDataPanels() }

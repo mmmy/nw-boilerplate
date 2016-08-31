@@ -81,7 +81,7 @@ let updateTradingviewAfterSearch = (dataObj) => {
 	//显示信息
 	let daysCount = (new Date(dateRange[1]) - new Date(dateRange[0]))/1000/24/3600 + 1;
 	daysCount = Math.round(daysCount);
-	$('#searching-info-content').text(bars + "根K线, " + daysCount + "日");
+	$('.searching-info-content').text(bars + "根K线, " + daysCount + "日");
 
 	//tradingview
 	let firstPattern = window.parent.store.getState().patterns.rawData[0];

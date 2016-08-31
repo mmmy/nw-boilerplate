@@ -6,8 +6,8 @@ export default function(store) {
 
 	const searchSymbolDateRange = function(args, cb) {
 		if (store && store.dispatch) {
-			store.dispatch(layoutActions.waitingForPatterns());                //开始等待
-      store.dispatch(patternActions.resetError());
+			// store.dispatch(layoutActions.waitingForPatterns());                //开始等待
+      // store.dispatch(patternActions.resetError());
 			store.dispatch(patternActions.getPatterns(args, cb)); //从服务器获取patterns
 		}
 	};

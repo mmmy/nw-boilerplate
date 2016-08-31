@@ -7,9 +7,31 @@ import datafeedCache from '../../cache/datafeedCache';
 let { getDataCategory } = datafeedCache;
 
 import stockviewController from '../../ksControllers/stockviewController';
+import searchResultController from '../../ksControllers/searchResultController';
+import wavesController from '../../ksControllers/wavesController';
+import { afterSearchMessage } from '../../ksControllers/messager';
 let historyController = stockviewController.historyController;
 // window._historyController2 = historyController;
 // import { setComparatorVisibleRange } from '../../shared/actionTradingview';
+
+let startSearch = ()=>{
+	searchResultController.reportSlideDown(true);
+	wavesController.start();
+	wavesController.speedUp();
+};
+let searchSuccess = (patterns, searchTimeSpent)=>{
+	searchResultController.removeErrorPanel();
+	searchResultController.reportSlideDown(false, ()=>{
+		afterSearchMessage(patterns.rawData.length, searchTimeSpent);
+	});
+	wavesController.stop();
+};
+let searchError = (searchKline)=>{
+	searchResultController.showErrorPanel(searchKline);
+	searchResultController.reportSlideDown(false);
+	wavesController.stop();
+};
+
 /**
  * 异步获取patterns
  * @param  {string}   symbol    [股票代码]
@@ -23,16 +45,19 @@ let _lastSearch = {};
 
 let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, edited=false, searchConfig, dataCategory, name='未命名', favoriteFolder='', state={isTrashed: false, trashDate:null}}, cb) => {
 	//console.log('patternActions: getPatterns',symbol, dateRange);
-	let klineClone = [];
-	kline.forEach((arr) => { //消除echart 的bug
-		let prices = []; 
-		arr.forEach((e) => {
-			prices.push(e);
+	startSearch();
+	if(kline) {
+		let klineClone = [];
+		kline.forEach((arr) => { //消除echart 的bug
+			let prices = []; 
+			arr.forEach((e) => {
+				prices.push(e);
+			});
+			klineClone.push(prices);
 		});
-		klineClone.push(prices);
-	});
-	kline = klineClone;
-	console.assert(kline[0].length == 5 && (kline instanceof Array));
+		kline = klineClone;
+		console.assert(kline[0].length == 5 && (kline instanceof Array));
+	}
 
 	//保存历史
 	let isNewSearch = false;
@@ -42,6 +67,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 	dateRange = dateRange || _lastSearch.dateRange;
 	bars = bars || _lastSearch.bars;
 	dataCategory = dataCategory || getDataCategory();
+	kline = kline || _lastSearch.kline;
 	// setComparatorVisibleRange({from: +new Date(dateRange[0])/1000, to: +new Date(lastDate)/1000}, '0');
 	//缓存上一次的
 	_lastSearch.symbol = symbol;
@@ -93,6 +119,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 					patterns.searchConfig = searchConfig;
 					let searchTimeSpent = new Date() - startTime;
 					//保存历史
+					searchSuccess(patterns, searchTimeSpent);
 					setTimeout(() => { historyController.pushHistory({symbol, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig, dataCategory, name, favoriteFolder, state}); });
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 					cb && cb();
@@ -100,7 +127,8 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 				}, (error) => {
 					//请求错误后的处理
 					console.error(error);
-					dispacth({type: types.GET_PATTERNS_ERROR, error: error});
+					searchError(kline);
+					// dispacth({type: types.GET_PATTERNS_ERROR, error: error});
 				}
 			);
 		}
