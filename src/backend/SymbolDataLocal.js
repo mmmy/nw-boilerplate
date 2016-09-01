@@ -1,5 +1,9 @@
 
-let _symbolData = require('../../tradingview/charting_library/datafeed/udf/ksSymbolsDB.json');
+var urls = ['../../tradingview/charting_library/datafeed/udf/ksStockSymbolsDB.json','../../tradingview/charting_library/datafeed/udf/ksFutureSymbolsDB.json'];
+var _symbolData = urls.reduce((arr, url) => {
+	return arr.concat(require(url));
+},[]);
+// let _symbolData = require('../../tradingview/charting_library/datafeed/udf/ksSymbolsDB.json');
 
 let _symbolIndusty = {};
 
