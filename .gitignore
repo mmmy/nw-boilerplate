@@ -8,3 +8,4 @@ src/image/screenshot_heatmap.png
 nw_cache
 package
 storage
+*.zip
