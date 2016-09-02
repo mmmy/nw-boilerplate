@@ -108,7 +108,7 @@ class PatternView extends React.Component {
 		}
 
 		if((newProps.fullView !== this.props.fullView) && (newProps.index<0 || newProps.index>=5 ) ) return false;
-		// console.info('patternView shouldComponentUpdate, index:', newProps.index);
+
 		return true;
 		// return newProps.fullView === this.props.fullView; //取消自动刷新
 	}
@@ -185,8 +185,8 @@ class PatternView extends React.Component {
 
 		let { dispatch, isActive, fullView } = this.props;
 		let { id, symbol, baseBars, kLine, similarity, industry, begin, lastDate} = this.props.pattern;
+    console.assert(window.store.getState().patterns.rawData[id] == this.props.pattern, 'patternview 的数据没有更新!!!!!');
     let yieldRate = this.props.pattern.yield;
-
 		if (!fullView) {
 			return;
 		}

@@ -501,7 +501,7 @@ resizeChart1() {
 			this.drawIndustryPieChart();
 			this.drawYieldDimCountChart();
 
-			this.industryPieChart.filterAll();
+			this.industryPieChart.filterAll(); //好大一个坑
 			// this.industryPieChart.redraw();
 			var that = this;
 			setTimeout(() => { 
@@ -781,6 +781,7 @@ resizeChart1() {
 		switch (chart) {
 			case this.industryPieChart: 			//行业过滤
 				this.setResetBtnVisibility(chart);
+				console.info('@@@@@@@chart filter industry!!!!');
 				dispatch(filterActions.setFilterIndustry(filter));
 				break; 				
 			case this.yieldDimCountChart: 			//收益率

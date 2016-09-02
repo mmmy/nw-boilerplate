@@ -185,15 +185,18 @@ class PatternCollection extends React.Component {
 	shouldComponentUpdate(newProps, newState) {
 		//return true;
 		//pattern 改变 的时候 只渲染前5个, 结局搜索后渲染时间过长的问题
+		console.info('@@@@@+_+_+_+_+_+ active id',newProps.active.id,this.props.active.id, (newProps.active.id === this.props.active.id));
+		console.info('@@@@@+_+_+_+_+_+ filter',newProps.filter,this.props.filter, (newProps.filter === this.props.filter));
 		if(newProps.patterns.rawData !== _oldPatternRawData) {
 			this.renderLeading5 = true;
 			_oldPatternRawData = newProps.patterns.rawData;
-			let that = this;
+			if(this.props.fullView) {  //pattern改变了,并fullview 一定刷新, 填满了两个坑
+				return true;
+			}			
 			// setTimeout(() => { that.setState({}); }, 2000);
 		} else {
 			this.renderLeading5 = false;
 		}
-
 		return 	(newProps.filter === this.props.filter)    //filter更新后不进行自动刷新, 而是在componentWillReceiveProps 进行手动刷新
 						&& (newProps.active.id === this.props.active.id)   //点击patternview
 						&& (newProps.patternTrashed === this.props.patternTrashed) //eye
@@ -227,14 +230,18 @@ class PatternCollection extends React.Component {
 	sortData(rawData){
 
 		let { sortType } = this.props.sort;
+		//bug
 		//如果 sortType 没有变化那么不需要重新排序
+		console.info('oldSortType',this.oldSortType,'sortType', sortType);
 		if(this.oldSortType === sortType) {
+			console.info('sortType 没有变化那么不需要重新排序');
 			return this.sortedData;
 		}
 		//排序
 		let sortedData = rawData.concat([]) || [];
 
 		if(sortType === '') {
+			console.info('sortedData 直接返回!!----------------');
 			return sortedData;
 		}
 
@@ -332,12 +339,14 @@ class PatternCollection extends React.Component {
 			//nodes = nodes.length > 0 ? nodes.slice(0,10) : [];
 		//}
 		// this.renderDate2 = new Date();
+		console.info('@@@@@', 'getPatternNodes++++++++');
 		return nodes;
 	}
 
 	render(){
 		// this.renderDate = new Date();
 		const className = classNames('pattern-collection', {'scroll-hidden': !this.props.fullView});
+		console.info('@@@@@', 'patternCollection render-------');
 
 		return (<div ref='container' className={className}>
 			{ this.getPatternNodes() }
@@ -351,6 +360,7 @@ PatternCollection.defaultProps = defaultProps;
 let stateToProps = function(state) {
 	const {layout, patterns, sort, active, filter, patternTrashed} = state;
 	const {stockView, patternSmallView} = layout;
+		console.info('@@@@@', 'patternCollection stateToProps========');
 	//const {crossFilter,rawData} = patterns;
 	return {fullView: !stockView, patternSmallView, patterns, sort, active, filter, patternTrashed, _setIdTrashed };
 };
