@@ -185,6 +185,10 @@ class ComparatorPrediction extends React.Component {
         option.yAxis[0].max = max;
         option.yAxis[1].min = -y2diff;
         option.yAxis[1].max = y2diff;
+
+        let klineLen = option.series[0].data.length;
+        let predictionLen = option.series[1] && option.series[1].data.length || 0;
+        option.grid[0].right = -100 / (klineLen + predictionLen) / 2 * 1.05 + '%';
         // let d1 = new Date();
         //setTimeout(() => { 
         window.eChart.setOption(option, true); 

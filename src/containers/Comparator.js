@@ -254,7 +254,7 @@ class Comparator extends React.Component {
     // let eachBlockValue = Math.round(Math.sqrt(heatmapYAxis)) / 2; // 根据振幅幅度划分每一个小格的容量
     // let eachValueInPercentage = eachBlockValue / heatmapYAxis;
     // let blocksNumber = Math.round(1 / eachValueInPercentage);
-    let blocksNumber = 7;
+    let blocksNumber = 8;
     let yAxisData = [];
 
     let heatMapChart = this.heatMapChart;
@@ -344,6 +344,7 @@ class Comparator extends React.Component {
       option.yAxis[0].max = lastClosePrice + offset;      
       option.yAxis[1].min = lastClosePrice - offset1;
       option.yAxis[1].max = lastClosePrice + offset1;
+      // option.grid.right = 100;//-100 / data0.categoryData.length / 2 * 1.05 + '%';
 
       let node = this.refs.echart_container;
       this.chart = echarts.init(node);
