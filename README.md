@@ -1,4 +1,8 @@
 
+###接口
+1获取futures列表: curl -s -d {\"groupCode\":\"cf_m5\"} http://112.74.17.175:25501/querysymbols
+2获取groups列表: curl http://112.74.17.46:25501/groups
+
 nw-boilerplate
 
                           )
