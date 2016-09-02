@@ -427,9 +427,9 @@ var data = [
 			new KlineEditor(this.refs.kline_editor, data.slice(0, 30));
 		},
 		drawChart(){
-			var data0 = splitData(data.slice(0,30), 30);
+			var data0 = splitData(data.slice(0,30), 4);
 			var lastClosePrice = data0.values[data0.values.length-1][1];
-			var { lineSeries, min, max } = generateSeries([data.slice(0, 30).map(function(e){ return e[3] }),data.slice(0, 30).map(function(e){ return e[2] })], lastClosePrice);
+			var { lineSeries, min, max } = generateSeries([data.slice(0, 3).map(function(e){ return e[3] }),data.slice(0, 3).map(function(e){ return e[2] })], lastClosePrice);
 			// var minPrice = Math.min(min, data0.yMin);
 			// var maxPrice = Math.max(max, data0.yMax);
 			//lastClosePrice 居中
@@ -458,7 +458,7 @@ var data = [
 		},
 		render(){
 			return <div>
-					<div ref='container' style={{width:'30%', height:'250px', border:'1px solid #eee'}}>
+					<div ref='container' style={{width:'100%', height:'250px', border:'1px solid #eee'}}>
 				
 					</div>
 					<div><canvas ref='canvas' width='400' height='300' style={{width: '400px', height:'300px'}} /></div>
