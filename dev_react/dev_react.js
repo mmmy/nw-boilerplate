@@ -3,6 +3,7 @@ import React from 'react';
 window.$ = require('jquery');
 
 let tabsArr = [
+	{title:'heatmap',component:'./component/heatmap'},
 	{title:'prediction',component:'./component/prediction'},
 	{title:'chart',component:'./component/chart'},
 	{title:'transition',component:'./component/transition'},

@@ -294,6 +294,7 @@ var data = [
 		        },
 		    },{
 		        scale: true,
+		        show: true,
 		        axisLine: {
 		        	show: true
 		        },
@@ -301,7 +302,7 @@ var data = [
 		        	show: false
 		        },
 		        axisLabel:{
-		        	show: false
+		        	show: true
 		        },
 		        axisTick: {
 		        	show: false

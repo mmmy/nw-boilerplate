@@ -205,8 +205,9 @@ class ComparatorHeatmap extends React.Component {
             // console.debug(arguments);
             if(!params) return;
             var points = params.split(':');
-            var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
-            var percentage = (_yMax - _yMin) / $chartDom.height() * center + _yMin;
+            // var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
+            var top = parseFloat(points[1]);
+            var percentage = (_yMax - _yMin) / $chartDom.height() * top + _yMin;
             return  percentage.toFixed(_decimal) + '%';
           },
           textStyle: {
@@ -215,7 +216,8 @@ class ComparatorHeatmap extends React.Component {
             fontWeight: 'lighter',
             fontSize: 10
           },
-          margin: 16
+          margin: 16,
+          yPosition: 'top'
         },
         axisTick: {
           show: false
@@ -263,8 +265,14 @@ class ComparatorHeatmap extends React.Component {
             // console.debug(arguments);
             if(!params) return;
             var points = params.split(':');
-            var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
-            var percentage = (_yMax - _yMin) / $chartDom.height() * center + _yMin;
+            // var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
+            var domH = $chartDom.height();
+            var topPosition = parseFloat(points[1]);
+            if(Math.abs(topPosition - domH) < 5) { //最上面那个被截断的不显示
+              return '';
+            }
+            var percentage = (_yMax - _yMin) / domH * topPosition + _yMin;
+            percentage = Math.round(percentage * 1000) / 1000; 
             return  percentage.toFixed(_decimal) + '%';
           };
 

@@ -48,7 +48,8 @@ let generateHeatMapOption = () => {
             fontWeight: 'lighter',
             fontSize: 10
           },
-          margin: 16
+          margin: 16,
+          yPosition: 'top'
         },
         axisTick: {
           show: false

@@ -164,19 +164,27 @@ let _initHeatMap = () => {
   option.grid.top = -0.5;
   option.grid.bottom = -0.5;
   option.yAxis.axisLabel.margin = 0;
+  option.yAxis.axisLabel.fontSize = 3;
+  option.yAxis.axisLabel.color = 'red';
   option.yAxis.axisLabel.formatter = function(params){
           // console.debug(arguments);
           if(!params) return;
           var points = params.split(':');
-          var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
+          // var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
+          var domH = $chartDom.height();
+          var top = (parseFloat(points[1]));
+          if(Math.abs(top - domH) < 5) {
+          	return '';
+          }
           var closePrice = (_yMax + _yMin)/2;
-          var centerPrice = (center / $chartDom.height()) * (_yMax - _yMin) + _yMin;
+          var centerPrice = (top / $chartDom.height()) * (_yMax - _yMin) + _yMin;
           var percentage = (centerPrice - closePrice) / closePrice * 100;//(_yMax - _yMin) / $chartDom.height() * center + _yMin;
           return  fillSpaceLeft(percentage.toFixed(_decimal) + '%', 7);
         };
 
   _heatMapChart = echarts.init(_$heatmapContainer[0]);
   _heatMapChart.setOption(option);
+  window._heatMapChart = _heatMapChart;
 }
 
 let _updateHeatMap = (heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1) => {
@@ -185,7 +193,7 @@ let _updateHeatMap = (heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1) 
 
   _yMin = scaleMinValue;
   _yMax = scaleMaxValue;
-  let blocksNumber = 7;
+  let blocksNumber = 8;
   let yAxisData = [];
 
   let heatMapChart = _heatMapChart;
@@ -230,6 +238,7 @@ let _updateHeatMap = (heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1) 
 
   let option = heatMapChart.getOption();
   option.yAxis[0].data = yAxisData;
+  option.yAxis[0].axisLabel.textStyle.fontSize = 9;
   option.series[0].data = eChartSeriesData;
 
   heatMapChart.setOption(option, true);
@@ -280,12 +289,14 @@ let _updateAllPatternCanvas = () => {
 	}
 };
 
+let _handleResize = () => {
+	_echart && _echart.resize();
+	_heatMapChart && _heatMapChart.resize();
+	_updateAllPatternCanvas();
+};
+
 let _initResize = () => {
-	window.addEventListener('resize', (e) => {
-		_echart && _echart.resize();
-		_heatMapChart && _heatMapChart.resize();
-		_updateAllPatternCanvas();
-	});
+	window.addEventListener('resize', _handleResize);
 };
 
 let _initToggle = () => {
@@ -298,7 +309,7 @@ let _initToggle = () => {
 			return;
 		}
 
-		let $detailReport = $('.container-searchreport:not(.static)');
+		let $detailReport = $('.container-searchreport:not(.static)');   //详情页
 		let $comparatorContainer = $('#__comparator_prediction_container');
 		$comparatorContainer.css('opacity', '0');
 		$detailReport.css('opacity', '0');
@@ -314,6 +325,8 @@ let _initToggle = () => {
 				$detailReport.css('z-index', '0');
 				$comparatorContainer.css('z-index', '0');
 				_$reportWrapper.css('display', 'block');
+				//resize charts
+				_handleResize();
 			}
 		});
 		_$reportContainer.toggleClass('searchreport-full');
