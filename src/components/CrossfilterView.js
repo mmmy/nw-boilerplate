@@ -402,6 +402,18 @@ resizeChart1() {
 			this.oldCrossFilter = crossFilter;
 
 			// this.idDim = crossFilter.dimension((data) => { return data.id; });
+			let widerNumber = (num) => {
+				let expNum = num.toExponential(); '1.3e-2';
+				let numSplit = expNum.split('e');
+				let base = parseFloat(numSplit[0]);
+				let plus = base > 0 ? 1 : -1;
+				let ex = parseInt(numSplit[1]);
+				if(Math.abs(base) >= 5) {
+					return parseFloat(`1e${ex+1}`) * plus;
+				}else {
+					return parseFloat(`5e${ex}`) * plus;
+				}
+			};
 			let scalize = (arr) => { //arr = [num, num]    =>  1:1 or 1:4 or 2:3
 				
 				let left = arr[0],
@@ -459,9 +471,11 @@ resizeChart1() {
 			this.yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)]; //收益率的最大最小值
 			//this.yield100Range[0] = Math.floor(this.yield100Range[0] / 20) * 20; // -23 => -4, 34 => 20
 			//this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 20) * 20; // 88 => 100, 129 => 140
-			let inter = 1;
-			this.yield100Range[0] = Math.floor(this.yield100Range[0] / inter) * inter; // -2 => -5, 3 => 5
-			this.yield100Range[1] = Math.ceil(this.yield100Range[1] / inter) * inter; // 88 => 100, 129 => 130
+			// let inter = 1;
+			// this.yield100Range[0] = Math.floor(this.yield100Range[0] / inter) * inter; // -2 => -5, 3 => 5
+			// this.yield100Range[1] = Math.ceil(this.yield100Range[1] / inter) * inter; // 88 => 100, 129 => 130
+			this.yield100Range[0] = widerNumber(this.yield100Range[0]);
+			this.yield100Range[1] = widerNumber(this.yield100Range[1]);
 			this.yield100Range = scalize(this.yield100Range);
 			let rangeInterval = ( this.yield100Range[1] -  this.yield100Range[0] ) / barChartBars;
 			// console.info(this.yield100Range);
