@@ -5,6 +5,7 @@ import statisticKline from '../components/utils/statisticKline';
 import echarts from 'echarts';
 import painter from './painter';
 import store from '../store';
+import { getDecimalForStatistic } from '../shared/storeHelper';
 
 let _$root = null;
 
@@ -27,6 +28,7 @@ let _heatMapChart = null;
 
 let _yMin = 0;
 let _yMax = 200;
+let _decimal = 2;
 
 let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span></div><div class="item btn-toggle"><i class="fa fa-angle-up"></i></div></div></div>`;
 let _$toggle = null;
@@ -170,7 +172,7 @@ let _initHeatMap = () => {
           var closePrice = (_yMax + _yMin)/2;
           var centerPrice = (center / $chartDom.height()) * (_yMax - _yMin) + _yMin;
           var percentage = (centerPrice - closePrice) / closePrice * 100;//(_yMax - _yMin) / $chartDom.height() * center + _yMin;
-          return  fillSpaceLeft(percentage.toFixed(0) + '%', 7);
+          return  fillSpaceLeft(percentage.toFixed(_decimal) + '%', 7);
         };
 
   _heatMapChart = echarts.init(_$heatmapContainer[0]);
@@ -234,7 +236,8 @@ let _updateHeatMap = (heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1) 
 
 };
 
-let _updatePatternViews = (patternArr) => {
+let _updatePatternViews = (patternArr, {decimal}) => {
+	decimal = decimal || 2;
 	let patterns5 = patternArr.slice(0, 5) || [];
 	_$patternViews.data('pattern',null);             //重置
 	patterns5.forEach((pattern, i) => {
@@ -242,7 +245,7 @@ let _updatePatternViews = (patternArr) => {
 		$patternView.data({pattern});
 
 		let similarityStr = (pattern.similarity * 100 + '').slice(0, 4),
-				returnStr = (pattern.yield * 100).toFixed(1),
+				returnStr = (pattern.yield * 100).toFixed(decimal),
 				symbol = pattern.symbol || '',
 				describe = pattern.metaData && pattern.metaData.name || '';
 
@@ -348,12 +351,15 @@ searchResultController.init = (root) => {
 
 searchResultController.updatePrediction = (patterns) => {
 	if(!_$root) return;
+	_decimal = getDecimalForStatistic();
 	_updateKlineChart(patterns);
 };
 
 searchResultController.updateStatistics = (patterns) => {
 	if(!_$root) return;
 
+	_decimal = getDecimalForStatistic();
+	const decimal = _decimal;
 	let { searchConfig, crossFilter } = patterns;
 	let daysStr = searchConfig && searchConfig.additionDate && searchConfig.additionDate.value || '0';
 
@@ -363,8 +369,8 @@ searchResultController.updateStatistics = (patterns) => {
 	symbolDim.dispose();
 
 	let uprateStr = (statisticsData.upPercent*100).toFixed(1);
-	let medianStr = (statisticsData.median*100).toFixed(1);
-	let meanStr = (statisticsData.mean*100).toFixed(1);
+	let medianStr = (statisticsData.median*100).toFixed(decimal);
+	let meanStr = (statisticsData.mean*100).toFixed(decimal);
 
 	_statisticDoms.days.text(daysStr);
 	_statisticDoms.upRate.text(uprateStr);
@@ -378,7 +384,8 @@ searchResultController.updatePatterns = (patternsArr, firstFiveIds) => {
 	let firstFivePatterns = firstFiveIds.map(function(id) {
 		return patternsArr[id];
 	})
-	_updatePatternViews(firstFivePatterns);
+	_decimal = getDecimalForStatistic();
+	_updatePatternViews(firstFivePatterns, {decimal:_decimal});
 };
 
 searchResultController.reportSlideDown = (slideDown, cb) => {

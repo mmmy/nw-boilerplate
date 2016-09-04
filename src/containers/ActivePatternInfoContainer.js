@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import {getDecimalForStatistic} from '../shared/storeHelper';
 
 const propTypes = {
 
@@ -35,8 +36,9 @@ class ActivePatternInfoContainer extends React.Component {
 
 	render(){
     let { similarity, yieldRate } = this.props;
+    const decimal = getDecimalForStatistic();
     similarity = Math.round(similarity * 1000) / 10;
-    yieldRate = Math.round(yieldRate * 1000) / 10;
+    yieldRate = (yieldRate * 100).toFixed(decimal || 2);
 
     const similarityClassNames = classNames('active-pattern-info font-number');
 

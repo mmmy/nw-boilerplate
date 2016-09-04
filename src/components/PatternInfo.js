@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import Switch from './Switch';
 import classNames from 'classnames';
 import store from '../store';
+import {getDecimalForStatistic} from '../shared/storeHelper';
 
 const propTypes = {
 	pattern: PropTypes.object.isRequired,
@@ -18,6 +19,8 @@ const defaultProps = {
   	//index: -1,
 };
 
+let _decimal = 2;
+
 class PatternInfo extends React.Component {
 
 	constructor(props) {
@@ -29,8 +32,10 @@ class PatternInfo extends React.Component {
 
 	}
 
-	componentWillReceiveProps(){
-
+	componentWillReceiveProps(newProps){
+		if(newProps.index == 0 && newProps.pattern != this.props.pattern) {
+			_decimal = getDecimalForStatistic();
+		}
 	}
 
 	shouldComponentUpdate(newProps){
@@ -81,7 +86,7 @@ class PatternInfo extends React.Component {
 				</div>
 				{ (column && smaller) ? [] : (<div>
 					<h5 className='font-simsun'>回报</h5>
-					<p className='font-number' style={{color: (yieldRate>0 ? '#ae0006' : '')}}>{(yieldRate*100).toFixed(1)+'%'}</p>
+					<p className='font-number' style={{color: (yieldRate>0 ? '#ae0006' : '')}}>{(yieldRate*100).toFixed(_decimal)+'%'}</p>
 				</div>)}
 			</div>
 			{switchWidget}

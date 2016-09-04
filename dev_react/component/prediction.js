@@ -458,7 +458,7 @@ var data = [
 		},
 		render(){
 			return <div>
-					<div ref='container' style={{width:'100%', height:'250px', border:'1px solid #eee'}}>
+					<div ref='container' style={{width:'300px', height:'250px', border:'1px solid #eee'}}>
 				
 					</div>
 					<div><canvas ref='canvas' width='400' height='300' style={{width: '400px', height:'300px'}} /></div>

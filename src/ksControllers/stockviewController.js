@@ -193,8 +193,8 @@ let dateToString = (dateObj) => {
 			day = dateObj.getDay();
 	let isToday = (year==now.getFullYear()) && (month==now.getMonth()) && (date==now.getDate());
 	let isYesterday = (year==yesterday.getFullYear()) && (month==yesterday.getMonth()) && (date==yesterday.getDate());
-	let dayChinese = ['一','二','三','四','五','六','日'];
-	return year + '年' + (month+1) + '月' + date + '日 - 星期' + dayChinese[day-1] + (isToday ? '(今天)' : '') + (isYesterday ? '(昨天)' : '') ;
+	let dayChinese = ['日','一','二','三','四','五','六'];
+	return year + '年' + (month+1) + '月' + date + '日 - 星期' + dayChinese[day] + (isToday ? '(今天)' : '') + (isYesterday ? '(昨天)' : '') ;
 };
 
 let _generateHistoryItem = (date, data) => {

@@ -184,7 +184,7 @@ class PatternView extends React.Component {
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
 		let { dispatch, isActive, fullView } = this.props;
-		let { id, symbol, baseBars, kLine, similarity, industry, begin, lastDate} = this.props.pattern;
+		let { id, symbol, baseBars, kLine, similarity, industry, begin, end, lastDate} = this.props.pattern;
     console.assert(window.store.getState().patterns.rawData[id] == this.props.pattern, 'patternview 的数据没有更新!!!!!');
     let yieldRate = this.props.pattern.yield;
 		if (!fullView) {
@@ -202,8 +202,8 @@ class PatternView extends React.Component {
 		_selectYield(this.props.pattern.yield);
 		setScatters(null, null, id);
 
-    let dateStart = kLine[0][0];
-    let dateEnd = kLine[kLine.length - 5][0];
+    let dateStart = begin;//kLine[0][0];
+    let dateEnd = end;//kLine[kLine.length - 5][0];
     dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate));
 
 

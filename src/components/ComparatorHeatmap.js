@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import echarts from 'echarts';
 import { generateHeatMapOption } from './utils/heatmap-options';
+import {getDecimalForStatistic} from '../shared/storeHelper';
 
 let _yMax = 100;
 let _yMin = -100;
+let _decimal = 2;
 
 const propTypes = {
   stretchView: PropTypes.bool,
@@ -33,6 +35,9 @@ class ComparatorHeatmap extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if(nextProps.patterns != this.props.patterns) {
+      _decimal = getDecimalForStatistic();
+    }
   }
 
   shouldComponentUpdate(nextProps){
@@ -47,7 +52,7 @@ class ComparatorHeatmap extends React.Component {
     // let eachBlockValue = Math.round(Math.sqrt(heatmapYAxis)); // 根据振幅幅度划分每一个小格的容量
     // let eachValueInPercentage = eachBlockValue / heatmapYAxis;
     // let blocksNumber = Math.round(1 / eachValueInPercentage);
-    let blocksNumber = 7;
+    let blocksNumber = 8;
     let yAxisData = [];
 
     let height = window.heatmap.getHeight();
@@ -202,7 +207,7 @@ class ComparatorHeatmap extends React.Component {
             var points = params.split(':');
             var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
             var percentage = (_yMax - _yMin) / $chartDom.height() * center + _yMin;
-            return  percentage.toFixed(0) + '%';
+            return  percentage.toFixed(_decimal) + '%';
           },
           textStyle: {
             color: '#656565',
@@ -260,7 +265,7 @@ class ComparatorHeatmap extends React.Component {
             var points = params.split(':');
             var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
             var percentage = (_yMax - _yMin) / $chartDom.height() * center + _yMin;
-            return  percentage.toFixed(0) + '%';
+            return  percentage.toFixed(_decimal) + '%';
           };
 
     if (option && typeof option === "object") {

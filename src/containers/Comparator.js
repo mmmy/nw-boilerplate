@@ -231,6 +231,7 @@ class Comparator extends React.Component {
     option.grid.top = -0.5;
     option.grid.bottom = -0.5;
     option.yAxis.axisLabel.margin = 0;
+    option.yAxis.nameLocation = 'start';
     option.yAxis.axisLabel.formatter = function(params){
             // console.debug(arguments);
             if(!params) return;

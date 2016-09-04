@@ -113,7 +113,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 					let patterns = {
 						rawData: resArr,
 						closePrice: closePrice || [],
-						searchMetaData: { symbol, dateRange, bars, lastDate, kline, edited }
+						searchMetaData: { symbol, dateRange, bars, lastDate, kline, edited, interval }
 					};
 					patterns.crossFilter = crossfilter(patterns.rawData);
 					patterns.searchConfig = searchConfig;
