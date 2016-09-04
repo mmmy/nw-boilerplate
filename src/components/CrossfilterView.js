@@ -20,6 +20,7 @@ import { setScatters, setPieCollection, setCountBars } from '../cache/crossfilte
 
 import { filterActions } from '../flux/actions';
 import store from '../store';
+import moment from 'moment';
 
 const propTypes = {
   stretchView: PropTypes.bool.isRequired,
@@ -403,15 +404,21 @@ resizeChart1() {
 
 			// this.idDim = crossFilter.dimension((data) => { return data.id; });
 			let widerNumber = (num) => {
-				let expNum = num.toExponential(); '1.3e-2';
+				let expNum = num.toExponential(); //'1.3e-2';
 				let numSplit = expNum.split('e');
 				let base = parseFloat(numSplit[0]);
 				let plus = base > 0 ? 1 : -1;
 				let ex = parseInt(numSplit[1]);
-				if(Math.abs(base) >= 5) {
+
+				let baseAbs = Math.abs(base);
+				if(baseAbs >= 7.5) {
 					return parseFloat(`1e${ex+1}`) * plus;
-				}else {
+				}else if(baseAbs >=5){
+					return parseFloat(`7.5e${ex}`) * plus;
+				}else if(baseAbs >= 2.5){
 					return parseFloat(`5e${ex}`) * plus;
+				}else{
+					return parseFloat(`2.5e${ex}`) * plus;
 				}
 			};
 			let scalize = (arr) => { //arr = [num, num]    =>  1:1 or 1:4 or 2:3
@@ -450,24 +457,24 @@ resizeChart1() {
 			// 			};
 			// 		}
 			// 	);
-			let yearArr = [], yield100Arr=[], that=this ;
+			let timeArr = [], yield100Arr=[], that=this ;
 
 			this.yieldDateDim = crossFilter.dimension((data) => {
 
 				// let lastBar = data.kLine[data.kLine.length - 1];
 				// let year = lastBar ? new Date(lastBar[0]).getFullYear() : 0;
-				let year = new Date(data.end).getFullYear();
+				let unixTime = new Date(data.end) / 1000;
 				let yield100 = (data.yield*100);
 				let id = data.id;
 				//缓存所有数据的年份范围 和 收益率范围
-				yearArr.push(year);
+				timeArr.push(unixTime);
 				yield100Arr.push(yield100);
-				let item = [year, yield100];
+				let item = [unixTime, yield100];
 				item['id'] = id;
 				return item;
 			});
-			//console.log(yearArr);
-			this.yearRange = [Math.min.apply(null, yearArr) || 1990, Math.max.apply(null, yearArr) || new Date().getFullYear()];     //年份的最大最小值
+			//console.log(timeArr);
+			this.timeRange = [Math.min.apply(null, timeArr) || new Date('1990/1/1')/1000, Math.max.apply(null, timeArr) || new Date()/1000];     //年份的最大最小值
 			this.yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)]; //收益率的最大最小值
 			//this.yield100Range[0] = Math.floor(this.yield100Range[0] / 20) * 20; // -23 => -4, 34 => 20
 			//this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 20) * 20; // 88 => 100, 129 => 140
@@ -480,7 +487,7 @@ resizeChart1() {
 			let rangeInterval = ( this.yield100Range[1] -  this.yield100Range[0] ) / barChartBars;
 			// console.info(this.yield100Range);
 			// console.info(rangeInterval);
-			// console.assert(this.yearRange[1] > this.yearRange[0], this.yearRange);
+			// console.assert(this.timeRange[1] > this.timeRange[0], this.timeRange);
 			// console.assert(this.yield100Range[1] > this.yield100Range[0]);
 			this.yieldDateGroup = this.yieldDateDim.group((d) => { 
 				return d;
@@ -554,12 +561,13 @@ resizeChart1() {
 		this.scatterChartH = height;
 
 		let yieldDateScatterChart = this.yieldDateScatterChart || DC.scatterPlot(position_bubble_chart);
+		let timeOffset = parseInt(this.timeRange[1] - this.timeRange[0]) * 0.05;
 
 		yieldDateScatterChart
 			.width(width)
 			.height(height)
 			.margins({top:5, right:20, bottom:20, left:40})
-		    .x(d3.scale.linear().domain([this.yearRange[0]-1, this.yearRange[1]+1]))
+		    .x(d3.scale.linear().domain([this.timeRange[0]-timeOffset, this.timeRange[1]+timeOffset]))
 		    .y(d3.scale.linear().domain(this.yield100Range))  //设置为50的整数倍,上下延长50
 		    //.yAxisLabel("y")
 		    // .xAxisLabel("x")
@@ -591,7 +599,11 @@ resizeChart1() {
 		let xTicks = 6, yTicks = 5;
 		if(width > 400) xTicks = 12;
 		if(height > 200) yTicks = 9;
-		yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(5).ticks(xTicks);
+		yieldDateScatterChart.xAxis().tickFormat((v) => { 
+			var momentTime = moment.unix(parseInt(v)); 
+			return momentTime.format('YYYY.MM.DD'); 
+		}).innerTickSize(5).ticks(xTicks);
+
 		yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
 
 		window.yieldDateScatterChart= yieldDateScatterChart;
@@ -775,7 +787,10 @@ resizeChart1() {
 		let rangeInterval = (this.yield100Range[1] - this.yield100Range[0]) / barChartBars ,
 		    minYield100 = this.yield100Range[0];
 
-		yieldDimCountChart.xAxis().tickFormat((v) => {return (v * rangeInterval + minYield100 ).toFixed(0) + '%'; }).ticks(6).innerTickSize(5);
+		yieldDimCountChart.xAxis().tickFormat((v) => {
+			var yieldRate = v * rangeInterval + minYield100;
+			return (yieldRate + '').slice(0, yieldRate>=0 ? 4 : 5) + '%'; 
+		}).ticks(6).innerTickSize(5);
 		// yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(5);
 		yieldDimCountChart.yAxis().tickFormat(d3.format('d')).ticks(5).innerTickSize(5);
 		//yieldDimCountChart.on('filtered', _.debounce(this.onChartFiltered.bind(this)));

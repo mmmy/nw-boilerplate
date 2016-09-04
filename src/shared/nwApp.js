@@ -24,7 +24,8 @@ let appClose = () => {
 let appSetSize = (width, height) => {
 	// height > 0 && (getNwWindow().height = height);
 	// width > 0 &&	(getNwWindow().width = width);
-	getNwWindow().resizeTo(width, height);
+	var heightOffset = 22;
+	getNwWindow().resizeTo(width, height+heightOffset);
 	// getNwWindow().width += 1;
 	// getNwWindow().height -= 1;
 	// setTimeout(() => {

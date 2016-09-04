@@ -4,7 +4,9 @@ import classNames from 'classnames';
 import echarts from 'echarts';
 import { generateHeatMapOption } from './utils/heatmap-options';
 import {getDecimalForStatistic} from '../shared/storeHelper';
+import _ from 'underscore';
 
+let _heatmapYAxis = 0;
 let _yMax = 100;
 let _yMin = -100;
 let _decimal = 2;
@@ -30,8 +32,10 @@ class ComparatorHeatmap extends React.Component {
 
   componentDidMount() {
     this.initEchart()
+    this._deboundUpdateHeatmap = _.debounce(this.updateHeatMap.bind(this), 200);
     window._updateHeatMap = this.updateHeatMap.bind(this);
-    window.addEventListener('resize', this.handleResize);
+    this._handleResize = this.handleResize.bind(this);
+    window.addEventListener('resize', this._handleResize);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -46,6 +50,11 @@ class ComparatorHeatmap extends React.Component {
 
   updateHeatMap(heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1){
     // console.debug('heatmap did update', heatmapYAxis, scaleMinValue, scaleMaxValue, manulScale);
+    heatmapYAxis = heatmapYAxis || _heatmapYAxis;
+    scaleMaxValue = scaleMaxValue || _yMax;
+    scaleMinValue = scaleMinValue || _yMin;
+
+    _heatmapYAxis = heatmapYAxis;
     _yMin = scaleMinValue;
     _yMax = scaleMaxValue;
 
@@ -113,11 +122,13 @@ class ComparatorHeatmap extends React.Component {
   }
 
   componentWillUnmount(){
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', this._handleResize);
   }
 
   handleResize() {
-    window.onresize = setTimeout(window.heatmap.resize, 0);
+    window.heatmap.resize();
+    this._deboundUpdateHeatmap();  
+    // window.heatmap.setOption(window.heatmap.getOption()); 
   }
 
   initDimensions() {
@@ -262,13 +273,13 @@ class ComparatorHeatmap extends React.Component {
     };
     option = generateHeatMapOption();
     option.yAxis.axisLabel.formatter = function(params){
-            // console.debug(arguments);
+            console.debug(arguments);
             if(!params) return;
             var points = params.split(':');
             // var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
             var domH = $chartDom.height();
             var topPosition = parseFloat(points[1]);
-            if(Math.abs(topPosition - domH) < 5) { //最上面那个被截断的不显示
+            if(Math.abs(topPosition - domH) < 20) { //最上面那个被截断的不显示
               return '';
             }
             var percentage = (_yMax - _yMin) / domH * topPosition + _yMin;
