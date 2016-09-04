@@ -273,7 +273,6 @@ class ComparatorHeatmap extends React.Component {
     };
     option = generateHeatMapOption();
     option.yAxis.axisLabel.formatter = function(params){
-            console.debug(arguments);
             if(!params) return;
             var points = params.split(':');
             // var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
@@ -292,7 +291,7 @@ class ComparatorHeatmap extends React.Component {
       window.heatmap.setOption(option, true);
       let endTime = +new Date();
       let updateTime = endTime - startTime;
-      console.log("Time used:", updateTime);
+      // console.log("Time used:", updateTime);
     }
   }
 

@@ -16,7 +16,7 @@ let setAppStateBeforeLogin = () => {
 
 let setAppStateAfterLogin = () => {
 	// $('.app-drag-area').css('-webkit-app-region','drag');
-	nwApp.appSetSize(pkg.window.min_width, pkg.window.min_height);
+	nwApp.appSetSize(1350, 800);
 	nwApp.appSetResizable(true);
 	nwApp.appSetCenter();
 };
