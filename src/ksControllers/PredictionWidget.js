@@ -24,6 +24,7 @@ let PredictionWidget = function(dom){
 	this._kline = [];
 	this._closePrice = [];
 	this._closePriceScaled = [];
+	this._linesVisibility = [];
 	this._baseBars = 0;
 	this._predictionBars = 0;
 
@@ -33,11 +34,12 @@ let PredictionWidget = function(dom){
 	this._clickX = 0;
 	this._clickY = 0;
 	this._linesYOffset = 0;
+	this._activeLine = -1;
 
 	this._klineOption = {
 		yMin: null,
 		yMax: null,
-		predictionBars: 10,
+		predictionBars: 0,
 		hoverIndex: -1,
 		selectedRange: [0, 0],
 		rangeOption: {noCloseBtn: true}
@@ -47,9 +49,10 @@ let PredictionWidget = function(dom){
 		yMin: null,
 		yMax: null,
 		emptyLeftLen: 10,
-		activeIndex: 1,
-		lineColor: '',
-		activeColor: 'red'
+		activeIndex: 0,
+		lineColor: 'rgba(200,200,200,0.5)',
+		activeColor: '#862020',
+		visibilitys: null
 	};
 
 	this._onHoverKline = null; //func
@@ -168,7 +171,7 @@ PredictionWidget.prototype.updateHover = function(x, y){
 	if(this._hoverKlineIndex != currentIndex) {
 		this._hoverKlineIndex = currentIndex;
 		let hoverData = this._kline[this._hoverKlineIndex];
-		this._onHoverKline && this._onHoverKline(hoverData);
+		this._onHoverKline && this._onHoverKline(this._hoverKlineIndex, hoverData);
 		this.update();
 	}
 }
@@ -184,15 +187,17 @@ PredictionWidget.prototype._updateKlineOption = function(){
     highArr.push(isNaN(+klineData[4]) ? -Infinity : +klineData[4]);
 	}
 
-	var min = Math.floor(Math.min.apply(null, lowArr));
-  var max = Math.ceil(Math.max.apply(null, highArr));
-  var lastClosePrice = this._kline[len - 1][1];
+	var min = Math.min.apply(null, lowArr);
+  var max = Math.max.apply(null, highArr);
+  var lastClosePrice = this._kline.length>0 && this._kline[len - 1][1];
   var offset = Math.max(max - lastClosePrice, lastClosePrice - min);
 
-  offset *= 1.2;
+  offset *= 3;
+  offset = isNaN(offset) ? 0 : offset;
+
   this._klineOption.yMax = lastClosePrice + offset;
   this._klineOption.yMin = lastClosePrice - offset;
-  this._klineOption.predictionBars = this._predictionBars;
+  this._klineOption.predictionBars = this._predictionBars - 1;
 }
 
 PredictionWidget.prototype._updateLinesOption = function(){
@@ -230,14 +235,18 @@ PredictionWidget.prototype._drawLines = function(){
 	//merge
 	this._linesOptions.yMax = this._linesOptions.yMax + this._linesYOffset;
 	this._linesOptions.yMin = this._linesOptions.yMin - this._linesYOffset;
+	this._linesOptions.activeIndex = this._activeLine;
+	this._linesOptions.visibilitys = this._linesVisibility;
 
 	linePainter.drawLines(this._canvas, this._closePriceScaled, this._linesOptions);
 }
 
 PredictionWidget.prototype._updateData = function(){
 	if(this._kline.length>0){
+		let linesVisibility = [];
 		let lastClosePrice = this._kline[this._kline.length-1][1];
 		let closePriceScaled = this._closePrice.map((priceArr, i) => {
+			linesVisibility.push(true);
 			let rate = 1;
 			let priceArrScaled = priceArr.map((price, index) => {
 				if(index == 0){
@@ -250,6 +259,7 @@ PredictionWidget.prototype._updateData = function(){
 			return priceArrScaled;
 		});
 		this._closePriceScaled = closePriceScaled;
+		this._linesVisibility = linesVisibility;
 	}
 }
 
@@ -259,6 +269,7 @@ PredictionWidget.prototype.setData = function(kline, closePrice, baseBars, predi
 	this._baseBars = baseBars || kline && kline.length || this._baseBars;
 	this._predictionBars = predictionBars || closePrice && closePrice[0] && closePrice[0].length || this._predictionBars;
 	this._updateData();
+	this._hoverKlineIndex = -1;
 	this._updateKlineOption();
 	this._updateLinesOption();
 	this.update();
@@ -271,6 +282,40 @@ PredictionWidget.prototype.update = function(){
 
 PredictionWidget.prototype.resize = function(){
 	this._updateSize();
+	this.update();
+}
+
+PredictionWidget.prototype.getLastPrices = function(){
+	let lastPrices = this._closePriceScaled.map((priceArr) => {
+		return priceArr[priceArr.length-1];
+	});
+	return lastPrices;
+}
+
+PredictionWidget.prototype.getLineChartMinMax = function(){
+	return {
+		yMin: this._linesOptions.yMin,
+		yMax: this._linesOptions.yMax
+	};
+}
+
+PredictionWidget.prototype.setHoverIndex = function(index){
+	this._hoverKlineIndex = index < this._kline.length ? index : -1;
+	this.update();
+	this._onHoverKline && this._onHoverKline(this._hoverKlineIndex, this._kline[this._hoverKlineIndex]);
+}
+
+PredictionWidget.prototype.setActiveLine = function(index){
+	this._activeLine = index;
+	this.update();
+}
+
+PredictionWidget.prototype.filterLines = function(idArr){
+	let visibilitys = [];
+	idArr.forEach((id) => {
+		visibilitys[id] = true;
+	});
+	this._linesVisibility = visibilitys;
 	this.update();
 }
 

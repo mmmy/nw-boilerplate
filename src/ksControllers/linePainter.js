@@ -9,7 +9,8 @@ let _priceToY = (height, yMax, yMin, price) => {
 		emptyLeftLen:
 		dataLen:
 		activeIndex:
-		activeColor
+		activeColor:
+        visibilitys:
 	}
 ****/
 let drawLines = (canvas, lines, options) => {
@@ -26,6 +27,8 @@ let drawLines = (canvas, lines, options) => {
         emptyLeftLen = options && options.emptyLeftLen || 0,
         yMin = options && options.yMin || Infinity,
         yMax = options && options.yMax || -Infinity;
+
+    var visibilitys = options && options.visibilitys;
 
     var len = lines.length;
 
@@ -47,6 +50,9 @@ let drawLines = (canvas, lines, options) => {
     ctx.setLineDash([0,0]);
 
     for (let i = 0; i < len; i++) {
+        
+        if(visibilitys && !visibilitys[i]) continue;
+
         let priceArr = lines[i];
         ctx.beginPath();
         priceArr.forEach((price, index) => {
@@ -64,7 +70,7 @@ let drawLines = (canvas, lines, options) => {
 		//active line
 		let activeIndex = options && options.activeIndex;
 		activeIndex = parseInt(activeIndex);
-		if(!isNaN(activeIndex)) {
+		if(!isNaN(activeIndex) && (!visibilitys || visibilitys[activeIndex])) {
 			let priceArr = lines[activeIndex];
 			if(priceArr) {
 				ctx.beginPath();

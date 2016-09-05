@@ -67,12 +67,12 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let klineXSpace = (width - left - right) / (len + predictionBars);
 	let klineW = 3;
 	
-	klineW = Math.round(klineXSpace/2);
+	klineW = Math.round(klineXSpace/2) * 1.2;
 	klineW += (klineW % 2 == 0) ? 1 : 0;
 	if(klineW > 10) {
-		klineW += 4;
+		// klineW += 4;
 	} else if(klineW > 6) {
-		klineW += 2;
+		// klineW += 2;
 	}
 	/*
 	if(klineXSpace > 6) {
@@ -127,7 +127,9 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	ctx.clearRect(0, 0, width, height);
 	ctx.fillStyle = backgroundColor;
 	ctx.fillRect(0, 0, width, height);
-
+	if(!kline || kline.length == 0) {
+		return  {};
+	}
 	let d2 = new Date();
 	for (let i=0; i<len; i++) {
 		let rectPoints = klineBox[i];
