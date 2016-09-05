@@ -12,6 +12,21 @@ import { handleShouCangFocus, handleShouCangBlur } from '../ksControllers/public
 import historyManager from '../backend/historyManager';
 import favoritesManager from '../backend/favoritesManager';
 import { favoritesController } from '../ksControllers/stockviewController';
+import PredictionWidget from '../ksControllers/PredictionWidget';
+
+let createEmptyKline = (len) => {
+  let data = [];
+  for (let i=0; i<len; i++) {
+    data.push([undefined, undefined, undefined, undefined]);
+  }
+  return data;
+};
+
+let createEmptyLine = (xArr) => {
+  return xArr.map((x) => {
+    return [x+'', undefined];
+  });
+};
 
 let _getActivePatternStartUnixTime = () => {
   let state = store.getState();
@@ -147,10 +162,12 @@ class ComparatorPrediction extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this._predictionChart;
   }
 
   componentDidMount() {
-    this.initEchart();
+    // this.initEchart(); //弃用
+    this.initPredictionChart();
     window.addEventListener('resize', this.handleResize);
   }
 
@@ -162,7 +179,37 @@ class ComparatorPrediction extends React.Component {
     return nextProps.stretchView === this.props.stretchView;
   }
 
-  componentDidUpdate() {
+  initPredictionChart() {
+    this._predictionChart = new PredictionWidget(this.refs.eChartPredictionLine);
+    window._predictionChart = this._predictionChart;
+    let that = this;
+    this._predictionChart.onHoverKline((index, data) => { 
+      that.setOHLC.call(that, data);
+      var unixTime = _getActivePatternStartUnixTime();
+      setComparatorPosition(unixTime, index, 0);
+      console.log('hover kline index');
+    });
+    this._predictionChart.onScaleLines((yMin, yMax) => {
+      window._updateHeatMap && window._updateHeatMap(yMax - yMin, yMax, yMin);
+    });
+  }
+  predictionChartSetData() {
+    var isInit = this.initDimensions();
+    if(isInit || this.props.stretchView) {
+      let { closePrice, searchMetaData, searchConfig } = this.props.patterns;
+      let rawData = this.symbolDim.top(Infinity);
+      let filteredIds = rawData.map((pattern) => {
+        return pattern.id;
+      });
+      this._predictionChart.setData(searchMetaData && searchMetaData.kline, closePrice);
+      this._predictionChart.filterLines(filteredIds);
+
+      let { yMin, yMax } = this._predictionChart.getLineChartMinMax();
+      window._updateHeatMap && window._updateHeatMap(yMax - yMin, yMax, yMin);
+    }
+  }
+  //弃用
+  udpateEcharts() {
     var isInit = this.initDimensions();
     if( isInit || this.props.stretchView) {
       var that = this;
@@ -177,18 +224,20 @@ class ComparatorPrediction extends React.Component {
         let option = window.eChart.getOption();
         option.ksOverrides.rangeTitle = searchInfo;
         let { series, categoryData, min, max } = that.generateKlineSeries();
-        option.series = that.generateSeriesDataFromClosePrice().concat(series);
+        option.series = that.generateSeriesDataFromClosePrice(categoryData, searchMetaData && searchMetaData.kline.length).concat(series);
         let y2diff = Math.max(that.maxValue, -that.minValue);
         _y2diff = y2diff;
         option.xAxis[0].data = categoryData;
+        option.xAxis[1].data = categoryData.concat([]);
         option.yAxis[0].min = min;
         option.yAxis[0].max = max;
         option.yAxis[1].min = -y2diff;
         option.yAxis[1].max = y2diff;
 
-        let klineLen = option.series[0].data.length;
-        let predictionLen = option.series[1] && option.series[1].data.length || 0;
-        option.grid[0].right = -100 / (klineLen + predictionLen) / 2 * 1.05 + '%';
+        option.xAxis[1].boundaryGap = false;
+        // let klineLen = option.series[0].data.length;
+        // let predictionLen = option.series[1] && option.series[1].data.length || 0;
+        // option.grid[0].right = -100 / (klineLen + predictionLen) / 2 * 1.05 + '%';
         // let d1 = new Date();
         //setTimeout(() => { 
         window.eChart.setOption(option, true); 
@@ -197,15 +246,12 @@ class ComparatorPrediction extends React.Component {
         // console.info('ComparatorPrediction did update in millsec: ', new Date() - that.d1);
         window._updateHeatMap && window._updateHeatMap(y2diff * 2, y2diff, -y2diff);
       }, isInit ? 3000 : 0);
-
     }
-    // const updatePaneViews = this._updatePaneViews ||  _.throttle(() => {
-    // window.actionsForIframe.updatePaneViews();
-    // }, 1000);
+  }
 
-    // this._updatePaneViews = updatePaneViews;
-    // 
-    // updatePaneViews();
+  componentDidUpdate() {
+    // this.udpateEcharts();
+    this.predictionChartSetData();
   }
 
 
@@ -214,7 +260,8 @@ class ComparatorPrediction extends React.Component {
   }
 
   handleResize() {
-    window.eChart.resize();
+    // window.eChart.resize();
+    this._predictionChart.resize();
   }
 
   initDimensions() {
@@ -245,7 +292,9 @@ class ComparatorPrediction extends React.Component {
     return data;
   }
 
-  generateSeriesDataFromClosePrice() {
+  generateSeriesDataFromClosePrice(categoryData, baseBars) {
+    baseBars = baseBars || categoryData.indexOf('0');
+    let blankLine = createEmptyLine(categoryData.slice(0, baseBars));
     let rawData = this.symbolDim.top(Infinity);
     let { closePrice } = this.props.patterns;
     let series = [];
@@ -255,10 +304,13 @@ class ComparatorPrediction extends React.Component {
     if (rawData.length > 0) {
       const pushData = (data) => {
         series.push({
-          data: this.splitDataFromClosePrice(closePrice[data.id]),
+          data: blankLine.concat(this.splitDataFromClosePrice(closePrice[data.id])),
           name: data.id,
           type: 'line',
+          xAxisIndex: 1,
           yAxisIndex: 1,
+          z: 0,
+          zLevel: 0,
           slient: true,
           showSymbol: false,
           symbolSize: 0,
@@ -293,7 +345,7 @@ class ComparatorPrediction extends React.Component {
       };
       for (let i=0; i < series.length; i++) {
         for (let j=0; j < series[i].data.length; j++) {
-           maxMinValue(series[i].data[j][1]);
+          if(series[i].data[j][1] !== undefined) maxMinValue(series[i].data[j][1]);
         }
       }
       this.maxValue = maxValue;
@@ -310,6 +362,10 @@ class ComparatorPrediction extends React.Component {
 
   generateKlineSeries () {
     let { closePrice, searchMetaData, searchConfig } = this.props.patterns;
+    let predictionLen = searchConfig && searchConfig.additionDate && searchConfig.additionDate.value || 0;
+    predictionLen = parseInt(predictionLen);
+    let blankKline = createEmptyKline(predictionLen);
+
     let series = [],
         categoryData = [],
         min,
@@ -332,8 +388,8 @@ class ComparatorPrediction extends React.Component {
             minNiceWidth: 7,
             minGap: 1,
           },
-          data: [],
-          z: 1,
+          z: 10,
+          zLevel: 1,
           itemStyle: {
             normal: {
               borderWidth: true ? '1' : '0',
@@ -346,7 +402,7 @@ class ComparatorPrediction extends React.Component {
               borderWidth: '1'
             }
           },
-          data: data0.values,
+          data: data0.values.concat(blankKline),
       }];
     }
 
@@ -385,7 +441,7 @@ class ComparatorPrediction extends React.Component {
         top: 0,
         bottom: 0,
         left: 0,
-        right: -5
+        right: 0
       },
       tooltip: {
         show: false,
@@ -415,14 +471,25 @@ class ComparatorPrediction extends React.Component {
           }
         }
       },
-      xAxis: {
+      xAxis: [{
         type: 'category',
         show: false,
         splitLine: {
           show: false
         },
+        z: 1,
+        zLevel: 1
         // data: this.xAxisData
-      },
+      },{
+        type: 'category',
+        show: false,
+        splitLine: {
+          show: false
+        },
+        z: 0,
+        slient: true
+        // data: this.xAxisData
+      }],
       yAxis: [{
             scale: true,
             axisLine: {
@@ -485,6 +552,8 @@ class ComparatorPrediction extends React.Component {
   }
 
   setOHLC(data){
+    if(!data || data.length < 4 || data[0]===undefined || data[1] ===undefined || data[2]===undefined || data[3] ===undefined) return;
+    data = data.slice(data.length-4, data.length);
     let O = data && data[0].toFixed(2) || 'N/A';
     let C = data && data[1].toFixed(2) || 'N/A';
     let L = data && data[2].toFixed(2) || 'N/A';

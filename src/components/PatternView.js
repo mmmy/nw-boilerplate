@@ -5,7 +5,7 @@ import PatternInfo from './PatternInfo';
 import { activeActions } from '../flux/actions';
 import { getScatter, getPieSlice, getCountBar, setScatters } from '../cache/crossfilterDom';
 import store from '../store';
-import { setHightlightPrediction } from './helper/echartHelper';
+import { setHightlightPrediction, setPredictionChartHighlight } from './helper/echartHelper';
 
 let _clonedScatter = null; //dom object
 
@@ -192,8 +192,9 @@ class PatternView extends React.Component {
 		}
 
 		try { 
-			setHightlightPrediction(window.eChart, id);
-			setHightlightPrediction(window.comChart, id);
+			// setHightlightPrediction(window.eChart, id);
+			// setHightlightPrediction(window.comChart, id);
+			setPredictionChartHighlight(id);
 		} catch(e) {
 			console.error(e);
 		}

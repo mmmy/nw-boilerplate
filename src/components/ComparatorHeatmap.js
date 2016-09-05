@@ -72,30 +72,44 @@ class ComparatorHeatmap extends React.Component {
       yAxisData.push(Math.round(min) - 0.5 + ':' + (Math.round(min += eachBlockHeight)-0.5));
     }
 
-    let linesOption = window.parent.eChart.getOption();
-    let lastPrices = linesOption.series.slice(0, linesOption.series.length - 1).map((serie, idx) => {
-      return serie.data[serie.data.length - 1][1];
-    });
+    // let linesOption = window.parent.eChart.getOption();
+    // let lastPrices = linesOption.series.slice(0, linesOption.series.length - 1).map((serie, idx) => {
+    //   return serie.data[serie.data.length - 1][1];
+    // });
+    let lastPrices = window.parent._predictionChart.getLastPrices();
     lastPrices.sort((a, b) => {return a - b}); // sort numerically
     let bunch = lastPrices;
 
     let eChartSeriesData = [];
     let countMax = 0;
 
+    // for (let idx = 0; idx < yAxisData.length; idx++) {
+    //   let range = yAxisData[idx].split(':');
+    //   let count = 0;
+    //   for (let i = 0; i < bunch.length; i++) {
+    //     let value = bunch[i];
+    //     let position = (value + Math.abs(scaleMinValue * manulScale)) / heatmapYAxis * height;
+
+    //     if (position > range[0] && position <= range[1]) count = i + 1;
+    //   }
+    //   eChartSeriesData.push([0, idx, count])
+    //   bunch = bunch.slice(count);
+    //   countMax = Math.max(count, countMax);
+    // }
     for (let idx = 0; idx < yAxisData.length; idx++) {
       let range = yAxisData[idx].split(':');
       let count = 0;
       for (let i = 0; i < bunch.length; i++) {
         let value = bunch[i];
-        let position = (value + Math.abs(scaleMinValue * manulScale)) / heatmapYAxis * height;
+        // let position = (value + Math.abs(scaleMinValue * manulScale)) / heatmapYAxis * height;
+        let position = (value - scaleMinValue) / heatmapYAxis * ( height - 0 );
 
-        if (position > range[0] && position <= range[1]) count = i + 1;
+        if (position > (parseFloat(range[0]) - 0.5) && position <= (parseFloat(range[1]) + 0.5)) count += 1;
       }
+      countMax = Math.max(countMax, count);
       eChartSeriesData.push([0, idx, count])
       bunch = bunch.slice(count);
-      countMax = Math.max(count, countMax);
     }
-
     //将eChartSeriesData 的 count 标准到[0 , 100]
     if(countMax > 0) {
       for(let i=0; i<eChartSeriesData.length; i++) {
@@ -281,9 +295,14 @@ class ComparatorHeatmap extends React.Component {
             if(Math.abs(topPosition - domH) < 20) { //最上面那个被截断的不显示
               return '';
             }
-            var percentage = (_yMax - _yMin) / domH * topPosition + _yMin;
+            // var percentage = (_yMax - _yMin) / domH * topPosition + _yMin;
+            // percentage = Math.round(percentage * 1000) / 1000; 
+            // return  percentage.toFixed(_decimal) + '%';
+            var closePrice = (_yMax + _yMin)/2;
+            var centerPrice = (topPosition / $chartDom.height()) * (_yMax - _yMin) + _yMin;
+            var percentage = (centerPrice - closePrice) / closePrice * 100;
             percentage = Math.round(percentage * 1000) / 1000; 
-            return  percentage.toFixed(_decimal) + '%';
+            return percentage.toFixed(_decimal) + '%';
           };
 
     if (option && typeof option === "object") {
