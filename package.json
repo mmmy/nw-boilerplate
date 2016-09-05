@@ -13,7 +13,7 @@
     "standard-window": false,
     "fullscreen": false,
     "frame": true,
-    "toolbar": false
+    "toolbar": true
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

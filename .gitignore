@@ -9,3 +9,4 @@ nw_cache
 package
 storage
 *.zip
+*sublime*
