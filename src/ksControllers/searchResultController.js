@@ -127,19 +127,25 @@ let _updateKlineChart = (patterns) => {
   var offset = Math.max(data0.yMax - lastClosePrice, lastClosePrice - data0.yMin);
   var offset1 = Math.max(max - lastClosePrice, lastClosePrice - min);
 
+  var predictionLen = searchConfig && searchConfig.additionDate && searchConfig.additionDate.value || 0;
+  predictionLen = parseInt(predictionLen);
   //option
   let option = generateKlineOption();
   option.series = option.series.slice(0,1).concat(lineSeries);
   option.series[0].data = data0.values;
   option.xAxis.data = data0.categoryData;
+  option.xAxis.boundaryGap = true;
   option.yAxis[0].min = lastClosePrice - offset;
   option.yAxis[0].max = lastClosePrice + offset;      
   option.yAxis[1].min = lastClosePrice - offset1;
   option.yAxis[1].max = lastClosePrice + offset1;
+  option.grid.right = -100 / (kline.length + predictionLen) / 2 * 1.05 + '%';
+
 
   _echart && _echart.dispose();
   _echart =  echarts.init(_$echartContainer[0]);
   _echart.setOption(option, true);
+  window._echart = _echart;
 
   let y2diff = lastClosePrice + offset1;
   try { 
