@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import ComparatorHeatmap from '../components/ComparatorHeatmap';
+// import ComparatorHeatmap from '../components/ComparatorHeatmap';
 import layoutActions from '../flux/actions/layoutActions';
+import BlockHeatMap from '../ksControllers/BlockHeatMap';
+import {getDecimalForStatistic} from '../shared/storeHelper';
 
 const propTypes = {
 
@@ -17,10 +19,15 @@ class HeatmapContainer extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {};
+    this._heatMapChart = null;
+    let that = this;
+    this._handleResize = () => {
+      that._heatMapChart && that._heatMapChart.resize();
+    };
 	}
 
 	componentDidMount() {
-
+    window.addEventListener('resize', this._handleResize);
 	}
 
 	componentWillReceiveProps(){
@@ -31,10 +38,25 @@ class HeatmapContainer extends React.Component {
 		return true;
 	}
 
-	componentWillUnmount(){
+  componentDidUpdate() {
+    this.updateHeatMap();
+  }
 
+	componentWillUnmount(){
+    window.removeEventListener('resize', this._handleResize);
 	}
 
+  updateHeatMap(){
+    this._heatMapChart = this._heatMapChart || new BlockHeatMap(this.refs.heatmap_container);
+    window._blockHeatMapChart = this._heatMapChart;
+
+    let _predictionChart = window._predictionChart;
+    if(_predictionChart) {
+      let {yMin, yMax} = _predictionChart.getLineChartMinMax();
+      let labelDecimal = getDecimalForStatistic();
+      this._heatMapChart.setData(_predictionChart.getLastPrices(), yMin, yMax, {labelDecimal});
+    } 
+  }
 
   togglePredictionPanel() {
     this.props.dispatch(layoutActions.togglePredictionPanel());
@@ -55,14 +77,15 @@ class HeatmapContainer extends React.Component {
     const {stretchView, heatmapYAxis, patterns, scaleMinValue, scaleMaxValue, manulScale, filter} = this.props;
 		return (
       <div className={'prediction-panel'}>
-        <ComparatorHeatmap
+        <div className='comparator-heatmap' ref='heatmap_container'></div>
+        {/*<ComparatorHeatmap
           stretchView={ stretchView }
           heatmapYAxis={ heatmapYAxis }
           patterns={ patterns }
           scaleMinValue={ scaleMinValue }
           scaleMaxValue={ scaleMaxValue }
           manulScale={manulScale}
-          filter={filter} />
+          filter={filter} />*/}
       </div>
   );
 	}

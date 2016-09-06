@@ -194,6 +194,7 @@ class ComparatorPrediction extends React.Component {
     });
     this._predictionChart.onScaleLines((yMin, yMax) => {
       window._updateHeatMap && window._updateHeatMap(yMax - yMin, yMax, yMin);
+      window._blockHeatMapChart && window._blockHeatMapChart.setData(that._predictionChart.getLastPrices(), yMin, yMax);
     });
   }
   predictionChartSetData() {
@@ -207,8 +208,10 @@ class ComparatorPrediction extends React.Component {
       this._predictionChart.setData(searchMetaData && searchMetaData.kline, closePrice);
       this._predictionChart.filterLines(filteredIds);
 
+      let that = this;
       let { yMin, yMax } = this._predictionChart.getLineChartMinMax();
       window._updateHeatMap && window._updateHeatMap(yMax - yMin, yMax, yMin);
+      window._blockHeatMapChart && window._blockHeatMapChart.setData(that._predictionChart.getLastPrices(), yMin, yMax);
     }
   }
   //弃用

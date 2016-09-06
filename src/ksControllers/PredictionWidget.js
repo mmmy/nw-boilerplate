@@ -296,8 +296,10 @@ PredictionWidget.prototype.resize = function(){
 }
 
 PredictionWidget.prototype.getLastPrices = function(){
-	let lastPrices = this._closePriceScaled.map((priceArr) => {
-		return priceArr[priceArr.length-1];
+	let lastPrices = [];
+	let visibilitys = this._linesVisibility;
+	this._closePriceScaled.forEach((priceArr, i) => {
+		if(visibilitys[i]) lastPrices.push(priceArr[priceArr.length - 1]);
 	});
 	return lastPrices;
 }

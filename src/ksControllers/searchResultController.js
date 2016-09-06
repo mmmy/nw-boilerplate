@@ -2,11 +2,12 @@
 import { splitData, generateSeries, generateKlineOption, getKlineImgSrc } from './publicHelper';
 import { generateHeatMapOption } from '../components/utils/heatmap-options';
 import statisticKline from '../components/utils/statisticKline';
-import echarts from 'echarts';
+// import echarts from 'echarts';
 import painter from './painter';
 import store from '../store';
 import { getDecimalForStatistic } from '../shared/storeHelper';
 import PredictionWidget from './PredictionWidget';
+import BlockHeatMap from './BlockHeatMap';
 
 let _$root = null;
 
@@ -122,6 +123,7 @@ let cacheDom = ($wrapper) => {
 let _updateKlineChart = (patterns) => {
   let { searchMetaData, closePrice, searchConfig } = patterns;
   let { kline } = searchMetaData;
+  /*
   let data0 = splitData(kline, (searchConfig && searchConfig.additionDate.value) || (closePrice[0] && closePrice[0].length));
   let lastClosePrice = data0.values[data0.values.length-1][1];
   let { lineSeries, min, max } = generateSeries(closePrice, lastClosePrice);
@@ -141,21 +143,22 @@ let _updateKlineChart = (patterns) => {
   option.yAxis[1].min = lastClosePrice - offset1;
   option.yAxis[1].max = lastClosePrice + offset1;
   option.grid.right = -100 / (kline.length + predictionLen) / 2 * 1.05 + '%';
-
+	**/
   //init
   _predictionChartStatic = _predictionChartStatic || new PredictionWidget(_$echartContainer[0], {showRange: false, klineScaleRate: 1, slient: true});
   // _predictionChartStatic.setOption(option, true);
   _predictionChartStatic.setData(kline, closePrice);
   window._predictionChartStatic = _predictionChartStatic;
 
-  let y2diff = lastClosePrice + offset1;
+  // let y2diff = lastClosePrice + offset1;
   try { 
-    _updateHeatMap(offset1 * 2, lastClosePrice + offset1, lastClosePrice - offset1);
+    // _updateHeatMap(offset1 * 2, lastClosePrice + offset1, lastClosePrice - offset1);
+    _updateBlockHeatMap();
   } catch(e) {
     console.error(e);
   }  
 };
-
+/**********
 let _initHeatMap = () => {
 	let option = generateHeatMapOption();
   let $chartDom = _$heatmapContainer;
@@ -193,7 +196,8 @@ let _initHeatMap = () => {
   _heatMapChart.setOption(option);
   window._heatMapChart = _heatMapChart;
 }
-
+**************/
+/**
 let _updateHeatMap = (heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1) => {
 
 	if(!_heatMapChart) _initHeatMap();
@@ -251,6 +255,13 @@ let _updateHeatMap = (heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1) 
 
   heatMapChart.setOption(option, true);
 
+};
+**/
+let _updateBlockHeatMap = () => {
+	_heatMapChart = _heatMapChart || new BlockHeatMap(_$heatmapContainer[0]);
+	let lastPrices = _predictionChartStatic && _predictionChartStatic.getLastPrices() || [],
+			{yMin, yMax} = _predictionChartStatic && _predictionChartStatic.getLineChartMinMax();
+	_heatMapChart.setData(lastPrices, yMin, yMax);
 };
 
 let _updatePatternViews = (patternArr, {decimal}) => {
