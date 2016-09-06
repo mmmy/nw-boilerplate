@@ -20,6 +20,10 @@ export default function(store) {
     tradingViewActions.getSymbolSearchResult(postData, cb);
   };
 
+  const sendSymbolList = function(postData, cb) {
+    tradingViewActions.getSymbolList(postData, cb);
+  };
+
   const showConfigModal = function() {
     store.dispatch(layoutActions.showConfigModal());
   };
@@ -129,6 +133,7 @@ export default function(store) {
 	window.actionsForIframe = {
 		searchSymbolDateRange,      //tv-chart.html 中 "搜索"
 		sendSymbolHistory,          //获取股票数据
+        sendSymbolList,
     sendSymbolSearchResult,
     takeScreenshot,
     showConfigModal,

@@ -16,6 +16,22 @@ let getSymbolHistory = (postData, callback, errorCallback) => {
   request(options, requestCb, errorCb, JSON.stringify(postData));
 };
 
+let getSymbolList = (postData, callback) => {
+  const { symbolListOptions } = config;
+  const options = { ...symbolListOptions };
+
+  const requestCb = (result) => {
+    callback(result);
+  };
+
+  const errorCb = (err) => {
+    callback(err);
+  }
+
+  // TODO: define postData
+  request(options, requestCb, errorCb, JSON.stringify(postData));
+}
+
 let getSymbolSearchResult = (postData, callback) => {
   const { searchOptions } = config;
   const options = { ...searchOptions };
@@ -33,6 +49,7 @@ let getSymbolSearchResult = (postData, callback) => {
 }
 
 module.exports = {
-	getSymbolHistory,
-  getSymbolSearchResult
+  getSymbolHistory,
+  getSymbolSearchResult,
+  getSymbolList
 }
