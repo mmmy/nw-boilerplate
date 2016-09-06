@@ -180,7 +180,10 @@ class ComparatorPrediction extends React.Component {
   }
 
   initPredictionChart() {
-    this._predictionChart = new PredictionWidget(this.refs.eChartPredictionLine);
+    let drawOption = {
+      showRange: true
+    };
+    this._predictionChart = new PredictionWidget(this.refs.eChartPredictionLine, drawOption);
     window._predictionChart = this._predictionChart;
     let that = this;
     this._predictionChart.onHoverKline((index, data) => { 

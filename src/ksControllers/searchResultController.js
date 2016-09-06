@@ -6,6 +6,7 @@ import echarts from 'echarts';
 import painter from './painter';
 import store from '../store';
 import { getDecimalForStatistic } from '../shared/storeHelper';
+import PredictionWidget from './PredictionWidget';
 
 let _$root = null;
 
@@ -23,7 +24,7 @@ let _statisticDoms = {
 
 let _$patternViews = null;
 
-let _echart = null;
+let _predictionChartStatic = null;
 let _heatMapChart = null;
 
 let _yMin = 0;
@@ -141,11 +142,11 @@ let _updateKlineChart = (patterns) => {
   option.yAxis[1].max = lastClosePrice + offset1;
   option.grid.right = -100 / (kline.length + predictionLen) / 2 * 1.05 + '%';
 
-
-  _echart && _echart.dispose();
-  _echart =  echarts.init(_$echartContainer[0]);
-  _echart.setOption(option, true);
-  window._echart = _echart;
+  //init
+  _predictionChartStatic = _predictionChartStatic || new PredictionWidget(_$echartContainer[0], {showRange: false, klineScaleRate: 1, slient: true});
+  // _predictionChartStatic.setOption(option, true);
+  _predictionChartStatic.setData(kline, closePrice);
+  window._predictionChartStatic = _predictionChartStatic;
 
   let y2diff = lastClosePrice + offset1;
   try { 
@@ -210,10 +211,11 @@ let _updateHeatMap = (heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1) 
   for (let i = 0; i < blocksNumber; i++) {
     yAxisData.push(Math.round(min) + 0.5 + ':' + (Math.round(min += eachBlockHeight)-0.5));
   }
-  let linesOption = _echart.getOption();
-  let lastPrices = linesOption.series.slice(1, linesOption.series.length).map((serie, idx) => {
-    return serie.data[serie.data.length - 1][1];
-  });
+  // let linesOption = _predictionChartStatic.getOption();
+  // let lastPrices = linesOption.series.slice(1, linesOption.series.length).map((serie, idx) => {
+  //   return serie.data[serie.data.length - 1][1];
+  // });
+  let lastPrices = _predictionChartStatic.getLastPrices();
   lastPrices.sort((a, b) => {return a - b}); // sort numerically
   let bunch = lastPrices;
 
@@ -296,7 +298,7 @@ let _updateAllPatternCanvas = () => {
 };
 
 let _handleResize = () => {
-	_echart && _echart.resize();
+	_predictionChartStatic && _predictionChartStatic.resize();
 	_heatMapChart && _heatMapChart.resize();
 	_updateAllPatternCanvas();
 };

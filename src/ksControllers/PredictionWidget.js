@@ -16,7 +16,8 @@ let createEmptyKline = (len) => {
   return data;
 };
 
-let PredictionWidget = function(dom){
+let PredictionWidget = function(dom, config){
+	config = config || {};
 	this._canvas = null;
 	this._ctx = null;
 	this._canvasParent = null;
@@ -35,6 +36,11 @@ let PredictionWidget = function(dom){
 	this._clickY = 0;
 	this._linesYOffset = 0;
 	this._activeLine = -1;
+
+	this._showRange = Boolean(config.showRange);
+	this._slient = Boolean(config.slient);
+	let rate = parseFloat(config.klineScaleRate);
+	this._klineScaleRate = isNaN(rate) ? 2.8 : rate;
 
 	this._klineOption = {
 		yMin: null,
@@ -92,6 +98,9 @@ PredictionWidget.prototype._updateSize = function(){
 }
 
 PredictionWidget.prototype._getHitTest = function(x, y) {
+	if(this._slient) {
+		return HITTEST.NONE;
+	}
 	let { pointToIndex, indexToPoint } = this._drawKlineInfo;
 	if(!pointToIndex || !indexToPoint) return;
 	let index = pointToIndex(x, false);
@@ -162,6 +171,7 @@ PredictionWidget.prototype._scaleLines = function(x, y) {
 }
 
 PredictionWidget.prototype.updateHover = function(x, y){
+	if(this._slient) return;
 	let {pointToIndex} = this._drawKlineInfo;
 	if(!pointToIndex) return;
 	let hittest =  this._getHitTest(x, y);
@@ -192,7 +202,7 @@ PredictionWidget.prototype._updateKlineOption = function(){
   var lastClosePrice = this._kline.length>0 && this._kline[len - 1][1];
   var offset = Math.max(max - lastClosePrice, lastClosePrice - min);
 
-  offset *= 2.8;
+  offset *= this._klineScaleRate;
   offset = isNaN(offset) ? 0 : offset;
 
   this._klineOption.yMax = lastClosePrice + offset;
@@ -226,7 +236,7 @@ PredictionWidget.prototype._updateLinesOption = function(){
 PredictionWidget.prototype._drawKline = function(){
 	//merge
 	this._klineOption.hoverIndex = this._hoverKlineIndex;
-	this._klineOption.selectedRange[1] = this._kline.length>0 ? this._kline.length - 1 : 0;
+	this._klineOption.selectedRange[1] = this._showRange ? (this._kline.length>0 ? this._kline.length - 1 : 0) : -1;
 
 	this._drawKlineInfo = painter.drawKline(this._canvas, this._kline, this._klineOption);
 }
