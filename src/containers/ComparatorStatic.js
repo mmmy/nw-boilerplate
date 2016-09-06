@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import ReactTradingView from '../components/ReactTradingView';
-import HeatmapContainer from './heatmapContainer';
+import HeatmapContainer from './HeatmapContainer';
 import PredictionContainer from './PredictionContainer';
 import ActivePatternInfoContainer from './ActivePatternInfoContainer';
 import { layoutActions } from '../flux/actions';
