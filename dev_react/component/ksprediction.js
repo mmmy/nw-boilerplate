@@ -1,5 +1,6 @@
 import React from 'react';
 import PredictionWidget from '../../src/ksControllers/PredictionWidget';
+import BlockHeatMap from '../../src/ksControllers/BlockHeatMap';
 
 var data = [
 		    ['2013/1/24', 2320.26,2320.26,2287.3,2362.94],
@@ -32,6 +33,13 @@ export default React.createClass({
 		var widget = new PredictionWidget(this.refs.root);
 		widget.setData(data, closePrice);
 		this._widget = widget;
+		widget.onScaleLines((yMin, yMax) => {
+			heatmap.setData(widget.getLastPrices(), yMin, yMax);
+		});
+
+		let {yMin, yMax} = widget.getLineChartMinMax();
+		var heatmap = new BlockHeatMap(this.refs.heatmap);
+		heatmap.setData(widget.getLastPrices(), yMin, yMax);
 	},
 
 	componentDidMount() {
@@ -44,8 +52,12 @@ export default React.createClass({
 
 	render(){
 
-		return (<div style={{position:'relative', width:'90%', height:'300px', border:'1px solid red'}} ref='root'>
-			</div>);
+		return (<div>
+				<div style={{position:'absolute', width:'90%', height:'300px', border:'1px solid red'}} ref='root'>
+				</div>
+				<div style={{position:'absolute', right:'20px', height:'300px', width:'70px', border:'1px solid #eee'}} ref='heatmap'>
+				</div>
+				</div>);
 	},
 
 });
