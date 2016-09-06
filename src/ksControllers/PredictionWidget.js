@@ -192,7 +192,7 @@ PredictionWidget.prototype._updateKlineOption = function(){
   var lastClosePrice = this._kline.length>0 && this._kline[len - 1][1];
   var offset = Math.max(max - lastClosePrice, lastClosePrice - min);
 
-  offset *= 3;
+  offset *= 2.8;
   offset = isNaN(offset) ? 0 : offset;
 
   this._klineOption.yMax = lastClosePrice + offset;

@@ -120,8 +120,8 @@ function splitData(rawData, predictionBars) {
       // values.push([undefined,undefined,undefined,undefined]);
     }
     //console.log(highArr);
-    var min = Math.floor(Math.min.apply(null, lowArr));
-    var max = Math.ceil(Math.max.apply(null, highArr));
+    var min = Math.min.apply(null, lowArr);
+    var max = Math.max.apply(null, highArr);
 
     // var arange10 = [];
     // for (var i=0; i < 15; i++) {
