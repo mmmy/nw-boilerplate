@@ -65,13 +65,13 @@ let searchPattern = ({ symbol, dateRange, bars, additionDate, searchLenMax, data
 			errorCb(e);
 		}
 	};
-
+	let hours8 = 8 * 3600 * 1000;
 	let postObj = {
 		mid:"test example",
 		pattern:{
 			id: id + '',     //后台要求是字符串 
-			begin:{time: new Date(dateRange[0]).toISOString()},
-			end:{time: new Date(dateRange[1]).toISOString()},
+			begin:{time: new Date(dateRange[0]-hours8).toISOString()},
+			end:{time: new Date(dateRange[1]-hours8).toISOString()},
 			len:bars,
 		},
 		dataGroupId: dataCategory,
