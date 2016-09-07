@@ -1,7 +1,7 @@
 import * as types from '../constants/ActionTypes';
 
 const initialState = {
-	username:'',
+	username:  process.env.NODE_ENV == 'development' ? '' : '',
 	password:'',
 	autoLogin:''
 };

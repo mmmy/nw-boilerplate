@@ -7,3 +7,6 @@ src/image/screenshot_prediction.png
 src/image/screenshot_heatmap.png
 nw_cache
 package
+storage
+*.zip
+*sublime*

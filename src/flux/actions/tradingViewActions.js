@@ -17,7 +17,12 @@ let getSymbolSearchResult = (postData, cb) => {
   UDF.getSymbolSearchResult(postData, cb);
 }
 
+let getSymbolList = (postData, cb) => {
+  UDF.getSymbolList(postData, cb);
+}
+
 module.exports = {
   getSymbolHistory,
-  getSymbolSearchResult
+  getSymbolSearchResult,
+  getSymbolList
 }

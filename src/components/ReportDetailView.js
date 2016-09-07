@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import statisticKline from './utils/statisticKline';
+import { getDecimalForStatistic } from '../shared/storeHelper';
 
 const propTypes = {
 	crossFilter: PropTypes.object.isRequired,
@@ -85,6 +86,7 @@ class ReportDetailView extends React.Component {
 		
 		const { fullView } = this.props;
 		//const { sampleSize, riseProbability, earningAverage, median, profitRiskRate, forecastCeilBound, forecastFloorBound } = report;
+		const decaimal = getDecimalForStatistic();
 
 		let data = this.getStatisticsData();
 		let { median, mean, upPercent, up, down } = data;
@@ -98,6 +100,10 @@ class ReportDetailView extends React.Component {
 			'ks-show': fullView
 		});
 		
+		let titleClassName = classNames('title font-msyh', {
+			'hide': fullView
+		});
+
 		let downClass = classNames('report-item', 'result-item-rightbottom', {
 			'ks-hidden': !fullView,
 			//'transition-delay0': !fullView,
@@ -145,6 +151,8 @@ class ReportDetailView extends React.Component {
 				}
 
 			</div>*/}
+			<h3 className={titleClassName}>数据统计</h3>
+			{fullView ? '' : [<span className='split-line l1'></span>, <span className='split-line l2'></span>, <span className='split-line l3'></span>]}
 
 			{ this.renderStuffs(data) }
 
@@ -153,9 +161,9 @@ class ReportDetailView extends React.Component {
 				{this.generateItem({
 					title:'上涨', 
 					items:[
-							{name:'收益中位数', content:(up.median*100).toFixed(2)+'%'}, 
-							{name:'收益平均数',content:(up.mean*100).toFixed(2)+'%'}, 
-							{name:'上涨极值',content:(up.max*100).toFixed(2)+'%'}
+							{name:'收益中位数', content:(up.median*100).toFixed(decaimal)+'%'}, 
+							{name:'收益平均数',content:(up.mean*100).toFixed(decaimal)+'%'}, 
+							{name:'上涨极值',content:(up.max*100).toFixed(decaimal)+'%'}
 						]
 					})
 				}
@@ -167,9 +175,9 @@ class ReportDetailView extends React.Component {
 				{this.generateItem({
 					title:'下跌', 
 					items:[
-							{name:'收益中位数', content:(down.median*100).toFixed(2)+'%'}, 
-							{name:'收益平均数',content:(down.mean*100).toFixed(2)+'%'}, 
-							{name:'下跌极值',content:(down.min*100).toFixed(2)+'%'}
+							{name:'收益中位数', content:(down.median*100).toFixed(decaimal)+'%'}, 
+							{name:'收益平均数',content:(down.mean*100).toFixed(decaimal)+'%'}, 
+							{name:'下跌极值',content:(down.min*100).toFixed(decaimal)+'%'}
 						]
 					})
 				}
@@ -180,7 +188,7 @@ class ReportDetailView extends React.Component {
 	}
 
 	renderStuffs(data) {
-		
+		const decaimal = getDecimalForStatistic();
 		const { fullView, searchConfig } = this.props;
 		let daysStr = searchConfig && searchConfig.additionDate && searchConfig.additionDate.value || '0';
 		//统计天数
@@ -203,15 +211,15 @@ class ReportDetailView extends React.Component {
 		const meanValueClass = classNames('__fadeIn', 'position-ab', 'text-center', 'transition-all', 'mean-value', 'font-number', {'mama': !fullView });
 
 		return [
-			<div className={daysClass}>统计天数</div>,
+			<div className={daysClass}>统计K线数</div>,
 			<div className={daysValueClass}>{daysStr}</div>,
 			<div className={shouyiClass}>收益</div>,
 			<div className={upRateClass}>上涨比例</div>, //xiaolu
-			<div className={upRateValueClass} style={{'color': '#b61c15'}}>{ (data.upPercent*100).toFixed(1) }{'%'}</div>,
-			<div className={medianClass}>中位数</div>,
-			<div className={medianValueClass}>{ (data.median*100).toFixed(2)}{'%'}</div>,
-			<div className={meanClass}>平均值</div>,
-			<div className={meanValueClass}>{ (data.mean*100).toFixed(2)}{'%'}</div>,
+			<div className={upRateValueClass} >{ (data.upPercent*100).toFixed(1) }{'%'}</div>,
+			<div className={medianClass}>{fullView?'':'收益'}中位数</div>,
+			<div className={medianValueClass}>{ (data.median*100).toFixed(decaimal)}{'%'}</div>,
+			<div className={meanClass}>{fullView?'':'收益'}平均值</div>,
+			<div className={meanValueClass}>{ (data.mean*100).toFixed(decaimal)}{'%'}</div>,
 		];
 	}
 }

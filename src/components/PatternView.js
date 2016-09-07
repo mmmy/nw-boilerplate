@@ -3,10 +3,36 @@ import classNames from 'classnames';
 import EChart from './EChart';
 import PatternInfo from './PatternInfo';
 import { activeActions } from '../flux/actions';
-import { getScatter, getPieSlice, getCountBar } from '../cache/crossfilterDom';
+import { getScatter, getPieSlice, getCountBar, setScatters } from '../cache/crossfilterDom';
 import store from '../store';
+import { setHightlightPrediction, setPredictionChartHighlight } from './helper/echartHelper';
 
 let _clonedScatter = null; //dom object
+
+let _selectIndustry = (industry) => {
+	let matchPie = getPieSlice(industry);
+	let piePath = matchPie && matchPie.lastChild;
+	if(piePath) {
+		$('path.outline.selected', piePath.parentNode.parentNode).removeClass('selected');
+		$(piePath).addClass('selected');
+	}
+};
+
+let _selectYield = (yieldRate) => {
+	let node = getCountBar(yieldRate, true);
+	if(node) {
+		$('rect.outline.selected', node.parentNode).removeClass('selected');
+		$(node).addClass('selected');
+	}
+};
+
+let _context = {};
+let _onCompleted = function() {
+	console.debug('_doWhenSeries1Completed', this);
+  let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(_context, _onCompleted);
+  this.callback && this.callback();
+};
 
 const propTypes = {
 	pattern: PropTypes.object.isRequired,
@@ -17,6 +43,7 @@ const propTypes = {
 	dispatch: PropTypes.func.isRequired,
 	id: PropTypes.number.isRequired,
 	filterTrashedId: PropTypes.func,
+	searchConfig: PropTypes.object,
 };
 
 const defaultProps = {
@@ -81,7 +108,7 @@ class PatternView extends React.Component {
 		}
 
 		if((newProps.fullView !== this.props.fullView) && (newProps.index<0 || newProps.index>=5 ) ) return false;
-		// console.info('shouldComponentUpdate, index:', newProps.index);
+
 		return true;
 		// return newProps.fullView === this.props.fullView; //取消自动刷新
 	}
@@ -92,7 +119,7 @@ class PatternView extends React.Component {
 
 	handleMouseEnter(){
 
-		this.handleMouseLeave();
+		// this.handleMouseLeave();
 		let color = '#b61c15';
 			// const showSymbol = true;
 			// this.setState({showSymbol});
@@ -108,18 +135,20 @@ class PatternView extends React.Component {
 		}
 		//#2
 		let matchPie = getPieSlice(industry);
-		let piePath = matchPie && matchPie.firstChild;
+		let piePath = matchPie.firstChild;// && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = color;
 			matchPie.dispatchEvent(new window.MouseEvent('mouseenter'));
 		}
 		//#3
-		let matchYieldBar = getCountBar(yieldRate);
+		let matchYieldBar = getCountBar(yieldRate, false);
 		if(matchYieldBar) {
 			matchYieldBar.style.fill = color;
 		}
 
-    this.setHightlightPrediction(id, true);
+		let that = this;
+    // this.setHightlightPrediction(id, true);
+
 	}
 
 	handleMouseLeave(){
@@ -134,91 +163,142 @@ class PatternView extends React.Component {
 		let yieldRate = this.props.pattern.yield;
 
 		let matchPie = getPieSlice(industry);
-		let piePath = matchPie && matchPie.firstChild;
+		let piePath = matchPie.firstChild;// && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = '';
 			matchPie.dispatchEvent(new window.MouseEvent('mouseleave'));
 		}
 			//#3
-		let matchYieldBar = getCountBar(yieldRate);
+		let matchYieldBar = getCountBar(yieldRate, false);
 		if(matchYieldBar) {
 			matchYieldBar.style.fill = '';
 		}
 
-    this.setHightlightPrediction(id, false);
+		let that = this;
+    // this.setHightlightPrediction(id, false);
+
 	}
-
-  setHightlightPrediction(id, isHighlight) {
-    let patterns = this.props.patterns;
-    let option = window.eChart.getOption();
-    let series = option.series;
-    for (let i = 0; i < series.length; i++) {
-      let data = series[i];
-      if (data.name === id) {
-        data.lineStyle.normal.color = isHighlight ? '#c23531' : '#ccc';
-        data.z = isHighlight? 1 : -1;
-        break;
-      }
-    }
-
-    option.series = series;
-    window.eChart.setOption(option);
-  }
 
 	setActivePattern() {
     let widget = window.widget_comparator;
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
 		let { dispatch, isActive, fullView } = this.props;
-		let { id, symbol, baseBars, kLine } = this.props.pattern;
-
-		if(!fullView) {
+		let { id, symbol, baseBars, kLine, similarity, industry, begin, end, lastDate} = this.props.pattern;
+    console.assert(window.store.getState().patterns.rawData[id] == this.props.pattern, 'patternview 的数据没有更新!!!!!');
+    let yieldRate = this.props.pattern.yield;
+		if (!fullView) {
 			return;
 		}
 
-    let dateStart = kLine[0][0];
-    let dateEnd = kLine[kLine.length - 5][0];
-    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd));
+		try { 
+			// setHightlightPrediction(window.eChart, id);
+			// setHightlightPrediction(window.comChart, id);
+			setPredictionChartHighlight(id);
+		} catch(e) {
+			console.error(e);
+		}
+
+		_selectIndustry(industry);
+		_selectYield(this.props.pattern.yield);
+		setScatters(null, null, id);
+
+    let dateStart = begin;//kLine[0][0];
+    let dateEnd = end;//kLine[kLine.length - 5][0];
+    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate));
 
 
     let oneDay = 60 * 60 * 24;
     let dateRange = {
-      from: +new Date(dateStart) / 1000 - oneDay * kLine.length * 0.6,
-      to: +new Date(dateEnd) / 1000 + oneDay * kLine.length * 0.6
+      from: +new Date(begin) / 1000,// - oneDay * 1,
+      to: +new Date(lastDate.time) / 1000,// + oneDay * 2
     };
 
     window.timeRange = dateRange;
 
-    let oldSymbol = window.widget_comparator._innerWindow().Q5.getAll()[1].model().mainSeries().symbol().split(':')[1];
+    let oldSymbol = widget._innerWindow().Q5.getAll()[0].model().mainSeries().symbol().split(':')[1];
+    
+    this._unsubscribeCompleted(); //取消监听
 
     if (oldSymbol !== symbol) {
-      chart.KeyStone.setSymbol(symbol, '', 1);
-      this._doWhenBarReceived(() => {
-        widget.setVisibleRange(dateRange, '1');
-        widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-        window.timeRange = undefined;
+    	let that = this;
+      this._doWhenSeries1Completed(() => {   	
+        widget.setVisibleRange(dateRange, '0', () => {
+    			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
+          // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+          let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
+					indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
+          widget.drawKsDateRangeLineTool(indexPoints, 0);
+          widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
+          widget.setVisibleRange(dateRange, '0');
+          that.setActivePattern();
+        });
+        // window.timeRange = undefined;
       });
+	      // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+      chart.KeyStone.setSymbol(symbol, '', 0);
+
     } else {
-        widget.setVisibleRange(dateRange, '1');
+    	widget._innerWindow().Q5.getAll()[0].R99.removeAllDrawingTools();
+      widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+      this._doWhenSeries1Completed(() => {
+        widget.setVisibleRange(dateRange, '0', () => {
+    			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
+          // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+          let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
+					indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
+          widget.drawKsDateRangeLineTool(indexPoints, 0);
+          widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
+          // widget.setVisibleRange(dateRange, '0');
+      // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+          // 
+        });
+      });
     }
 	}
 
-  _doWhenBarReceived(callback) {
+  _doWhenSeries1Timeframe(callback) {
+    function run() {
+      chartDom.Q5.getAll()[0].R99.mainSeries().onTimeframe().unsubscribe(null, run);
+      callback();
+    }
+    const chartDom = window.widget_comparator._innerWindow();
+    chartDom.Q5.getAll()[0].R99.mainSeries().onTimeframe().subscribe(null, run);
+  }
+
+  _doWhenSeries0Completed(callback) {
     function run() {
       let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-      chart.Q5.getAll()[1].model().mainSeries().onBarReceived().unsubscribe(null, run);
+      chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
       callback()
     };
 
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[1].model().mainSeries().onBarReceived().subscribe(null, run);
+    chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
+  }
+
+  _unsubscribeCompleted(){
+  	let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+    chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(_context, _onCompleted);
+  }
+
+  _doWhenSeries1Completed(callback) {
+  	// function run() {
+  	// 	console.debug('_doWhenSeries1Completed', this);
+		 //  let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+		 //  chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
+		 //  callback && callback();
+  	// }
+  	_context.callback = callback;
+    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+    chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(_context, _onCompleted);
   }
 
 	render(){
 
 		let {show, pattern, dispatch, index, fullView, isActive, id} = this.props;
 
-		const className = classNames('transition-all', 'pattern-view', {
+		const className = classNames(/*'transition-all', */'pattern-view', {
 			'active': isActive,
 			'hide': !show,
 			'column': (!fullView && index>=0 && index<5 ),
@@ -226,7 +306,7 @@ class PatternView extends React.Component {
 			[`smaller s${index}`] : index > 0 && index < 5,
 		});
 
-		const symbolClass = classNames('symbol-container', {'hide-symbol':!this.state.showSymbol && !isActive}); //hover显示symbol
+		const symbolClass = classNames('symbol-container font-arial', {'hide-symbol':!this.state.showSymbol && !isActive}); //hover显示symbol
 
 		const echartWrapper = classNames('echart-row-wrapper', {
 			'larger': !fullView && index === 0,  //第一个放大显示
@@ -237,14 +317,17 @@ class PatternView extends React.Component {
 
 		return (<div id={ `pattern_view_${id}`} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
 
-			<div className={symbolClass}>{pattern.symbol}</div>
+			<div className={symbolClass}>
+				{pattern.symbol}
+				<p className='describe font-simsun'>{pattern.metaData && pattern.metaData.name || ''}</p>
+			</div>
 
 			<div className={echartWrapper} ref='echart_wrapper'>
 				<EChart {...this.props} isTrashed={this.state.isTrashed} />
-				<PatternInfo pattern={pattern} dispatch={dispatch} column fullView={fullView} index={index}/>
+				<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} column fullView={fullView} index={index}/>
 			</div>
 
-			<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} />
+			{/*<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} />*/}
 
 		</div>);
 	}

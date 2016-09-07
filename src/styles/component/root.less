@@ -4,8 +4,77 @@
 @import (less) 'bootstrap-datepicker3.min.css';
 @import 'dc';
 
-.container-main{
+.app-drag-panel {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 50px;
+	width: calc(~"100% - 150px");
+	background-color: transparent;
+	-webkit-app-region: drag;
+	z-index: 10;
+}
+
+body{
 	position: absolute;
 	width: 100%;
 	height: 100%;
+	// -webkit-app-region: drag;
+}
+button {
+	-webkit-app-region: no-drag;
+}
+input {
+	-webkit-app-region: no-drag;
+}
+// .app-wrapper {
+// 	position: absolute;
+// 	width: 100%;
+// 	height: 100%;
+// }
+
+/**
+.title-bar-container {
+	position: absolute;
+	height: 40px;
+	width: 100%;
+	border-bottom: 1px solid #eee;
+	z-index: 100;
+	.button {
+		width: 20px;
+		height: 20px;
+		background-image: url(@icons_url);
+		margin-top: 10px;
+		margin-left: 10px;
+		float: left;
+	}
+
+	.app-minimize {
+		.icon_position(0,3,1,5px,5px);
+	}
+
+	.app-maximize {
+		.icon_position(0,2,1,5px,5px);
+	}
+
+	.app-close {
+		.icon_position(0,7,0,5px,5px);
+	}
+
+}
+**/
+
+.container-main{
+	position: absolute;
+	width: 100%;
+	height: 100%;//calc(~"100% - 40px");
+	overflow: hidden;
+}
+
+.fix-drag-bug {
+	-webkit-app-region: no-drag;
+	position: absolute;
+	height: 0;
+	width: 100%;
+	bottom: 0;
 }

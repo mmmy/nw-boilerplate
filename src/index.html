@@ -31,7 +31,7 @@
 		}
 		(function() {
 		  var gui = require("nw.gui");
-
+		  window._gui = gui;
 		  if (process.platform === "darwin") {
 			  var mb = new gui.Menu({type: 'menubar'});
 			  mb.createMacBuiltin('RoboPaint', {
@@ -45,6 +45,7 @@
 <body>
 	<div id='app'></div>
 	<!-- <div class="fuck"></div> -->
+	<script src="main.js"></script>
 	<script type="text/javascript">
 		if ((process.env.NODE_ENV === 'development') || (process.env.NODE_ENV === 'beta')) {
 			var gulp = require('gulp');
@@ -61,6 +62,6 @@
 			gulp.watch(['./build/**/*.js'], ['reload']);
 		}
 	</script>
-	<script src="main.js"></script>
+	<!-- <div class='app-drag-panel'></div> -->
 </body>
 </html>

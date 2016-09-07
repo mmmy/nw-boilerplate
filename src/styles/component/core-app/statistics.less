@@ -4,14 +4,29 @@
 
 .statistics-container{
 	float: left;
-	width: @statisticsContainer_W;
+	position: relative;
+	width: calc(~"100% * 6 / 13 - 47.7px");//@statisticsContainer_W;
 	height: @statisticsContainer_H;
 	//border-top: 1px solid @ks-color-gray-8;
 	padding: 0;
+	// margin-left: 10px;
+	// margin-right: 10px;
+	// border: 1px solid red;
+	.statistics-container-inner {
+		position: absolute;
+		width: calc(~"100% - 20px");
+		left: 10px;
+		height: 100%;
+		border-radius: 2px;
+		// box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+		.mama-box-shadow();
+	}
 	&.full{
 		width: @statisticsContainerStretch_W;
 		height: @statisticsContainerStretch_H;
-		padding: 0 3.5% 0 6%;
+		.statistics-container-inner {
+		 padding: 12px 3.5% 20px 6%;
+		}
 	}
 
 	&.larger{
@@ -23,9 +38,9 @@
 	height: @reportContainer_H;
 	margin: 0;
 	&.stretch{
-		height: calc(@searchResultWrap_H~" - 33px");
+		height: 100%;//calc(@searchResultWrap_H~" - 33px");
 		//margin: 5px;
-		margin-top: 10px;
+		margin-top: 0;//10px;
 	}
 }
 

@@ -1,4 +1,4 @@
-@transition-duration: 0.2s;
+@transition-duration: 0.25s;
 @transition-duration2: 0.5s;
 
 .transition-all{
@@ -16,7 +16,14 @@
 	transition-delay: 0s;
 	transition-duration: @transition-duration;
 }
-
+.transition-position {
+	will-change: transition;
+	transition-property: left, top, right, bottom;
+	transition-duration: @transition-duration;
+	transition-timing-function: ease-in-out;
+	// transition-timing-function: cubic-bezier(1, 0.02, 0, 0.95);
+	transition-delay: 0s;
+}
 .transition-opacity {
 	transition-property: opacity;
 }
@@ -101,6 +108,12 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.flex-around {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
 }
 
 .flex-end {
@@ -197,6 +210,10 @@
   // -moz-osx-font-smoothing: grayscale;
 }
 
+.font-arial {
+	font-family: 'Arial';
+  -webkit-font-smoothing: none;
+}
 //position
 
 .position-ab {
@@ -214,4 +231,79 @@
 	background: url('./image/fuck.jpg') no-repeat;
 	opacity: 0.5;
 	background-size: contain;
+}
+
+.flat-btn {
+	outline: none;
+	border: none;
+	background-color: #fff;
+}
+
+.modal-wrapper {
+	background-color: white;
+	font-size: 12px;
+	// box-shadow: 0 0 10px #eee;
+	.close-icon-container{
+		display: inline-block;
+		float: right;
+		margin-top: 15px;
+		margin-right: 15px;
+		.close-btn {
+			display: inline-block;
+			width: 14px;
+			height: 14px;
+			background: url('./image/close.png') no-repeat;
+			cursor: pointer;
+			&:hover {
+				background-position: 0 100%;
+			}
+		}
+	}
+	h4, p{
+		text-align: center;
+	}
+	h4{
+		font-size: 14px;
+		color: @ks-color-gray-3;
+	}
+	p{
+		color: @ks-color-gray-6;
+	}
+	.footer {
+		text-align: center;
+		color: @ks-color-gray-5;
+	}
+	.confirm-btn {
+		width: 180px;
+		padding: 5px;
+		border: none;
+		outline: none;
+		background-color: @lulu-red1;
+		color: white;
+		&:hover {
+			background-color: lighten(@lulu-red1, 10%)
+		}
+	}
+}
+
+.mama-box-shadow {
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.top-red-line {
+	&:before {
+		content: '';
+		display: block;
+		width: 100%;//1400px;
+		height: 3px;
+		background-color: @brown-red;
+		border-top-left-radius: 2px;
+		border-top-right-radius: 2px;
+		// position: absolute;
+		// top: 0;
+	}
+}
+
+.no-dragable {
+	// -webkit-app-drag: no-drag;
 }

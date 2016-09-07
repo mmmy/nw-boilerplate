@@ -31,21 +31,21 @@ class statisticsContainer extends React.Component {
 
 	}
 
-	shouldComponentUpdate(newProps, newState){
-		return true;
-		return newProps.filter === this.props.filter;
-	}
+	// shouldComponentUpdate(newProps, newState){
+	// 	// return true;
+	// 	return newProps.filter === this.props.filter;
+	// }
 
 	componentWillUnmount(){
 
 	}
 
 	componentDidUpdate() {
-		console.info('statisticsContainer did update', new Date() - this.renderDate);
+		// console.info('statisticsContainer did update', new Date() - this.renderDate);
 	}
 
 	render(){
-		this.renderDate = new Date();
+		// this.renderDate = new Date();
 		const { fullView, statisticsLarger, report, crossFilter, dispatch, filter, searchConfig} = this.props;
 		const className = classNames('transition-all', 'statistics-container', {
 			'full': fullView,
@@ -63,7 +63,7 @@ class statisticsContainer extends React.Component {
 			'ks-show': fullView
 		});
 
-		const reportClass3 = classNames('reporttype-container-wrap', {
+		const reportClass3 = classNames('reporttype-container-wrap flex-center', {
 			'ks-hidden': !fullView,
 			//'transition-delay0': !fullView,
 			'ks-fade-in': fullView,
@@ -72,15 +72,17 @@ class statisticsContainer extends React.Component {
 
 	    return (
 	      <div className={ className }>
-	        <div className={fistReportClass}><ReportDetailView searchConfig={searchConfig} crossFilter={crossFilter} fullView={fullView}/></div>
-	        {/*<div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>*/}
-	        <div className={reportClass3}><ReportTypeView report={report} searchConfig={searchConfig}/></div>
-	        <div className={'crossfilter-container-wrap'}>
-	          <CrossfilterView
-	            dispatch={dispatch}
-	            crossFilter={crossFilter}
-	            stretchView={fullView} />
-	        </div>
+	      	<div className='statistics-container-inner'>
+		        <div className={fistReportClass}><ReportDetailView searchConfig={searchConfig} crossFilter={crossFilter} fullView={fullView}/></div>
+		        {/*<div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>*/}
+		        <div className={reportClass3}><ReportTypeView report={report} searchConfig={searchConfig}/></div>
+		        <div className={'crossfilter-container-wrap'}>
+		          <CrossfilterView
+		            dispatch={dispatch}
+		            crossFilter={crossFilter}
+		            stretchView={fullView} />
+		        </div>
+		      </div>
 	      </div>
 	    );
 	}

@@ -38,10 +38,10 @@ class PredictionContainer extends React.Component {
 		let className = classNames();
     const {stretchView, patterns, activeId} = this.props;
 		return (
-      <div className={ 'prediction-main' }>
-        <div className={ 'comparator-header' }>
+      <div className={ 'prediction-main' } >
+        {/*<div className={ 'comparator-header' }>
           <span>走势分布</span>
-        </div>
+        </div>*/}
         <ComparatorPrediction
           stretchView={ stretchView }
           patterns={ patterns } />

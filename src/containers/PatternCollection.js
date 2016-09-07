@@ -7,6 +7,8 @@ import _ from 'underscore';
 import lodash from 'lodash';
 import classNames from 'classnames';
 import DC from 'dc';
+import { updateImgAll } from '../components/helper/updateEchartImage';
+import searchResultController from '../ksControllers/searchResultController';
 
 const propTypes = {
 	patterns: PropTypes.object.isRequired,
@@ -96,12 +98,15 @@ class PatternCollection extends React.Component {
 		if(this.oldCrossFilter !== crossFilter) {
 
 			console.info('crossFilter changed!');
+			updateImgAll(-1); //隐藏之前的图片
 			this.oldCrossFilter = crossFilter;
 			this.symbolDim = crossFilter.dimension(e=>{ return e.symbol; });
 			//idDim , 剔除dimentsion
 			this.idDim = crossFilter.dimension(d=>{ return d.id; });
 			_idTrashed = [];
 			$('.trashed-number', '.pattern-statistics-panel').text('');
+			
+
 		}
 
 		let hideHelper = () => {
@@ -180,16 +185,18 @@ class PatternCollection extends React.Component {
 	shouldComponentUpdate(newProps, newState) {
 		//return true;
 		//pattern 改变 的时候 只渲染前5个, 结局搜索后渲染时间过长的问题
-		return false;
+		console.info('@@@@@+_+_+_+_+_+ active id',newProps.active.id,this.props.active.id, (newProps.active.id === this.props.active.id));
+		console.info('@@@@@+_+_+_+_+_+ filter',newProps.filter,this.props.filter, (newProps.filter === this.props.filter));
 		if(newProps.patterns.rawData !== _oldPatternRawData) {
 			this.renderLeading5 = true;
 			_oldPatternRawData = newProps.patterns.rawData;
-			let that = this;
+			if(this.props.fullView) {  //pattern改变了,并fullview 一定刷新, 填满了两个坑
+				return true;
+			}			
 			// setTimeout(() => { that.setState({}); }, 2000);
 		} else {
 			this.renderLeading5 = false;
 		}
-
 		return 	(newProps.filter === this.props.filter)    //filter更新后不进行自动刷新, 而是在componentWillReceiveProps 进行手动刷新
 						&& (newProps.active.id === this.props.active.id)   //点击patternview
 						&& (newProps.patternTrashed === this.props.patternTrashed) //eye
@@ -202,8 +209,8 @@ class PatternCollection extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.info('patterns collections view  did update', new Date() - this.renderDate);
-		console.info('patterns collections view  did update2', new Date() - this.renderDate2);
+		// console.info('patterns collections view  did update', new Date() - this.renderDate);
+		// console.info('patterns collections view  did update2', new Date() - this.renderDate2);
 		if(!this.props.fullView) {
 			//console.log('patternCollection did update');
 			this.refs.container.scrollTop = 0;
@@ -223,14 +230,18 @@ class PatternCollection extends React.Component {
 	sortData(rawData){
 
 		let { sortType } = this.props.sort;
+		//bug
 		//如果 sortType 没有变化那么不需要重新排序
+		console.info('oldSortType',this.oldSortType,'sortType', sortType);
 		if(this.oldSortType === sortType) {
+			console.info('sortType 没有变化那么不需要重新排序');
 			return this.sortedData;
 		}
 		//排序
 		let sortedData = rawData.concat([]) || [];
 
 		if(sortType === '') {
+			console.info('sortedData 直接返回!!----------------');
 			return sortedData;
 		}
 
@@ -273,11 +284,12 @@ class PatternCollection extends React.Component {
 		
 		let { dispatch, waitingForPatterns, fullView, active, patternTrashed } = this.props;
 
-		let { crossFilter, rawData , error} = this.props.patterns;
+		let { crossFilter, rawData , error, searchConfig} = this.props.patterns;
 		let { id } = active;
 		let { showTrashed, showNotTrashed } = patternTrashed;
 
 		let sortedData = this.sortData(rawData);
+		// searchResultController.updatePatterns(sortedData);
 
 		let nodes = null;
 
@@ -322,18 +334,19 @@ class PatternCollection extends React.Component {
 				}
 				show && __visibleNumber++;
 				let isActive = id === e.id;
-				return <PatternView ref={`pattern_view_${e.id}`} filterTrashedId={this.filterTrashedId.bind(this)} id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>
+				return <PatternView searchConfig={searchConfig} ref={`pattern_view_${e.id}`} filterTrashedId={this.filterTrashedId.bind(this)} id={e.id} isActive={isActive} show={show} pattern={e} key={e.id} index={ show ? index++ : -1} dispatch={dispatch} fullView={fullView}/>
 			});
 			//nodes = nodes.length > 0 ? nodes.slice(0,10) : [];
 		//}
-		this.renderDate2 = new Date();
+		// this.renderDate2 = new Date();
+		console.info('@@@@@', 'getPatternNodes++++++++');
 		return nodes;
 	}
 
 	render(){
-		
-		this.renderDate = new Date();
+		// this.renderDate = new Date();
 		const className = classNames('pattern-collection', {'scroll-hidden': !this.props.fullView});
+		console.info('@@@@@', 'patternCollection render-------');
 
 		return (<div ref='container' className={className}>
 			{ this.getPatternNodes() }
@@ -347,6 +360,7 @@ PatternCollection.defaultProps = defaultProps;
 let stateToProps = function(state) {
 	const {layout, patterns, sort, active, filter, patternTrashed} = state;
 	const {stockView, patternSmallView} = layout;
+		console.info('@@@@@', 'patternCollection stateToProps========');
 	//const {crossFilter,rawData} = patterns;
 	return {fullView: !stockView, patternSmallView, patterns, sort, active, filter, patternTrashed, _setIdTrashed };
 };

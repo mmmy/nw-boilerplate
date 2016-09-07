@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import Switch from './Switch';
 import classNames from 'classnames';
+import store from '../store';
+import {getDecimalForStatistic} from '../shared/storeHelper';
 
 const propTypes = {
 	pattern: PropTypes.object.isRequired,
@@ -17,6 +19,8 @@ const defaultProps = {
   	//index: -1,
 };
 
+let _decimal = 2;
+
 class PatternInfo extends React.Component {
 
 	constructor(props) {
@@ -28,8 +32,10 @@ class PatternInfo extends React.Component {
 
 	}
 
-	componentWillReceiveProps(){
-
+	componentWillReceiveProps(newProps){
+		if(newProps.index == 0 && newProps.pattern != this.props.pattern) {
+			_decimal = getDecimalForStatistic();
+		}
 	}
 
 	shouldComponentUpdate(newProps){
@@ -79,8 +85,8 @@ class PatternInfo extends React.Component {
 					<p className='font-number'>{(similarity*100 + '').slice(0, 4)}{'%'}</p>
 				</div>
 				{ (column && smaller) ? [] : (<div>
-					<h5 className='font-simsun'>返回</h5>
-					<p className='font-number'>{(yieldRate*100).toFixed(1)+'%'}</p>
+					<h5 className='font-simsun'>回报</h5>
+					<p className='font-number' style={{color: (yieldRate>0 ? '#ae0006' : '')}}>{(yieldRate*100).toFixed(_decimal)+'%'}</p>
 				</div>)}
 			</div>
 			{switchWidget}
@@ -89,13 +95,16 @@ class PatternInfo extends React.Component {
 
 	mouseEnter() {
 		let {column} = this.props;
-		if(!column) {
+		let fullView = !store.getState().layout.stockView;
+		if(fullView) {
 			this.setState({showSwitch: true});
 		}
 	}
 
 	mouseLeave() {
-		this.setState({showSwitch: false});
+		if(this.state.showSwitch) {
+			this.setState({showSwitch: false});
+		}
 	}
 
 }

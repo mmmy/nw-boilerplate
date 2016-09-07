@@ -126,20 +126,17 @@ class SearchWaitingWaves extends React.Component {
 		this._interval = setInterval(function() {
 			count ++ ;
 			if(count >= 50) {
-				console.info('shiningFinish!!!!');
 				clearInterval(that._interval);
 				that._interval = null;
 				return;
 			}
 			let rest = count % 25;
 			let offset = count < 25 ? rest : (25 - rest);
-			console.info('offset', offset);
 			//let color = `rgba(${base+rest},${base-rest},${base-rest}, 1)`;
 			let color = ctx.createLinearGradient(0, 0, waves.width, 0);
           color.addColorStop(0, `rgba(${base-Math.round(offset/2)},${base-offset*2},${base-offset*2},0.2)`),
           color.addColorStop(.5, `rgba(${base-Math.round(offset/2)},${base-offset*2},${base-offset*2},0.8)`),
           color.addColorStop(1, `rgba(${base-Math.round(offset/2)},${base-offset*2},${base-offset*2},0.2)`);
-			//console.info(color);
 			waves.waves[0].strokeStyle = color;
 			waves.waves[1].strokeStyle = color;
 			waves.waves[2].strokeStyle = color;

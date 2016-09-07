@@ -1,26 +1,27 @@
 
-@header_H:  60px;
+@header_H:  50px;
 @header_W: 	100%;
 
 @rightToolBar_H: 100%;
-@rightToolBar_W:  10px; //40px;
+@rightToolBar_W:  0px;//10px; //40px;
 
-@searchResultWrap_H: 240px;
+@searchResultWrap_H: 170px;//260px;//220px;
 @searchResultWrap_T: calc(~"100% -"@searchResultWrap_H);
 @stockViewContainer_H: calc(~"100% -"@searchResultWrap_H);
 
 // comparator
 @comparator_H: 100%;
-@comparator_W: 25%;
+@comparator_W: 360px;
 
 //@searchDetail_W: 830px; //固定值
 @searchDetail_W: 52.5%;   //固定比例
 
 @comparatorStretch_H: 100%;
 @comparatorStretch_W: calc(~"100% - "@searchDetail_W);
-@comparatorChartStatic_H: calc(~'100% - 5% - '@header_H);
+@comparatorFull_W: calc(~"(100% - 20px) * 0.475");
+@comparatorChartStatic_H: calc(~"100% - 60px - 20px");//calc(~'100% - 8%');
 
-@patternContainer_W: 510px + 32px; //old = 50%;
+@patternContainer_W: 660px;//510px + 32px; //old = 50%;
 @patternContainer_H: 100%;
 //@patternView_W: 100px;
 //@patternView_H: @patternView_W * 1.3;
@@ -30,7 +31,7 @@
 
 @statisticsContainer_W: calc(~'100% - '@patternContainer_W);
 @statisticsContainer_H: 100%;
-@statisticsContainerStretch_W: calc(~'100% -'@patternContainerStretch_W);
+@statisticsContainerStretch_W: calc(~'100% - 20px -'@patternContainerStretch_W); //padding 20px;
 @statisticsContainerStretch_H: 100%;
 
 @patternContianerSmall_W: @patternContainerStretch_W/2;
@@ -49,6 +50,10 @@
 @ks-color-gray-9: lighten(#000, 90%);
 @ks-color-gray-10: lighten(#000, 100%);
 
+//红色
+@brown-red: #8D151B;
+@brown-red-light: #AC1822;
+
 //蓝色
 @ks-color-blue-dark:			#58666f;
 @ks-color-blue-lightdark:		#418bca;
@@ -56,6 +61,7 @@
 @ks-color-blue-sky:				#C1EBEA;
 //红色
 @ks-color-red-light:			#ed5565;
+@ks-color-red-wine:       #B61C15;
 
 //粉色
 @ks-color-pink:					#E7E4EF;
@@ -68,5 +74,15 @@
 @logo_url: "./image/logo.jpg";
 @logo_url_png: "./image/logo.png";
 
-
 //color
+//icons all
+@icons_url: "./image/icons.png";
+
+@icons_offset_y: 10px;
+@icon_W: 30px;
+@icon_H: 30px;
+@iconSetH: 120px;
+
+.icon_position(@index:0; @x; @y; @offsetX:0px; @offsetY:0px) {
+	background-position: -( @icon_W * @x + @offsetX)  -(@icons_offset_y + @iconSetH * @index + @icon_H * (@y+1) + @offsetY);
+}

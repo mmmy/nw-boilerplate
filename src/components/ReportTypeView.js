@@ -40,7 +40,7 @@ class ReportTypeView extends React.Component {
 		const startDate = dateRange[0] ? moment(dateRange[0]).format('YYYY.MM.DD') : '--';
 		const endDate = dateRange[1] ? moment(dateRange[1]).format('YYYY.MM.DD') : '--';
 
-		let spaceDefinitionStr = (spaceDefinition.stock ? '股票' : '') + (spaceDefinition.furture ? ' 期货' : '');
+		let spaceDefinitionStr = (spaceDefinition.stock ? '股票' : '') + (spaceDefinition.future ? ' 期货' : '');
 		spaceDefinitionStr = spaceDefinitionStr || '--';
 		return (<div className="reporttype-container font-simsun">
 				<div className='type-item-container'>搜索空间: <span className='lulu font-number'>{`${searchSpace}`}</span></div>

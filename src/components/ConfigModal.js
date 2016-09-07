@@ -65,7 +65,7 @@ class SearchConfigModal extends React.Component {
 		let { dateRange, additionDate, spaceDefinition } = this.state.searchConfig;
 
 		const stockSelected = spaceDefinition.stock;
-		const furtureSelected = spaceDefinition.furture;
+		const futureSelected = spaceDefinition.future;
 
 		let stockClass = classNames('stock fa', {
 			'fa-check-square-o': stockSelected,
@@ -73,10 +73,10 @@ class SearchConfigModal extends React.Component {
 			'selected': stockSelected,
 		});
 		
-		let furtureClass = classNames('furture fa', {
-			'fa-check-square-o': furtureSelected,
-			'fa-square-o': !furtureSelected,
-			'selected': furtureSelected,
+		let futureClass = classNames('future fa', {
+			'fa-check-square-o': futureSelected,
+			'fa-square-o': !futureSelected,
+			'selected': futureSelected,
 		});
 
 
@@ -88,7 +88,7 @@ class SearchConfigModal extends React.Component {
 			</div>
 			<div className='item-title font-simsun'>标的类型</div>
 			<div className='item-body-container sid'>
-				<span className={stockClass} onClick={this.toggleType.bind(this, 'stock')}>股票</span><span className={furtureClass} onClick={this.toggleType.bind(this, 'furture')}>期货</span>
+				<span className={stockClass} onClick={this.toggleType.bind(this, 'stock')}>股票</span><span className={futureClass} onClick={this.toggleType.bind(this, 'future')}>期货</span>
 			</div>
 			<div className='item-title font-simsun'>统计天数</div>
 			<div className='item-body-container days'>

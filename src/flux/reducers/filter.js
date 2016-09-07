@@ -79,9 +79,14 @@ export default function filter(state = initialState, actions) {
 			};
 
 		case types.WAITING_PATTERNS:
-			return {
-				...initialState
-			};
+			// state.industrys = initialState.industrys;
+			// state.yieldRange = initialState.yieldRange;
+			// state.symbol = initialState.symbol;
+			// state.similarity = initialState.similarity;
+			// state.yieldDateRange = initialState.yieldRange;
+			// state.trashedIdArr = initialState.trashedIdArr;
+			state = Object.assign(state, initialState);
+			return state;
 			
 		default:
 			return state;

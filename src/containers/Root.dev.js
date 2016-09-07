@@ -19,19 +19,21 @@ class Root extends React.Component {
 
 	render(){
 
-		return (<MainContainer>
+		return (
+				<MainContainer>
+					<div className='fix-drag-bug'></div>
+					<Header />
 
-			<Header />
+					<RightToolBar />
 
-			<RightToolBar />
+					<CoreApp />
 
-			<CoreApp />
+					<SearchConfigModal />
 
-			<SearchConfigModal />
+		      <DevTools />
 
-      <DevTools />
-
-		</MainContainer>);
+				</MainContainer>
+			);
 	}
 
 }

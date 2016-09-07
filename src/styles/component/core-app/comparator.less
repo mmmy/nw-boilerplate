@@ -3,14 +3,65 @@
   position: relative;
   float: left;
   border-right: none;
-  width: calc(~'25%');
-  height: calc(~'100% - 15px');
-  padding-left: 81px;
+  // width: calc(~'22%');
+  width: calc(~"100% * 13 / 40 - 53.5px");//@comparator_W;
+  height: 100%;//calc(~'100% - 30px');
+  // padding-left: 60px;
+  padding-top: 0;//20px;
 
+  .comparator-inner {
+    position: absolute;
+    width: calc(~"100% * 11 / 12 + 17.5px");
+    left: calc(~"100% / 12 - 17.5px");//20px;
+    height: 100%;
+    padding: 10px 0;
+    border-radius: 2px;
+    .mama-box-shadow();
+  }
+  .title {
+    font-size: 14px;
+    margin-top: 10px;
+    color: #000;
+    margin-left: calc(~"100% / 12 - 16.67px");
+  }
+  .searching-info{
+    position: absolute;
+    color: @ks-color-gray-4;
+    top: 45px;
+    z-index: 2;
+    font-size: 12px;
+    width: 100%;
+    margin-left: calc(~"100% / 12 - 16.67px");
+    span{
+      // margin-right: 20px
+    }
+
+    .searching-info--prediction-lable{
+      margin-left: 24%;
+    }
+  }
+
+  .echart-container {
+    // margin-top: 50px;
+    display: inline-block;
+    margin-left: calc(~"100% / 12 - 16.67px");
+    width: calc(~"100% * 5 / 6 + 35.34px - 40px");
+    height: 110px;//calc(~"100% - 40px");
+    margin-top: 25px;//15px;
+    float: left;
+  }
+
+  .heatmap-container {
+    width: 45px;
+    height: 120px;
+    display: inline-block;
+    margin-top: 25px;
+    float: left;
+  }
 
   .comparator-tv-screenshot{
     position: absolute;
-    width: 60%;
+    width: 64%;
     height: calc(~'100% - 50px');
     margin: 20px 0 0 0;
     left: 81px;
@@ -21,7 +72,7 @@
 
   .comparator-echart-screenshot{
     position: absolute;
-    width: 32%;
+    width: 28%;
     height: calc(~'100% - 60px');
     right: 5px;
     margin: 40px 0 0 0;
@@ -34,7 +85,7 @@
   .comparator-heatmap-screenshot{
     position: absolute;
     right: 0;
-    top: 40px;
+    top: 60px;
     height: calc(~'100% - 60px');
     width: 12px;
     &.stretch{
@@ -46,7 +97,8 @@
 .container-comparator-stretch{
   width: @comparatorStretch_W;
   height: @comparatorStretch_H;
-  .ks-show();
+  .ks-hidden()
+  // .ks-show();
 }
 
 .container-comparator-hide{
@@ -58,13 +110,40 @@
 #comparator-chart{
   position: absolute;
   left: 20px;
+  width: calc(~"100% - 20px");
+  top: calc(~"100% / 2 - 28px");
+  height: calc(~"100% / 2 - 28px");
+  // top: 50%;
 }
 
 .comparator-chart-static{
   position: absolute;
-  width: @comparatorStretch_W;
+  width: @comparatorFull_W;//@comparatorStretch_W;
   height: @comparatorChartStatic_H ;
-  top: 22px;
+  top: 60px;//22px;
+  left: 10px;
+
+  .start-btn-container {
+    // border: 1px solid red;
+    position: absolute;
+    top: calc(~"50% - 28px + 2px");
+    background-color: #fff;
+    right: 0;
+    width: 60px;
+    height: 40px;
+
+    button {
+      width: 20px;
+      height: 20px;
+      // padding: 4px;
+      margin-top: 15px;
+      margin-left: 20px;
+      background: url('./image/config.png') no-repeat;
+      &:hover{
+        background-position: 0 100%;
+      }
+    }
+  }
 }
 
 .comparator-chart-static-show{
@@ -79,53 +158,96 @@
 
 .comparator-prediction-container{
   position: absolute;
-  width: calc(~'25% - 20px');
-  height: calc(~'50% - 15px');
-  top: -1px;
-  right: 52px;
-
+  width: calc(~"100% - 110px");//calc(~'100% - 100px');
+//  width: calc(~'25% - 20px');
+  height: calc(~"50% - 28px - 1px");//calc(~'50% + 5px');
+  // right: 12px;
+  // left: 40px;
+  right: 70px;
+  top: 0;//60px;
+  // border: 1px solid red;
   .prediction-main{
     position: absolute;
     height: 100%;
-    width: calc(~'100% - 9px');
-
-    .comparator-header{
-      position: absolute;
-      height: 30px;
-      width: 100%;
-      background-color: #FEFFFF;
-      top: 0;
-      right: 0;
-      z-index: 999;
-      color: #000;
-      box-shadow: 0 0 20px #ccc;
-
-      span{
-        font-size: 13px;
-        line-height: 2;
-        padding-left: 10px;
-      }
-    }
+    width: 100%;
 
     .comparator-prediction-chart{
       position: absolute;
+      top: 50px;
       width: 100%;
-      height: calc(~'100% - 30px');
-      top: 30px;
-      box-shadow: 0 0 20px #ccc;
+      height: calc(~"100% - 50px");
+      // border-left: 1px solid #eee;
     }
   }
 }
-
-.pattern-tv-box-shadow{
+.active-pattern-info-container{
   position: absolute;
-  top: 50%;
-  height: 55%;
-  width: calc(~"100% - 71px");
+  bottom: 0;
+  left: 0;
+  color: @ks-color-gray-6;
+  font-size: 12px;
+  width: 100%;
+  height: 57px;
+  border-top: 1px solid #eee;
+  span{
+    margin: 0px;
+    padding: 0px;
+  }
+
+  div{
+    display: inline-block;
+    margin-left: 25px;
+    margin-top: 13px;
+  }
+
+  .active-pattern-info{
+    color: #000;//@ks-color-gray-2;
+    font-size: 15px;
+  }
+
+  .red-color{
+    color: @ks-color-red-wine;
+  }
+}
+
+.pattern-tv-box-shadow {
+  position: absolute;
+  // box-shadow: 0px 0px 20px #DBDBDB;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: calc(~"100% - 20px");//calc(~"100% - 71px");
+}
+
+.pattern-tv-box-shadow-bottom{
+  position: absolute;
+  top: 0;//calc(~"50% - 28px + 1px");
+  height: 100%;// calc(~"50% + 28px - 1px");
+  width: calc(~"100% - 20px");//calc(~"100% - 71px");
   right: 0;
   pointer-events: none;
+  // box-shadow: 0px 0px 20px #DBDBDB;
+  .mama-box-shadow();
+
   border-radius: 2px;
-  box-shadow: 0px 0px 20px #DBDBDB;
+}
+
+.pattern-tv-split-line {
+  position: absolute;
+  background: #fff;
+  top: calc(~"50% - 28px - 2px");
+  right: 0;
+  width: calc(~"100% - 20px");//calc(~"100% - 71px");
+  height: 3px;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.pattern-tv-box-shadow-top{
+  .pattern-tv-box-shadow-bottom();
+  height: calc(~"50% - 28px - 1px");
+  top: 0%;
+  box-shadow: none;
 }
 
 .prediction-transparent-overlay{
@@ -181,11 +303,11 @@
 
 .prediction-panel{
   position: absolute;
-  width: 12px;
-  height: calc(~'50%');
-  right: 52px;
+  width: 70px;
+  height: calc(~'50% - 28px - 50px - 1px');
+  right: 0;//37px;
+  top: 50px;
   color: #000;
-  top: -1px;
 
   .prediction-toggle{
     position: absolute;
@@ -209,15 +331,45 @@
 
   }
   .comparator-heatmap{
-    top: 30px;
     position: absolute;
     width: 100%;
-    height: calc(~'100% - 45px');
-    background-color: #F6DADD;
+    height: calc(~'100%');
+    background-color: #fff;
   }
 }
 
 .comparator-prediction-hide{
   display: none;
   z-index: -1;
+}
+
+.comparator-info-container {
+  margin-top: 15px;
+  padding-left: 5px;
+  width: calc(~"100% + 70px - 20px");
+  color: #000;
+  font-size: 13px;
+
+  .title {
+    padding-right: 20px;
+  }
+
+  i {
+    .font-number();
+    font-size: 10px;
+    font-style: normal;
+    padding-right: 7px;
+    color: #555;
+  }
+
+  .add-btn {
+    float: right;
+    position: relative;
+    color: transparent;
+    width: 20px;
+    height: 20px;
+    background-image: url(@icons_url);
+    .icon_position(1, 6, 1, 5px, 5px);
+  }
+
 }

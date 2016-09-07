@@ -1,3 +1,4 @@
+
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import StockView from './StockView';
@@ -5,6 +6,8 @@ import SearchReport from './SearchReport';
 import ComparatorStatic from './ComparatorStatic';
 import classNames from 'classnames';
 import { setRem } from '../components/utils/layoutUtils';
+import searchResultController from '../ksControllers/searchResultController';
+import wavesController from '../ksControllers/wavesController';
 
 const propTypes = {
   // stretchView: PropTypes.bool
@@ -16,8 +19,11 @@ class MainChart extends React.Component {
 	}
 
 	componentDidMount() {
-    setRem();
-	}
+        setRem();
+        searchResultController.init(this.refs.container_coreapp);
+        wavesController.init(this.refs.container_coreapp);
+        wavesController.start(true);
+    }
 
   componentDidUpdate() {
     console.info('CoreApp did update in millsec: ', new Date() - this.d1);
@@ -54,7 +60,7 @@ class MainChart extends React.Component {
     // }
 
 		return (
-      <div className='container-coreapp'>
+      <div className='container-coreapp' ref='container_coreapp'>
         <ComparatorStatic />
         <StockView />
         <SearchReport />

@@ -1,0 +1,132 @@
+
+@metaW: 750;
+@statisticW: 460;
+@chartW: 330;
+
+.container-ks-sr {
+	position: relative;
+	height: 100%;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	float: left;
+	.title {
+		font-size: 16px;
+		color: #000;
+		margin-left: 10px;
+		margin-top: 10px;
+		margin-bottom: 0;
+	}
+	.split-line {
+		display: inline-block;
+		position: absolute;
+		bottom: 23px;
+		width: 1px;
+		height: 55px;
+		border-left: 1px dashed #eee;
+	}
+	.info-item {
+		display: inline-block;
+		text-align: center;
+		margin-top: 16px;
+		.item-title {
+			font-size: 12px;
+			color: #aaa;
+		}
+		.item-value {
+			color: #000;
+			margin-top: 10px;
+			font-size: 20px;
+			.unit {
+				font-size: 50%;
+			}
+			&.red {
+				color: red;
+			}
+			&.small {
+				font-size: 14px;
+			}
+		}
+	}
+}
+
+.container-ks-st {
+
+}
+
+.container-ks-sr.meta {
+	margin-left: 20px;
+	width: calc(~'(100% - 60px)*'@metaW/(@metaW + @statisticW + @chartW));
+	.timespent, .total, .similarity {
+		width: 14.13%;
+		float: left;
+	}
+
+	.timespent {
+		.item-value {
+			margin-top: 18px;
+			font-size: 12px;
+		}
+	}
+	.total {
+
+	}
+
+	.l1 {
+		left: 14.13%;
+	}
+	.l2 {
+		left: 28.16%;
+	}
+
+	.pattern-wrapper {
+		display: inline-block;
+		position: relative;
+		float: left;
+		width: 53.33%;
+		height: 80px;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+		.pattern-inner {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			left: 8px;
+			bottom: 5px;
+			background-color: #fff;
+		}
+		.symbol, .similarity, .return {
+			width: 21.66%;
+			float: left;
+		}
+		.kline {
+			float: left;
+			display: inline-block;
+			width: 35%;
+			height: 60px;
+			margin-top: 10px;
+		}
+	}
+}
+
+.container-ks-sr.statistic {
+	margin-left: 10px;
+	width: calc(~'(100% - 60px)*'@statisticW/(@metaW + @statisticW + @chartW));
+	.bars, .uprate, .median, .mean {
+		width: 25%;
+		float: left;
+	}
+	.l1 {
+		left: 25%;
+	}
+	.l2 {
+		left: 50%;
+	}
+	.l3 {
+		left: 75%;
+	}
+
+}
+
+.container-ks-sr.chart {
+	margin-left: 10px;
+	width: calc(~'(100% - 60px)*'@chartW/(@metaW + @statisticW + @chartW));
+}

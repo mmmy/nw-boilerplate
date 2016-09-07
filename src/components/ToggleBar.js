@@ -46,7 +46,7 @@ class ToggleBar extends React.Component {
 			'full': fullView,
 		});
 
-		const btnWrapper = classNames('btn-container','transition-all','transition-duration2', {
+		const btnWrapper = classNames('btn-container','transition-position','transition-duration2', {
 			'slide-center': waitingForPatterns,
 		});
 
@@ -61,12 +61,12 @@ class ToggleBar extends React.Component {
 		});
 
 		const time = (searchTimeSpent/1000).toFixed(3);
-
-		return (<div className={toggleClass} >
+		let title = waitingForPatterns ? '搜索' : '搜索结果';
+		return (<div className={toggleClass} ref='container_toggle'>
 					<div className={btnWrapper} onClick={this.toggleView.bind(this)}>
-						<div className="item title">搜索</div>
+						<div className="item title">{title}</div>
 						{/*<div className={timespentClass}>{ `用时:${time}秒` }</div>*/}
-						<div className={btnClass} ><i className="fa fa-angle-up"></i></div>
+						<div className={btnClass} ref='btn_toggle'><i className="fa fa-angle-up"></i></div>
 					</div>
 		          {/*<button
 		            style={{'marginLeft':'48%'}}
@@ -83,12 +83,47 @@ class ToggleBar extends React.Component {
 		let { waitingForPatterns } = this.props;
 		let { error } = store.getState().patterns;
 		if (waitingForPatterns || error) return;
-    if (this.props.fullView)
-      window.actionsForIframe.takeScreenshot();
-    else
-      window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-		this.props.dispatch(layoutActions.toggleStockView());
+    // if (this.props.fullView) window.actionsForIframe.takeScreenshot();
+    let that = this;
+    // $reportWrapper.one('transitionend', ()=>{
+			that.props.dispatch(layoutActions.toggleStockView());
+    // });
+    // $('.container-searchreport').toggleClass('searchreport-full');
+// return;
+    if (!this.props.fullView) {
+      // this.resizePrediction();
+    } else {
+      // this._doWhenSeries0Completed(() => {
+      	// window.widget_comparator._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+        // window.widget_comparator.setVisibleRange(window.searchingRange, '0');
+      	// window._ksResizePrediction && window._ksResizePrediction(window);
+
+      // }, 200)
+    }
 	}
+
+  // resizePrediction() {
+  //   var timeScale = window.widget_comparator._innerWindow().Q5.getAll()[0].model().timeScale();
+  //   const info = $('#searching-info-content')[0].innerHTML;
+  //   let daysCount = parseInt(info.slice(0, info.indexOf('bars')));
+  //   var lastDateIndex = timeScale.visibleBars().firstBar() + daysCount - 1; // for prediction DOM width
+  //   var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex); //  50 => width by prediction dom margin
+  //   window.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
+  //   window.eChart.resize();
+  //   window.actionsForIframe.updatePaneViews();  // align both TV and prediction
+  //   // window.actionsForIframe.recalculateHeatmap();
+  // }
+
+  _doWhenSeries0Completed(callback) {
+    function run() {
+      let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+      chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
+      callback()
+    };
+
+    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+    chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
+  }
 
 	getPatterns() {
 		this.props.dispatch(patternActions.getPatterns());

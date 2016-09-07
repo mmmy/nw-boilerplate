@@ -7,16 +7,10 @@ import classNames from 'classnames';
 import ToggleBar from '../components/ToggleBar';
 import SearchWaitingWaves from '../components/SearchWaitingWaves';
 import store from '../store';
-
-let afterSearchMessage = (number, timeSpent) => {
-	const time = (timeSpent/1000).toFixed(3);
-	let msgNode = $(`<div class="search-message-container slide-up-down">拱石为你找到匹配图形<span class="number">${number}</span>个，用时<span>${time}</span>秒</div>`);
-	msgNode.appendTo(window.document.body);
-	msgNode.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', () => {
-		//console.log('afterSearchMessage container animation ended----====-----');
-		msgNode.remove();
-	});
-};
+import { callFunc } from '../components/helper/updateEchartImage';
+import painter from '../ksControllers/painter';
+import { afterSearchMessage } from '../ksControllers/messager.js';
+import { getKlineImgSrc } from '../ksControllers/publicHelper';
 
 let _isToggled = false;
 let _patternChanged = false;
@@ -42,7 +36,8 @@ class SearchReport extends React.Component {
 
 	componentDidMount() {
 		//afterSearchMessage(200, 0.001);
-		$('#__comparator_prediction_container').css('opacity', 0);
+		// $('#__comparator_prediction_container').css('opacity', 0);
+		window._restartSearch = this.restartSearch.bind(this);
 	}
 
 	componentWillReceiveProps(newProps){
@@ -60,14 +55,20 @@ class SearchReport extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.info('SearchReport did update in:', new Date() - this.d1);
+		// console.info('SearchReport did update in:', new Date() - this.d1);
 		let { fullView, waitingForPatterns } = this.props;
 		let { error } = store.getState().patterns;
 
+		if(_patternChanged && !waitingForPatterns && ($('.pattern-view img').css('opacity') == '0')) { //fix bugs
+				// console.debug('fix bugs update first 5 EChart images');
+				let state = store.getState();
+				callFunc([0, 5], state.patterns && state.patterns.rawData.slice(0, 5));
+		}
+
 		$(this.refs.container).one("webkitTransitionEnd oTransitionEnd MSTransitionEnd", (e) => {
 			if(!fullView && !waitingForPatterns && !_isToggled && !error && _patternChanged) {
-				console.info('SearchReport animation over');
-				console.log(e);
+				// console.info('SearchReport animation over');
+				// console.log(e);
 				let state = store.getState();
 				afterSearchMessage(state.patterns.rawData.length, state.layout.searchTimeSpent);
 			}
@@ -95,15 +96,15 @@ class SearchReport extends React.Component {
 	render(){
 		this.d1 = new Date();
 		const { fullView, statisticsLarger} = this.props;
-		const className = classNames('transition-all', 'container-searchreport', {
+		const className = classNames('container-searchreport', {
 			'searchreport-full': fullView,
 		});
-		const toggleClass = classNames('container-toggle', {
-			'full': fullView
-		});
+		// const toggleClass = classNames('container-toggle', {
+		// 	'full': fullView
+		// });
 	    return (
 	      <div className={ className }>
-	        <ToggleBar {...this.props} />
+	        {/*<ToggleBar {...this.props} />*/}
 	        <div ref='inner_searchreport' className="inner-searchreport">
 	          { this.renderWaitingPanel() }
 	          { this.renderDataPanels() }
@@ -126,10 +127,12 @@ class SearchReport extends React.Component {
 	renderDataPanels() {
 		let state = store.getState();
 		let {error} = state.patterns;
-		let errorPanel = error ? <div className='error-panel flex-center'><img src='./image/kline.png' /><div><h2>本次搜索失败了</h2><p>请您尝试<button onClick={this.restartSearch.bind(this)}>重新搜索</button>或返回<button onClick={this.resetError.bind(this)}>上一次搜索</button></p></div></div> : '';
+		let kline = patternActions.getLastKline();
+		let errorPanel = error ? <div className='error-panel flex-center'><img src={ getKlineImgSrc(kline) } /><div><h2>本次搜索失败了</h2><p>请您尝试<button onClick={this.restartSearch.bind(this)}>重新搜索</button>或返回<button onClick={this.resetError.bind(this)}>上一次搜索</button></p></div></div> : '';
 		let dataPanelClass = classNames('search-report-wrapper', 'transition-top', 'transition-duration2', {
 			'slide-down': this.props.waitingForPatterns,
 			'transition-delay3': !this.props.waitingForPatterns,
+			'small': !this.props.fullView
 		});
 
 		return (<div className={dataPanelClass} ref='container'>

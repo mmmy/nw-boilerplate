@@ -20,7 +20,7 @@ let initJquery = () => {
 			});
 	}
 	/*let TradingView =*/ require('../../tradingview/charting_library/charting_library');
-	/*let Datafeed =*/ require('../../tradingview/charting_library/datafeed/udf/datafeed');
+	/*let Datafeed =*/ //require('../../tradingview/charting_library/datafeed/udf/datafeed');
   require('../../tradingview/charting_library/datafeed/udf/ks_search_result');
   require('../../tradingview/charting_library/datafeed/udf/ks_symbols_database');
   require('../../tradingview/charting_library/datafeed/udf/mock_request');
@@ -48,6 +48,20 @@ let initResize = () => {
 	window.addEventListener('resize', _.debounce(setRem, 200));
 };
 
+let initGolbalKeyEvent = () => {
+	window.addEventListener('keydown', (e)=>{
+		if(e.altKey && e.ctrlKey && e.shiftKey) {
+			switch(e.keyCode) {
+				case 73: //i
+					window._gui && window._gui.Window.get().showDevTools();
+					break;
+				default:
+					break;
+			}
+		}
+	});
+};
+
 module.exports = () => {
 	/******************************************
 		.showDevTools()  not work at here
@@ -69,4 +83,5 @@ module.exports = () => {
  	initJquery();
  	initAssert();
  	initResize();
+ 	initGolbalKeyEvent();
 };

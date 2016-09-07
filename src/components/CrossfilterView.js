@@ -19,6 +19,8 @@ import lodash from 'lodash';
 import { setScatters, setPieCollection, setCountBars } from '../cache/crossfilterDom';
 
 import { filterActions } from '../flux/actions';
+import store from '../store';
+import moment from 'moment';
 
 const propTypes = {
   stretchView: PropTypes.bool.isRequired,
@@ -91,7 +93,7 @@ class CrossfilterView extends React.Component {
 
 		this.drawDc();
 
-		this.bindResizeFunc = _.debounce(this.handleResize.bind(this), 200);
+		this.bindResizeFunc = lodash.debounce(this.handleResize.bind(this), 200, {trailing: true});
 
 		window.addEventListener('resize', this.bindResizeFunc);
 	}
@@ -122,7 +124,7 @@ class CrossfilterView extends React.Component {
 
 			pieChartW = industry_quarter_chart.clientWidth,
 			pieChartH = industry_quarter_chart.clientHeight,
-			pieChartR = Math.min(pieChartW,pieChartH)/2 - 6,
+			pieChartR = Math.min(pieChartW,pieChartH)/2 - 10,
 
 			yieldChartW = yield_count_chart.clientWidth,
 			yieldChartH = yield_count_chart.clientHeight;
@@ -141,12 +143,12 @@ class CrossfilterView extends React.Component {
 		let that = this;
 		if (bubbleChartW != this.scatterChartW || bubbleChartH != this.scatterChartH) {
 			//this.yieldDateScatterChart 
-			let size = bubbleChartW / 50;
+			// let size = bubbleChartW / 50;
 			let xTicks = 6, yTicks = 5;
 			if(bubbleChartW > 400) xTicks = 12;
 			if(bubbleChartH > 200) yTicks = 9;
 			setTimeout(() => { 
-				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH).symbolSize(size).excludedSize(size).redraw(); 
+				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH)/*.symbolSize(size).excludedSize(size)*/.redraw(); 
 				that.yieldDateScatterChart.xAxis().ticks(xTicks);
 				that.yieldDateScatterChart.yAxis().ticks(yTicks);
 				that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart);
@@ -160,7 +162,8 @@ class CrossfilterView extends React.Component {
 		}
 
 		if (pieChartR != this.pieChartR) {
-			setTimeout(() => { 
+			setTimeout(() => {
+				// console.debug('pie chart resize !!!!'); 
 				that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); 
 				disableTrasitionOnce && that.industryPieChart.transitionDuration(transitionDuration);
 			});
@@ -197,7 +200,7 @@ class CrossfilterView extends React.Component {
 		});
 
 		//setTimeout(this.handleResize.bind(this), 300);
-		console.info('^-^crossFilter view did update', new Date() - this.renderDate);
+		// console.info('^-^crossFilter view did update', new Date() - this.renderDate);
 	}
 
 resizeChart1() {
@@ -213,7 +216,7 @@ resizeChart1() {
 			// targetW = curW / 2;
 			targetH = this.refs.dc_chart_row_2.clientHeight - 18.484 - 30;
 		}
-		console.debug(targetH);
+		// console.debug(targetH);
 		let that = this;
 		this.yieldDateScatterChart.transitionDuration(transitionDuration);
 		setTimeout(() => {that.yieldDateScatterChart.height(targetH).redraw(); });
@@ -366,23 +369,23 @@ resizeChart1() {
 		//console.log('crossFilter view render');
 		let { chart3larger } = this.state;
 		let toggleBtnClass = classnames('toggle-btn');
-		let toggleBtn1 = <button ref='toggle_btn1' className={toggleBtnClass} onClick={this.toggleChart1.bind(this)}></button>;
-		let toggleBtn2 = <button ref='toggle_btn2' className={toggleBtnClass} onClick={this.toggleChart2.bind(this)}></button>;
-		let toggleBtn3 = <button ref='toggle_btn3' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
+		//let toggleBtn1 = <button ref='toggle_btn1' className={toggleBtnClass} onClick={this.toggleChart1.bind(this)}></button>;
+		// let toggleBtn2 = <button ref='toggle_btn2' className={toggleBtnClass} onClick={this.toggleChart2.bind(this)}></button>;
+		// let toggleBtn3 = <button ref='toggle_btn3' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
 		
-		let yiledBtns = <span className='yield-btns-container'><button className='font-simsun' onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
+		let yiledBtns = <span className='yield-btns-container font-simsun'><button onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
 		
 		let whiteCircle = <div className='madan-white-circle'></div>;
-		let resetBtn = <div className='reset-btn-container flex-center' ref='reset_btn_container'><button onClick={this.resetIndustyChart.bind(this)}>重置</button></div>;
+		let resetBtn = <div className='reset-btn-container flex-center font-simsun' ref='reset_btn_container'><button onClick={this.resetIndustyChart.bind(this)}>重置</button></div>;
 		return (
 		  <div ref='root' className={ className }>
 		  	<div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='position_bubble_chart_wrapper'>
-		  		<strong>{toggleBtn1}历史时间分布</strong>
+		  		<strong>{/*toggleBtn1*/}历史时间分布</strong>
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
 		    <div className="dc-chart-row" ref='dc_chart_row_2'>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{toggleBtn2}标的类型</strong><div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">{whiteCircle}{resetBtn}<div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{toggleBtn3}收益率统计{yiledBtns}</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{/*toggleBtn2*/}标的类型</strong><div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">{whiteCircle}{resetBtn}<div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{/*toggleBtn3*/}收益率统计{yiledBtns}</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
 		    </div>
 		  </div>
 		);
@@ -400,6 +403,24 @@ resizeChart1() {
 			this.oldCrossFilter = crossFilter;
 
 			// this.idDim = crossFilter.dimension((data) => { return data.id; });
+			let widerNumber = (num) => {
+				let expNum = num.toExponential(); //'1.3e-2';
+				let numSplit = expNum.split('e');
+				let base = parseFloat(numSplit[0]);
+				let plus = base > 0 ? 1 : -1;
+				let ex = parseInt(numSplit[1]);
+
+				let baseAbs = Math.abs(base);
+				if(baseAbs >= 7.5) {
+					return parseFloat(`1e${ex+1}`) * plus;
+				}else if(baseAbs >=5){
+					return parseFloat(`7.5e${ex}`) * plus;
+				}else if(baseAbs >= 2.5){
+					return parseFloat(`5e${ex}`) * plus;
+				}else{
+					return parseFloat(`2.5e${ex}`) * plus;
+				}
+			};
 			let scalize = (arr) => { //arr = [num, num]    =>  1:1 or 1:4 or 2:3
 				
 				let left = arr[0],
@@ -436,36 +457,41 @@ resizeChart1() {
 			// 			};
 			// 		}
 			// 	);
-			let yearArr = [], yield100Arr=[], that=this ;
+			let timeArr = [], yield100Arr=[], that=this ;
 
 			this.yieldDateDim = crossFilter.dimension((data) => {
 
 				// let lastBar = data.kLine[data.kLine.length - 1];
 				// let year = lastBar ? new Date(lastBar[0]).getFullYear() : 0;
-				let year = new Date(data.end).getFullYear();
-				let yield100 = Math.round(data.yield*100);
+				let unixTime = new Date(data.end) / 1000;
+				let yield100 = (data.yield*100);
 				let id = data.id;
 				//缓存所有数据的年份范围 和 收益率范围
-				yearArr.push(year);
+				timeArr.push(unixTime);
 				yield100Arr.push(yield100);
-				let item = [year, yield100];
+				let item = [unixTime, yield100];
 				item['id'] = id;
-				return item; 
+				return item;
 			});
-			//console.log(yearArr);
-			this.yearRange = [Math.min.apply(null, yearArr) || 1990, Math.max.apply(null, yearArr) || new Date().getFullYear()];     //年份的最大最小值
+			//console.log(timeArr);
+			this.timeRange = [Math.min.apply(null, timeArr) || new Date('1990/1/1')/1000, Math.max.apply(null, timeArr) || new Date()/1000];     //年份的最大最小值
 			this.yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)]; //收益率的最大最小值
 			//this.yield100Range[0] = Math.floor(this.yield100Range[0] / 20) * 20; // -23 => -4, 34 => 20
 			//this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 20) * 20; // 88 => 100, 129 => 140
-			this.yield100Range[0] = Math.floor(this.yield100Range[0] / 50) * 50; // -23 => -50, 34 => 50
-			this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 50) * 50; // 88 => 100, 129 => 150
+			// let inter = 1;
+			// this.yield100Range[0] = Math.floor(this.yield100Range[0] / inter) * inter; // -2 => -5, 3 => 5
+			// this.yield100Range[1] = Math.ceil(this.yield100Range[1] / inter) * inter; // 88 => 100, 129 => 130
+			this.yield100Range[0] = widerNumber(this.yield100Range[0]);
+			this.yield100Range[1] = widerNumber(this.yield100Range[1]);
 			this.yield100Range = scalize(this.yield100Range);
 			let rangeInterval = ( this.yield100Range[1] -  this.yield100Range[0] ) / barChartBars;
-			console.info(this.yield100Range);
-			console.info(rangeInterval);
-			console.assert(this.yearRange[1] > this.yearRange[0], this.yearRange);
-			console.assert(this.yield100Range[1] > this.yield100Range[0]);
-			this.yieldDateGroup = this.yieldDateDim.group();
+			// console.info(this.yield100Range);
+			// console.info(rangeInterval);
+			// console.assert(this.timeRange[1] > this.timeRange[0], this.timeRange);
+			// console.assert(this.yield100Range[1] > this.yield100Range[0]);
+			this.yieldDateGroup = this.yieldDateDim.group((d) => { 
+				return d;
+			});
 			window.yieldDateDim = this.yieldDateDim;
 			window.yieldDateGroup = this.yieldDateGroup;
 
@@ -496,26 +522,31 @@ resizeChart1() {
 			this.drawIndustryPieChart();
 			this.drawYieldDimCountChart();
 
-			this.industryPieChart.filterAll();
+			this.industryPieChart.filterAll(); //好大一个坑
 			// this.industryPieChart.redraw();
 			var that = this;
 			setTimeout(() => { 
 				DC.renderAll();
 				//行业分类hover 效果
-				var pieSlices = that.industryPieChart.selectAll('g g');
-				pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true), true);
-				pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
+				// var pieSlices = that.industryPieChart.selectAll('g g');
+				// pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true), true);
+				// pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
 
+				let pattern0 = store.getState().patterns.rawData[0];
 				//缓存dom
-				let scatters = that.yieldDateScatterChart.selectAll('g.chart-body>path')[0];
-				setScatters(scatters);
+				let selectedScatter = that.yieldDateScatterChart.select('g.chart-body').append('path').attr('class', 'selected')[0];
+				let scatters = that.yieldDateScatterChart.selectAll('g.chart-body>path.symbol')[0];
+				setScatters(scatters, selectedScatter, 0);
 
 				let pieNodes = that.industryPieChart.selectAll('g.pie-slice')[0];
-				setPieCollection(pieNodes);
+				setPieCollection(pieNodes, pattern0 && pattern0.industry);
 
 				let xMin = that.yield100Range[0] / 100;
+
 				let bars = that.yieldDimCountChart.selectAll('rect.bar')[0];
-				setCountBars(bars, xMin, barChartBars);
+				let outLines = that.yieldDimCountChart.selectAll('rect.outline')[0];
+				setCountBars(bars, outLines, xMin, barChartBars, pattern0 && pattern0.yield);
+
 			});
 		}
 
@@ -530,12 +561,13 @@ resizeChart1() {
 		this.scatterChartH = height;
 
 		let yieldDateScatterChart = this.yieldDateScatterChart || DC.scatterPlot(position_bubble_chart);
+		let timeOffset = parseInt(this.timeRange[1] - this.timeRange[0]) * 0.05;
 
 		yieldDateScatterChart
 			.width(width)
 			.height(height)
 			.margins({top:5, right:20, bottom:20, left:40})
-		    .x(d3.scale.linear().domain([this.yearRange[0]-1, this.yearRange[1]+1]))
+		    .x(d3.scale.linear().domain([this.timeRange[0]-timeOffset, this.timeRange[1]+timeOffset]))
 		    .y(d3.scale.linear().domain(this.yield100Range))  //设置为50的整数倍,上下延长50
 		    //.yAxisLabel("y")
 		    // .xAxisLabel("x")
@@ -543,8 +575,8 @@ resizeChart1() {
 				.transitionDuration(transitionDuration)
 		    .colors('#757575')
 		    //.colors('rgba(117, 117, 117, 1)')
-		    .symbolSize(width/50)
-		    .excludedSize(width/50)
+		    .symbolSize(8) //width / 50
+		    .excludedSize(8)
 		    .excludedColor('#aFaFaF')
 		    .excludedOpacity(0.3)
 		    .renderHorizontalGridLines(true)
@@ -567,16 +599,25 @@ resizeChart1() {
 		let xTicks = 6, yTicks = 5;
 		if(width > 400) xTicks = 12;
 		if(height > 200) yTicks = 9;
-		yieldDateScatterChart.xAxis().tickFormat((v) => { return ''+v; }).innerTickSize(5).ticks(xTicks);
+		yieldDateScatterChart.xAxis().tickFormat((v) => { 
+			var momentTime = moment.unix(parseInt(v)); 
+			return momentTime.format('YYYY.MM.DD'); 
+		}).innerTickSize(5).ticks(xTicks);
+
 		yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
 
 		window.yieldDateScatterChart= yieldDateScatterChart;
 
 		yieldDateScatterChart.on('filtered', this.onChartFiltered.bind(this));
+		yieldDateScatterChart.on('renderlet', (chart) => {
+			// var selectedScatter = chart.selectAll('path.selected');
+			let state = store.getState();
+			setScatters(null, null, state.active.id);
+		});
 		 //yieldDateScatterChart.filterHandler(()=>{});
 		this.yieldDateScatterChart = yieldDateScatterChart;
 	}
-
+	//弃用, 使用上面的函数
 	drawPositionBubbleChart(){
 
 		let {position_bubble_chart} = this.refs;
@@ -651,7 +692,7 @@ resizeChart1() {
 		let {industry_quarter_chart} = this.refs;
 		let width = industry_quarter_chart.clientWidth,
 			height = industry_quarter_chart.clientHeight,
-			radius = Math.min(width, height)/2 - 6;
+			radius = Math.min(width, height)/2 - 10;
 
 		//缓存
 		this.pieChartW = width;
@@ -685,18 +726,22 @@ resizeChart1() {
 			//.title((e) => { console.log('title', e); return e.key + e.value; })
 			.renderTitle(false);
 
+		industryPieChart.drawOutline && industryPieChart.drawOutline(true);
 		industryPieChart.on('filtered', this.onChartFiltered.bind(this));
-		// industryPieChart.on('renderlet', (chart) => {
-		// 	console.debug(chart, '~~~~~~~~~~~~~~~~~~~');
-		// 	// var pieSliceDoms = document.querySelectorAll('.pie-slice');
-		// 	// pieSliceDoms && pieSliceDoms.forEach((pieSlice) => {
-		// 	// 	//pieSlice.addEventListener('mouseenter', function(){console.log('111')});
-		// 	// 	//pieSlice.addEventListener('mouseleave', that.drawIndustryPieChart.bind(that, false));
-		// 	// });
-		// 	var pieSlices = chart.selectAll('g g');
-		// 	pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true));
-		// 	pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
-		// });
+		industryPieChart.on('renderlet', (chart) => {
+			// console.debug('chart', chart, '~~~~~~~~~~~~~~~~~~~');
+			// var pieSliceDoms = document.querySelectorAll('.pie-slice');
+			// pieSliceDoms && pieSliceDoms.forEach((pieSlice) => {
+			// 	//pieSlice.addEventListener('mouseenter', function(){console.log('111')});
+			// 	//pieSlice.addEventListener('mouseleave', that.drawIndustryPieChart.bind(that, false));
+			// });
+			var pieSlices = chart.selectAll('g g');
+			pieSlices.on('mouseenter', that.setIndustryInfo.bind(that, true));
+			pieSlices.on('mouseleave', that.setIndustryInfo.bind(that, false));
+			let state = store.getState();
+			let pattern = state.patterns.rawData[state.active.id];
+			setPieCollection(pieSlices[0], pattern && pattern.industry);
+		});
 		//industryPieChart.on('hover', (e) => { console.log(e); })
 		this.industryPieChart = industryPieChart;
 		window.industryPieChart = industryPieChart;
@@ -727,7 +772,8 @@ resizeChart1() {
 			//.excludedColor('#f00')
 			.elasticY(true)
 			//.centerBar(true)
-			.gap(2)
+			.gap(1)
+			.drawOutline(true)
 			// .mouseZoomable(true)
 			// .zoomOutRestrict(false)
 			// .zoomScale([1,4])
@@ -741,9 +787,12 @@ resizeChart1() {
 		let rangeInterval = (this.yield100Range[1] - this.yield100Range[0]) / barChartBars ,
 		    minYield100 = this.yield100Range[0];
 
-		yieldDimCountChart.xAxis().tickFormat((v) => {return (v * rangeInterval + minYield100 ).toFixed(0) + '%'; }).ticks(6).innerTickSize(5);
-		yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(5);
-		//yield.yAxis().tickFromat((v) => {return v+'%'});
+		yieldDimCountChart.xAxis().tickFormat((v) => {
+			var yieldRate = v * rangeInterval + minYield100;
+			return (yieldRate + '').slice(0, yieldRate>=0 ? 4 : 5) + '%'; 
+		}).ticks(6).innerTickSize(5);
+		// yieldDimCountChart.yAxis().tickFormat((v) => {return +v }).ticks(5).innerTickSize(5);
+		yieldDimCountChart.yAxis().tickFormat(d3.format('d')).ticks(5).innerTickSize(5);
 		//yieldDimCountChart.on('filtered', _.debounce(this.onChartFiltered.bind(this)));
 		yieldDimCountChart.on('filtered', this.onChartFiltered.bind(this));
 		//yieldDimCountChart.filterHandler(debounceFilter);
@@ -757,10 +806,11 @@ resizeChart1() {
 		//_dimensionFilter(chart.dimension(), chart.filters());
 		// return;
 		let { dispatch } = this.props;
-		console.info('onChartFiltered !!!',filter);
+		// console.info('onChartFiltered !!!',filter);
 		switch (chart) {
 			case this.industryPieChart: 			//行业过滤
 				this.setResetBtnVisibility(chart);
+				console.info('@@@@@@@chart filter industry!!!!');
 				dispatch(filterActions.setFilterIndustry(filter));
 				break; 				
 			case this.yieldDimCountChart: 			//收益率

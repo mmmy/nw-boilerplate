@@ -85,7 +85,7 @@ class PatternStatisticsPanel extends React.Component {
 		return (
       <div className="pattern-statistics-panel flex font-simsun">
       	<span>筛选结果:<span className='black font-number'>{filterNumber}</span>{/*<button onClick={onTrash}><i className='fa fa-trash'></i></button>*/}</span>
-      	<span>搜索结果总数:<span className='black font-number'>{total}</span></span>
+      	<span>结果总数:<span className='black font-number'>{total}</span></span>
       	<span><button className='trash-all-button' ref='trash_panel_container' onClick={showTrashPanel} onBlur={this.removeTrashPanel.bind(this)}><i className='fa fa-trash'></i><span className='trashed-number'>{trashedNumber}</span></button></span>
       </div>
     );
