@@ -6,10 +6,19 @@
 	height: @stockViewContainer_H;
   opacity: 1;
   padding-left: 0;//20px;
-  padding-right: 10px;
-  @left-width: 50px;
+  padding-right: 0;//10px;
+  @left-width: 40px;
   background-color: #fff;
   z-index: 1;
+  .container-stockview-inner {
+  	// border: 1px solid red;
+  	box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  	position: absolute;
+  	left: 20px;
+  	top: 10px;
+  	width: calc(~"100% - 40px");
+  	height: calc(~"100% - 20px");
+  }
   // border-bottom: 1px solid #fafafa;
 	.left-toolbar-container {
 		position: absolute;
@@ -17,8 +26,8 @@
 		top: 0;
 		width: @left-width;
 		height: 100%;
-		background-color: #f0f0f0;
-		background-image: linear-gradient(to top,#fff,#d7d7d7);
+		background-color: #fff;
+		// background-image: linear-gradient(to top,#fff,#d7d7d7);
 		// border-right: 1px solid #fafafa;
 		button {
 			// width: 40px;
@@ -27,7 +36,7 @@
 			color: transparent;
 			width: 30px;
 			height: 30px;
-			margin: 10px;
+			margin: 10px 5px;
 		}
 		.curve {
 			background-image: url('./image/index.png');
@@ -46,7 +55,7 @@
 		position: absolute;
 		top: 0;
 		left: @left-width;
-		width: calc(~"100% - 5px -"@left-width);
+		width: calc(~"100% -"@left-width);
 		height: 100%;//calc(~"100% - 20px");
 
 		&.favorites {

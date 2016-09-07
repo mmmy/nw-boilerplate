@@ -45,8 +45,8 @@ class StockView extends React.Component {
 		let datafeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0);
 		setDataFeed(datafeed);
 		let options = {
-				symbol: 'au',//'000001.SZ',
-				interval: 'D',
+				symbol: 'OKCOIN.SZ',//'000001.SZ',
+				interval: '1',
 				container_id: STOCK_VIEW,
 				//	BEWARE: no trailing slash is expected in feed URL
 				// datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
@@ -96,6 +96,7 @@ class StockView extends React.Component {
 				ks_overrides: {
 					// "ksSplitView": true,
 					// ksBottomView: true,
+					ksFullView: true,
 					volume: false,
 					OHLCBarBorderColor: true,
 					ksSearch: true,
@@ -122,7 +123,8 @@ class StockView extends React.Component {
 			};
 
 		return (
-	      <div ref='container' className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
+	    <div ref='container' className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
+	    	<div className='container-stockview-inner'>
 	      	<div className='left-toolbar-container'>
 	      		<div><button ref='curve_btn' className='flat-btn curve active' onClick={ this.showSockView.bind(this) }>quxian</button></div>
 	      		<div><button ref='favorites_btn' className='flat-btn favorites' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
@@ -167,8 +169,9 @@ class StockView extends React.Component {
 
 		      	</div>
 		      </div> 
-	      </div>
-	    );
+	    	</div>
+	    </div>
+	  );
 	}
 
 	resetButton() {
