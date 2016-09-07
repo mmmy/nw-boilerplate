@@ -2,10 +2,12 @@
 import { splitData, generateSeries, generateKlineOption, getKlineImgSrc } from './publicHelper';
 import { generateHeatMapOption } from '../components/utils/heatmap-options';
 import statisticKline from '../components/utils/statisticKline';
-import echarts from 'echarts';
+// import echarts from 'echarts';
 import painter from './painter';
 import store from '../store';
 import { getDecimalForStatistic } from '../shared/storeHelper';
+import PredictionWidget from './PredictionWidget';
+import BlockHeatMap from './BlockHeatMap';
 
 let _$root = null;
 
@@ -23,7 +25,7 @@ let _statisticDoms = {
 
 let _$patternViews = null;
 
-let _echart = null;
+let _predictionChartStatic = null;
 let _heatMapChart = null;
 
 let _yMin = 0;
@@ -121,34 +123,42 @@ let cacheDom = ($wrapper) => {
 let _updateKlineChart = (patterns) => {
   let { searchMetaData, closePrice, searchConfig } = patterns;
   let { kline } = searchMetaData;
+  /*
   let data0 = splitData(kline, (searchConfig && searchConfig.additionDate.value) || (closePrice[0] && closePrice[0].length));
   let lastClosePrice = data0.values[data0.values.length-1][1];
   let { lineSeries, min, max } = generateSeries(closePrice, lastClosePrice);
   var offset = Math.max(data0.yMax - lastClosePrice, lastClosePrice - data0.yMin);
   var offset1 = Math.max(max - lastClosePrice, lastClosePrice - min);
 
+  var predictionLen = searchConfig && searchConfig.additionDate && searchConfig.additionDate.value || 0;
+  predictionLen = parseInt(predictionLen);
   //option
   let option = generateKlineOption();
   option.series = option.series.slice(0,1).concat(lineSeries);
   option.series[0].data = data0.values;
   option.xAxis.data = data0.categoryData;
+  option.xAxis.boundaryGap = true;
   option.yAxis[0].min = lastClosePrice - offset;
   option.yAxis[0].max = lastClosePrice + offset;      
   option.yAxis[1].min = lastClosePrice - offset1;
   option.yAxis[1].max = lastClosePrice + offset1;
+  option.grid.right = -100 / (kline.length + predictionLen) / 2 * 1.05 + '%';
+	**/
+  //init
+  _predictionChartStatic = _predictionChartStatic || new PredictionWidget(_$echartContainer[0], {showRange: false, klineScaleRate: 1, slient: true});
+  // _predictionChartStatic.setOption(option, true);
+  _predictionChartStatic.setData(kline, closePrice);
+  window._predictionChartStatic = _predictionChartStatic;
 
-  _echart && _echart.dispose();
-  _echart =  echarts.init(_$echartContainer[0]);
-  _echart.setOption(option, true);
-
-  let y2diff = lastClosePrice + offset1;
+  // let y2diff = lastClosePrice + offset1;
   try { 
-    _updateHeatMap(offset1 * 2, lastClosePrice + offset1, lastClosePrice - offset1);
+    // _updateHeatMap(offset1 * 2, lastClosePrice + offset1, lastClosePrice - offset1);
+    _updateBlockHeatMap();
   } catch(e) {
     console.error(e);
   }  
 };
-
+/**********
 let _initHeatMap = () => {
 	let option = generateHeatMapOption();
   let $chartDom = _$heatmapContainer;
@@ -186,7 +196,8 @@ let _initHeatMap = () => {
   _heatMapChart.setOption(option);
   window._heatMapChart = _heatMapChart;
 }
-
+**************/
+/**
 let _updateHeatMap = (heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1) => {
 
 	if(!_heatMapChart) _initHeatMap();
@@ -204,10 +215,11 @@ let _updateHeatMap = (heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1) 
   for (let i = 0; i < blocksNumber; i++) {
     yAxisData.push(Math.round(min) + 0.5 + ':' + (Math.round(min += eachBlockHeight)-0.5));
   }
-  let linesOption = _echart.getOption();
-  let lastPrices = linesOption.series.slice(1, linesOption.series.length).map((serie, idx) => {
-    return serie.data[serie.data.length - 1][1];
-  });
+  // let linesOption = _predictionChartStatic.getOption();
+  // let lastPrices = linesOption.series.slice(1, linesOption.series.length).map((serie, idx) => {
+  //   return serie.data[serie.data.length - 1][1];
+  // });
+  let lastPrices = _predictionChartStatic.getLastPrices();
   lastPrices.sort((a, b) => {return a - b}); // sort numerically
   let bunch = lastPrices;
 
@@ -243,6 +255,13 @@ let _updateHeatMap = (heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1) 
 
   heatMapChart.setOption(option, true);
 
+};
+**/
+let _updateBlockHeatMap = () => {
+	_heatMapChart = _heatMapChart || new BlockHeatMap(_$heatmapContainer[0]);
+	let lastPrices = _predictionChartStatic && _predictionChartStatic.getLastPrices() || [],
+			{yMin, yMax} = _predictionChartStatic && _predictionChartStatic.getLineChartMinMax();
+	_heatMapChart.setData(lastPrices, yMin, yMax);
 };
 
 let _updatePatternViews = (patternArr, {decimal}) => {
@@ -290,7 +309,7 @@ let _updateAllPatternCanvas = () => {
 };
 
 let _handleResize = () => {
-	_echart && _echart.resize();
+	_predictionChartStatic && _predictionChartStatic.resize();
 	_heatMapChart && _heatMapChart.resize();
 	_updateAllPatternCanvas();
 };

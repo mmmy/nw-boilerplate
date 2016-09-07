@@ -306,7 +306,7 @@ let _addNewDayWrapper = (data, isInsert, $wrapper0) => {  //插入历史
 		drawKline($newHistoryItem.find('canvas')[0], data.kline);
 		$wrapper0.find('.history-items-wrapper').prepend($newHistoryItem);
 	}else {
-		let $newWrapper = $(_generatePatterns([dat, 0, a], 1, new Date()));
+		let $newWrapper = $(_generatePatterns(data, 1, new Date()));
 		$newWrapper.data('date', new Date());
 		$(_bodyDom).prepend($newWrapper);
 	}

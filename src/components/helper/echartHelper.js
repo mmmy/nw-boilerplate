@@ -17,6 +17,12 @@ let setHightlightPrediction = (chart, id) => {
   chart.setOption(option);
 }
 
+let setPredictionChartHighlight = (id) => {
+  let chart = window._predictionChart;
+  chart.setActiveLine(id);
+};
+
 module.exports = {
-	setHightlightPrediction
+	setHightlightPrediction,
+  setPredictionChartHighlight
 };

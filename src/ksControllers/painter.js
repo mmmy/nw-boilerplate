@@ -15,7 +15,7 @@ let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H) => {
 	return {open:_to05(oY), close:_to05(cY), low:_to05(lY), high:_to05(hY)};
 };
 
-//options: {hoverIndex: , selectedIndex: , activeIndex: , mouse:{x}, yMin: number | '200%', yMax: ,selectedRange:[]}
+//options: {hoverIndex: , selectedIndex: , activeIndex: , mouse:{x}, yMin: number | '200%', yMax: ,selectedRange:[], predictionBars:}
 let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C, L,H]
 	let ctx = null;
 	let d1 = new Date();
@@ -53,8 +53,10 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 			max += (parseInt(options.yMax)/100 - 1) * diff;
 		}
 	}
+	let predictionBars = options && options.predictionBars || 0;
 
 	let len = kline.length;
+
 	let margin = options && options.margin;
 	let top = margin && margin.top || 0,
 			left = margin && margin.left || 0,
@@ -62,8 +64,17 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 			bottom = margin && margin.bottom || 0;
 
 	let viewYheight = height - top -bottom;
-	let klineXSpace = (width - left - right) / len;
+	let klineXSpace = (width - left - right) / (len + predictionBars);
 	let klineW = 3;
+	
+	klineW = Math.round(klineXSpace/2) * 1.2;
+	klineW += (klineW % 2 == 0) ? 1 : 0;
+	if(klineW > 10) {
+		// klineW += 4;
+	} else if(klineW > 6) {
+		// klineW += 2;
+	}
+	/*
 	if(klineXSpace > 6) {
 		klineW = 5;
 	} else if(klineXSpace > 3) {
@@ -71,7 +82,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	} else {
 		klineW = 1;
 	}
-
+	*/
 
 
 	let klineWhisker = [];
@@ -116,7 +127,9 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	ctx.clearRect(0, 0, width, height);
 	ctx.fillStyle = backgroundColor;
 	ctx.fillRect(0, 0, width, height);
-
+	if(!kline || kline.length == 0) {
+		return  {};
+	}
 	let d2 = new Date();
 	for (let i=0; i<len; i++) {
 		let rectPoints = klineBox[i];
@@ -170,6 +183,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	}
 	//drawRangeRect
 	if(selectedRange && selectedRange[0] >= 0 && selectedRange[1] >=0) {
+		let rangeOption = options && options.rangeOption || {};
+
 		let rangeX1 = klineWhisker[selectedRange[0]][0][0][0];
 		let rangeX2 = klineWhisker[selectedRange[1]][0][0][0];
 		ctx.fillStyle = 'rgba(200,200,200,0.1)';
@@ -187,18 +202,20 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.fillText(text, (rangeX2 + rangeX1)/2, 15);
 		// ctx.strokeText(text, (rangeX2 + rangeX1)/2, 13);
 		//close btn
-		ctx.fillStyle = '#9C1822';
-		ctx.fillRect(rangeX2 - 20, 0, 20, 20);
-		ctx.setLineDash([0, 0]);
-		ctx.lineWidth = 2;
-		let crossXCenter = rangeX2 - 10;
-		let crossYCenter = 10;
-		ctx.moveTo(crossXCenter - 3, crossYCenter - 3);
-		ctx.lineTo(crossXCenter + 3, crossYCenter + 3);
-		ctx.stroke();		
-		ctx.moveTo(crossXCenter - 3, crossYCenter + 3);
-		ctx.lineTo(crossXCenter + 3, crossYCenter - 3);
-		ctx.stroke();
+		if(!rangeOption.noCloseBtn) {
+			ctx.fillStyle = '#9C1822';
+			ctx.fillRect(rangeX2 - 20, 0, 20, 20);
+			ctx.setLineDash([0, 0]);
+			ctx.lineWidth = 2;
+			let crossXCenter = rangeX2 - 10;
+			let crossYCenter = 10;
+			ctx.moveTo(crossXCenter - 3, crossYCenter - 3);
+			ctx.lineTo(crossXCenter + 3, crossYCenter + 3);
+			ctx.stroke();		
+			ctx.moveTo(crossXCenter - 3, crossYCenter + 3);
+			ctx.lineTo(crossXCenter + 3, crossYCenter - 3);
+			ctx.stroke();
+		}
 
 		ctx.lineWidth = 1;
 		ctx.beginPath();
@@ -219,6 +236,9 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	// console.debug('time used', new Date() - d2, new Date() - d1);
 	let pointToIndex = (x, y) => {
 		let index = Math.floor((x - left) / klineXSpace); //先得到x 的index
+		if(klineWhisker[index] == undefined) {
+			return -1;
+		}
 		let indexYMin = klineWhisker[index][0][0][1];         //high 的y坐标
 		let indexYMax = klineWhisker[index][1][1][1];         //low 的y坐标
 		if(!y || (y > indexYMin - 10) && (y < indexYMax + 10)) {  //在10px 误差范围内, 或者 y == false
