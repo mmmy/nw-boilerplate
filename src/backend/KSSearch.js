@@ -10,7 +10,7 @@ let {searchOptions} = config;
  */
 
 /*****************
-	resObj: 
+	resObj:
 	{
 		"status":"OK",
 		"pattern":[
@@ -28,12 +28,12 @@ let {searchOptions} = config;
 ******************/
 
 //symbol:'Shenzhen:000001.SZ';
-let searchPattern = ({ symbol, dateRange, bars, additionDate, searchLenMax, dataCategory }, cb, errorCb) => {
-	
-	let exchangeReg = /.*\:/ ; //匹配开始到冒号的所有字符, 
+let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory }, cb, errorCb) => {
+
+	let exchangeReg = /.*\:/ ; //匹配开始到冒号的所有字符,
 	//let id = parseInt(symbol.replace(exchangeReg, '')); //去掉交易所字符
 	let id = symbol.replace(exchangeReg, ''); //去掉交易所字符
-	
+
 	//console.assert(!isNaN(id), 'error: 股票id  为NaN');
 	console.assert(dateRange.length == 2);
 	console.assert(bars > 0);
@@ -41,20 +41,20 @@ let searchPattern = ({ symbol, dateRange, bars, additionDate, searchLenMax, data
 	// let { path } = searchOptions;
 
 	// path = url.format({
-	// 	pathname: path, 
+	// 	pathname: path,
 	// 	query:{
 	// 		'symbol': 	symbol,
 	// 		'from': 	dateRange[0],
 	// 		'to': 		dateRange[1],
 	// 	}
 	// });
-	
-	let options = {              
+
+	let options = {
 		...searchOptions,
 	};
 
 	let callback = (resStr) => {
-		
+
 		try {
 			let resObj = JSON.parse(resStr);
 			//TODO: 处理resObj
@@ -65,21 +65,33 @@ let searchPattern = ({ symbol, dateRange, bars, additionDate, searchLenMax, data
 			errorCb(e);
 		}
 	};
-	let hours8 = 8 * 3600 * 1000;
+
+	let formatkline = (onekline) => {
+		return {
+			"open": onekline[1],
+			"high": onekline[2],
+			"low": onekline[3],
+			"close": onekline[4],
+		}
+	};
+
+	var klineObj = [];
+	kline.forEach(function (onekline) {
+		klineObj.push(formatkline(onekline));
+	});
 	let postObj = {
 		mid:"test example",
 		pattern:{
-			id: id + '',     //后台要求是字符串 
-			begin:{time: new Date(dateRange[0]-hours8).toISOString()},
-			end:{time: new Date(dateRange[1]-hours8).toISOString()},
-			len:bars,
+			//id: id + '',     //后台要求是字符串
+			type: "Custom",
+			data: klineObj,
+			//len:bars,
 		},
 		dataGroupId: dataCategory,
 		samples:[],
 		topN: searchLenMax,
 		nLookForward: parseInt(additionDate.value),
 	};
-
 	let postData = JSON.stringify(postObj);
 	// console.log(postData);
 	return request(options, callback, errorCb, postData);
