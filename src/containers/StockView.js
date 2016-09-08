@@ -69,8 +69,8 @@ class StockView extends React.Component {
         		// width: 300,
 	      overrides: {
 						"paneProperties.background": "#131313",
-	          "paneProperties.vertGridProperties.color": "#131313",
-	          "paneProperties.horzGridProperties.color": "#131313",
+	          "paneProperties.vertGridProperties.color": "rgba(0,0,0,0)",
+	          "paneProperties.horzGridProperties.color": "rgba(0,0,0,0)",
 	          "symbolWatermarkProperties.color": '#131313',
 						"symbolWatermarkProperties.transparency": 90,
 						"scalesProperties.textColor" : "#AAA",
@@ -87,6 +87,16 @@ class StockView extends React.Component {
 						"mainSeriesProperties.candleStyle.wickDownColor": "#434343",//'#6A6A6A',
 						"mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
 
+						"mainSeriesProperties.hollowCandleStyle.upColor": "#676767",
+						"mainSeriesProperties.hollowCandleStyle.downColor": "rgba(0,0,0,0)",
+						"mainSeriesProperties.hollowCandleStyle.drawWick": true,
+						"mainSeriesProperties.hollowCandleStyle.drawBorder": true,
+						"mainSeriesProperties.hollowCandleStyle.borderColor": "#676767",
+						"mainSeriesProperties.hollowCandleStyle.borderUpColor": "#676767",
+						"mainSeriesProperties.hollowCandleStyle.borderDownColor": "#676767",
+						"mainSeriesProperties.hollowCandleStyle.wickUpColor": '#676767',
+						"mainSeriesProperties.hollowCandleStyle.wickDownColor": '#676767',
+						"mainSeriesProperties.hollowCandleStyle.barColorsOnPrevClose": false,
 						"scalesProperties.lineColor" : "rgba(255,255,255,0)",
 						"scalesProperties.textColor" : "rgba(255,255,255,1)"
 				},
@@ -103,11 +113,14 @@ class StockView extends React.Component {
 					ksSearchFloat: true,
 					ksSearchRange: [1, 200],
 					showLiveBtn: true,
+					candleStyle: 9,
+					ksPaneBackground: ['#222','#111'],
+
 					lineToolTimeAxisView: {
-						background: '#b61c15',
+						background: '#333',
 						// activeBackground: 'green',
 						color: '#fff',
-						borderColor: '#b61c15',
+						borderColor: '#333',
 					},
 					lineToolPriceAxisView: {
 						background: '#b61c15',
@@ -116,7 +129,7 @@ class StockView extends React.Component {
 						borderColor: '#b61c15',
 					},
 					lineToolAxisRange: {
-						background: 'rgba(182,28,21,0.4)',
+						background: 'rgba(255,255,255,0.1)',
 					},
 					debug: false,
 				}
