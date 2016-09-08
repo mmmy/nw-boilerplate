@@ -58,6 +58,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 		kline = klineClone;
 		console.assert(kline[0].length == 5 && (kline instanceof Array));
 	}
+	console.log(kline);
 
 	//保存历史
 	let isNewSearch = false;
@@ -106,7 +107,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 			// let { searchConfig } = store.getState();
 			searchConfig = searchConfig || store.getState().searchConfig;
 
-			backend.searchPattern({symbol, dateRange, bars, searchConfig, dataCategory},
+			backend.searchPattern({symbol, kline, dateRange, bars, searchConfig, dataCategory},
 
 				(resArr, closePrice) => {
 
