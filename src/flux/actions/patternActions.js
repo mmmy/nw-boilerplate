@@ -22,7 +22,7 @@ let startSearch = ()=>{
 let searchSuccess = (patterns, searchTimeSpent)=>{
 	searchResultController.removeErrorPanel();
 	searchResultController.reportSlideDown(false, ()=>{
-		afterSearchMessage(patterns.rawData.length, searchTimeSpent);
+		// afterSearchMessage(patterns.rawData.length, searchTimeSpent);
 	});
 	wavesController.stop();
 };
@@ -110,14 +110,14 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 
 				(resArr, closePrice) => {
 
+					let searchTimeSpent = new Date() - startTime;
 					let patterns = {
 						rawData: resArr,
 						closePrice: closePrice || [],
-						searchMetaData: { symbol, dateRange, bars, lastDate, kline, edited, interval }
+						searchMetaData: { symbol, dateRange, bars, lastDate, kline, edited, interval, searchTimeSpent }
 					};
 					patterns.crossFilter = crossfilter(patterns.rawData);
 					patterns.searchConfig = searchConfig;
-					let searchTimeSpent = new Date() - startTime;
 					//保存历史
 					searchSuccess(patterns, searchTimeSpent);
 					setTimeout(() => { historyController.pushHistory({symbol, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig, dataCategory, name, favoriteFolder, state}); });

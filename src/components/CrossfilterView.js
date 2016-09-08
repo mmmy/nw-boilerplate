@@ -810,7 +810,7 @@ resizeChart1() {
 		switch (chart) {
 			case this.industryPieChart: 			//行业过滤
 				this.setResetBtnVisibility(chart);
-				console.info('@@@@@@@chart filter industry!!!!');
+				// console.info('@@@@@@@chart filter industry!!!!');
 				dispatch(filterActions.setFilterIndustry(filter));
 				break; 				
 			case this.yieldDimCountChart: 			//收益率

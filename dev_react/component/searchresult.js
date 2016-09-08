@@ -9,6 +9,7 @@ export default React.createClass({
 
 	initUI(){
 		searchResultController.init(this.refs.root);
+		searchResultController.updatePrediction();
 	},
 	
 	componentDidMount() {

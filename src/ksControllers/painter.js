@@ -117,10 +117,10 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let hoverY = options && options.hoverY;
 
 	//start draw
-	let upBorderColor = options && options.upBorderColor || '#8B171B',//'#ae0006',
-			upColor = options && options.upColor || '#AC1822',
-		 	downBorderColor = options && options.downBorderColor || '#050505',
-		 	downColor = options && options.downColor || 'rgba(0,0,0,0)';
+	let upBorderColor = options && options.upBorderColor || '#888888',//'#8B171B',//'#ae0006',
+			upColor = options && options.upColor || '#999999',//'#AC1822',
+		 	downBorderColor = options && options.downBorderColor || '#999999',//'#050505',
+		 	downColor = options && options.downColor || '#EEEEEE';//'rgba(0,0,0,0)';
 
 	let backgroundColor = options && options.backgroundColor || '#fff';
 
@@ -147,10 +147,17 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 			ctx.lineTo(whisker1[0][0], height-bottom);
 			ctx.stroke();
 		}
-		ctx.setLineDash([0, 0]);
+		ctx.fillRect(rectPoints[0][0], rectPoints[0][1], rectPoints[1][0]-rectPoints[0][0], rectPoints[1][1]-rectPoints[0][1]);
+		ctx.setLineDash([]);
 		ctx.beginPath();
 		ctx.strokeRect(rectPoints[0][0], rectPoints[0][1], rectPoints[1][0]-rectPoints[0][0], rectPoints[1][1]-rectPoints[0][1]);
-		ctx.fillRect(rectPoints[0][0], rectPoints[0][1], rectPoints[1][0]-rectPoints[0][0], rectPoints[1][1]-rectPoints[0][1]);
+		// ctx.moveTo(rectPoints[0][0], rectPoints[0][1]);
+		// ctx.lineTo(rectPoints[1][0], rectPoints[0][1]);
+		// ctx.lineTo(rectPoints[1][0], rectPoints[1][1]);
+		// ctx.lineTo(rectPoints[0][0], rectPoints[1][1]);
+		// ctx.lineTo(rectPoints[0][0], rectPoints[0][1]);
+		ctx.stroke();
+		ctx.closePath();
 		ctx.beginPath();
 		ctx.moveTo(whisker1[0][0], whisker1[0][1]);
 		ctx.lineTo(whisker1[1][0], whisker1[1][1]);

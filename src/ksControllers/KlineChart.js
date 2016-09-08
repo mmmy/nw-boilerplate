@@ -9,7 +9,7 @@ function KlineChart(dom,config){
 
 	};
 
-	return this._init();
+	return this._init(dom);
 }
 
 KlineChart.prototype._init = function(dom){
