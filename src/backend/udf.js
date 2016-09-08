@@ -16,6 +16,22 @@ let getSymbolHistory = (postData, callback, errorCallback) => {
   request(options, requestCb, errorCb, JSON.stringify(postData));
 };
 
+let getGroupCode = (callback, errorCallback) => {
+  const { groupOptions } = config;
+  const options = { ...groupOptions };
+
+  const requestCb = (result) => {
+    callback && callback(result);
+  };
+
+  const errorCb = (err) => {
+    callback && callback(err);
+  }
+
+  request(options, requestCb, errorCb, JSON.stringify([]));
+};
+
+
 let getSymbolList = (postData, callback) => {
   const { symbolListOptions } = config;
   const options = { ...symbolListOptions };
@@ -24,19 +40,20 @@ let getSymbolList = (postData, callback) => {
 
   const requestCb = (result) => {
     symbolListCache.setToFile(result);
-    callback(result);
+    callback && callback(result);
   };
 
   const errorCb = (err) => {
-    callback(err);
+    callback && callback(err);
   }
   if (symbolListCache.isLegal()) {
-       var cache = symbolListCache.getFromFile();
-       callback(cache);
-       return cache;
-  } else
-  request(options, requestCb, errorCb, JSON.stringify(postData));
-}
+    var cache = symbolListCache.getFromFile();
+    callback(cache);
+    return cache;
+  } else {
+    request(options, requestCb, errorCb, JSON.stringify(postData));
+  }
+};
 
 let getSymbolSearchResult = (postData, callback) => {
   const { searchOptions } = config;
@@ -55,6 +72,7 @@ let getSymbolSearchResult = (postData, callback) => {
 }
 
 module.exports = {
+  getGroupCode,
   getSymbolHistory,
   getSymbolSearchResult,
   getSymbolList

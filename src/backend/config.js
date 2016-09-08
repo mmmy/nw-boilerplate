@@ -19,6 +19,14 @@ export default {
 		method: 'POST',
 	},
 
+    groupOptions: {
+    	host: '112.74.17.46',
+        port: 25501,
+        path: '/groups',
+        url: 'http://112.74.17.46:25501/groups',
+        method: 'GET'
+    },
+
 	fileChunkOptions: {
 		host: 'localhost',
 		port: 3000,
