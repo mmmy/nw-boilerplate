@@ -8,12 +8,12 @@
     "width": 400,
     "height": 470,
     "min_width": 1277,
-    "min_height": 700,
+    "min_height": 800,
     "resizable": false,
     "standard-window": false,
     "fullscreen": false,
     "frame": true,
-    "toolbar": true
+    "toolbar": false
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

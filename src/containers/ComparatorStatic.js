@@ -145,8 +145,8 @@ class ComparatorStatic extends React.Component {
     const STOCK_VIEW = 'comparator-chart';
 
     let options = {
-      symbol: 'au',
-      interval: 'D',
+      symbol: 'AU',
+      interval: '5',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
       // datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
@@ -186,8 +186,8 @@ class ComparatorStatic extends React.Component {
       disabled_features: ["left_toolbar","header_widget","border_around_the_chart",'control_bar','timeframes_toolbar', 'display_market_status', 'remove_library_container_border', 'chart_property_page_style'],
      overrides: {
             "paneProperties.background": "#fff",
-            "paneProperties.vertGridProperties.color": "#fff",
-            "paneProperties.horzGridProperties.color": "#fff",
+            "paneProperties.vertGridProperties.color": "rgba(0,0,0,0)",
+            "paneProperties.horzGridProperties.color": "rgba(0,0,0,0)",
             "paneProperties.topMargin": 40,
             "paneProperties.bottomMargin": 20,
             "symbolWatermarkProperties.transparency": 10, //TODO,
@@ -213,6 +213,16 @@ class ComparatorStatic extends React.Component {
             "mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
             "scalesProperties.lineColor" : "rgba(0,0,0,0)",
 
+            "mainSeriesProperties.hollowCandleStyle.upColor": "#999",
+            "mainSeriesProperties.hollowCandleStyle.downColor": "#eee",
+            "mainSeriesProperties.hollowCandleStyle.drawWick": true,
+            "mainSeriesProperties.hollowCandleStyle.drawBorder": true,
+            "mainSeriesProperties.hollowCandleStyle.borderColor": "#888",
+            "mainSeriesProperties.hollowCandleStyle.borderUpColor": "#888",
+            "mainSeriesProperties.hollowCandleStyle.borderDownColor": "#999",
+            "mainSeriesProperties.hollowCandleStyle.wickUpColor": '#888',
+            "mainSeriesProperties.hollowCandleStyle.wickDownColor": '#999',
+            "mainSeriesProperties.hollowCandleStyle.barColorsOnPrevClose": false,
             "mainSeriesProperties.barStyle.upColor": "#6ba583",
         },
         ks_overrides: {

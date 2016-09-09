@@ -21,7 +21,7 @@ let drawLines = (canvas, lines, options) => {
     var height = canvas.height,
         width = canvas.width;
 
-    let strokeStyle = options && options.lineColor || 'rgba(100,100,100,0.5)';
+    let strokeStyle = options && options.lineColor || 'rgba(200,200,200,0.5)';
 
     var dataLen = options && options.dataLen || lines && lines[0] && lines[0].length,
         emptyLeftLen = options && options.emptyLeftLen || 0,
@@ -44,7 +44,12 @@ let drawLines = (canvas, lines, options) => {
     var ctx = canvas.getContext('2d');
     //init
     ctx.save();
-    ctx.strokeStyle = strokeStyle;
+    var gradient = ctx.createLinearGradient(0,0,0,height);
+    gradient.addColorStop(0, 'rgba(255,255,255,0.5)');
+    gradient.addColorStop(0.1, 'rgba(200,200,200,0.5)');
+    gradient.addColorStop(0.9, 'rgba(200,200,200,0.5)');
+    gradient.addColorStop(1, 'rgba(255,255,255,0.5)');
+    ctx.strokeStyle = gradient;//strokeStyle;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'square';
     ctx.setLineDash([0,0]);
@@ -74,6 +79,10 @@ let drawLines = (canvas, lines, options) => {
 			let priceArr = lines[activeIndex];
 			if(priceArr) {
 				ctx.beginPath();
+                ctx.save();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = 'rgba(0,0,0,1)';
+                ctx.shadowOffsetY = 5;
 				ctx.strokeStyle = options && options.activeColor || 'red';
 				priceArr.forEach((price, index) => {
 					let y = _priceToY(height, yMax, yMin, price);
@@ -85,6 +94,7 @@ let drawLines = (canvas, lines, options) => {
 					}
 				});
 				ctx.stroke();
+                ctx.restore();
 			}
 		}    
     ctx.restore();

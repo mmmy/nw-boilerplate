@@ -35,7 +35,7 @@ let PredictionWidget = function(dom, config){
 	this._clickX = 0;
 	this._clickY = 0;
 	this._linesYOffset = 0;
-	this._activeLine = -1;
+	this._activeLine = 0;
 
 	this._showRange = Boolean(config.showRange);
 	this._slient = Boolean(config.slient);
