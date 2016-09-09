@@ -113,7 +113,7 @@ class StockView extends React.Component {
 					ksSearchFloat: true,
 					ksSearchRange: [1, 200],
 					showLiveBtn: true,
-					candleStyle: 9,
+					// candleStyle: 9,
 					ksPaneBackground: ['#222','#111'],
 
 					lineToolTimeAxisView: {

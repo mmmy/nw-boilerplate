@@ -212,10 +212,10 @@ class EChart extends React.Component {
 	    let drawOptions = {
 	    	// yMin: rates ? rates.rateMin * data0.values[0][1] : data0.yMin,
 	    	// yMax: rates ? rates.rateMax * data0.values[0][1] : data0.yMax,
-	    	upColor: '#AC1822',
-	    	upBorderColor: '#8D151B',
-	    	downColor: 'rgba(0, 0, 0, 0)',
-	    	downBorderColor: '#000',
+	    	// upColor: '#AC1822',
+	    	// upBorderColor: '#8D151B',
+	    	// downColor: 'rgba(0, 0, 0, 0)',
+	    	// downBorderColor: '#000',
 	    	backgroundColor: '#fff',
 	    };
 	    let kline = kLine.slice(0, baseBars);//data0.values;

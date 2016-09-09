@@ -3,7 +3,7 @@
 .search-editor-wrapper {
 	position: relative;
 	display: inline-block;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 	width: 100%;
 	height: 100%;
 	.main-editor {
@@ -12,6 +12,7 @@
 		top: 0;
 		width: calc(~"100% - 380px");
 		height: 100%;
+		box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
 		// border-right: 1px solid #eee;
 		.header {
 			height: 40px;
@@ -111,15 +112,17 @@
 		position: absolute;
 		top: 20px;
 		left: 160px;
-		color: @ks-color-gray-4;
+		color: #aaa;
 		.bars-info {
 			font-size: 13px;
 			margin-right: 20px;
+			color: #666;
 		}
 		span {
 			font-size: 10px;
 		}
 		.number {
+			color: #666;
 			padding:  0 5px;
 		}
 	}
@@ -170,6 +173,7 @@
 			.input-label {
 				font-size: 12px;
 				padding: 0 10px;
+				font-weight: bold;
 			}
 			.OCLH-input {
 				width: 70px;
@@ -177,6 +181,10 @@
 				font-size: 12px;
 				text-align: center;
 				outline: none;
+				border: none;
+				color: #666;
+				background-color: #eee;
+				border-radius: 2px;
 			}
 		}
 		.tool-btn {
@@ -206,7 +214,7 @@
 					width: 30px;
 					height: 30px;
 					background-image: url(@icons_url);
-					.icon_position(3, 8, 1);
+					.icon_position(1, 8, 1);
 					margin-left: 20px;
 					margin-top: 2px;
 					// right: 30px;
