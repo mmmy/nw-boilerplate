@@ -33,7 +33,7 @@ let isLegal = () => {
 let getFromFile = () => {
   _createCacheFolder();
   try {
-    _symbolListCache = fs.readFileSync(_cacheFilePath, 'utf-8');
+    if (_symbolListCache.length == 0) _symbolListCache = fs.readFileSync(_cacheFilePath, 'utf-8');
     return _symbolListCache;
   } catch (e) {
     console.log(e);
