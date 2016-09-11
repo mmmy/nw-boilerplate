@@ -2,6 +2,7 @@ import store from '../../store';
 
 let _setImageFuncs = [];
 let _setImageSrcFuncs = [];
+let _setCanvasVisibleFuncs = [];
 
 let setFunc = (index, func) => {
 	_setImageFuncs[index] = func;
@@ -9,11 +10,14 @@ let setFunc = (index, func) => {
 let setImgSrcFunc = (index, func) => {
 	_setImageSrcFuncs[index] = func;
 };
-
+let setCanvasVisibleFunc = (index, func) =>	{
+	_setCanvasVisibleFuncs[index] = func;
+}
 
 let callFunc = (indexRange, patterns) => {
 	// return;
 	// let funcArr = _setImageFuncs.slice(indexRange[0], indexRange[1]);
+	indexRange = indexRange	|| [0, _setImageFuncs.length-1];
 	$('.pattern-toolbar-container').css('z-index', '5');
 	try {
 		let sequenCall = (index, lastIndex) => {
@@ -22,7 +26,7 @@ let callFunc = (indexRange, patterns) => {
 				return;
 			}
 			// console.info('!!!!!!!!!!!!!sequenCall :', index);
-			_setImageFuncs[index](sequenCall.bind(null, index+1, indexRange[1]), patterns[index]);
+			_setImageFuncs[index](sequenCall.bind(null, index+1, indexRange[1]), patterns && patterns[index]);
 		};
 		sequenCall(indexRange[0], indexRange[1]);
 	} catch (e) {
@@ -51,9 +55,17 @@ let updateImgAll = (size) => {
 	});
 };
 
+let udpateCanvasVisible = (hide) => {
+	_setCanvasVisibleFuncs.forEach((func) => {
+		func && func.call && func(hide);
+	});
+};
+
 module.exports = {
 	setFunc,
 	callFunc,
 	setImgSrcFunc,
 	updateImgAll,
+	setCanvasVisibleFunc,
+	udpateCanvasVisible,
 };

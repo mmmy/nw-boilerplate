@@ -383,10 +383,36 @@ resizeChart1() {
 		  		<strong>{/*toggleBtn1*/}历史时间分布</strong>
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
-		    <div className="dc-chart-row" ref='dc_chart_row_2'>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{/*toggleBtn2*/}标的类型</strong><div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">{whiteCircle}{resetBtn}<div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{/*toggleBtn3*/}收益率统计{yiledBtns}</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
+		    <div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='industry_quarter_chart_wrapper'>
+	    		<strong>{/*toggleBtn2*/}标的类型</strong>
+	    		<div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">
+	    			{whiteCircle}
+	    			{resetBtn}
+	    			<div className='industry-info-container'>
+	    				<h4 ref='industry_percent'></h4><p ref='industry_name'></p>
+	    			</div>
+	    		</div>
 		    </div>
+		    <div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='yield_count_chart_wrapper'>
+		    		<strong>{/*toggleBtn3*/}收益率统计{yiledBtns}</strong>
+		    		<div ref='yield_count_chart' className="yield-count-chart"></div>
+		    </div>
+		    {/*<div className="dc-chart-row" ref='dc_chart_row_2'>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'>
+		    		<strong>{/*toggleBtn2*//*}标的类型</strong>
+		    		<div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">
+		    			{whiteCircle}
+		    			{resetBtn}
+		    			<div className='industry-info-container'>
+		    				<h4 ref='industry_percent'></h4><p ref='industry_name'></p>
+		    			</div>
+		    		</div>
+		    	</div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'>
+		    		<strong>{/*toggleBtn3*//*}收益率统计{yiledBtns}</strong>
+		    		<div ref='yield_count_chart' className="yield-count-chart"></div>
+		    	</div>
+		    </div>*/}
 		  </div>
 		);
 	}

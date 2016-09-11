@@ -75,13 +75,13 @@ class statisticsContainer extends React.Component {
 	      	<div className='statistics-container-inner'>
 		        <div className={fistReportClass}><ReportDetailView searchConfig={searchConfig} crossFilter={crossFilter} fullView={fullView}/></div>
 		        {/*<div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>*/}
-		        <div className={reportClass3}><ReportTypeView report={report} searchConfig={searchConfig}/></div>
-		        <div className={'crossfilter-container-wrap'}>
+		        {/*<div className={reportClass3}><ReportTypeView report={report} searchConfig={searchConfig}/></div>*/}
+		        {/*<div className={'crossfilter-container-wrap'}>
 		          <CrossfilterView
 		            dispatch={dispatch}
 		            crossFilter={crossFilter}
 		            stretchView={fullView} />
-		        </div>
+		        </div>*/}
 		      </div>
 	      </div>
 	    );

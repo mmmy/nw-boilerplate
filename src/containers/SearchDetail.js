@@ -4,6 +4,7 @@ import StatisticsContainer from './StatisticsContainer';
 import {connect} from 'react-redux';
 import { updateImgAll } from '../components/helper/updateEchartImage';
 import classNames from 'classnames';
+import CrossfilterContainer from './CrossfilterContainer';
 
 const propTypes = {
 	shrinkView: PropTypes.bool
@@ -27,9 +28,10 @@ class SearchDetail extends React.Component {
 
 	componentDidMount() {
 		// _isSmall = window.document.body.clientWidth < 1450;
-		this._handleResize = this.handleResize.bind(this);
-		window.addEventListener('resize', this._handleResize);
-		this.handleResize();
+		// this._handleResize = this.handleResize.bind(this);
+		// window.addEventListener('resize', this._handleResize);
+		// this.handleResize();
+		updateImgAll(0);
 	}
 
 	componentWillReceiveProps(){
@@ -45,7 +47,7 @@ class SearchDetail extends React.Component {
 	}
 
 	componentWillUnmount(){
-		window.removeEventListener('resize', this._handleResize);
+		// window.removeEventListener('resize', this._handleResize);
 	}
 
 	render(){
@@ -55,10 +57,12 @@ class SearchDetail extends React.Component {
 		return (<div className={ className } ref='container'>
 			<StatisticsContainer />
 			<PatternContainer />
+			<CrossfilterContainer />
 		</div>);
 	}
 
 	handleResize() {
+		return;
 		let baseW = 1450;
 		let bodyW = window.document.body.clientWidth;
 
