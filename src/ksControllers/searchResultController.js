@@ -9,6 +9,30 @@ import { getDecimalForStatistic } from '../shared/storeHelper';
 // import PredictionWidget from './PredictionWidget';
 // import BlockHeatMap from './BlockHeatMap';
 import KlineChart from './KlineChart';
+import DC from 'dc';
+import d3 from 'd3';
+import crossfilter from 'crossfilter';
+
+let widerNumber = (num) => {
+	let expNum = num.toExponential(); //'1.3e-2';
+	let numSplit = expNum.split('e');
+	let base = parseFloat(numSplit[0]);
+	let plus = base > 0 ? 1 : -1;
+	let ex = parseInt(numSplit[1]);
+
+	let baseAbs = Math.abs(base);
+	if(baseAbs >= 7.5) {
+		return parseFloat(`1e${ex+1}`) * plus;
+	}else if(baseAbs >=5){
+		return parseFloat(`7.5e${ex}`) * plus;
+	}else if(baseAbs >= 2.5){
+		return parseFloat(`5e${ex}`) * plus;
+	}else{
+		return parseFloat(`2.5e${ex}`) * plus;
+	}
+};
+
+const barChartBars = 20;
 
 let _$root = null;
 
@@ -32,30 +56,32 @@ let _patternDoms = {
 	canvas:null,
 	similarity:null,
 	earn:null
-}
+};
+let _earnchartDom = null;
 
 let _yMin = 0;
 let _yMax = 200;
 let _decimal = 2;
 
 let _klineChart = null;
+let _earnChart = null;
 
 let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span></div><div class="item btn-toggle"><i class="fa fa-angle-up"></i></div></div></div>`;
 let _$toggle = null;
 
 let patternHtml = `<div class='pattern-inner'>
-										<span class='info-item symbol'><div class='item-value font-number small'>00001.SZ</div><div class='item-title font-simsun'>平安英行</div></span>
+										<span class='info-item symbol'><div class='item-value font-number size10'>--</div><div class='item-title font-simsun'>--</div></span>
 										<span class='kline'><canvas></canvas></span>
-										<span class='info-item similarity'><div class='item-title font-simsun'>相似度</div><div class='item-value font-number small'><span class='value'>99.5</span><span class='unit'>%</span></div></span>
-										<span class='info-item earn'><div class='item-title font-simsun'>回报</div><div class='item-value font-number small red'><span class='value'>0.23</span><span class='unit'>%</span></div></span>
+										<span class='info-item similarity'><div class='item-title font-simsun'>相似度</div><div class='item-value font-number small red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+										<span class='info-item earn'><div class='item-title font-simsun'>回报</div><div class='item-value font-number small'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 									</div>`;
 let comparatorInner = `<div class='container-ks-sr container-ks-st meta'>
 												<h3 class='title font-msyh'>匹配相似结果</h3>
 												<span class='split-line l1'></span>
 												<span class='split-line l2'></span>
-												<span class='info-item timespent'><div class='item-title font-simsun'>搜索用时</div><div class='item-value font-number'><span class='value'>0.023</span><span class='unit'>秒</span></div></span>
-												<span class='info-item total'><div class='item-title font-simsun'>搜索结果总数</div><div class='item-value font-number'><span class='value'>200</span><span class='unit'>个</span></div></span>
-												<span class='info-item similarity-top'><div class='item-title font-simsun'>相似度最高</div><div class='item-value font-number'><span class='value'>99.5</span><span class='unit'>%</span></div></span>
+												<span class='info-item timespent'><div class='item-title font-simsun'>搜索用时</div><div class='item-value font-number'><span class='value'>0.000</span><span class='unit'>秒</span></div></span>
+												<span class='info-item total'><div class='item-title font-simsun'>搜索结果总数</div><div class='item-value font-number'><span class='value'>0</span><span class='unit'>个</span></div></span>
+												<span class='info-item similarity-top'><div class='item-title font-simsun'>相似度最高</div><div class='item-value font-number red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 												<span class='pattern-wrapper'>${patternHtml}</span>
 											</div>`;
 
@@ -64,19 +90,20 @@ let searchStatisticHtml = `<div class='container-ks-sr statistic'>
 														<span class='split-line l1'></span>
 														<span class='split-line l2'></span>
 														<span class='split-line l3'></span>
-														<span class='info-item bars'><div class='item-title font-simsun'>统计K线数</div><div class='item-value font-number'><span class='value'>30</span></div></span>
-														<span class='info-item uprate'><div class='item-title font-simsun'>上涨比例</div><div class='item-value font-number'><span class='value'>66.3</span><span class='unit'>%</span></div></span>
-														<span class='info-item median'><div class='item-title font-simsun'>收益中位数</div><div class='item-value font-number'><span class='value'>30.3</span><span class='unit'>%</span></div></span>
-														<span class='info-item mean'><div class='item-title font-simsun'>收益平均值</div><div class='item-value font-number'><span class='value'>30</span><span class='unit'>%</span></div></span>
+														<span class='info-item bars'><div class='item-title font-simsun'>统计K线数</div><div class='item-value font-number'><span class='value'>0</span></div></span>
+														<span class='info-item uprate'><div class='item-title font-simsun'>上涨比例</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+														<span class='info-item median'><div class='item-title font-simsun'>收益中位数</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+														<span class='info-item mean'><div class='item-title font-simsun'>收益平均值</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 													</div>`;
 
 let searchChartHtml = `<div class='container-ks-sr chart'>
 												<h3 class='title font-msyh'>收益率统计</h3>
+												<span class='earnchart-wrapper'><div class='earnchart'></div></span>
 											</div>`;
 
 let wrappersDomStr = `<div class='transition-all container-searchreport static'>
 												<div class='inner-searchreport transition-all'>
-													<div class='search-report-wrapper ${false ? 'slide-down' : ''} transition-top transition-duration2'>
+													<div class='search-report-wrapper ${true ? 'slide-down' : ''} transition-top transition-duration2'>
 														${comparatorInner}
 														${searchStatisticHtml}
 														${searchChartHtml}
@@ -102,10 +129,12 @@ let cacheDom = ($wrapper) => {
 	_patternDoms.canvas = $wrapper.find('.pattern-inner canvas');
 	_patternDoms.similarity = $wrapper.find('.info-item.similarity .value');
 	_patternDoms.earn = $wrapper.find('.info-item.earn .value');
+
+	_earnchartDom = $wrapper.find('.earnchart');
 };
 
 let _updateKline = (kline) => {
-	_klineChart = _klineChart || new KlineChart(_patternDoms.canvas);
+	_klineChart = _klineChart || new KlineChart(_patternDoms.canvas[0]);
 	_klineChart.setData(kline);
 }
 
@@ -113,15 +142,16 @@ let _resizeKline = () => {
 	_klineChart && _klineChart.resize();
 };
 
-let _updatePatternUI = (pattern, decimal) => {
-	pattern = pattern || {};
-	let symbol = pattern.symbol || '',
-			name = pattern.name || '',
-			similarity = pattern.similarity || 0,
-			earn = pattern.yield || 0,
-			kline = pattern.kline || [];
+let _updatePatternUI = (symbol, name, similarity, earn, kline, decimal) => {
+	symbol = symbol || '',
+	name = name || '',
+	similarity = similarity || 0,
+	earn = earn || 0,
+	kline = kline || [];
 
-	similarity = parseFloat(similarity).toFixed(1);
+	decimal = decimal || 2;
+
+	similarity = parseFloat(similarity * 100).toFixed(1);
 	earn = parseFloat(earn).toFixed(decimal);
 
 	_patternDoms.symbol.text(symbol);
@@ -132,24 +162,86 @@ let _updatePatternUI = (pattern, decimal) => {
 	_updateKline(kline);
 };
 
-let _updatePredictionUI = (patterns) => {
-	patterns = patterns || {};
-	let timespent = patterns.timespent || 0,
-			total = patterns.rawData && patterns.rawData.length || 0,
-			similarityTop = patterns.rawData && patterns.rawData[0] && patterns.rawData[0].similarity,
-			firstPattern = patterns.rawData && patterns.rawData[0];
+let _updatePredictionUI = (timespent, total, similarityTop) => {
+	timespent = timespent || 0,
+	total = total || 0,
+	similarityTop = similarityTop || 0;
 	
+	timespent = parseFloat(timespent/1000).toFixed(2);
 	similarityTop = parseFloat(similarityTop * 100).toFixed(1)
 
 	_comparatorDoms.time.text(timespent);
 	_comparatorDoms.similarity.text(similarityTop);
 	_comparatorDoms.total.text(total);
+};
 
-	_updatePatternUI(firstPattern);
+let _createEarnDimension = (rawDataArr) => {
+	rawDataArr = rawDataArr || [];
+	let scalize = (arr) => { //arr = [num, num]    =>  1:1 or 1:4 or 2:3
+		let left = arr[0],
+				right = arr[1];
+		if(left >= 0) return arr;
+		let max = Math.max(-left, right);
+		return [-max, max];
+	};
+	let crossFilter = crossfilter(rawDataArr.concat([]));
+	let yield100Arr = rawDataArr.map((pattern) => {
+		return pattern.yield * 100;
+	});
+	let yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)];
+	yield100Range[0] = widerNumber(yield100Range[0]);
+	yield100Range[1] = widerNumber(yield100Range[1]);
+	yield100Range = scalize(yield100Range);
+	let rangeInterval = (yield100Range[1] - yield100Range[0] ) / barChartBars;
+	let earnDimension = crossFilter.dimension((data) => {
+		return Math.floor((data.yield*100 - yield100Range[0]) / rangeInterval);
+	});
+	return {
+		earnDimension,
+		rangeInterval,
+		yield100Range,
+	};
+};
+
+let _updateEarnChart = (rawDataArr) => {
+	let {earnDimension, rangeInterval, yield100Range} = _createEarnDimension(rawDataArr);
+	let minYield100 = yield100Range[0];
+	let width = _earnchartDom.width(),
+			height = _earnchartDom.height();
+	let group = earnDimension && earnDimension.group();
+	_earnChart = _earnChart || DC.barChart(_earnchartDom[0]);
+	_earnChart.width(width)
+						.height(height)
+						.margins({top: 0, right: 0, bottom: 15, left: 15})
+						.dimension(earnDimension)
+						.group(group)
+						.renderHorizontalGridLines(false)
+						.colors('#4F4F4F')
+						.gap(1)
+						.x(d3.scale.linear().domain([0, barChartBars+1]));
+	
+	_earnChart.xAxis().tickFormat((v) => {
+		var yieldRate = v * rangeInterval + minYield100;
+		return (yieldRate + '').slice(0, yieldRate>=0 ? 4 : 5) + '%'; 
+	}).ticks(6).innerTickSize(5);
+	_earnChart.yAxis().tickFormat(d3.format('d')).ticks(5).innerTickSize(5);
+	_earnChart.render();
+};
+
+let _resizeEarnChart = () => {
+	if(!_earnChart) return;
+	let width = _earnchartDom.width(),
+			height = _earnchartDom.height();
+	setTimeout(() => {
+		_earnChart.width(width).height(height).redraw(); 
+	});
+	setTimeout(()=> {_earnChart.renderYAxis(_earnChart) });
+	setTimeout(() => {_earnChart.renderXAxis(_earnChart) });
 };
 
 let _handleResize = () => {
 	_resizeKline();
+	_resizeEarnChart();
 };
 
 let _initResize = () => {
@@ -157,7 +249,7 @@ let _initResize = () => {
 };
 
 let _initToggle = () => {
-	return;
+
 	_toggleSlideCenter(true);
 
 	_$toggle.find('.btn-container').click(function(event) {
@@ -220,7 +312,23 @@ searchResultController.init = (root) => {
 
 searchResultController.updatePrediction = (patterns) => {
 	if(!_$root) return;
-	_updatePredictionUI(patterns);
+
+	patterns = patterns || {};
+	let searchMetaData = patterns.searchMetaData || {}
+	let pattern0 = patterns.rawData && patterns.rawData[0] || {};
+
+	let searchTimeSpent = searchMetaData.searchTimeSpent,
+			kline = searchMetaData.kline || [],
+			total = patterns.rawData && patterns.rawData.length,
+			similarityTop = pattern0.similarity,
+			symbol = pattern0.symbol,
+			name = pattern0.metaData && pattern0.metaData.name,
+			earn = pattern0.yield,
+			similarity = pattern0.similarity,
+			decimal = getDecimalForStatistic();
+
+	_updatePredictionUI(searchTimeSpent, total, similarityTop);
+	_updatePatternUI(symbol, name, similarity, earn, kline, decimal);
 };
 
 searchResultController.updateStatistics = (patterns) => {
@@ -254,6 +362,11 @@ searchResultController.updatePatterns = (patternsArr, firstFiveIds) => {
 	// })
 	// _decimal = getDecimalForStatistic();
 	// _updatePatternViews(firstFivePatterns, {decimal:_decimal});
+};
+
+searchResultController.updateCharts = (patterns) => {
+	let rawData = patterns && patterns.rawData || [];
+	_updateEarnChart(rawData);
 };
 
 searchResultController.reportSlideDown = (slideDown, cb) => {

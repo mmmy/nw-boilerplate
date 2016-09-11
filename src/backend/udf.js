@@ -20,15 +20,21 @@ let getSymbolList = (postData, callback) => {
   const { symbolListOptions } = config;
   const options = { ...symbolListOptions };
 
+  var  symbolListCache  = require("./ksSymbolListCache");
+
   const requestCb = (result) => {
+    symbolListCache.setToFile(result);
     callback(result);
   };
 
   const errorCb = (err) => {
     callback(err);
   }
-
-  // TODO: define postData
+  if (symbolListCache.isLegal()) {
+       var cache = symbolListCache.getFromFile();
+       callback(cache);
+       return cache;
+  } else
   request(options, requestCb, errorCb, JSON.stringify(postData));
 }
 

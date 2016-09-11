@@ -45,11 +45,11 @@ let __closePrice = [];
 
 let searchPattern = (args, cb, errorCb) => {
 
-	const { symbol, bars, dateRange, searchConfig, dataCategory } = args;
+	const { symbol, kline, bars, dateRange, searchConfig, dataCategory } = args;
 
 	let { additionDate, searchLenMax } = searchConfig;
 
-	let searchArgs = { symbol, dateRange, bars, additionDate, searchLenMax, dataCategory };
+	let searchArgs = { symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory };
 
 	let searchCb = (resObj) => {
 		
@@ -60,7 +60,7 @@ let searchPattern = (args, cb, errorCb) => {
 			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type='D'} = pattern;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
-			let kLine = {};
+			let kLine = [];
 			//let id = i;
 
 			return {
@@ -115,6 +115,8 @@ let searchPattern = (args, cb, errorCb) => {
 				'dataCategory': dataCategory,
 			};
 		});
+
+		console.log(resObj.results);
 		// console.info('第二步: 获取kline具体数据 [ 开始 ]');
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
 		let startIndex = 0,
@@ -151,6 +153,7 @@ let searchPattern = (args, cb, errorCb) => {
 	//	取消已有的搜索
 	cancelSearch();
 	//获取搜索结果
+	console.log(searchArgs);
 	__ksSearchXhr = KSSearch.searchPattern(searchArgs, searchCb, (err) => { 
 		console.warn(`第一步: 搜索 [ 失败 ]`, err);
 		errorCb && errorCb(err);

@@ -9,7 +9,7 @@
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 	float: left;
 	.title {
-		font-size: 16px;
+		font-size: 14px;
 		color: #000;
 		margin-left: 10px;
 		margin-top: 10px;
@@ -39,10 +39,13 @@
 				font-size: 50%;
 			}
 			&.red {
-				color: red;
+				color: @brown-red;
 			}
 			&.small {
 				font-size: 14px;
+			}
+			&.size10{
+				font-size: 10px;
 			}
 		}
 	}
@@ -55,7 +58,7 @@
 .container-ks-sr.meta {
 	margin-left: 20px;
 	width: calc(~'(100% - 60px)*'@metaW/(@metaW + @statisticW + @chartW));
-	.timespent, .total, .similarity {
+	.timespent, .total, .similarity-top {
 		width: 14.13%;
 		float: left;
 	}
@@ -83,6 +86,7 @@
 		float: left;
 		width: 53.33%;
 		height: 80px;
+		margin-top: 5px;
 		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 		.pattern-inner {
 			position: relative;
@@ -129,4 +133,18 @@
 .container-ks-sr.chart {
 	margin-left: 10px;
 	width: calc(~'(100% - 60px)*'@chartW/(@metaW + @statisticW + @chartW));
+	.earnchart-wrapper {
+		display: inline-block;
+		width: calc(~"100% - 20px");
+		position: relative;
+		height: 80px;
+		margin-left: 10px;
+		margin-top: 5px;
+		.earnchart {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			// border: 1px solid green;
+		}
+	}
 }

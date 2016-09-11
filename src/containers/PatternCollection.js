@@ -7,7 +7,7 @@ import _ from 'underscore';
 import lodash from 'lodash';
 import classNames from 'classnames';
 import DC from 'dc';
-import { updateImgAll } from '../components/helper/updateEchartImage';
+import { udpateCanvasVisible, callFunc } from '../components/helper/updateEchartImage';
 import searchResultController from '../ksControllers/searchResultController';
 
 const propTypes = {
@@ -76,9 +76,21 @@ class PatternCollection extends React.Component {
 		//this._idTrashed = _idTrashed;
 	}
 
+	handleResize() {
+		let $patternViews = $(this.refs.container).find('.pattern-view');
+		if($patternViews.length > 0) {
+			let width = $patternViews[0].clientWidth,
+					height = width * 210 / 160;
+			$patternViews.height(height);
+			callFunc();
+		}
+	}
+
 	componentDidMount() {
 		_oldPatternRawData = this.props.patterns.rawData;
 		_setIdTrashed.proptotype._patterncollection = this;
+		this._debounceHandleResize = _.debounce(this.handleResize.bind(this), 500);
+		window.addEventListener('resize', this._debounceHandleResize);
 	}
 
 	componentWillReceiveProps(newProps) { //优化性能
@@ -98,7 +110,7 @@ class PatternCollection extends React.Component {
 		if(this.oldCrossFilter !== crossFilter) {
 
 			console.info('crossFilter changed!');
-			updateImgAll(-1); //隐藏之前的图片
+			udpateCanvasVisible(true); //隐藏之前的图片
 			this.oldCrossFilter = crossFilter;
 			this.symbolDim = crossFilter.dimension(e=>{ return e.symbol; });
 			//idDim , 剔除dimentsion

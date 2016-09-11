@@ -14,27 +14,27 @@
 @comparator_W: 360px;
 
 //@searchDetail_W: 830px; //固定值
-@searchDetail_W: 52.5%;   //固定比例
+@searchDetail_W: calc(~'100% * 0.7 - 180px');//52.5%;   //固定比例
 
 @comparatorStretch_H: 100%;
-@comparatorStretch_W: calc(~"100% - "@searchDetail_W);
-@comparatorFull_W: calc(~"(100% - 20px) * 0.475");
-@comparatorChartStatic_H: calc(~"100% - 60px - 20px");//calc(~'100% - 8%');
+@comparatorStretch_W: calc(~"100% * 0.3 + 180px");
+@comparatorFull_W: @comparatorStretch_W;//calc(~"(100% - 20px) * 0.475");
+@comparatorChartStatic_H: calc(~"100% - 50px - 10px");//calc(~'100% - 8%');
 
 @patternContainer_W: 660px;//510px + 32px; //old = 50%;
 @patternContainer_H: 100%;
 //@patternView_W: 100px;
 //@patternView_H: @patternView_W * 1.3;
 //@patternCollection_W: @patternView_W + 20px;
-@patternContainerStretch_W: 330px;//40% //302px + 10px + 20px;  //固定值
-@patternContainerStretch_H: 100%;
+@patternContainerStretch_W: calc(~"100% * 17 / 28 - 10.7px - 20px");//330px;//40% //302px + 10px + 20px;  //固定值
+@patternContainerStretch_H: calc(~"100% - 240px - 10px");
 
 @statisticsContainer_W: calc(~'100% - '@patternContainer_W);
 @statisticsContainer_H: 100%;
-@statisticsContainerStretch_W: calc(~'100% - 20px -'@patternContainerStretch_W); //padding 20px;
-@statisticsContainerStretch_H: 100%;
+@statisticsContainerStretch_W: calc(~"100% * 17 / 28 - 10.7px");////calc(~'100% - 20px -'@patternContainerStretch_W); //padding 20px;
+@statisticsContainerStretch_H: 240px;
 
-@patternContianerSmall_W: @patternContainerStretch_W/2;
+@patternContianerSmall_W: 160px;//@patternContainerStretch_W/2;
 @statisticsContainerLarger_W: calc(~'100% -'@patternContianerSmall_W);
 
 @ks-color-gray-middle: #F5F5F5;

@@ -324,7 +324,8 @@ class Comparator extends React.Component {
       this._oldPatterns = patterns;
       searchResultController.updatePrediction(patterns);
       searchResultController.updateStatistics(patterns);
-      searchResultController.updatePatterns(patterns.rawData);
+      // searchResultController.updatePatterns(patterns.rawData);
+      searchResultController.updateCharts(patterns);
       let { searchMetaData, closePrice, searchConfig } = patterns;
       
       let { kline } = searchMetaData;
