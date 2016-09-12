@@ -3,7 +3,8 @@ import KSDataService from './KSDataService';
 import { getIndustry } from './SymbolDataLocal';
 import store from '../store';
 import lodash from 'lodash';
-import { callFunc } from '../components/helper/updateEchartImage';
+import updateEchartImage from '../components/helper/updateEchartImage';
+let callFunc = updateEchartImage.callFunc;
 
 let _growSimilarity = (similarity) => {
 	if (similarity > 0.9999) {

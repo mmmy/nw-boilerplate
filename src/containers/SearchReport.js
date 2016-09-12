@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import ToggleBar from '../components/ToggleBar';
 import SearchWaitingWaves from '../components/SearchWaitingWaves';
 import store from '../store';
-import { callFunc } from '../components/helper/updateEchartImage';
+// import { callFunc } from '../components/helper/updateEchartImage';
 import painter from '../ksControllers/painter';
 import { afterSearchMessage } from '../ksControllers/messager.js';
 import { getKlineImgSrc } from '../ksControllers/publicHelper';
@@ -62,7 +62,7 @@ class SearchReport extends React.Component {
 		if(_patternChanged && !waitingForPatterns && ($('.pattern-view img').css('opacity') == '0')) { //fix bugs
 				// console.debug('fix bugs update first 5 EChart images');
 				let state = store.getState();
-				callFunc([0, 5], state.patterns && state.patterns.rawData.slice(0, 5));
+				// callFunc([0, 5], state.patterns && state.patterns.rawData.slice(0, 5));
 		}
 
 		$(this.refs.container).one("webkitTransitionEnd oTransitionEnd MSTransitionEnd", (e) => {

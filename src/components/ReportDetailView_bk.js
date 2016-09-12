@@ -13,13 +13,11 @@ const defaultProps = {
   	fullView: true
 };
 
-const TYPES = ['收益','上涨','下跌'];
-
 class ReportDetailView extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {showSelect: false, type:TYPES[0]};
+		this.state = {};
 	}
 
 	componentDidMount() {
@@ -153,78 +151,40 @@ class ReportDetailView extends React.Component {
 				}
 
 			</div>*/}
-			<div className='header-container' tabIndex='0' ref='header_container'>
-				<span className={titleClassName}>数据统计</span>
-				<span className='select-container'>
-					<button className='statistic-type-select font-simsun' onFocus={this.handleTypeButtonFocus.bind(this)} onBlur={this.handleTypeButtonBlur.bind(this)}>
-						<span className='label-value'>{this.state.type}</span>
-						<span className='icon'></span>
-						{this.state.showSelect ? 
-							<div className='select-dropdown'>
-								{TYPES.map((type,i)=>{
-									return <div className='option' onClick={this.handleTypeChange.bind(this)}>{type}</div>
-								})}
-							</div> 
-							: 
-							''
-						}
-					</button>
-				</span>
-			</div>
+			<h3 className={titleClassName}>数据统计</h3>
 			{fullView ? '' : [<span className='split-line l1'></span>, <span className='split-line l2'></span>, <span className='split-line l3'></span>]}
 			<div className='statistic-data-container'>
-				<div className='statistic-data-container-inner'>
-					{this.generateCells()}
+				{ this.renderStuffs(data) }
+
+				<div className={upClass}>
+
+					{this.generateItem({
+						title:'上涨', 
+						items:[
+								{name:'收益中位数', content:(up.median*100).toFixed(decaimal)+'%'}, 
+								{name:'收益平均数',content:(up.mean*100).toFixed(decaimal)+'%'}, 
+								{name:'上涨极值',content:(up.max*100).toFixed(decaimal)+'%'}
+							]
+						})
+					}
+
+				</div>
+
+				<div className={downClass}>
+
+					{this.generateItem({
+						title:'下跌', 
+						items:[
+								{name:'收益中位数', content:(down.median*100).toFixed(decaimal)+'%'}, 
+								{name:'收益平均数',content:(down.mean*100).toFixed(decaimal)+'%'}, 
+								{name:'下跌极值',content:(down.min*100).toFixed(decaimal)+'%'}
+							]
+						})
+					}
+
 				</div>
 			</div>
 		</div>);
-	}
-
-	handleTypeChange(e) {
-		e.stopPropagation();
-		let type = e.target.innerHTML;
-		this.setState({type:type});
-		this.refs.header_container.focus();
-	}
-
-	handleTypeButtonFocus() {
-		this.setState({showSelect:true});
-	}
-
-	handleTypeButtonBlur() {
-		this.setState({showSelect:false});
-	}
-
-	generateCells() {
-		const decimal = getDecimalForStatistic();
-		let data = this.getStatisticsData();
-		let { median, mean, upPercent, up, down } = data;
-		let that = this;
-		let dataArr = [];
-		if(this.state.type == TYPES[0]) {
-			dataArr = [
-									{name:'上涨比例', value:upPercent},
-									{name:'收益中位数', value:median},
-									{name:'收益平均数', value:mean},
-									{name:'上涨收益平均数', value:up.mean},
-									{name:'下跌收益平均数', value:down.mean},
-								];
-		} else if(this.state.type == TYPES[1]) {
-
-		}
-		let nodes = dataArr.map(({name, value}) => {
-									return that.generateDataCell(name, value*100, decimal);
-								});
-		return nodes;
-	}
-
-	generateDataCell(title, data, decimal, unit) {
-		decimal = decimal || 2;
-		unit = unit || '%';
-		return <span className='statistic-data-cell'>
-			<div className='cell-title font-simsun'>{title}</div>
-			<div className='cell-data font-number'><span className='value'>{data.toFixed(decimal)}</span><span className='unit'>{unit}</span></div>
-		</span>;
 	}
 
 	renderStuffs(data) {

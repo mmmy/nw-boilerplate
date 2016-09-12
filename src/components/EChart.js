@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import echarts from 'echarts';
 import classNames from 'classnames';
-import { setFunc, setCanvasVisibleFunc } from './helper/updateEchartImage';
 import {factorCandleOption , factorLineOption} from './utils/echart-options';
 import store from '../store';
 import painter from '../ksControllers/painter';
+import updateEchartImage from './helper/updateEchartImage';
+let { setFunc, setCanvasVisibleFunc } = updateEchartImage;
 let { drawKline } = painter;
 import _ from 'underscore';
 
@@ -289,7 +290,8 @@ class EChart extends React.Component {
 			console.log(pattern, '!kline.slice',pattern.kLine, kline);
 			console.log(pattern.kLine == kline);
 		}
-		drawKline(canvas, kline.slice(0, baseBars), {backgroundColor: '#fff'});
+		let renderKline = kline.slice(0, baseBars);
+		drawKline(canvas, renderKline, {backgroundColor: renderKline.length>0 ? '#fff' : 'rgba(0,0,0,0)'});
 	}
 
 	hideCanvas(hide) {
@@ -348,9 +350,11 @@ class EChart extends React.Component {
 	}
 
 	componentWillReceiveProps(newProps){
-		if(newProps.pattern != this.props.pattern) {
-			this.hideCanvas(false);
-		}
+		// if(newProps.pattern != this.props.pattern) {
+		// 	if(newProps.pattern && newProps.pattern.kLine && newProps.pattern.kLine.length>0) {
+		// 		// this.hideCanvas(false);
+		// 	}
+		// }
 	}
 
 	shouldComponentUpdate(newProps){

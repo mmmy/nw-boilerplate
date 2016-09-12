@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import PatternContainer from './PatternContainer';
 import StatisticsContainer from './StatisticsContainer';
 import {connect} from 'react-redux';
-import { updateImgAll } from '../components/helper/updateEchartImage';
+// import { updateImgAll } from '../components/helper/updateEchartImage';
 import classNames from 'classnames';
 import CrossfilterContainer from './CrossfilterContainer';
 
@@ -31,7 +31,7 @@ class SearchDetail extends React.Component {
 		// this._handleResize = this.handleResize.bind(this);
 		// window.addEventListener('resize', this._handleResize);
 		// this.handleResize();
-		updateImgAll(0);
+		// updateImgAll(0);
 	}
 
 	componentWillReceiveProps(){
@@ -70,7 +70,7 @@ class SearchDetail extends React.Component {
 		if(_isSmall !== small) {
 			_isSmall = small;
 			this.relayout(small);
-			this.props.shrinkView && updateImgAll(small ? 1 : 0);
+			// this.props.shrinkView && updateImgAll(small ? 1 : 0);
 		}
 	}
 

@@ -5,6 +5,7 @@
 @patternView_H: 200px;
 
 @patternView_flat_W: @patternView_W; //130px
+@patternVIew_flat_W2: calc(~"100% / 3 - 15px");
 
 @larger: 1;//1.08;
 @smaller: 0.52;
@@ -326,7 +327,7 @@
 	margin-right: 5px;
 	.scrollbar(@width:6px);
 	.scrollbar-track(@background-color:transparent);
-	.scrollbar-thumb(@background-color: @ks-color-gray-4);
+	.scrollbar-thumb(@background-color: @ks-color-gray-1);
 
 	&.scroll-hidden{
 		overflow: hidden;
@@ -490,6 +491,12 @@
 		}
 	}
 
+}
+
+@media (min-width: 1600px) {
+	.pattern-view {
+		width: @patternVIew_flat_W2;
+	}
 }
 
 .echart-row-wrapper {

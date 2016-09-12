@@ -55,7 +55,8 @@ let updateImgAll = (size) => {
 	});
 };
 
-let udpateCanvasVisible = (hide) => {
+//do not need any more
+let updateCanvasVisible = (hide) => {
 	_setCanvasVisibleFuncs.forEach((func) => {
 		func && func.call && func(hide);
 	});
@@ -67,5 +68,5 @@ module.exports = {
 	setImgSrcFunc,
 	updateImgAll,
 	setCanvasVisibleFunc,
-	udpateCanvasVisible,
+	updateCanvasVisible,
 };
