@@ -1,10 +1,10 @@
 //搜索结果底部展示controller
-// import { splitData, generateSeries, generateKlineOption, getKlineImgSrc } from './publicHelper';
+import { getKlineImgSrc } from './publicHelper';
 // import { generateHeatMapOption } from '../components/utils/heatmap-options';
 import statisticKline from '../components/utils/statisticKline';
 // import echarts from 'echarts';
 import painter from './painter';
-// import store from '../store';
+import store from '../store';
 import { getDecimalForStatistic } from '../shared/storeHelper';
 // import PredictionWidget from './PredictionWidget';
 // import BlockHeatMap from './BlockHeatMap';
@@ -254,7 +254,7 @@ let _initToggle = () => {
 
 	_$toggle.find('.btn-container').click(function(event) {
 		/* Act on the event */
-		if($(event.target).hasClass('slide-center')) {
+		if(_$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
 			return;
 		}
 
@@ -289,7 +289,10 @@ let _toggleSlideCenter = (slideCenter) => {
 	_$toggle.find('.btn-container').toggleClass('slide-center', slideCenter);
 	_$toggle.find('.btn-toggle')[slideCenter ? 'hide' : 'show']();
 	_$toggle.find('.title-jieguo')[slideCenter ? 'hide' : 'show']();
-}
+};
+let _hideBtnToggle = (hide) => {
+	_$toggle.find('.btn-toggle')[hide ? 'hide' : 'show']();
+};
 
 let searchResultController = {};
 
@@ -376,6 +379,9 @@ searchResultController.reportSlideDown = (slideDown, cb) => {
 	});
 	$target.toggleClass('slide-down', slideDown);
 	_toggleSlideCenter(slideDown);
+	if(!slideDown) {
+		_hideBtnToggle(store.getState().patterns.error);
+	}
 };
 
 searchResultController.showErrorPanel = (searchKline) => {

@@ -144,8 +144,8 @@ class CrossfilterView extends React.Component {
 		if (bubbleChartW != this.scatterChartW || bubbleChartH != this.scatterChartH) {
 			//this.yieldDateScatterChart 
 			// let size = bubbleChartW / 50;
-			let xTicks = 6, yTicks = 5;
-			if(bubbleChartW > 400) xTicks = 12;
+			let xTicks = 3, yTicks = 5;
+			if(bubbleChartW > 400) xTicks = 6;
 			if(bubbleChartH > 200) yTicks = 9;
 			setTimeout(() => { 
 				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH)/*.symbolSize(size).excludedSize(size)*/.redraw(); 
@@ -592,7 +592,7 @@ resizeChart1() {
 		yieldDateScatterChart
 			.width(width)
 			.height(height)
-			.margins({top:5, right:20, bottom:20, left:40})
+			.margins({top:5, right:20, bottom:25, left:45})
 		    .x(d3.scale.linear().domain([this.timeRange[0]-timeOffset, this.timeRange[1]+timeOffset]))
 		    .y(d3.scale.linear().domain(this.yield100Range))  //设置为50的整数倍,上下延长50
 		    //.yAxisLabel("y")
@@ -622,15 +622,18 @@ resizeChart1() {
       //           .group(this.yieldDateGroup, "Blue Group")
       //           .colors("blue"),
 		    // ]);
-		let xTicks = 6, yTicks = 5;
-		if(width > 400) xTicks = 12;
+		let xTicks = 3, yTicks = 5;
+		if(width > 400) xTicks = 6;
 		if(height > 200) yTicks = 9;
 		yieldDateScatterChart.xAxis().tickFormat((v) => { 
 			var momentTime = moment.unix(parseInt(v)); 
-			return momentTime.format('YYYY.MM.DD'); 
+			return momentTime.format('YY.MM.DD'); 
 		}).innerTickSize(5).ticks(xTicks);
 
-		yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
+		yieldDateScatterChart.yAxis().tickFormat((v) => {
+			var yieldRate = (v + '').slice(0, v>0 ? 4 : 5);
+		 	return yieldRate+'%'; 
+		}).innerTickSize(5).ticks(yTicks);
 
 		window.yieldDateScatterChart= yieldDateScatterChart;
 
@@ -790,7 +793,7 @@ resizeChart1() {
 			.width(width)
 			.height(height)
 			.transitionDuration(transitionDuration)
-			.margins({top:10, right:20, bottom:30, left:20})
+			.margins({top:10, right:20, bottom:30, left:30})
 			.dimension(this.yieldDim)
 			.group(this.yieldGroup)
 			.renderHorizontalGridLines(true)

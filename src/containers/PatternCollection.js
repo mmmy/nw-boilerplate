@@ -7,8 +7,9 @@ import _ from 'underscore';
 import lodash from 'lodash';
 import classNames from 'classnames';
 import DC from 'dc';
-import { udpateCanvasVisible, callFunc } from '../components/helper/updateEchartImage';
 import searchResultController from '../ksControllers/searchResultController';
+import updateEchartImage from '../components/helper/updateEchartImage';
+let { updateCanvasVisible, callFunc } = updateEchartImage;
 
 const propTypes = {
 	patterns: PropTypes.object.isRequired,
@@ -110,7 +111,7 @@ class PatternCollection extends React.Component {
 		if(this.oldCrossFilter !== crossFilter) {
 
 			console.info('crossFilter changed!');
-			udpateCanvasVisible(true); //隐藏之前的图片
+			// updateCanvasVisible(true); //隐藏之前的图片
 			this.oldCrossFilter = crossFilter;
 			this.symbolDim = crossFilter.dimension(e=>{ return e.symbol; });
 			//idDim , 剔除dimentsion
