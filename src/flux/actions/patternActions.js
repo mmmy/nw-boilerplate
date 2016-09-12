@@ -58,7 +58,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 		kline = klineClone;
 		console.assert(kline[0].length == 5 && (kline instanceof Array));
 	}
-	console.log(kline);
+	//console.log(kline);
 
 	//保存历史
 	let isNewSearch = false;

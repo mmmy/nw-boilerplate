@@ -37,12 +37,12 @@ export default {
 	},
 
 	loginOptions: {
-		url: 'http://192.168.0.113:3000/api/login',
+		url: 'http://112.74.17.46:30030/api/login',
 		method: 'POST'
 	},
 
 	logoutOptions: {
-		url: 'http://192.168.0.113:3000/api/logout',
+		url: 'http://112.74.17.46:30030/api/logout',
 		method: 'POST'
 	},
 
