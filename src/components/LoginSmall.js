@@ -213,18 +213,34 @@ class Login extends React.Component {
 	}
 
 	handleLogin() {
+
+
 		this.setState({isLogining: true});
 		let { onLogined } = this.props;
 		let that = this;
-		setTimeout(() => {
-			let {username, password, autoLogin} = that.state;
-			autoLogin ? storageAccount(username, password) : removeAccount();
-			onLogined && onLogined(username, password, autoLogin, (error) => { 
-											if(!error) {
-												saveUser(username, password);
-											}
-										});
-		}, 2000);
+		let {username, password, autoLogin} = that.state;
+		
+		var udf = require('../backend/udf');
+		var loginstate = {success:false};
+		//udf.getLoginInfo({username: username,password:password}, function(data) {if(data)loginstate=data;});
+		var postData = 'username='+ encodeURIComponent(username)+'&password='+encodeURIComponent(password);
+		udf.getLoginInfo(postData, function(data) {
+			if (data) loginstate = data;
+			if (!loginstate.session) {
+				//console.log('login fail');
+				return; 
+			} // else console.log("login success");
+
+			//login success, into the stockingview
+			setTimeout(() => {
+				autoLogin ? storageAccount(username, password) : removeAccount();
+				onLogined && onLogined(username, password, autoLogin, (error) => { 
+					if(!error) {
+						saveUser(username, password);
+					}
+				});
+			}, 2000);
+		});
 	}
 
 	startClose() { //动画结束后 移除dom

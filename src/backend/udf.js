@@ -6,11 +6,11 @@ let getSymbolHistory = (postData, callback, errorCallback) => {
   const options = { ...patternOptions };
 
   const requestCb = (result) => {
-    callback(result);
+    callback && callback(result);
   };
 
   const errorCb = (err) => {
-    callback(err);
+    callback && callback(err);
   }
 
   request(options, requestCb, errorCb, JSON.stringify(postData));
@@ -48,7 +48,7 @@ let getSymbolList = (postData, callback) => {
   }
   if (symbolListCache.isLegal()) {
     var cache = symbolListCache.getFromFile();
-    callback(cache);
+    callback && callback(cache);
     return cache;
   } else {
     request(options, requestCb, errorCb, JSON.stringify(postData));
@@ -60,20 +60,54 @@ let getSymbolSearchResult = (postData, callback) => {
   const options = { ...searchOptions };
 
   const requestCb = (result) => {
-    callback(result);
+    callback && callback(result);
   };
 
   const errorCb = (err) => {
-    callback(err);
+    callback && callback(err);
   }
 
   // TODO: define postData
   request(options, requestCb, errorCb, JSON.stringify(postData));
 }
 
+let getLoginInfo = (postData, callback) => {
+  const { loginOptions } = config;
+  const options = { ...loginOptions };
+
+  const requestCb = (result) => {
+    callback && callback(result);
+  }
+
+  const errorCb = (err) => {
+    callback && callback(err);
+  }
+
+  console.log(options);
+  request(options, requestCb, errorCb, postData);
+}
+
+
+let getLogoutInfo = (postData, callback) => {
+  const { logoutOptions } = config;
+  const options = { ...logoutOptions };
+
+  const requestCb = (result) => {
+    callback && callback(result);
+  }
+
+  const errorCb = (err) => {
+    callback && callback(err);
+  }
+
+  request(options, requestCb, errorCb, postData);
+}
+
 module.exports = {
   getGroupCode,
   getSymbolHistory,
   getSymbolSearchResult,
-  getSymbolList
+  getSymbolList,
+  getLoginInfo,
+  getLogoutInfo
 }
