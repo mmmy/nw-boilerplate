@@ -44,7 +44,7 @@ let getSymbolList = (postData, callback) => {
   };
 
   const errorCb = (err) => {
-    callback && callback(err);
+    callback && callback(symbolListCache.getFromFile());
   }
   if (symbolListCache.isLegal()) {
     var cache = symbolListCache.getFromFile();
