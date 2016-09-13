@@ -218,6 +218,9 @@ let _updateEarnChart = (rawDataArr) => {
 						.renderHorizontalGridLines(false)
 						.colors('#4F4F4F')
 						.gap(1)
+						.title('aaa',function(){ return 'nihaoa' })
+						.brushOn(false)
+						.renderTitle(true)
 						.x(d3.scale.linear().domain([0, barChartBars+1]));
 	
 	_earnChart.xAxis().tickFormat((v) => {

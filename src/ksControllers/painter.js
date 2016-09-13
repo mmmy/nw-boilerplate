@@ -118,9 +118,9 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 
 	//start draw
 	let upBorderColor = options && options.upBorderColor || '#888888',//'#8B171B',//'#ae0006',
-			upColor = options && options.upColor || '#999999',//'#AC1822',
-		 	downBorderColor = options && options.downBorderColor || '#999999',//'#050505',
-		 	downColor = options && options.downColor || '#EEEEEE';//'rgba(0,0,0,0)';
+			upColor = options && options.upColor || '#eee',//'#AC1822',
+		 	downBorderColor = options && options.downBorderColor || '#444',//'#050505',
+		 	downColor = options && options.downColor || '#555';//'rgba(0,0,0,0)';
 
 	let backgroundColor = options && options.backgroundColor || '#fff';
 

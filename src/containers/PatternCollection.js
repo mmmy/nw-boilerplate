@@ -126,7 +126,7 @@ class PatternCollection extends React.Component {
 			let {showNotTrashed, showTrashed} = newProps.patternTrashed;
 			//console.info('idarr', idArr);
 			let that = this;
-			setTimeout(() => {
+			// setTimeout(() => {
 				let filteredData = that.symbolDim.top(Infinity),
 						idArr = _.pluck(filteredData, 'id'),
 						node = that.refs.container;
@@ -141,7 +141,7 @@ class PatternCollection extends React.Component {
 						isTrashed && $(`#pattern_view_${id}`,node).removeClass('hide');
 					});
 				}		
-			});
+			// });
 		};
 
 		if( newProps.filter !== this.props.filter ){

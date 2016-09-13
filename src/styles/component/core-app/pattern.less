@@ -1,5 +1,5 @@
 @patternToolbar_H: 40px;//80px;
-@patternStatisticsPanel_H: 8%;
+@patternStatisticsPanel_H: 50px;//8%;
 //@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 10px;
 @patternView_W: calc(~"100% / 2 - 15px");//287px;//275px;//130px; // @patternContainerStretch_W * 0.393;
 @patternView_H: 200px;
@@ -38,10 +38,26 @@
 }
 
 .pattern-toolbar-container{
-	margin-left: 6.8%;
+	margin-left: 0;//20px;//6.8%;
 	height: @patternToolbar_H;
 	z-index: 2;
-	//border-bottom: 1px solid @ks-color-gray-8;
+	position: relative;
+	// box-shadow: 0 10px 10px -3px rgba(0,0,0,0.1);
+	// &:after {
+	// 	content: '';
+	// 	overflow: visible;
+	// 	// border: 1px solid red;
+	// 	z-index: 100;
+	// 	display: block;
+	// 	height: 5px;
+	// 	bottom: 5px;
+	// 	position: absolute;		
+	// 	left: 3px;
+	// 	background-color: #fff;
+	// 	width: calc(~"100% - 6px");
+	// }
+	box-shadow: 0 3px 10px -5px rgba(0,0,0,0.3);
+	// border-bottom: 1px solid #f8f8f8;
 	&.hide{
 		height: 0;
 	}
@@ -75,6 +91,7 @@
 
 		&.item0 {
 			width: 30%;
+			padding-left: 20px;
 		}
 
 		&.item1 {
@@ -118,14 +135,14 @@
 
 	.child-panel-container {
 		position: absolute;
-		width: 106.8%;
+		width: 100%;//106.8%;
 		height: 34px;//3.2rem;
 		// border: 1px solid #ddd;
 		// left: -50px;
 		top: 100%;
 		z-index: 1000;
-		background-color: rgba(255, 255, 255, 0.9);
-		left: -6.8%;
+		background-color: rgba(255, 255, 255, 1);
+		left: 0;//-6.8%;
 		box-shadow: 0 5px 15px -12px #222;
 		text-align: left;
 		&.flex {
@@ -351,6 +368,12 @@
 	// margin-top: 3%;
 	// margin-left: 6%;
 	border-radius: 3px;
+
+	&.trashed {
+		width: 160px;
+		height: 200px;
+	}
+
 	&:nth-child(2n) {
 		// margin-left: 6%;
 	}
@@ -361,7 +384,7 @@
 
 	&:hover {
 		//border: 1px solid RGBA(151, 165, 178, 1.00);
-		z-index: 5;
+		// z-index: 5;
 		box-shadow: 0 3px 15px 0 @ks-color-gray-8;
 		.top-red-line();
 	}

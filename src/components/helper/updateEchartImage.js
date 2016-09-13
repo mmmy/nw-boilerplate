@@ -17,7 +17,7 @@ let setCanvasVisibleFunc = (index, func) =>	{
 let callFunc = (indexRange, patterns) => {
 	// return;
 	// let funcArr = _setImageFuncs.slice(indexRange[0], indexRange[1]);
-	indexRange = indexRange	|| [0, _setImageFuncs.length-1];
+	indexRange = indexRange	|| [0, _setImageFuncs.length];
 	$('.pattern-toolbar-container').css('z-index', '5');
 	try {
 		let sequenCall = (index, lastIndex) => {
