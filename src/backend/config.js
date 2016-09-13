@@ -21,11 +21,29 @@ export default {
 		method: 'POST',
 	},
 
+    groupOptions: {
+    	host: '112.74.17.46',
+        port: 25501,
+        path: '/groups',
+        url: 'http://112.74.17.46:25501/groups',
+        method: 'GET'
+    },
+
 	fileChunkOptions: {
 		host: 'localhost',
 		port: 3000,
 		path: '/file_chunk',
 		method: 'GET',
+	},
+
+	loginOptions: {
+		url: 'http://112.74.17.46:30030/api/login',
+		method: 'POST'
+	},
+
+	logoutOptions: {
+		url: 'http://112.74.17.46:30030/api/logout',
+		method: 'POST'
 	},
 
     symbolListOptions: {
