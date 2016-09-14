@@ -10,14 +10,18 @@ import stockviewController from '../../ksControllers/stockviewController';
 import searchResultController from '../../ksControllers/searchResultController';
 import wavesController from '../../ksControllers/wavesController';
 import { afterSearchMessage } from '../../ksControllers/messager';
+// import { updateCanvasVisible } from '../../components/helper/updateEchartImage';
+
 let historyController = stockviewController.historyController;
 // window._historyController2 = historyController;
 // import { setComparatorVisibleRange } from '../../shared/actionTradingview';
 
 let startSearch = ()=>{
+	searchResultController.removeErrorPanel();
 	searchResultController.reportSlideDown(true);
 	wavesController.start();
 	wavesController.speedUp();
+	// updateCanvasVisible(true);
 };
 let searchSuccess = (patterns, searchTimeSpent)=>{
 	searchResultController.removeErrorPanel();

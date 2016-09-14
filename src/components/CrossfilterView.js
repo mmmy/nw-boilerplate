@@ -144,8 +144,8 @@ class CrossfilterView extends React.Component {
 		if (bubbleChartW != this.scatterChartW || bubbleChartH != this.scatterChartH) {
 			//this.yieldDateScatterChart 
 			// let size = bubbleChartW / 50;
-			let xTicks = 6, yTicks = 5;
-			if(bubbleChartW > 400) xTicks = 12;
+			let xTicks = 3, yTicks = 5;
+			if(bubbleChartW > 400) xTicks = 6;
 			if(bubbleChartH > 200) yTicks = 9;
 			setTimeout(() => { 
 				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH)/*.symbolSize(size).excludedSize(size)*/.redraw(); 
@@ -373,7 +373,7 @@ resizeChart1() {
 		// let toggleBtn2 = <button ref='toggle_btn2' className={toggleBtnClass} onClick={this.toggleChart2.bind(this)}></button>;
 		// let toggleBtn3 = <button ref='toggle_btn3' className={toggleBtnClass} onClick={this.toggleChart3.bind(this)}></button>;
 		
-		let yiledBtns = <span className='yield-btns-container font-simsun'><button onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
+		let yiledBtns = '';// <span className='yield-btns-container font-simsun'><button onClick={this.selectGainedYield.bind(this, true)}>盈</button><button onClick={this.selectGainedYield.bind(this, false)}>亏</button></span>;
 		
 		let whiteCircle = <div className='madan-white-circle'></div>;
 		let resetBtn = <div className='reset-btn-container flex-center font-simsun' ref='reset_btn_container'><button onClick={this.resetIndustyChart.bind(this)}>重置</button></div>;
@@ -383,10 +383,36 @@ resizeChart1() {
 		  		<strong>{/*toggleBtn1*/}历史时间分布</strong>
 		    	<div ref='position_bubble_chart' className="position-bubble-chart" ></div>
 		    </div>
-		    <div className="dc-chart-row" ref='dc_chart_row_2'>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'><strong>{/*toggleBtn2*/}标的类型</strong><div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">{whiteCircle}{resetBtn}<div className='industry-info-container'><h4 ref='industry_percent'></h4><p ref='industry_name'></p></div></div></div>
-		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'><strong>{/*toggleBtn3*/}收益率统计{yiledBtns}</strong><div ref='yield_count_chart' className="yield-count-chart"></div></div>
+		    <div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='industry_quarter_chart_wrapper'>
+	    		<strong>{/*toggleBtn2*/}标的类型</strong>
+	    		<div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">
+	    			{whiteCircle}
+	    			{resetBtn}
+	    			<div className='industry-info-container'>
+	    				<h4 ref='industry_percent'></h4><p ref='industry_name'></p>
+	    			</div>
+	    		</div>
 		    </div>
+		    <div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='yield_count_chart_wrapper'>
+		    		<strong>{/*toggleBtn3*/}收益率统计{yiledBtns}</strong>
+		    		<div ref='yield_count_chart' className="yield-count-chart"></div>
+		    </div>
+		    {/*<div className="dc-chart-row" ref='dc_chart_row_2'>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='industry_quarter_chart_wrapper'>
+		    		<strong>{/*toggleBtn2*//*}标的类型</strong>
+		    		<div ref='industry_quarter_chart' className="industry-quarter-chart transition-all transition-ease-in-out transition-duration3">
+		    			{whiteCircle}
+		    			{resetBtn}
+		    			<div className='industry-info-container'>
+		    				<h4 ref='industry_percent'></h4><p ref='industry_name'></p>
+		    			</div>
+		    		</div>
+		    	</div>
+		    	<div className='inline-chart-wrapper transition-all transition-ease-in-out transition-duration3' ref='yield_count_chart_wrapper'>
+		    		<strong>{/*toggleBtn3*//*}收益率统计{yiledBtns}</strong>
+		    		<div ref='yield_count_chart' className="yield-count-chart"></div>
+		    	</div>
+		    </div>*/}
 		  </div>
 		);
 	}
@@ -566,7 +592,7 @@ resizeChart1() {
 		yieldDateScatterChart
 			.width(width)
 			.height(height)
-			.margins({top:5, right:20, bottom:20, left:40})
+			.margins({top:5, right:20, bottom:25, left:45})
 		    .x(d3.scale.linear().domain([this.timeRange[0]-timeOffset, this.timeRange[1]+timeOffset]))
 		    .y(d3.scale.linear().domain(this.yield100Range))  //设置为50的整数倍,上下延长50
 		    //.yAxisLabel("y")
@@ -596,15 +622,18 @@ resizeChart1() {
       //           .group(this.yieldDateGroup, "Blue Group")
       //           .colors("blue"),
 		    // ]);
-		let xTicks = 6, yTicks = 5;
-		if(width > 400) xTicks = 12;
+		let xTicks = 3, yTicks = 5;
+		if(width > 400) xTicks = 6;
 		if(height > 200) yTicks = 9;
 		yieldDateScatterChart.xAxis().tickFormat((v) => { 
 			var momentTime = moment.unix(parseInt(v)); 
-			return momentTime.format('YYYY.MM.DD'); 
+			return momentTime.format('YY.MM.DD'); 
 		}).innerTickSize(5).ticks(xTicks);
 
-		yieldDateScatterChart.yAxis().tickFormat((v) => { return v+'%'; }).innerTickSize(5).ticks(yTicks);
+		yieldDateScatterChart.yAxis().tickFormat((v) => {
+			var yieldRate = (v + '').slice(0, v>0 ? 4 : 5);
+		 	return yieldRate+'%'; 
+		}).innerTickSize(5).ticks(yTicks);
 
 		window.yieldDateScatterChart= yieldDateScatterChart;
 
@@ -764,7 +793,7 @@ resizeChart1() {
 			.width(width)
 			.height(height)
 			.transitionDuration(transitionDuration)
-			.margins({top:10, right:20, bottom:30, left:20})
+			.margins({top:10, right:20, bottom:30, left:30})
 			.dimension(this.yieldDim)
 			.group(this.yieldGroup)
 			.renderHorizontalGridLines(true)

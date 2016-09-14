@@ -3,7 +3,8 @@ import KSDataService from './KSDataService';
 import { getIndustry } from './SymbolDataLocal';
 import store from '../store';
 import lodash from 'lodash';
-import { callFunc } from '../components/helper/updateEchartImage';
+import updateEchartImage from '../components/helper/updateEchartImage';
+let callFunc = updateEchartImage.callFunc;
 
 let _growSimilarity = (similarity) => {
 	if (similarity > 0.9999) {
@@ -60,7 +61,7 @@ let searchPattern = (args, cb, errorCb) => {
 			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type='D'} = pattern;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
-			let kLine = {};
+			let kLine = [];
 			//let id = i;
 
 			return {

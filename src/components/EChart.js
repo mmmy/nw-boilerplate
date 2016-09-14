@@ -1,11 +1,13 @@
 import React, { PropTypes } from 'react';
 import echarts from 'echarts';
 import classNames from 'classnames';
-import { setFunc, setImgSrcFunc } from './helper/updateEchartImage';
 import {factorCandleOption , factorLineOption} from './utils/echart-options';
 import store from '../store';
 import painter from '../ksControllers/painter';
+import updateEchartImage from './helper/updateEchartImage';
+let { setFunc, setCanvasVisibleFunc } = updateEchartImage;
 let { drawKline } = painter;
+import _ from 'underscore';
 
 const renderDataLen = Infinity;
 let candleChart = true;
@@ -110,38 +112,38 @@ class EChart extends React.Component {
 		super(props);
 		this.state = {};
 		this.chart = null;
-		this.canvasNode = window.document.createElement('canvas');
-		this.canvasNode.height = 140;
-		this.canvasNode.width = 200;
+		// this.canvasNode = window.document.createElement('canvas');
+		// this.canvasNode.height = 140;
+		// this.canvasNode.width = 200;
 	}
 
 	setImgSrc(size) {  //-1: hide, 0: normal, 1: median, 2: small
-		let imgNode = this.refs['img'];
-		if(!imgNode) {
-			console.error('no image node:',this.props.index);
-			return;
-		}
-		if (size === undefined) {
-			size = this.getImgSize();
-		}
-		if(size === -1) {
-			imgNode.style.opacity = 0;
-			return;
-		}
-		imgNode.style.opacity = '';
-		switch(size) {
-			case 0:
-	    	imgNode.src = this._imgNormal;
-	    	break;
-	    case 1:
-	    	imgNode.src = this._imgMedian;
-	    	break;
-	    case 2:
-	    	imgNode.src = this._imgSmall;
-	    	break;
-	    default:
-	    	break;
-		}
+		// let imgNode = this.refs['img'];
+		// if(!imgNode) {
+		// 	console.error('no image node:',this.props.index);
+		// 	return;
+		// }
+		// if (size === undefined) {
+		// 	size = this.getImgSize();
+		// }
+		// if(size === -1) {
+		// 	imgNode.style.opacity = 0;
+		// 	return;
+		// }
+		// imgNode.style.opacity = '';
+		// switch(size) {
+		// 	case 0:
+	 //    	imgNode.src = this._imgNormal;
+	 //    	break;
+	 //    case 1:
+	 //    	imgNode.src = this._imgMedian;
+	 //    	break;
+	 //    case 2:
+	 //    	imgNode.src = this._imgSmall;
+	 //    	break;
+	 //    default:
+	 //    	break;
+		// }
 	}
 
   getImgSize() {
@@ -166,60 +168,61 @@ class EChart extends React.Component {
 		// let node = this.refs['echart'+this.props.index];
 		// let pattern = store.getState().patterns.rawData[this.props.id];
 		// if(!pattern) return;
-		let { kLine, baseBars } = this.props.pattern;
-		const { searchConfig } = this.props;
-		if(!pattern) { //优先使用pattern
-			if ((this.oldKline === kLine) || (!kLine.length) || (kLine.length < 1)) {
-				if(this.oldKline === kLine) {
-					this.setImgSrc();
-				}
-				return;
-			}
-		}else {
-			kLine = pattern.kLine;
-			baseBars = pattern.baseBars;
-		}
-		this.oldKline = kLine;
-		let node = this.canvasNode || window.document.createElement('canvas');
-		this.canvasNode = node;
+		// let { kLine, baseBars } = this.props.pattern;
+		// const { searchConfig } = this.props;
+		// if(!pattern) { //优先使用pattern
+		// 	if ((this.oldKline === kLine) || (!kLine.length) || (kLine.length < 1)) {
+		// 		if(this.oldKline === kLine) {
+		// 			// this.setImgSrc();
+		// 		}
+		// 		return;
+		// 	}
+		// }else {
+		// 	kLine = pattern.kLine;
+		// 	baseBars = pattern.baseBars;
+		// }
+		// this.oldKline = kLine;
+		// // let node = this.canvasNode || window.document.createElement('canvas');
+		// // this.canvasNode = node;
 
-		// let chart = this.chart || echarts.init(node);
-		let index = this.props.index;
+		// // let chart = this.chart || echarts.init(node);
+		// let index = this.props.index;
 		// if(index===0){
 		// 	window.chart = chart;
 		// }
 		//candleChart
 		if (candleChart) {
+			this.updateKlineCanvas();
 			// node.height = 140;
 			// node.width = 200;
 			// this.chart && this.chart.dispose();
 			// this.chart = echarts.init(node);//&& this.chart.dispose();
-			let data0 = splitData(kLine, baseBars, searchConfig && parseInt(searchConfig.additionDate.value), _showPrediction);
-			let candleOption = factorCandleOption(true);
-			candleOption.xAxis.data = data0.categoryData;
-			candleOption.series[0].data = data0.values;
-			candleOption.series[1].data = data0.lineData;
-			candleOption.series[2].data = data0.areaData;
-			let rates = _metaBased && _getSearchKlineRates();
-			candleOption.yAxis.min = rates ? rates.rateMin * data0.values[0][1] : data0.yMin;
-			candleOption.yAxis.max = rates ? rates.rateMax * data0.values[0][1] : data0.yMax;
+			// let data0 = splitData(kLine, baseBars, searchConfig && parseInt(searchConfig.additionDate.value), _showPrediction);
+			// let candleOption = factorCandleOption(true);
+			// candleOption.xAxis.data = data0.categoryData;
+			// candleOption.series[0].data = data0.values;
+			// candleOption.series[1].data = data0.lineData;
+			// candleOption.series[2].data = data0.areaData;
+			// let rates = _metaBased && _getSearchKlineRates();
+			// candleOption.yAxis.min = rates ? rates.rateMin * data0.values[0][1] : data0.yMin;
+			// candleOption.yAxis.max = rates ? rates.rateMax * data0.values[0][1] : data0.yMax;
 			//console.log(data0.values[0]);
 			//setTimeout(function(){
 	        	// this.chart.setOption(candleOption);
 	        	// let imgUrl = this.chart.getDataURL();
 
 	    // this._imgNormal = imgUrl;
-	    let drawOptions = {
+	    // let drawOptions = {
 	    	// yMin: rates ? rates.rateMin * data0.values[0][1] : data0.yMin,
 	    	// yMax: rates ? rates.rateMax * data0.values[0][1] : data0.yMax,
 	    	// upColor: '#AC1822',
 	    	// upBorderColor: '#8D151B',
 	    	// downColor: 'rgba(0, 0, 0, 0)',
 	    	// downBorderColor: '#000',
-	    	backgroundColor: '#fff',
-	    };
-	    let kline = kLine.slice(0, baseBars);//data0.values;
-	    this._imgNormal = createKlineImg(node, 200, 100, kline, drawOptions);
+	    	// backgroundColor: '#fff',
+	    // };
+	    // let kline = kLine.slice(0, baseBars);//data0.values;
+	    // this._imgNormal = createKlineImg(node, 200, 100, kline, drawOptions);
 
 	    // node.height = 102;
 	    // node.width = 90;
@@ -229,7 +232,7 @@ class EChart extends React.Component {
 	    // this.chart.setOption(candleOption);
 	    // this.chart.resize(100,100);
 	    // this._imgSmall = this.chart.getDataURL();
-	    this._imgSmall = createKlineImg(node, 90, 45, kline, drawOptions);
+	    // this._imgSmall = createKlineImg(node, 90, 45, kline, drawOptions);
 
 	    // node.height = 110;
 	    // node.width = 120;
@@ -238,17 +241,17 @@ class EChart extends React.Component {
 	    // this.chart.setOption(candleOption);
 	    // this._imgMedian = this.chart.getDataURL();
 	    // this.chart && this.chart.dispose();
-	    this._imgMedian = createKlineImg(node, 120, 60, kline, drawOptions);
+	    // this._imgMedian = createKlineImg(node, 120, 60, kline, drawOptions);
 	    
-	    if(index == 0) {
-	    	window._imgSmall = this._imgSmall;
-	    	window._imgMedian = this._imgMedian;
-	    	window._imgNormal = this._imgNormal;
-	    	window._chart = this.chart;
-	    }
+	    // if(index == 0) {
+	    // 	window._imgSmall = this._imgSmall;
+	    // 	window._imgMedian = this._imgMedian;
+	    // 	window._imgNormal = this._imgNormal;
+	    // 	window._chart = this.chart;
+	    // }
 			//debugger;
 			//},0);
-			this.setImgSrc();
+			// this.setImgSrc();
 		} else {
 
 			let lineOption = factorLineOption();
@@ -273,40 +276,52 @@ class EChart extends React.Component {
 		let kline = pattern && pattern.kLine || [];
 		let baseBars = pattern && pattern.baseBars || Infinity;
 
-		if(!canvas || index > 5) return;
+		// if(!canvas || index > 5) return;
 
-		let $canvas = $(canvas);
-		let width = $canvas.parent().width(),
-				height = (index === 0) ? 110 : 50;
-		$canvas.width(width).height(height).attr({
-			height,
-			width
-		});
-		drawKline(canvas, kline.slice(0, baseBars));
+		// let $canvas = $(canvas);
+		let parent = canvas.parentNode;
+		let width = parent.clientWidth,
+				height = parent.clientHeight;
+		// canvas.style.width = width + 'px';
+		// canvas.style.height = height + 'px';
+		canvas.width = width;
+		canvas.height = height;
+		if(!kline.slice) {
+			console.log(pattern, '!kline.slice',pattern.kLine, kline);
+			console.log(pattern.kLine == kline);
+		}
+		let renderKline = kline.slice(0, baseBars);
+		drawKline(canvas, renderKline, {backgroundColor: renderKline.length>0 ? '#fff' : 'rgba(0,0,0,0)'});
+	}
+
+	hideCanvas(hide) {
+			this.refs.kline_canvas.style.opacity = hide ? '0' : '';
 	}
 
 	componentDidMount() {
-		this.drawChart();
+		// this.drawChart();
 		setFunc(this.props.id, this.drawChart.bind(this));
-		setImgSrcFunc(this.props.id, this.setImgSrc.bind(this));
-		let index = this.props.index;
-		if(index>=0 && index<=4) {
+		setCanvasVisibleFunc(this.props.id, this.hideCanvas.bind(this));
+		// setImgSrcFunc(this.props.id, this.setImgSrc.bind(this));
+		// let index = this.props.index;
+		// if(index>=0 && index<=4) {
 			this.updateKlineCanvas();
-			this._updateKlineCanvas = this.updateKlineCanvas.bind(this);
-			window.addEventListener('resize', this._updateKlineCanvas);
-		}
+			// this._updateKlineCanvasDebounce = _.debounce(this.updateKlineCanvas.bind(this), 1000);
+			// window.addEventListener('resize', this._updateKlineCanvasDebounce);
+		// }
 	}
 
 	componentDidUpdate() {
 
 			// setTimeout(this.drawChart.bind(this));
-			this.drawChart();
-			let { fullView, index } = this.props;
-			if(!fullView && index>=0 && index<=4) {
-				// $('.inner-searchreport').one('transitionend', () => {
-					this.updateKlineCanvas();
-				// });
-			}
+			// this.drawChart();
+			this.updateKlineCanvas();
+			// let { fullView, index } = this.props;
+			// if(!fullView && index>=0 && index<=4) {
+			// 	// $('.inner-searchreport').one('transitionend', () => {
+			// 		this.updateKlineCanvas();
+			// 	// });
+			// }
 			//this.drawChart()	
 		//console.log('echart componentDidUpdate');
 		/*******************************************
@@ -335,7 +350,11 @@ class EChart extends React.Component {
 	}
 
 	componentWillReceiveProps(newProps){
-
+		// if(newProps.pattern != this.props.pattern) {
+		// 	if(newProps.pattern && newProps.pattern.kLine && newProps.pattern.kLine.length>0) {
+		// 		// this.hideCanvas(false);
+		// 	}
+		// }
 	}
 
 	shouldComponentUpdate(newProps){
@@ -346,7 +365,7 @@ class EChart extends React.Component {
 		delete this.canvasNode;
 		// this.chart && this.chart.dispose && this.chart.dispose();
 		delete this.chart;
-		window.removeEventListener('resize', this._updateKlineCanvas);
+		// window.removeEventListener('resize', this._updateKlineCanvasDebounce);
 	}
 
 	render(){
@@ -356,16 +375,16 @@ class EChart extends React.Component {
 		let isLarger = !fullView && index === 0,
 				isSmaller = !fullView && index > 0 && index < 5;
 		const className = classNames('echart', 'transition-all', {
-			'larger': isLarger,
-			'smaller': isSmaller,
+			'larger': false,//isLarger,
+			'smaller': false,//isSmaller,
 		});
-		let canvasWrapper = <div className='kline-canvas-wrapper'><canvas ref='kline_canvas' className='kline-canvas'/></div>;
+		let canvasWrapper = <div className='kline-canvas-wrapper' ref='canvas_wrapper'><canvas ref='kline_canvas' className='kline-canvas'/></div>;
 		let trashInfo = isTrashed ? <div className='trashed-info'>{/*<h1>不参与</h1><h1>走势计算</h1>*/}</div> : '';
 		return <div ref={'echart'+this.props.index} className={className} >
-							<h3 style={{color: '#d0d0d0', width:'100px'}}>加载中...</h3>
-							<img ref='img' src='' />
+							<h3 style={{color: '#d0d0d0'}}>加载中...</h3>
+							{/*<img ref='img' src='' />*/}
 							{trashInfo}
-							{(isLarger || isSmaller) ? canvasWrapper : ''}
+							{canvasWrapper}
 						</div>;
 
 	}

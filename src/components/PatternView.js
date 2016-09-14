@@ -60,8 +60,11 @@ class PatternView extends React.Component {
 
 	setTrashed(isTrashed) {
 		if(this.state.isTrashed === isTrashed) return;
-		this.setState({isTrashed});
 		this.props.filterTrashedId && this.props.filterTrashedId(this.props.id, isTrashed);
+		if(!isTrashed) {
+			$(this.refs.pattern_view).removeClass('hide');
+		}
+		this.setState({isTrashed});
 	}
 
 	componentDidMount() {
@@ -107,7 +110,7 @@ class PatternView extends React.Component {
 			}
 		}
 
-		if((newProps.fullView !== this.props.fullView) && (newProps.index<0 || newProps.index>=5 ) ) return false;
+		// if((newProps.fullView !== this.props.fullView) && (newProps.index<0 || newProps.index>=5 ) ) return false;
 
 		return true;
 		// return newProps.fullView === this.props.fullView; //取消自动刷新
@@ -301,16 +304,16 @@ class PatternView extends React.Component {
 		const className = classNames(/*'transition-all', */'pattern-view', {
 			'active': isActive,
 			'hide': !show,
-			'column': (!fullView && index>=0 && index<5 ),
-			'larger': index === 0,
-			[`smaller s${index}`] : index > 0 && index < 5,
+			'column': false,//(!fullView && index>=0 && index<5 ),
+			'larger': false,//index === 0,
+			[`smaller s${index}`] : false,//index > 0 && index < 5,
 		});
 
 		const symbolClass = classNames('symbol-container font-arial', {'hide-symbol':!this.state.showSymbol && !isActive}); //hover显示symbol
 
 		const echartWrapper = classNames('echart-row-wrapper', {
-			'larger': !fullView && index === 0,  //第一个放大显示
-			'smaller': !fullView && index > 0 && index < 5  //接下来四个缩小显示
+			'larger': false,//!fullView && index === 0,  //第一个放大显示
+			'smaller': false,//!fullView && index > 0 && index < 5  //接下来四个缩小显示
 		});
 
 		// let style = (fullView || index>=5) && this.getWH() || { widht: '', height: ''};
@@ -318,16 +321,16 @@ class PatternView extends React.Component {
 		return (<div id={ `pattern_view_${id}`} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
 
 			<div className={symbolClass}>
-				{pattern.symbol}
+				<span class='symbol'>{pattern.symbol}</span>
 				<p className='describe font-simsun'>{pattern.metaData && pattern.metaData.name || ''}</p>
 			</div>
 
 			<div className={echartWrapper} ref='echart_wrapper'>
 				<EChart {...this.props} isTrashed={this.state.isTrashed} />
-				<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} column fullView={fullView} index={index}/>
+				{/*<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} column fullView={fullView} index={index}/>*/}
 			</div>
 
-			{/*<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} />*/}
+			<PatternInfo isTrashed={this.state.isTrashed} toggleTrash={this.setTrashed.bind(this)} pattern={pattern} dispatch={dispatch} index={index}/>
 
 		</div>);
 	}
@@ -345,18 +348,18 @@ class PatternView extends React.Component {
 			return {width: pW + 'px', height: pH + 'px'};
 	}
 
-	handleResize() {
+	// handleResize() {
 
-		let { fullView, index } = this.props;
-		if(fullView || index>=5) {
-			let that = this;
-			setTimeout(() => {
-				let { width, height } = that.getWH();
-				$(that.refs.pattern_view).width(width).height(height);
-			});
-		}
+	// 	let { fullView, index } = this.props;
+	// 	if(fullView || index>=5) {
+	// 		let that = this;
+	// 		setTimeout(() => {
+	// 			let { width, height } = that.getWH();
+	// 			$(that.refs.pattern_view).width(width).height(height);
+	// 		});
+	// 	}
 
-	}
+	// }
 
 }
 
