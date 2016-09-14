@@ -1,5 +1,6 @@
 import request from './request';
 import config from './config';
+var Cache  = require("./Cache");
 
 let getSymbolHistory = (postData, callback, errorCallback) => {
   const { patternOptions } = config;
@@ -11,28 +12,114 @@ let getSymbolHistory = (postData, callback, errorCallback) => {
 
   const errorCb = (err) => {
     callback && callback(err);
-  }
+  };
 
   request(options, requestCb, errorCb, JSON.stringify(postData));
 };
 
-let getGroupCode = (callback, errorCallback) => {
+let getGroupCode = (callback) => {
   const { groupOptions } = config;
   const options = { ...groupOptions };
-
+  
   const requestCb = (result) => {
+    result = dealGroupCode(result);
+    Cache.setToFile(result, 'groupCode');
     callback && callback(result);
   };
 
   const errorCb = (err) => {
-    callback && callback(err);
+    callback && callback(Cache.getFromFile('groupCode'));
+  };
+
+  if (Cache.isLegal('groupCode')) {
+    callback && callback(Cache.getFromFile('groupCode'));
+  } else {
+    request(options, requestCb, errorCb, '');
+  }
+};
+
+let dealGroupCode = (data) => {
+  var groups = [];
+  JSON.parse(data)['groups'].forEach(
+    function (group) {
+      groups.push(group['code']);
+    });
+  return JSON.stringify(groups);
+};
+
+let getAllSymbolsList = (callback) => {
+  if (Cache.isLegal('allSymbolesList')) {
+    console.log('allSymbolesList isLegal');
+    callback && callback(Cache.getFromFile('allSymbolesList'));
+    return;
   }
 
-  request(options, requestCb, errorCb, JSON.stringify([]));
+  let cb = (_groupCodes) => {
+    console.log(_groupCodes);
+    var promises = [];
+    JSON.parse(_groupCodes).forEach(function(code) {
+      if (code != 'cf_m5')
+      promises.push(new Promise((resolve, reject) => {
+        getOneSymbolList({fileName: code, postData: { 'groupCode': code } }, function (data) {
+          resolve(data);
+        });
+      }));
+
+    });
+
+    Promise.all(promises).then(function(result) {
+      var arr = [];
+      result.forEach( function(r) {
+        arr = arr.concat(JSON.parse(r));
+      });
+      arr = JSON.stringify(arr);
+      Cache.setToFile(arr, 'allSymbolesList');
+      callback && callback(arr);
+    });
+
+  };
+  getGroupCode(cb);
+};
+
+/*
+data = {
+  fileName: string,
+  postData: { 'groupCode': string }
+}
+*/
+let getOneSymbolList = (data, callback) => {
+  console.log('get one');
+  var fileName = data.fileName;
+  var postData = data.postData;
+  const { symbolListOptions } = config;
+  const options = { ...symbolListOptions };
+
+  const requestCb = (result) => {
+    result = dealSymbolList(result);
+    Cache.setToFile(result, fileName);
+    callback && callback(result);
+  };
+
+  const errorCb = (err) => {
+    callback && callback(Cache.getFromFile(fileName));
+  };
+
+  if (Cache.isLegal(fileName)) {
+    callback && callback(Cache.getFromFile(fileName));
+  } else {
+    request(options, requestCb, errorCb, JSON.stringify(postData));
+  }
+};
+
+let dealSymbolList = (data) => {
+  return JSON.stringify(JSON.parse(data)['symbols']);
 };
 
 
 let getSymbolList = (postData, callback) => {
+  console.log("getAllSymbolList first");
+  getAllSymbolsList(callback);/*
+  return;
   const { symbolListOptions } = config;
   const options = { ...symbolListOptions };
 
@@ -52,7 +139,7 @@ let getSymbolList = (postData, callback) => {
     return cache;
   } else {
     request(options, requestCb, errorCb, JSON.stringify(postData));
-  }
+  }*/
 };
 
 let getSymbolSearchResult = (postData, callback) => {
@@ -65,9 +152,8 @@ let getSymbolSearchResult = (postData, callback) => {
 
   const errorCb = (err) => {
     callback && callback(err);
-  }
+  };
 
-  // TODO: define postData
   request(options, requestCb, errorCb, JSON.stringify(postData));
 }
 
@@ -77,13 +163,12 @@ let getLoginInfo = (postData, callback) => {
 
   const requestCb = (result) => {
     callback && callback(result);
-  }
+  };
 
   const errorCb = (err) => {
     callback && callback(err);
-  }
+  };
 
-  console.log(options);
   request(options, requestCb, errorCb, postData);
 }
 
@@ -94,11 +179,11 @@ let getLogoutInfo = (postData, callback) => {
 
   const requestCb = (result) => {
     callback && callback(result);
-  }
+  };
 
   const errorCb = (err) => {
     callback && callback(err);
-  }
+  };
 
   request(options, requestCb, errorCb, postData);
 }
@@ -109,5 +194,6 @@ module.exports = {
   getSymbolSearchResult,
   getSymbolList,
   getLoginInfo,
-  getLogoutInfo
+  getLogoutInfo,
+  getAllSymbolsList,
 }
