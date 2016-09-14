@@ -3,6 +3,7 @@ import KlineEditor from './KlineEditor';
 import ConfigEditor from './ConfigEditor';
 import { handleShouCangFocus, handleShouCangBlur } from './publicHelper';
 import ConfirmModal from './ConfirmModal';
+import store from '../store';
 
 function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 	this._$root = $(dom);
@@ -89,7 +90,8 @@ SearchEditor.prototype._initMain = function() {
 	let footer = $(`<div class='footer'></div>`).append(OCLHInputs)
 																							.append(`<span class='tool-btn search-button-wrapper'><button class='flat-btn search font-simsun'>搜索</button></span>`);
 																							// .append($(`<button class='flat-btn tool-btn save'>保存</button>`));
-
+	//重新搜索
+	footer.find('.search').click(this._handleResearch.bind(this));
 	
 	this._floatTools.addBars = $(`<span class='add-bars-container'></span>`).append($(`<span class='two-button-wrapper'></span>`)
 																																									.append($(`<button class='flat-btn add-bars font-simsun'>新增</button>`).click(this._handleAddBars.bind(this)))
@@ -228,6 +230,12 @@ SearchEditor.prototype._handleShouCangBlur = function(e) {
 SearchEditor.prototype._handleAddBars = function(e) {
 	let bars = $(e.target).next().val();
 	this._klineEditor.insertNewAfterSelectedIndex(bars);
+}
+
+SearchEditor.prototype._handleResearch = function(e) {
+	let dataObj = this._dataObj;
+	let actions = require('../flux/actions');
+	store.dispatch(actions.patternActions.getPatterns(dataObj, null));
 }
 
 SearchEditor.prototype._handleSetRangeMode = function(mode, e) { //0:single, 1:range

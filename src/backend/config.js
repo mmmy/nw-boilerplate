@@ -4,8 +4,8 @@ export default {
         host: '139.196.226.133',  //'192.168.0.20',
         port: 30020,
         path: '/match',
-        url: 'http://112.74.17.46:17654/match', //鏈熻揣
-        // url: 'http://120.24.71.4:17654/match',  //btb
+        // url: 'http://112.74.17.46:17654/match', //鏈熻揣
+        url: 'http://120.24.71.4:17654/match',  //btb
         method: 'POST',
         agent: false
     },
@@ -14,8 +14,8 @@ export default {
         host: /*'120.24.71.4',//*/'139.196.226.133',
         port: 15501,
         path: '/query',
-        url: 'http://139.196.226.133:30011/query',  //鏈熻揣
-        // url: 'http://120.24.71.4:15501/query',  //btb
+        // url: 'http://139.196.226.133:30011/query',  //鏈熻揣
+        url: 'http://120.24.71.4:15501/query',  //btb
         method: 'POST',
     },
 

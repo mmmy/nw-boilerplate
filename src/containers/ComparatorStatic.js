@@ -145,8 +145,8 @@ class ComparatorStatic extends React.Component {
     const STOCK_VIEW = 'comparator-chart';
 
     let options = {
-      symbol: 'AU',
-      interval: '5',
+      symbol: 'OKCOIN.SZ',
+      interval: '1',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
       // datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
