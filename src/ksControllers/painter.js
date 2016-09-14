@@ -1,3 +1,5 @@
+import { betterCanvasSize, getCanvasPixRatio } from './canvasHelper';
+
 let _to05 = (number) => {
 	return Math.floor(number) + 0.5;
 };
@@ -25,8 +27,11 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		console.error('not canvas !!');
 		return;
 	}
-	let width = dom.clientWidth || dom.width;
-	let height = dom.clientHeight || dom.height;
+	
+	betterCanvasSize(dom);
+
+	let width = dom.width;
+	let height = dom.height;
 
 	let min = Infinity,
 			max = -Infinity;
@@ -179,6 +184,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	}
 	//hoverY
 	if(hoverY >= 0) {
+		let ratio = getCanvasPixRatio();
+		hoverY *= ratio;
 		hoverY = _to05(hoverY);
 		ctx.beginPath();
 		ctx.setLineDash([2, 2]);
@@ -249,6 +256,9 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	// }
 	// console.debug('time used', new Date() - d2, new Date() - d1);
 	let pointToIndex = (x, y) => {
+		let ratio = getCanvasPixRatio();
+		x *= ratio;
+		y *= ratio;
 		let index = Math.floor((x - left) / klineXSpace); //先得到x 的index
 		if(klineWhisker[index] == undefined) {
 			return -1;
@@ -297,9 +307,10 @@ let _getPriceInterval = (priceMin, priceMax, viewHeight) => {
 };
 
 let drawAxisY = (canvas, priceRange, options) => {
+	betterCanvasSize(canvas);
 	let ctx = canvas.getContext('2d');
-	let width = canvas.clientWidth || canvas.width;
-	let height = canvas.clientHeight || canvas.height;
+	let width = canvas.width;
+	let height = canvas.height;
 	let priceMin = priceRange[0],
 			priceMax = priceRange[1];
 	
@@ -326,6 +337,8 @@ let drawAxisY = (canvas, priceRange, options) => {
 	}
 
 	if(hoverY >=0) {
+		let ratio = getCanvasPixRatio();
+		hoverY *= ratio;
 		let rectH = 20;
 		ctx.fillStyle = '#222';
 		let priceAtHover = hoverY /rate + priceMax;
@@ -340,10 +353,10 @@ let drawAxisX = (canvas, len, options) => {
 	if(!len) {
 		throw 'drawAxisX len is 0';
 	}
-
+	betterCanvasSize(canvas);
 	let ctx = canvas.getContext('2d');
-	let width = canvas.clientWidth || canvas.width;
-	let height = canvas.clientHeight || canvas.height;
+	let width = canvas.width;
+	let height = canvas.height;
 
 	let spaceX = width / len;
 

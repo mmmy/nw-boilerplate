@@ -72,7 +72,8 @@ class StockView extends React.Component {
 	          "paneProperties.vertGridProperties.color": "rgba(0,0,0,0)",
 	          "paneProperties.horzGridProperties.color": "rgba(0,0,0,0)",
 	          "symbolWatermarkProperties.color": '#131313',
-						"symbolWatermarkProperties.transparency": 90,
+						// "symbolWatermarkProperties.transparency": 90,
+						"symbolWatermarkProperties.color" : "rgba(255, 255, 255, 0.03)",
 						"scalesProperties.textColor" : "#AAA",
 
             "mainSeriesProperties.showPriceLine": false,
