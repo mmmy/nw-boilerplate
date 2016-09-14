@@ -4,7 +4,7 @@ export default {
         host: '139.196.226.133',  //'192.168.0.20', 
         port: 30020,
         path: '/match',
-        url: 'http://139.196.226.133:30020/match', //鏈熻揣
+        url: 'http://112.74.17.46:17654/match', //鏈熻揣
         // url: 'http://120.24.71.4:17654/match',  //btb
         method: 'POST',
         agent: false
