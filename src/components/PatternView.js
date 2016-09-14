@@ -60,8 +60,11 @@ class PatternView extends React.Component {
 
 	setTrashed(isTrashed) {
 		if(this.state.isTrashed === isTrashed) return;
-		this.setState({isTrashed});
 		this.props.filterTrashedId && this.props.filterTrashedId(this.props.id, isTrashed);
+		if(!isTrashed) {
+			$(this.refs.pattern_view).removeClass('hide');
+		}
+		this.setState({isTrashed});
 	}
 
 	componentDidMount() {
@@ -318,7 +321,7 @@ class PatternView extends React.Component {
 		return (<div id={ `pattern_view_${id}`} ref='pattern_view' className={className} onClick={this.setActivePattern.bind(this)} onMouseEnter={this.handleMouseEnter.bind(this)} onMouseLeave={this.handleMouseLeave.bind(this)}>
 
 			<div className={symbolClass}>
-				{pattern.symbol}
+				<span class='symbol'>{pattern.symbol}</span>
 				<p className='describe font-simsun'>{pattern.metaData && pattern.metaData.name || ''}</p>
 			</div>
 

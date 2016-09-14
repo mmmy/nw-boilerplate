@@ -1,3 +1,6 @@
+
+import { betterCanvasSize } from '../canvasHelper';
+
 let _to05 = (number) => {
 	return Math.floor(number) + 0.5;
 };
@@ -15,6 +18,8 @@ let drawBlockHeatMap = (canvas, data, options) => {
 		cosnole.warn('drawBlockHeatMap, canvas is not canvas !');
 		return;
 	}
+
+	betterCanvasSize(canvas);
 
 	let ctx = canvas.getContext('2d');
 

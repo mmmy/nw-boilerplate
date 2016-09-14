@@ -34,7 +34,7 @@ class Login extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {isLogining: false, username: '', password:'', autoLogin: false};
+		this.state = {isLogining: false, username: '', password:'', autoLogin: false, usernameError: false, passwordError: false};
 		let that = this;
 		this.handleRiseze = (e) => {
 			if(store.getState().account.username) return;
@@ -77,7 +77,10 @@ class Login extends React.Component {
 			this.moveLeft(0, true);
 			this.moveLeft(1, true);
 			this.setState({username, password, autoLogin: true});
-			this.handleLogin();
+			let that = this;
+			setTimeout(function(){
+				that.handleLogin.call(that);	
+			}, 3000);
 		}
 	}
 
@@ -125,8 +128,8 @@ class Login extends React.Component {
       	<div className='body-container'>
       		<div className='logo'></div>
       		<div>
-      			<div className='user-name font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_username'>用户名</span>*/}<input ref='input_user' onChange={this.changeUsernamne.bind(this)} type='text' value={username} placeholder='用户名'/></div>
-      			<div className='password font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_password'>密码</span>*/}<input ref='password_user' onChange={this.changePassword.bind(this)} onFocus={this.handleFocus.bind(this, 1)} onBlur={this.handleBlur.bind(this, 1)} type='password' value={password} placeholder='密码'/></div>
+      			<div className='user-name font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_username'>用户名</span>*/}<input ref='input_user' onChange={this.changeUsernamne.bind(this)} type='text' value={username} placeholder='用户名'/>{this.state.usernameError ? <span className='error-icon'></span> : ''}</div>
+      			<div className='password font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_password'>密码</span>*/}<input ref='password_user' onChange={this.changePassword.bind(this)} onFocus={this.handleFocus.bind(this, 1)} onBlur={this.handleBlur.bind(this, 1)} type='password' value={password} placeholder='密码'/>{this.state.passwordError ? <span className='error-icon'></span> : ''}</div>
       			<div className='denglu'><button className='' onClick={this.handleLogin.bind(this)}>{innerBtn}</button></div>
       			<div className='options font-simsun'>
       				<button className={autoLoginBtnClass} onClick={this.toggleAutoLogin.bind(this)}>
@@ -213,18 +216,36 @@ class Login extends React.Component {
 	}
 
 	handleLogin() {
-		this.setState({isLogining: true});
+
+		this.setState({isLogining: true, usernameError: false, passwordError: false});
 		let { onLogined } = this.props;
 		let that = this;
-		setTimeout(() => {
-			let {username, password, autoLogin} = that.state;
-			autoLogin ? storageAccount(username, password) : removeAccount();
-			onLogined && onLogined(username, password, autoLogin, (error) => { 
-											if(!error) {
-												saveUser(username, password);
-											}
-										});
-		}, 2000);
+		let username = this.state.username;
+		let password = this.state.password;
+		let autoLogin = this.state.autoLogin;
+
+		var udf = require('../backend/udf');
+		var loginstate = {success:false};
+		//udf.getLoginInfo({username: username,password:password}, function(data) {if(data)loginstate=data;});
+		var postData = 'username='+ encodeURIComponent(username)+'&password='+encodeURIComponent(password);
+		udf.getLoginInfo(postData, function(data) {
+			if (data) loginstate = data;
+			if (!loginstate.session) {
+				//console.log('login fail');
+				that.setState({isLogining: false, passwordError:true});
+				return; 
+			} // else console.log("login success");
+
+			//login success, into the stockingview
+			setTimeout(() => {
+				autoLogin ? storageAccount(username, password) : removeAccount();
+				onLogined && onLogined(username, password, autoLogin, (error) => { 
+					if(!error) {
+						saveUser(username, password);
+					}
+				});
+			}, 0);
+		});
 	}
 
 	startClose() { //动画结束后 移除dom

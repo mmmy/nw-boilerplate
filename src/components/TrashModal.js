@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import { SPACE_DEFINITION } from '../flux/constants/Const';
 import { layoutActions, searchConfigActions } from '../flux/actions';
 import lodash from 'lodash';
+import painter from '../ksControllers/painter';
+import store from '../store';
 
 const propTypes = {
 	resetTrash: PropTypes.func.isRequired,
@@ -13,10 +15,22 @@ const defaultProps = {
   
 };
 
-
-let generatePattenView = (symbol, imgSrc, similarity, yieldRate) => {
-	let infoContainer = `<div class='pattern-info-container column'><div class='flex-container column'><div><h5 class='font-simsun'>相似度</h5><p class='font-number'>${similarity}</p></div><div><h5 class='font-simsun'>回报</h5><p class='font-number'>${yieldRate}</p></div></div></div>`;
-	return `<div class='pattern-view'><div class='symbol-container font-arial'>${symbol}</div><div class='echart-row-wrapper'><div class='echart'><img src='${imgSrc}'/></div>${infoContainer}</div></div>`;
+let generatePattenView = (symbol, imgSrc, similarity, yieldRate, describe) => {
+	let infoContainer = `<div class='pattern-info-container'><div class='flex-container'><div><h5 class='font-simsun'>相似度</h5><p class='font-number'>${similarity}</p></div><div><h5 class='font-simsun'>回报</h5><p class='font-number'>${yieldRate}</p></div></div></div>`;
+	return `<div class='pattern-view trashed'>
+						<div class='symbol-container font-arial'>
+							<span class='symbol'>${symbol}</span>
+							<p class='describe font-simsun'>${describe}</p>
+						</div>
+						<div class='echart-row-wrapper'>
+							<div class='echart'>
+								<div class='kline-canvas-wrapper'>
+									<canvas class='kline-canvas' width='140' height='80'/>
+								</div>
+							</div>
+						</div>
+						${infoContainer}
+						</div>`;
 }
 
 class TrashModal extends React.Component {
@@ -32,6 +46,7 @@ class TrashModal extends React.Component {
 	}
 
 	componentDidMount() {
+		this.initWrapDoms();
 		setTimeout(this.showTrashPanel.bind(this));
 	}
 
@@ -44,14 +59,41 @@ class TrashModal extends React.Component {
 	}
 
 	componentWillUnmount(){
+		this._$root && this._$root.remove();
+	}
 
+	initWrapDoms() {
+		let domStr = `<div class='modal-overlay flex-center'>
+
+			<div class='trash-modal-container'>
+				<div class='close-icon'><span class='fa fa-close'></span></div>
+				<div class='title'>剔除的图形</div>
+				<div class='trash-modal-content-wrapper'>
+
+				</div>
+				<div class='footer flex-center'>
+					<span class='info-container'><span class='font-number trash-numers'></span>个对象</span>
+					<button>一键恢复</button>
+				</div>
+			</div>
+
+			</div>`;
+
+		let $dom = $(domStr);
+		$dom.find('.close-icon').click(this.closeModal.bind(this));
+		$dom.find('.footer button').click(this.handleResetAll.bind(this));
+		this._patternsWrapper = $dom.find('.trash-modal-content-wrapper')[0];
+		this._$root = $dom;
+		this._$trashNumbers = $dom.find('.trash-numers');
+		$(window.document.body).append($dom);
 	}
 
 	showTrashPanel() {
 		let that = this;
 		let { resetTrash } = this.props;
-		let parent = $(this.refs.trash_modal_content_wrapper);
+		let parent = $(this._patternsWrapper);
 		let panel = $(`<div class='trash-panel-container'></div>`);
+		let patterns = store.getState().patterns;
 
 		let trashedNodes = $('.trashed-info', '.pattern-collection').parent().parent().parent().map((i, patternView) => {
 			let node = $(patternView);
@@ -62,12 +104,17 @@ class TrashModal extends React.Component {
 			that._idArr.push(id);
 
 			let symbol = node.find('.symbol-container').text();
+			let describe = node.find('.describe').text();
 			let imgSrc = node.find('img').attr('src');
 			let infoNode = node.find('.font-number');
 			let similarity = $(infoNode[0]).text();
 			let yieldRate = $(infoNode[1]).text();
+			let pattern = patterns.rawData[id];
 
-			let patternViewNode = $(generatePattenView(symbol, imgSrc, similarity, yieldRate));
+			let patternViewNode = $(generatePattenView(symbol, imgSrc, similarity, yieldRate, describe));
+			
+			painter.drawKline(patternViewNode.find('canvas')[0], pattern && pattern.kLine || []);
+
 			patternViewNode.mouseenter(function() {
 				/* Stuff to do when the mouse enters the element */
 				patternViewNode.append(`<div class='reset-container flex-center'><i class='fa fa-undo'></i></div>`);
@@ -96,7 +143,7 @@ class TrashModal extends React.Component {
 
 	handleResetAll() {
 		this.props.resetTrash(this._idArr);
-		$('.pattern-view', this.refs.trash_modal_content_wrapper).remove();
+		$('.pattern-view', this._patternsWrapper).remove();
 		this.setNumber(0);
 	}
 
@@ -113,28 +160,13 @@ class TrashModal extends React.Component {
 
 	setNumber(number) {
 		if (number === undefined) {
-			number = $('.pattern-view', this.refs.trash_modal_content_wrapper).length;
+			number = $('.pattern-view', this._patternsWrapper).length;
 		}
-		$(this.refs.object_number).text(number);
+		this._$trashNumbers.text(number);
 	}
 
 	render(){
-		return <div className='modal-overlay flex-center'>
-
-			<div className='trash-modal-container'>
-				<div className='close-icon' onClick={this.closeModal.bind(this)}><span className='fa fa-close'></span></div>
-				<div className='title'>剔除的图形</div>
-				<div className='trash-modal-content-wrapper' ref='trash_modal_content_wrapper'>
-
-				</div>
-				<div className='footer flex-center'>
-					<span className='info-container'><span className='font-number' ref='object_number'></span>个对象</span>
-					<button onClick={this.handleResetAll.bind(this)}>一键恢复</button>
-				</div>
-			</div>
-
-			</div>
-		
+		return <div></div>;
 	}
 
 	closeModal() {

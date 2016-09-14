@@ -66,7 +66,7 @@ class ToggleBar extends React.Component {
 					<div className={btnWrapper} onClick={this.toggleView.bind(this)}>
 						<div className="item title">{title}</div>
 						{/*<div className={timespentClass}>{ `用时:${time}秒` }</div>*/}
-						<div className={btnClass} ref='btn_toggle'><i className="fa fa-angle-up"></i></div>
+						<div className={btnClass} ref='btn_toggle'><span className='arrow-icon'></span></div>
 					</div>
 		          {/*<button
 		            style={{'marginLeft':'48%'}}

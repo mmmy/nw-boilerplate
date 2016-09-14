@@ -45,8 +45,8 @@ class StockView extends React.Component {
 		let datafeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0);
 		setDataFeed(datafeed);
 		let options = {
-				symbol: 'AU',//'000001.SZ',
-				interval: '5',
+				symbol: 'OKCOIN.SZ',//'000001.SZ',
+				interval: '1',
 				container_id: STOCK_VIEW,
 				//	BEWARE: no trailing slash is expected in feed URL
 				// datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
@@ -72,7 +72,8 @@ class StockView extends React.Component {
 	          "paneProperties.vertGridProperties.color": "rgba(0,0,0,0)",
 	          "paneProperties.horzGridProperties.color": "rgba(0,0,0,0)",
 	          "symbolWatermarkProperties.color": '#131313',
-						"symbolWatermarkProperties.transparency": 90,
+						// "symbolWatermarkProperties.transparency": 90,
+						"symbolWatermarkProperties.color" : "rgba(255, 255, 255, 0.03)",
 						"scalesProperties.textColor" : "#AAA",
 
             "mainSeriesProperties.showPriceLine": false,
@@ -87,15 +88,15 @@ class StockView extends React.Component {
 						"mainSeriesProperties.candleStyle.wickDownColor": "#434343",//'#6A6A6A',
 						"mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
 
-						"mainSeriesProperties.hollowCandleStyle.upColor": "#676767",
-						"mainSeriesProperties.hollowCandleStyle.downColor": "rgba(0,0,0,0)",
+						"mainSeriesProperties.hollowCandleStyle.upColor": "#999",
+						"mainSeriesProperties.hollowCandleStyle.downColor": "#666",
 						"mainSeriesProperties.hollowCandleStyle.drawWick": true,
 						"mainSeriesProperties.hollowCandleStyle.drawBorder": true,
-						"mainSeriesProperties.hollowCandleStyle.borderColor": "#676767",
-						"mainSeriesProperties.hollowCandleStyle.borderUpColor": "#676767",
-						"mainSeriesProperties.hollowCandleStyle.borderDownColor": "#676767",
-						"mainSeriesProperties.hollowCandleStyle.wickUpColor": '#676767',
-						"mainSeriesProperties.hollowCandleStyle.wickDownColor": '#676767',
+						"mainSeriesProperties.hollowCandleStyle.borderColor": "#999",
+						"mainSeriesProperties.hollowCandleStyle.borderUpColor": "#999",
+						"mainSeriesProperties.hollowCandleStyle.borderDownColor": "#666",
+						"mainSeriesProperties.hollowCandleStyle.wickUpColor": '#999',
+						"mainSeriesProperties.hollowCandleStyle.wickDownColor": '#666',
 						"mainSeriesProperties.hollowCandleStyle.barColorsOnPrevClose": false,
 						"scalesProperties.lineColor" : "rgba(255,255,255,0)",
 						"scalesProperties.textColor" : "rgba(255,255,255,1)"

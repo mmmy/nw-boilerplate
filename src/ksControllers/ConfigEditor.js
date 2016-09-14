@@ -31,23 +31,7 @@ ConfigEditor.prototype._init = function() {
 	this._inputs.addBars = $(`<button>+</button>`);
 
 	this._$wrapper.append(`<div class='title'>搜索配置</div>`);
-	this._$wrapper.append(`<div class='item-title font-simsun'>选择时间</div>`);
-
-	let $date = $(`<div class='item-body-container date'></div>`)
-							.append(this._inputs.startDate)
-							.append(`<span class='date-icon fa fa-calendar-o'></span>`)
-							.append(`<span class='zhi'>至</span>`)
-							.append(this._inputs.endDate)
-							.append(`<span class='date-icon fa fa-calendar-o'></span>`);
-
-	this._$wrapper.append($date);
-	//标的类型
-	this._$wrapper.append(`<div class='item-title font-simsun'>标的类型</div>`);
-	let $sidType = $(`<div class='item-body-container sid'></div>`)
-									.append(this._inputs.typeStock)
-									.append(this._inputs.typeFuture);
-	this._$wrapper.append($sidType);
-
+	
 	//统计天数
 	this._$wrapper.append(`<div class='item-title font-simsun'>统计天数</div>`);
 	let $bars = $(`<div class='item-body-container days'></div>`)
@@ -56,6 +40,24 @@ ConfigEditor.prototype._init = function() {
 							.append(this._inputs.addBars)
 							.append(`<span class='font-simsun'>天</span>`);
 	this._$wrapper.append($bars);
+
+	//选择时间
+	this._$wrapper.append(`<div class='item-title font-simsun'>选择时间</div>`);
+	let $date = $(`<div class='item-body-container date'></div>`)
+							.append(this._inputs.startDate)
+							.append(`<span class='date-icon fa fa-calendar-o'></span>`)
+							.append(`<span class='zhi'>至</span>`)
+							.append(this._inputs.endDate)
+							.append(`<span class='date-icon fa fa-calendar-o'></span>`);
+
+	this._$wrapper.append($date);
+
+	//标的类型
+	this._$wrapper.append(`<div class='item-title font-simsun'>标的类型</div>`);
+	let $sidType = $(`<div class='item-body-container sid'></div>`)
+									.append(this._inputs.typeStock)
+									.append(this._inputs.typeFuture);
+	this._$wrapper.append($sidType);
 
 	//info
 	let symbolStartDate = this._info.dateRange[0],

@@ -66,7 +66,7 @@ let _decimal = 2;
 let _klineChart = null;
 let _earnChart = null;
 
-let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span></div><div class="item btn-toggle"><i class="fa fa-angle-up"></i></div></div></div>`;
+let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
 let _$toggle = null;
 
 let patternHtml = `<div class='pattern-inner'>
@@ -152,7 +152,7 @@ let _updatePatternUI = (symbol, name, similarity, earn, kline, decimal) => {
 	decimal = decimal || 2;
 
 	similarity = parseFloat(similarity * 100).toFixed(1);
-	earn = parseFloat(earn).toFixed(decimal);
+	earn = parseFloat(earn * 100).toFixed(decimal);
 
 	_patternDoms.symbol.text(symbol);
 	_patternDoms.name.text(name);
@@ -218,6 +218,9 @@ let _updateEarnChart = (rawDataArr) => {
 						.renderHorizontalGridLines(false)
 						.colors('#4F4F4F')
 						.gap(1)
+						.title('aaa',function(){ return 'nihaoa' })
+						.brushOn(false)
+						.renderTitle(true)
 						.x(d3.scale.linear().domain([0, barChartBars+1]));
 	
 	_earnChart.xAxis().tickFormat((v) => {
@@ -321,7 +324,7 @@ searchResultController.updatePrediction = (patterns) => {
 	let pattern0 = patterns.rawData && patterns.rawData[0] || {};
 
 	let searchTimeSpent = searchMetaData.searchTimeSpent,
-			kline = searchMetaData.kline || [],
+			kline = pattern0.kLine || [],
 			total = patterns.rawData && patterns.rawData.length,
 			similarityTop = pattern0.similarity,
 			symbol = pattern0.symbol,
@@ -330,8 +333,10 @@ searchResultController.updatePrediction = (patterns) => {
 			similarity = pattern0.similarity,
 			decimal = getDecimalForStatistic();
 
+	let baseBars = pattern0.baseBars || Infinity;
+
 	_updatePredictionUI(searchTimeSpent, total, similarityTop);
-	_updatePatternUI(symbol, name, similarity, earn, kline, decimal);
+	_updatePatternUI(symbol, name, similarity, earn, kline.slice(0, baseBars), decimal);
 };
 
 searchResultController.updateStatistics = (patterns) => {

@@ -286,6 +286,14 @@
 		width: 240px;//280px;
 		margin: 0 auto 0 auto;
 	}
+	.error-icon {
+		position: absolute;
+		width: 20px;
+		height: 20px;
+		background-image: url(@icons_url);
+		.icon_position(3,8,2,5px,5px);
+		margin: 8px 10px;
+	}
 	.logo{
 		background: url(@logo_url_png) no-repeat;
 		width: 70px;
@@ -412,6 +420,11 @@
 			&:hover {
 				background-color: lighten(@brown-red, 10%);
 				// box-shadow: 0 3px 10px 0 #eee;
+			}
+			.fa-spinner {
+				width: 16px;
+				height: 16px;
+				text-align: center;
 			}
 			// letter-spacing: 10px;
 		}

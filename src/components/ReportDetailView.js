@@ -210,7 +210,17 @@ class ReportDetailView extends React.Component {
 									{name:'下跌收益平均数', value:down.mean},
 								];
 		} else if(this.state.type == TYPES[1]) {
-
+			dataArr = [
+									{name:'上涨极值', value:up.max},
+									{name:'上涨中位数', value:up.median},
+									{name:'上涨收益平均数', value:up.mean}
+								];
+		} else if(this.state.type == TYPES[2]) {
+			dataArr = [
+									{name:'下跌极值', value:down.min},
+									{name:'下跌中位数', value:down.median},
+									{name:'下跌收益平均数', value:down.mean}
+								];
 		}
 		let nodes = dataArr.map(({name, value}) => {
 									return that.generateDataCell(name, value*100, decimal);

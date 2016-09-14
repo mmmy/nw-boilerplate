@@ -1,3 +1,6 @@
+
+import { betterCanvasSize } from './canvasHelper';
+
 let _priceToY = (height, yMax, yMin, price) => {
     let rate = height / (yMin - yMax);
     return (price - yMax) * rate;
@@ -18,6 +21,9 @@ let drawLines = (canvas, lines, options) => {
         console.warn('drawLlines , canvas is not canvas!');
         return;
     }
+    
+    // betterCanvasSize(canvas);
+
     var height = canvas.height,
         width = canvas.width;
 
