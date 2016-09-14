@@ -6,7 +6,7 @@ var assert = require('assert');
 var _BASEPATH = './Cache'; 
 var _Cache = {};
 var _mTime = {};
-var _limitTime = 3600 * 1000;
+var _limitTime = 3600 * 2 * 1000;
 
 var _createCacheFolder = function(BASEPATH) {
     try {
@@ -20,7 +20,7 @@ var _createCacheFolder = function(BASEPATH) {
 
 let isLegal = (_filename) => {
 
-  assert(typeof(_filename) == 'string', 'getFromFile arguments error');
+  assert(typeof(_filename) == 'string', 'isLegal arguments error');
   _createCacheFolder(_BASEPATH);
   var _cacheFilePath = path.join(_BASEPATH, _filename+'.json');
 
@@ -52,20 +52,17 @@ let getFromFile = (_filename) => {
   } catch (e) {
     console.log(e);
   }
+  return _Cache[_filename];
 }
 
 let setToFile = (result, _filename) => {
 
-  assert(typeof(_filename) == 'string', 'getFromFile arguments error');
+  assert(typeof(_filename) == 'string', 'setToFile arguments error');
   _createCacheFolder(_BASEPATH);
   var _cacheFilePath = path.join(_BASEPATH, _filename+'.json');
 
-  console.log(_cacheFilePath);
-  console.log(result);
   try {    
     _Cache[_filename] = result;
-    console.log(_Cache[_filename]);
-    console.log(typeof(result));
     _mTime[_filename] = new Date();
     fs.writeFileSync(_cacheFilePath, result, 'utf-8');
   } catch (e) {
