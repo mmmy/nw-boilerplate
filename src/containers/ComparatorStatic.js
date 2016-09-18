@@ -145,7 +145,7 @@ class ComparatorStatic extends React.Component {
     const STOCK_VIEW = 'comparator-chart';
 
     let options = {
-      symbol: 'AU',
+      symbol: 'OKCOIN.SZ',//'平安银行',
       interval: '5',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
@@ -304,7 +304,7 @@ ComparatorStatic.defaultProps = defaultProps;
 var stateToProps = function(state) {
 	const {layout, account} = state;
 	const {stockView, isPredictionShow} = layout;
-  let logined = account.username !== '';
+  let logined = true;//account.username !== ''; //只有登陆后才能到这一步, 所以logined = true
 	return {
 		stretchView: !stockView,
     isPredictionShow: isPredictionShow,

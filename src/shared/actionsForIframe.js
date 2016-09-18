@@ -2,7 +2,7 @@ import { patternActions, layoutActions, tradingViewActions } from '../flux/actio
 import fs from 'fs';
 import { cancelSearch } from '../backend';
 
-export default function(store) {
+module.exports = function(store) {
 
 	const searchSymbolDateRange = function(args, cb) {
 		if (store && store.dispatch) {

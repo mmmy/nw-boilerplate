@@ -5,6 +5,9 @@ let initJquery = () => {
 	let $ = require('jquery');
 	window.jQuery = window.$ = $;
 	global.jQuery = global.$ = $;
+};
+
+let initJqueryPlugins = () => {
 	require('./bootstrap-datepicker.min');
 	require('./bootstrap-datepicker.zh-CN.min');
 	//animate.css helper
@@ -19,6 +22,8 @@ let initJquery = () => {
 			    }
 			});
 	}
+	//load tradingview libs
+	
 	/*let TradingView =*/ require('../../tradingview/charting_library/charting_library');
 	/*let Datafeed =*/ //require('../../tradingview/charting_library/datafeed/udf/datafeed');
   require('../../tradingview/charting_library/datafeed/udf/ks_search_result');
@@ -62,26 +67,29 @@ let initGolbalKeyEvent = () => {
 	});
 };
 
-module.exports = () => {
-	/******************************************
-		.showDevTools()  not work at here
-	********************************************/
-	// var win = window.nw.Window.get();
-	// win.showDevTools();
-	console.log('InitNw=====');
-	//not work !!
-	/**********************************************/
-	// if (process.env.NODE_ENV === 'development') {
- //      var head = window.document.getElementsByTagName('head')[0];
- //      var script = window.document.createElement('script');
- //      script.type = 'text/javascript';
- //      script.src = 'http://localhost:35729/livereload.js';
- //      head.appendChild(script);
- //      console.log('hi')
- //    }
+module.exports = {
+	initJquery,
+	initAfterLogin: () => {
+		/******************************************
+			.showDevTools()  not work at here
+		********************************************/
+		// var win = window.nw.Window.get();
+		// win.showDevTools();
+		// console.log('InitNw=====');
+		//not work !!
+		/**********************************************/
+		// if (process.env.NODE_ENV === 'development') {
+	 //      var head = window.document.getElementsByTagName('head')[0];
+	 //      var script = window.document.createElement('script');
+	 //      script.type = 'text/javascript';
+	 //      script.src = 'http://localhost:35729/livereload.js';
+	 //      head.appendChild(script);
+	 //      console.log('hi')
+	 //    }
 
- 	initJquery();
- 	initAssert();
- 	initResize();
- 	initGolbalKeyEvent();
-};
+	 	initJqueryPlugins();
+	 	initAssert();
+	 	initResize();
+	 	initGolbalKeyEvent();
+	}
+}

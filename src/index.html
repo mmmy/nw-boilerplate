@@ -44,24 +44,10 @@
 </head>
 <body>
 	<div id='app'></div>
+	<div id='login-dom'></div>
 	<!-- <div class="fuck"></div> -->
 	<script src="main.js"></script>
-	<script type="text/javascript">
-		if ((process.env.NODE_ENV === 'development') || (process.env.NODE_ENV === 'beta')) {
-			var gulp = require('gulp');
-			gulp.task('reload', function(){
-				//console.log('reload');
-				if(window.nw){                             //nw 0.13.2
-					chrome.runtime.reload();
-				}else{
-					var gui = require('nw.gui');
-				  	var win = gui.Window.get();
-				  	win.reloadDev();
-				}
-			});
-			gulp.watch(['./build/**/*.js'], ['reload']);
-		}
-	</script>
+	<!-- <script type="text/javascript" src='dev.js' id="dev_script"></script> -->
 	<!-- <div class='app-drag-panel'></div> -->
 </body>
 </html>

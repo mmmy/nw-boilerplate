@@ -65,7 +65,7 @@ class Header extends React.Component {
 			if(newProps.account.username === '') {
 				this.setState({showLogin: true});
 			}else{
-				this.refs.login_panel.startClose();
+				// this.refs.login_panel.startClose();
 			}
 			return false;
 		}
@@ -103,7 +103,7 @@ class Header extends React.Component {
 			<span className='header-icon'></span>
 			{this.renderToolbar()}
 			{/*this.renderAppTool()*/}
-			{showLogin ? <LoginSmall ref='login_panel' onLogined={this.handleLogined.bind(this)} close={this.closeLogModal.bind(this)}/> : '' }
+			{/*showLogin ? <LoginSmall ref='login_panel' onLogined={this.handleLogined.bind(this)} close={this.closeLogModal.bind(this)}/> : '' */}
 		</div>;
 	}
 
@@ -136,6 +136,8 @@ class Header extends React.Component {
 		let {dispatch} = this.props;
 		removeAccount();
 		dispatch(accountActions.setUser('', '', false));
+		let login = require('../login');
+		login.showLogin(this.handleLogined.bind(this));
 		// let patterns = {
 		// 	rawData: [],
 		// 	closePirce: [],
