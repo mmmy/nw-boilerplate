@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
-import ReactTradingView from '../components/ReactTradingView';
+// import ReactTradingView from '../components/ReactTradingView';
 import HeatmapContainer from './HeatmapContainer';
 import PredictionContainer from './PredictionContainer';
 import ActivePatternInfoContainer from './ActivePatternInfoContainer';
@@ -9,6 +9,7 @@ import { layoutActions } from '../flux/actions';
 import _ from 'underscore';
 import { setStockViewSymbol } from '../shared/actionTradingview';
 import store from '../store';
+import klinePredictionWidget from '../ksControllers/klinePredictionWidget';
 
 let _showRemainder = true;
 
@@ -28,28 +29,28 @@ const defaultProps = {
 
 };
 
-function resizePrediction(context) {
-  try{
-    var timeScale = context.widget_comparator._innerWindow().Q5.getAll()[0].model().timeScale();
-    const info = $('#searching-info-content')[0].innerHTML;
-    let daysCount = parseInt(info);//parseInt(info.slice(0, info.indexOf('bars')));
-    var offset = 45;
-    var range = context.searchingRange;
-    var rangeStartIndex = range && (timeScale.timePointToIndex(range.from) + range.baseBars);
-    var lastDateIndex = rangeStartIndex || (timeScale.visibleBars().firstBar() + daysCount - 1); // for prediction DOM width
-    var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex) + offset; //  50 => width by prediction dom margin
-    var wrapperWidth = context.eChart.getDom().parentNode.parentNode.parentNode.clientWidth;
-    pixel = ((pixel > (wrapperWidth - 130)) || (pixel < 50)) ? 300 : pixel;
-    context.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
-    context.eChart.resize();
-    // context.actionsForIframe.updatePaneViews();  // align both TV and prediction
-    // window.actionsForIframe.recalculateHeatmap();
-  }catch(e){
-    console.error(e);
-  }
-}
+// function resizePrediction(context) {
+//   try{
+//     var timeScale = context.widget_comparator._innerWindow().Q5.getAll()[0].model().timeScale();
+//     const info = $('#searching-info-content')[0].innerHTML;
+//     let daysCount = parseInt(info);//parseInt(info.slice(0, info.indexOf('bars')));
+//     var offset = 45;
+//     var range = context.searchingRange;
+//     var rangeStartIndex = range && (timeScale.timePointToIndex(range.from) + range.baseBars);
+//     var lastDateIndex = rangeStartIndex || (timeScale.visibleBars().firstBar() + daysCount - 1); // for prediction DOM width
+//     var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex) + offset; //  50 => width by prediction dom margin
+//     var wrapperWidth = context.eChart.getDom().parentNode.parentNode.parentNode.clientWidth;
+//     pixel = ((pixel > (wrapperWidth - 130)) || (pixel < 50)) ? 300 : pixel;
+//     context.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
+//     context.eChart.resize();
+//     // context.actionsForIframe.updatePaneViews();  // align both TV and prediction
+//     // window.actionsForIframe.recalculateHeatmap();
+//   }catch(e){
+//     console.error(e);
+//   }
+// }
 
-window._ksResizePrediction = resizePrediction;
+// window._ksResizePrediction = resizePrediction;
 
 class ComparatorStatic extends React.Component {
 
@@ -62,6 +63,7 @@ class ComparatorStatic extends React.Component {
 	}
 
 	componentDidMount() {
+    klinePredictionWidget.init(this.refs.kline_prediction_widget);
     // this.handleResize = _.debounce(
     //   () => {
     //     try {
@@ -256,10 +258,14 @@ class ComparatorStatic extends React.Component {
         <div className='pattern-tv-box-shadow'>
         </div>
         {/*<div className={ 'comparator-tv-wrapper' }>*/}
-          <ReactTradingView
+        {/*<ReactTradingView
             viewId={ STOCK_VIEW }
             init={ logined }
-            options={ options } />
+            options={ options } />*/}
+        <div className='kline-prediction-widget-container' ref='kline_prediction_widget'>
+
+        </div>
+
         <div className='start-btn-container'>
           <button className='flat-btn' onClick={ this.goToSearchPage.bind(this) }></button>
         </div>

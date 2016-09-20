@@ -9,7 +9,7 @@ let startWaiting = () => {
 let removeWaiting = () => {
 	$('#full_waiting_overlay').remove();
 };
-``
+
 module.exports = {
 	startWaiting,
 	removeWaiting,

@@ -107,13 +107,17 @@
 
 // comparator-chart-static
 
-#comparator-chart{
+.kline-prediction-widget-container, #comparator-chart{
   position: absolute;
   left: 10px;
   width: calc(~"100% - 10px");
-  top: calc(~"100% / 2 - 28px");
-  height: calc(~"100% / 2 - 28px");
-  // top: 50%;
+  // top: calc(~"100% / 2 - 28px");
+  height: calc(~"50% + 12.5px");//calc(~"100% / 2 - 28px");
+  top: calc(~"50% - 12.5px");
+  background-color: #fff;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  z-index: 1;
 }
 
 .comparator-chart-static{
@@ -126,9 +130,10 @@
   .start-btn-container {
     // border: 1px solid red;
     position: absolute;
-    top: calc(~"50% - 28px + 2px");
+    top: calc(~"50% - 12.5px + 2px");
+    z-index: 1;
     background-color: #fff;
-    right: 0;
+    right: 5px;
     width: 60px;
     height: 40px;
 
@@ -160,7 +165,7 @@
   position: absolute;
   width: calc(~"100% - 100px");//calc(~'100% - 100px');
 //  width: calc(~'25% - 20px');
-  height: calc(~"50% - 28px - 1px");//calc(~'50% + 5px');
+  height: calc(~"50% - 12.5px - 10px");//calc(~'50% + 5px');
   // right: 12px;
   // left: 40px;
   right: 70px;
@@ -173,9 +178,9 @@
 
     .comparator-prediction-chart{
       position: absolute;
-      top: 50px;
+      top: 60px;
       width: 100%;
-      height: calc(~"100% - 50px");
+      height: calc(~"100% - 60px");
       // border-left: 1px solid #eee;
     }
   }
@@ -221,6 +226,7 @@
 
 .pattern-tv-box-shadow-bottom{
   position: absolute;
+  background-color: #fff;
   top: 0;//calc(~"50% - 28px + 1px");
   height: 100%;// calc(~"50% + 28px - 1px");
   width: calc(~"100% - 10px");//calc(~"100% - 71px");
@@ -228,19 +234,19 @@
   pointer-events: none;
   // box-shadow: 0px 0px 20px #DBDBDB;
   .mama-box-shadow();
-
-  border-radius: 2px;
+  .border-radius-inner();
 }
 
 .pattern-tv-split-line {
   position: absolute;
   background: #fff;
-  top: calc(~"50% - 28px - 2px");
-  right: 0;
-  width: calc(~"100% - 10px");//calc(~"100% - 71px");
-  height: 3px;
+  top: calc(~"50% - 12.5px");//calc(~"50% - 28px - 2px");
+  right: 30px;
+  width: calc(~"100% - 70px");//calc(~"100% - 71px");
+  height: 1px;
   border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  // border-bottom: 1px solid #eee;
+  z-index: 1;
 }
 
 .pattern-tv-box-shadow-top{
@@ -304,9 +310,9 @@
 .prediction-panel{
   position: absolute;
   width: 70px;
-  height: calc(~'50% - 28px - 50px - 1px');
+  height: calc(~'50% - 12.5px - 60px - 10px');
   right: 0;//37px;
-  top: 50px;
+  top: 60px;
   color: #000;
 
   .prediction-toggle{
@@ -344,14 +350,15 @@
 }
 
 .comparator-info-container {
-  margin-top: 15px;
+  // margin-top: 15px;
   padding-left: 5px;
   width: calc(~"100% + 70px - 20px");
   color: #000;
-  font-size: 13px;
+  font-size: 14px;
 
   .title {
     padding-right: 20px;
+    line-height: 60px;
   }
 
   i {
@@ -368,8 +375,34 @@
     color: transparent;
     width: 20px;
     height: 20px;
+    margin-top: 20px;
     background-image: url(@icons_url);
     .icon_position(1, 6, 1, 5px, 5px);
   }
 
+}
+
+.kline-prediction-widget-wrapper {
+
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  .header-container {
+    position: relative;
+    height: 60px;
+    width: 100%;
+    .title {
+      font-size: 14px;
+      line-height: 60px;
+      margin-left: 30px;
+    }
+  }
+
+  .body-container {
+    position: relative;
+    height: calc(~"100% - 60px - 15px");
+    width: calc(~"100% - 50px");
+    margin-left: 30px;
+  }
 }

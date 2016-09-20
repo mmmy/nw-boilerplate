@@ -236,7 +236,7 @@ KlineEditor.prototype._mouseMove = function(event){
 	if(this._clickHitTest == NONE) {
 		this.setCursorByHittest(hitTest);
 	}
-	console.log(this.getHitTest(event.offsetX, event.offsetY));
+	// console.log(this.getHitTest(event.offsetX, event.offsetY));
 
 	// if(this._editable) {
 	// 	if(this._isMouseDown) {

@@ -206,8 +206,8 @@ class ReportDetailView extends React.Component {
 									{name:'上涨比例', value:upPercent},
 									{name:'收益中位数', value:median},
 									{name:'收益平均数', value:mean},
-									{name:'上涨收益平均数', value:up.mean},
-									{name:'下跌收益平均数', value:down.mean},
+									// {name:'上涨收益平均数', value:up.mean},
+									// {name:'下跌收益平均数', value:down.mean},
 								];
 		} else if(this.state.type == TYPES[1]) {
 			dataArr = [
@@ -230,6 +230,9 @@ class ReportDetailView extends React.Component {
 
 	generateDataCell(title, data, decimal, unit) {
 		decimal = decimal || 2;
+		if(title=='上涨比例') {
+			decimal = 1;
+		}
 		unit = unit || '%';
 		return <span className='statistic-data-cell'>
 			<div className='cell-title font-simsun'>{title}</div>

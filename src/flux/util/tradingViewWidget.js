@@ -16,15 +16,15 @@ var getChart = function getChart(type) {
   return document[window.document.getElementsByTagName('iframe')[i].id];
 };
 
-var setChartLayout = function setChartLayout() {
-  setInterval(function () {
-    var chart = window.widget_comparator;
-    if (chart.W76 && chart.Q5) {
-      setChartLayout();
-      chart.W76.setChartLayout(chart.Q5, 'ks');
-    }
-  }, 0);
-};
+// var setChartLayout = function setChartLayout() {
+//   setInterval(function () {
+//     var chart = window.widget_comparator;
+//     if (chart.W76 && chart.Q5) {
+//       setChartLayout();
+//       chart.W76.setChartLayout(chart.Q5, 'ks');
+//     }
+//   }, 0);
+// };
 
 var getComparatorSize = function getComparatorSize() {
   setTimeout(function () {
@@ -42,7 +42,7 @@ var getComparatorSize = function getComparatorSize() {
 };
 
 module.exports = {
-  setChartLayout: setChartLayout,
+  // setChartLayout: setChartLayout,
   getChart: getChart,
   getComparatorSize: getComparatorSize
 };

@@ -55,7 +55,7 @@ let drawBlockHeatMap = (canvas, data, options) => {
 	let labelWidth = width - blockWidth,
 			labelX = blockWidth + labelWidth / 2,
 			fontSize = options.fontSize || 10,
-			textColor = options.textColor || '#666';
+			textColor = options.textColor || '#000';
 	let labels = data.labels || [];
 
 	//draw

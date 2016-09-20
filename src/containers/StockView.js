@@ -46,7 +46,7 @@ class StockView extends React.Component {
 		setDataFeed(datafeed);
 		let options = {
 				symbol: 'OKCOIN.SZ',
-				interval: '5',
+				interval: '1',
 				container_id: STOCK_VIEW,
 				//	BEWARE: no trailing slash is expected in feed URL
 				// datafeed: new window.Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),

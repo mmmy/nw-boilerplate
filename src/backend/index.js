@@ -46,7 +46,7 @@ let __closePrice = [];
 
 let searchPattern = (args, cb, errorCb) => {
 
-	const { symbol, kline, bars, dateRange, searchConfig, dataCategory } = args;
+	const { symbol, kline, bars, dateRange, searchConfig, dataCategory, interval } = args;
 
 	let { additionDate, searchLenMax } = searchConfig;
 
@@ -58,7 +58,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 		__data = resObj.results.map((pattern, i) => {
 
-			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type='D'} = pattern;
+			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type=interval} = pattern;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];

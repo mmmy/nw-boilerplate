@@ -70,7 +70,7 @@ var __doWhenSeriesCompleted = function(callback, chartDom) {
     }
     chartDom.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
 };
-
+/*
 let updateTradingviewAfterSearch = (dataObj) => {
 	let chartDom = _getComparatorWindow();
 	let chart = chartDom.Q5.getAll()[0];
@@ -143,10 +143,11 @@ let updateTradingviewAfterSearch = (dataObj) => {
 	}
 
 };
+*/
 
 module.exports = {
 	setComparatorVisibleRange,
 	setComparatorPosition,
 	setStockViewSymbol,
-	updateTradingviewAfterSearch,
+	// updateTradingviewAfterSearch,
 }

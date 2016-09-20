@@ -51,8 +51,13 @@ class PatternContainer extends React.Component {
 
 	}
 
-	componentWillReceiveProps(){
-
+	componentWillReceiveProps(newProps){
+		if(newProps.patterns !== this.props.pattern) {
+			setTimeout(()=>{
+				let pattern0 = newProps.patterns.rawData && newProps.patterns.rawData[0] || {};
+				require('../ksControllers/klinePredictionWidget').setPattern(pattern0);
+			});
+		}
 	}
 
 	shouldComponentUpdate(newProps, newState){

@@ -205,8 +205,8 @@
 }
 
 .font-simsun {
-  font-family: 'simsun';
-  -webkit-font-smoothing: none;
+  font-family: 'msyh';//'Microsoft Yahei';//'simsun';
+  -webkit-font-smoothing: antialiased;//none;
   // -moz-osx-font-smoothing: grayscale;
 }
 
@@ -308,3 +308,8 @@
 .no-dragable {
 	// -webkit-app-drag: no-drag;
 }
+
+.border-radius-inner(@radius:5px) {
+	border-radius: @radius;
+}
+

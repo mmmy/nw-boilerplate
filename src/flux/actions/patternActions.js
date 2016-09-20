@@ -111,7 +111,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 			// let { searchConfig } = store.getState();
 			searchConfig = searchConfig || store.getState().searchConfig;
 
-			backend.searchPattern({symbol, kline, dateRange, bars, searchConfig, dataCategory},
+			backend.searchPattern({symbol, kline, dateRange, bars, searchConfig, dataCategory, interval},
 
 				(resArr, closePrice) => {
 

@@ -197,7 +197,8 @@ class PatternView extends React.Component {
 		try { 
 			// setHightlightPrediction(window.eChart, id);
 			// setHightlightPrediction(window.comChart, id);
-			setPredictionChartHighlight(id);
+			// setPredictionChartHighlight(id);
+			require('../ksControllers/klinePredictionWidget').setPattern(this.props.pattern);
 		} catch(e) {
 			console.error(e);
 		}
@@ -211,91 +212,91 @@ class PatternView extends React.Component {
     dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate));
 
 
-    let oneDay = 60 * 60 * 24;
-    let dateRange = {
-      from: +new Date(begin) / 1000,// - oneDay * 1,
-      to: +new Date(lastDate.time) / 1000,// + oneDay * 2
-    };
+    // let oneDay = 60 * 60 * 24;
+    // let dateRange = {
+    //   from: +new Date(begin) / 1000,// - oneDay * 1,
+    //   to: +new Date(lastDate.time) / 1000,// + oneDay * 2
+    // };
 
-    window.timeRange = dateRange;
+    // window.timeRange = dateRange;
 
-    let oldSymbol = widget._innerWindow().Q5.getAll()[0].model().mainSeries().symbol().split(':')[1];
+    // let oldSymbol = widget._innerWindow().Q5.getAll()[0].model().mainSeries().symbol().split(':')[1];
     
-    this._unsubscribeCompleted(); //取消监听
+    // this._unsubscribeCompleted(); //取消监听
 
-    if (oldSymbol !== symbol) {
-    	let that = this;
-      this._doWhenSeries1Completed(() => {   	
-        widget.setVisibleRange(dateRange, '0', () => {
-    			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
-          // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
-          let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
-					indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
-          widget.drawKsDateRangeLineTool(indexPoints, 0);
-          widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
-          widget.setVisibleRange(dateRange, '0');
-          that.setActivePattern();
-        });
-        // window.timeRange = undefined;
-      });
-	      // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-      chart.KeyStone.setSymbol(symbol, '', 0);
+    // if (oldSymbol !== symbol) {
+    // 	let that = this;
+    //   this._doWhenSeries1Completed(() => {   	
+    //     widget.setVisibleRange(dateRange, '0', () => {
+    // 			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
+    //       // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+    //       let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
+				// 	indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
+    //       widget.drawKsDateRangeLineTool(indexPoints, 0);
+    //       widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
+    //       widget.setVisibleRange(dateRange, '0');
+    //       that.setActivePattern();
+    //     });
+    //     // window.timeRange = undefined;
+    //   });
+	   //    // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+    //   chart.KeyStone.setSymbol(symbol, '', 0);
 
-    } else {
-    	widget._innerWindow().Q5.getAll()[0].R99.removeAllDrawingTools();
-      widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-      this._doWhenSeries1Completed(() => {
-        widget.setVisibleRange(dateRange, '0', () => {
-    			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
-          // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
-          let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
-					indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
-          widget.drawKsDateRangeLineTool(indexPoints, 0);
-          widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
-          // widget.setVisibleRange(dateRange, '0');
-      // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-          // 
-        });
-      });
-    }
+    // } else {
+    // 	widget._innerWindow().Q5.getAll()[0].R99.removeAllDrawingTools();
+    //   widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+    //   this._doWhenSeries1Completed(() => {
+    //     widget.setVisibleRange(dateRange, '0', () => {
+    // 			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
+    //       // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+    //       let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
+				// 	indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
+    //       widget.drawKsDateRangeLineTool(indexPoints, 0);
+    //       widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
+    //       // widget.setVisibleRange(dateRange, '0');
+    //   // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+    //       // 
+    //     });
+    //   });
+    // }
 	}
 
-  _doWhenSeries1Timeframe(callback) {
-    function run() {
-      chartDom.Q5.getAll()[0].R99.mainSeries().onTimeframe().unsubscribe(null, run);
-      callback();
-    }
-    const chartDom = window.widget_comparator._innerWindow();
-    chartDom.Q5.getAll()[0].R99.mainSeries().onTimeframe().subscribe(null, run);
-  }
+  // _doWhenSeries1Timeframe(callback) {
+  //   function run() {
+  //     chartDom.Q5.getAll()[0].R99.mainSeries().onTimeframe().unsubscribe(null, run);
+  //     callback();
+  //   }
+  //   const chartDom = window.widget_comparator._innerWindow();
+  //   chartDom.Q5.getAll()[0].R99.mainSeries().onTimeframe().subscribe(null, run);
+  // }
 
-  _doWhenSeries0Completed(callback) {
-    function run() {
-      let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-      chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
-      callback()
-    };
+  // _doWhenSeries0Completed(callback) {
+  //   function run() {
+  //     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  //     chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
+  //     callback()
+  //   };
 
-    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
-  }
+  //   let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  //   chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
+  // }
 
-  _unsubscribeCompleted(){
-  	let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(_context, _onCompleted);
-  }
+  // _unsubscribeCompleted(){
+  // 	let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  //   chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(_context, _onCompleted);
+  // }
 
-  _doWhenSeries1Completed(callback) {
-  	// function run() {
-  	// 	console.debug('_doWhenSeries1Completed', this);
-		 //  let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-		 //  chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
-		 //  callback && callback();
-  	// }
-  	_context.callback = callback;
-    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(_context, _onCompleted);
-  }
+  // _doWhenSeries1Completed(callback) {
+  // 	// function run() {
+  // 	// 	console.debug('_doWhenSeries1Completed', this);
+		//  //  let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+		//  //  chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
+		//  //  callback && callback();
+  // 	// }
+  // 	_context.callback = callback;
+  //   let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  //   chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(_context, _onCompleted);
+  // }
 
 	render(){
 
@@ -335,18 +336,18 @@ class PatternView extends React.Component {
 		</div>);
 	}
 
-	getWH() {
-		let baseWindow_W = 1600,
-					basePatternView_W = 130,
-					basePatternView_H = 182;
+	// getWH() {
+	// 	let baseWindow_W = 1600,
+	// 				basePatternView_W = 130,
+	// 				basePatternView_H = 182;
 
-			let window_W = window.document.body.clientWidth;
+	// 		let window_W = window.document.body.clientWidth;
 
-			let pW = window_W / 1600 * 130,
-					pH = window_W / 1600 * 182;
+	// 		let pW = window_W / 1600 * 130,
+	// 				pH = window_W / 1600 * 182;
 
-			return {width: pW + 'px', height: pH + 'px'};
-	}
+	// 		return {width: pW + 'px', height: pH + 'px'};
+	// }
 
 	// handleResize() {
 

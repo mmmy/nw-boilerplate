@@ -102,8 +102,8 @@ let searchChartHtml = `<div class='container-ks-sr chart'>
 											</div>`;
 
 let wrappersDomStr = `<div class='transition-all container-searchreport static'>
-												<div class='inner-searchreport transition-all'>
-													<div class='search-report-wrapper ${true ? 'slide-down' : ''} transition-top transition-duration2'>
+												<div class='inner-searchreport white transition-all'>
+													<div class='search-report-wrapper white ${true ? 'slide-down' : ''} transition-top transition-duration2'>
 														${comparatorInner}
 														${searchStatisticHtml}
 														${searchChartHtml}
@@ -258,7 +258,7 @@ let _initToggle = () => {
 	_$toggle.find('.btn-container').click(function(event) {
 		/* Act on the event */
 		if(_$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
-			return;
+			// return;
 		}
 
 		let $detailReport = $('.container-searchreport:not(.static)');   //详情页

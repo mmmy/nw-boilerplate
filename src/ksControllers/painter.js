@@ -17,7 +17,7 @@ let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H) => {
 	return {open:_to05(oY), close:_to05(cY), low:_to05(lY), high:_to05(hY)};
 };
 
-//options: {hoverIndex: , selectedIndex: , activeIndex: , mouse:{x}, yMin: number | '200%', yMax: ,selectedRange:[], predictionBars:}
+//options: {hoverIndex: , selectedIndex: , activeIndex: , mouse:{x}, yMin: number | '200%', yMax: ,selectedRange:[], predictionBars:, symbolName:, symbolDescribe:,}
 let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C, L,H]
 	let ctx = null;
 	let d1 = new Date();
@@ -119,7 +119,10 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let selectedIndex = options && options.selectedIndex;
 	let hoverIndex = options && options.hoverIndex;
 	let selectedRange = options && options.selectedRange;
+	let baseBarRange = options && options.baseBarRange;
 	let hoverY = options && options.hoverY;
+	let symbolName = options && options.symbolName;
+	let symbolDescribe = options && options.symbolDescribe;
 
 	//start draw
 	let upBorderColor = options && options.upBorderColor || '#888888',//'#8B171B',//'#ae0006',
@@ -248,6 +251,46 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.lineTo(rangeX2, height);
 		ctx.stroke();
 	}
+	//baseBarRange
+	if(baseBarRange && baseBarRange[0] >=0 && baseBarRange[1] >= 0) {
+		let rangeX1 = klineWhisker[baseBarRange[0]][0][0][0];
+		let rangeX2 = klineWhisker[baseBarRange[1]][0][0][0];
+		let headerHeight = 3;
+		ctx.save();
+		ctx.fillStyle = 'rgba(200,200,200,0.15)';
+		ctx.fillRect(rangeX1, headerHeight, rangeX2 - rangeX1, height);
+
+		ctx.fillStyle = '#B70017';
+		ctx.fillRect(rangeX1, 0, rangeX2 - rangeX1, headerHeight);
+		//text
+		ctx.textAlign = 'center';
+		let textSymbol = symbolName || '';
+		ctx.beginPath();
+		ctx.fillStyle = '#333';
+		ctx.strokeStyle = '#333';
+		ctx.font = '10px Microsoft Yahei';
+		ctx.fillText(textSymbol, (rangeX1 + rangeX2)/2, 30);
+		ctx.stroke();
+
+		let textDescribe = symbolDescribe || '';
+		ctx.font = '12px Microsoft Yahei';
+		ctx.beginPath();
+		ctx.fillStyle = '#666';
+		ctx.strokeStyle = '#666';
+		ctx.fillText(textDescribe, (rangeX1 + rangeX2)/2, 50);
+		ctx.stroke();
+
+		//left right line
+		ctx.lineWidth = 1;
+		ctx.beginPath();
+		ctx.strokeStyle = 'rgba(200,200,200,0.2)';
+		ctx.moveTo(rangeX1, headerHeight);
+		ctx.lineTo(rangeX1, height);
+		ctx.stroke();
+		ctx.moveTo(rangeX2, headerHeight);
+		ctx.lineTo(rangeX2, height);
+		ctx.stroke();
+	}
 	// if(mouse) {
 	// 	ctx.strokeStyle = '#aaa';
 	// 	ctx.moveTo(Math.floor(mouse.x) + 0.5, 10);
@@ -326,9 +369,9 @@ let drawAxisY = (canvas, priceRange, options) => {
 
 	//paint
 	ctx.clearRect(0,0, width, height);
-	ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+	ctx.fillStyle = '#000';//'rgba(0, 0, 0, 0.1)';
 	// ctx.fillRect(0, 0, width, height);
-	ctx.fillStyle = '#333';
+	ctx.fillStyle = '#000';
 	ctx.textAlign = 'center';
 	while(priceShow < priceShowMax) {
 		let centerY = (priceShow - priceMax) * rate + 0;
@@ -371,8 +414,8 @@ let drawAxisX = (canvas, len, options) => {
 	ctx.font = '10px Arial';
 	ctx.textAlign = 'center';
 	for(let i=0; i<len; i++) {
-		ctx.strokeStyle = '#333';
-		ctx.fillStyle = '#333';
+		ctx.strokeStyle = '#000';
+		ctx.fillStyle = '#000';
 		let center = i*spaceX + spaceX/2;
 		ctx.fillText(i+1+'', center, 15);
 	}
@@ -401,8 +444,76 @@ let drawAxisX = (canvas, len, options) => {
 
 };
 
+let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:33']
+	let len = timeArr.length || 0;
+	if(!len) {
+		throw 'drawAxisX len is 0';
+	}
+	betterCanvasSize(canvas);
+	let ctx = canvas.getContext('2d');
+	let width = canvas.width;
+	let height = canvas.height;
+
+	let spaceX = width / len;
+	let interval = 1;
+	let minSpaceX = 0;
+
+	//options
+	let hoverIndex = options && options.hoverIndex;
+	let selectedIndex = options && options.selectedIndex;
+	let showTime = options && options.showTime || false; //是否显示时分秒
+	if(showTime) {
+		minSpaceX = 55;
+ 		interval = Math.ceil(minSpaceX / spaceX);
+	} else {
+ 		minSpaceX = 20;
+ 		interval = Math.ceil(minSpaceX / spaceX);
+	}
+	//paint
+	ctx.clearRect(0,0, width, height);
+	// ctx.fillStyle = 'rgba(0,0,0,0.1)';
+	// ctx.fillRect(0, 0, width, height);
+	ctx.font = '10px Arial';
+	ctx.textAlign = 'center';
+	for(let i=interval-1; i<len; i+=interval) {
+		ctx.strokeStyle = '#000';
+		ctx.fillStyle = '#000';
+		let center = i*spaceX + spaceX/2;
+		let timeText = timeArr[i];
+		let text = showTime ? timeText.slice(-8) : timeText.slice(8, 10);
+		ctx.fillText(text, center, 15);
+	}
+
+	//selectedIndex
+	if(selectedIndex >=0) {
+		let rectW = showTime ? 120 : 60;
+		let center = selectedIndex*spaceX + spaceX/2;
+		center = _toInt(center);
+		ctx.fillStyle = '#BD3035';
+		ctx.fillRect(center - rectW/2, 0, rectW, height);
+		ctx.fillStyle = '#fff';
+		ctx.fillText(selectedIndex+1+'', center, 15);
+	}
+
+	//hoverIndex
+	if(hoverIndex>=0) {
+		let rectW = showTime ? 120 : 70;
+		let timeText = timeArr[hoverIndex];
+		let text = showTime ? timeText : timeText.slice(0, 10);
+		let center = hoverIndex*spaceX + spaceX/2;
+		center = _toInt(center);
+		ctx.fillStyle = '#222';
+		ctx.fillRect(center - rectW/2, 0, rectW, height);
+		ctx.fillStyle = '#fff';
+		ctx.fillText(text, center, 15);
+	}
+
+};
+
+
 module.exports = {
 	drawKline,
 	drawAxisY,
 	drawAxisX,
+	drawAxisTime,
 };

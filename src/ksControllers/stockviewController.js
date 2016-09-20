@@ -4,11 +4,11 @@ import favoritesManager from '../backend/favoritesManager';
 import store from '../store';
 import { drawKline } from './painter';
 import SearchEditor from './SearchEditor';
-import actionTradingview from '../shared/actionTradingview';
+// import actionTradingview from '../shared/actionTradingview';
 import { handleShouCangFocus, handleShouCangBlur } from './publicHelper';
 import ConfirmModal from './ConfirmModal';
 
-let { updateTradingviewAfterSearch } = actionTradingview;
+// let { updateTradingviewAfterSearch } = actionTradingview;
 
 let _searchEditorHistory = null;
 let _searchEditorFavorites = null;
@@ -65,7 +65,7 @@ let _handleDeleteOne = (e) => {
 let _handleReSearch = ({favoriteFolder=''},event) => {
 	let dataObj = $(event.target).closest('.history-item').data('data');
 	_reSearch(dataObj, () => {
-		updateTradingviewAfterSearch(dataObj);
+		// updateTradingviewAfterSearch(dataObj);
 	}, {favoriteFolder});
 };
 
