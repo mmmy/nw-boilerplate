@@ -120,34 +120,42 @@ class ComparatorPrediction extends React.Component {
           y = e.pageY;
       let predictionChart = that._predictionChart;
       if(predictionChart) {
-        if(predictionChart.isCursorOverBar()) {
+        let isCursorOverBar = predictionChart.isCursorOverBar();
+        if(isCursorOverBar) {
           let OCLH = predictionChart.getHoverOCLH();
           that._tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
           that._tooltip.setPosition(x,y,'fixed');
           that._tooltip.show();
           //触发下面的tooltip
-          let index = predictionChart.getHoverIndex();
-          klinePredictionWidget.triggerHover(index);
         } else {
           that._tooltip.hide();
-          klinePredictionWidget.triggerHover(-1);
         }
+        let index = predictionChart.getHoverIndex();
+        klinePredictionWidget.triggerHover(index, isCursorOverBar);
       }
 
     });
     klinePredictionWidget.setOriginHoverHandle(this.triggerTooltipHover.bind(this));
   }
 
-  triggerTooltipHover(index) {
+  triggerTooltipHover(index, showTooltip) {
     if(index < 0) {
       this._tooltip.hide();
       return;
     }
     let {x,y} = this._predictionChart.setHoverIndex(index);
-    let OCLH = this._predictionChart.getHoverOCLH();
-    this._tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
-    this._tooltip.setPosition(x,y);
-    this._tooltip.show();
+    if(showTooltip) {
+      let OCLH = this._predictionChart.getHoverOCLH();
+      if(OCLH.length==4) {
+        this._tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
+        this._tooltip.setPosition(x,y);
+        this._tooltip.show();
+      }else{
+        this._tooltip.hide();
+      }
+    } else {
+      this._tooltip.hide();
+    }
   }
 
   componentDidUpdate() {

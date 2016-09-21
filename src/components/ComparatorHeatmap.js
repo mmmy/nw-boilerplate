@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
-import echarts from 'echarts';
+// import echarts from 'echarts';
 import { generateHeatMapOption } from './utils/heatmap-options';
 import {getDecimalForStatistic} from '../shared/storeHelper';
 import _ from 'underscore';

@@ -1,4 +1,4 @@
-import { betterCanvasSize, getCanvasPixRatio } from './canvasHelper';
+import { betterCanvasSize, getCanvasPixRatio, roundRect } from './canvasHelper';
 
 let _to05 = (number) => {
 	return Math.floor(number) + 0.5;
@@ -283,11 +283,15 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		let rangeX2 = klineWhisker[baseBarRange[1]][0][0][0];
 		let headerHeight = 3;
 		ctx.save();
-		ctx.fillStyle = 'rgba(200,200,200,0.15)';
+		let manGradient = ctx.createLinearGradient(0, headerHeight, 0, height);
+		manGradient.addColorStop(0, 'rgba(200,200,200,0.15)');
+		manGradient.addColorStop(1, 'rgba(200,200,200,0)');
+		ctx.fillStyle = manGradient;//'rgba(200,200,200,0.15)';
 		ctx.fillRect(rangeX1, headerHeight, rangeX2 - rangeX1, height);
 
 		ctx.fillStyle = '#B70017';
-		ctx.fillRect(rangeX1, 0, rangeX2 - rangeX1, headerHeight);
+		// ctx.fillRect(rangeX1, 0, rangeX2 - rangeX1, headerHeight);
+		roundRect(ctx, rangeX1, 0, rangeX2 - rangeX1, headerHeight, {tl:3,tr:3}, true);
 		//text
 		ctx.textAlign = 'center';
 		let textSymbol = symbolName || '';
@@ -309,7 +313,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		//left right line
 		ctx.lineWidth = 1;
 		ctx.beginPath();
-		ctx.strokeStyle = 'rgba(200,200,200,0.2)';
+		ctx.strokeStyle = 'rgba(200,200,200,0)';
 		ctx.moveTo(rangeX1, headerHeight);
 		ctx.lineTo(rangeX1, height);
 		ctx.stroke();

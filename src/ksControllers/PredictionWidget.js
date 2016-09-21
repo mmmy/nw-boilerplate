@@ -365,7 +365,7 @@ PredictionWidget.prototype.setHoverIndex = function(index){
 //获取hoverKlineIndex所在处的k线tooltip的位置
 PredictionWidget.prototype.getHoverTooltipPosition = function() {
 	let {indexToPoint } = this._drawKlineInfo;
-	if(indexToPoint) {
+	if(indexToPoint && (this._hoverKlineIndex < this._kline.length) && (this._hoverKlineIndex > -1)) {
 		let {x, y} = indexToPoint(this._hoverKlineIndex);
 		return {x, y};
 	}

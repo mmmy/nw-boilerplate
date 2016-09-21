@@ -1,4 +1,4 @@
-import echarts from 'echarts';
+// import echarts from 'echarts';
 var factorCandleOption=function(candleBorder = true){
 
 	var markLineOpt = {
@@ -226,15 +226,15 @@ var factorLineOption = function(){
 		            	}
 		            },
 		            areaStyle: {
-		                normal: {
-		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-		                        offset: 0,
-		                        color: 'rgb(255, 158, 68)'
-		                    }, {
-		                        offset: 1,
-		                        color: 'rgb(255, 70, 131)'
-		                    }])
-                		}
+		                // normal: {
+		                //     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+		                //         offset: 0,
+		                //         color: 'rgb(255, 158, 68)'
+		                //     }, {
+		                //         offset: 1,
+		                //         color: 'rgb(255, 70, 131)'
+		                //     }])
+                		// }
            		 	},
            		 }
 		    ],

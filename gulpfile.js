@@ -98,16 +98,17 @@ gulp.task('watch', ['html','fonts','image','scripts','styles'], function(){
 	// gulp.watch(paths.SCRIPTS, ['scripts']);
 	gulp.watch(paths.SCRIPTS, watchJsFile);
 
-	$.livereload.listen();
+	return $.livereload.listen();
 });
 
 gulp.task('nw_dev', function(){
 	var env = process.env;
 	env.NODE_ENV = 'development';
-	gulp.src('')
-	.pipe($.shell(['nw --child-clean-exit --remote-debugging-port=9000 .'], {
-		env: env
-	}));
+	console.log('gulp task nw_dev11111111');
+	return gulp.src('')
+				.pipe($.shell(['nw --child-clean-exit --remote-debugging-port=9000 .'], {
+					env: env
+				}));
 });
 
 gulp.task('nw_release', function(){

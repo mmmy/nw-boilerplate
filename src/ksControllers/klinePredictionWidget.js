@@ -12,16 +12,20 @@ let _triggerHoverOrigin = null; //func
 
 let klinePredictionWidget = {};
 
-let _triggerHover = (barIndex) => {
+let _triggerHover = (barIndex, showTooltip) => {
 	if(barIndex < 0) {
 		_tooltip.hide();
 		return;
 	}
 	let {x,y} = _klinePrediction.setHoverIndex(barIndex);
-	let OCLH = _klinePrediction.getHoverOCLH();
-	_tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
-	_tooltip.setPosition(x,y);
-	_tooltip.show();
+	if(showTooltip) {
+		let OCLH = _klinePrediction.getHoverOCLH();
+		_tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
+		_tooltip.setPosition(x,y);
+		_tooltip.show();
+	} else {
+		_tooltip.hide();
+	}
 };
 
 let _initTooltip = () => {
@@ -36,12 +40,11 @@ let _initTooltip = () => {
 			_tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
 			_tooltip.setPosition(x, y, 'fixed');
 			_tooltip.show();
-			let hoverIndex = _klinePrediction.getHoverIndex();
-			_triggerHoverOrigin && _triggerHoverOrigin(hoverIndex);
 		}else{
 			_tooltip.hide();
-			_triggerHoverOrigin &&_triggerHoverOrigin(-1);
 		}
+		let hoverIndex = _klinePrediction.getHoverIndex();
+		_triggerHoverOrigin && _triggerHoverOrigin(hoverIndex, isCursorOverBar);
 		// _tooltip.show();
 	}).on('mouseenter', (e) => {
 		// _tooltip.show();
@@ -83,8 +86,8 @@ klinePredictionWidget.setPattern = (pattern) => {
 	_klinePrediction.setData(kline, baseBars, interval, symbol, symbolDescribe);
 };
 
-klinePredictionWidget.triggerHover = (barIndex) => {
-	_triggerHover(barIndex);
+klinePredictionWidget.triggerHover = (barIndex, showTooltip) => {
+	_triggerHover(barIndex, showTooltip);
 };
 
 klinePredictionWidget.setOriginHoverHandle = (handle) => {

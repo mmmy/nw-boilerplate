@@ -132,7 +132,7 @@ class ComparatorStatic extends React.Component {
   }
 
 	render() {
-    this.d1 = new Date();
+    // this.d1 = new Date();
     const {stretchView,
       isPredictionShow,
       logined } = this.props;
@@ -145,7 +145,7 @@ class ComparatorStatic extends React.Component {
     const predictionMainClassName = classNames('prediction-main');
 
     const STOCK_VIEW = 'comparator-chart';
-
+    /**
     let options = {
       symbol: 'OKCOIN.SZ',//'平安银行',
       interval: '5',
@@ -248,7 +248,7 @@ class ComparatorStatic extends React.Component {
       // height: 300,
       // width: 300,
     }
-
+    **/
     const comparatorPredictionContainerClass = classNames('comparator-prediction-container',{
       'comparator-prediction-hide': !isPredictionShow
     });

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Comparator from './Comparator';
+// import Comparator from './Comparator';
 import SearchDetail from './SearchDetail';
 import { patternActions, layoutActions } from '../flux/actions';
 import classNames from 'classnames';
@@ -136,7 +136,8 @@ class SearchReport extends React.Component {
 		});
 
 		return (<div className={dataPanelClass} ref='container'>
-			<Comparator />
+			{/*<Comparator />*/}
+			<div className='container-comparator container-comparator-stretch'></div>
 			<SearchDetail />
 			{errorPanel}
 		</div>);

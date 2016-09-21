@@ -5,7 +5,7 @@ export default {
         port: 30020,
         path: '/match',
         url: 'http://139.196.226.133:30020/match', //stock, Future
-        url: 'http://120.24.71.4:17654/match',  //btb
+        // url: 'http://120.24.71.4:17654/match',  //btb
         method: 'POST',
         agent: false
     },
@@ -15,7 +15,7 @@ export default {
         port: 15501,
         path: '/query',
         url: 'http://139.196.226.133:30011/query',  //stock, Future
-        url: 'http://120.24.71.4:15501/query',  //btb
+        // url: 'http://120.24.71.4:15501/query',  //btb
         method: 'POST',
     },
 

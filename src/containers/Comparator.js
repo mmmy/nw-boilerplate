@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import {connect} from 'react-redux';
 import path from 'path';
 import ComparatorPrediction from '../components/ComparatorPrediction';
-import echarts from 'echarts';
+// import echarts from 'echarts';
 import { generateHeatMapOption } from '../components/utils/heatmap-options';
 import searchResultController from '../ksControllers/searchResultController';
 
@@ -205,6 +205,7 @@ class Comparator extends React.Component {
 	}
 
 	componentDidMount() {
+    return;
     this._resizeChart = this.resizeChart.bind(this);
     window.addEventListener('resize', this._resizeChart);
     this.initHeatMap();
@@ -215,6 +216,7 @@ class Comparator extends React.Component {
 	}
 
   initHeatMap() {
+    return;
     let mapDom = this.refs.heatmap_container;
     let $chartDom = $(mapDom);
     let that = this;
@@ -309,6 +311,7 @@ class Comparator extends React.Component {
   }
 
   componentDidUpdate() {
+    return;
   	let { stretchView } = this.props;
   	if(!stretchView) {
   		//$(this.refs.img1).animateCss('slideInLeft');
@@ -404,6 +407,7 @@ class Comparator extends React.Component {
   }
 
   render() {
+    return <div></div>;
     let { stretchView, screenshotTvURL, screenshotEChartURL, screenshotHeatmapURL, searchingError } = this.props;
     const containerClassName = classNames('transition-all', 'container-comparator', {
       'container-comparator-stretch': this.props.stretchView,
