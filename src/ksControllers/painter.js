@@ -17,7 +17,7 @@ let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H) => {
 	return {open:_to05(oY), close:_to05(cY), low:_to05(lY), high:_to05(hY)};
 };
 
-//options: {hoverIndex: , selectedIndex: , activeIndex: , mouse:{x}, yMin: number | '200%', yMax: ,selectedRange:[], predictionBars:, symbolName:, symbolDescribe:,}
+//options: {hoverIndex: , selectedIndex: , activeIndex: , mouse:{x}, yMin: number | '200%', yMax: ,selectedRange:[], predictionBars:, baseBarRange:[], symbolName:, symbolDescribe:, overflowPane:上下界限渐变}
 let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C, L,H]
 	let ctx = null;
 	let d1 = new Date();
@@ -123,6 +123,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let hoverY = options && options.hoverY;
 	let symbolName = options && options.symbolName;
 	let symbolDescribe = options && options.symbolDescribe;
+	let overflowPane = options && options.overflowPane;
 
 	//start draw
 	let upBorderColor = options && options.upBorderColor || '#888888',//'#8B171B',//'#ae0006',
@@ -174,6 +175,31 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.lineTo(whisker2[1][0], whisker2[1][1]);
 		ctx.stroke();
 	}
+	//overflowPane , after baseBarRange
+	if(overflowPane) {
+		let rangeX1 = 0,
+				rangeX2 = width;
+		if(baseBarRange){
+			rangeX1 = klineWhisker[baseBarRange[1]][0][0][0];
+		}
+		let angle = Math.PI/72;
+		let x0 = rangeX1,
+				y0 = - (rangeX2 - rangeX1) / Math.tan(angle),
+				r0 = -y0,
+				r1 = (rangeX2 - rangeX1) / Math.sin(angle);
+
+		let overflowTopGradient = ctx.createRadialGradient(x0, y0, r0, x0, y0, r1+2);
+
+		overflowTopGradient.addColorStop(0, 'rgba(0,0,0,0.05)');
+		overflowTopGradient.addColorStop(Math.sin(angle), 'rgba(0,0,0,0.05)');
+		overflowTopGradient.addColorStop(1, 'rgba(0,0,0,0)');
+		
+		ctx.save();
+		ctx.fillStyle = overflowTopGradient;
+		ctx.fillRect(rangeX1,0,rangeX2-rangeX1,height);
+		ctx.restore();
+	}
+
 	//hoverLine
 	if(hoverIndex > -1) {
 		ctx.beginPath();
@@ -315,7 +341,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	};
 	let indexToPoint = (index) => {
 		let x = (index>-1) && klineWhisker[index][0][0][0];
-		return {x};
+		let y = klineWhisker[index][1][0][1]; //box bottom y
+		return {x, y};
 	};
 
 	return {

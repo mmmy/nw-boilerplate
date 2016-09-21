@@ -2,29 +2,31 @@
 
 .crossfilter-out-container {
 	position: absolute;
-	right: 10px;
-	width: calc(~"100% * 11 / 28 + 10.7px - 10px");
-	height: 100%;
+	right: 20px;
+	width: calc(~"100% * 11 / 28 + 10.7px - 20px");
+	height: calc(~"100% - 10px");
 	background-color: #fff;
 	.mama-box-shadow();
 	.border-radius-inner();
 	.title-container {
 		position: absolute;
-		height: 40px;
+		height: 60px;
 		width: 100%;
 		.title {
 			font-size: 14px;
 			color: #000;
-			margin-top: 10px;
-			padding-left: 20px;
+			// margin-top: 10px;
+			margin: 0;
+			padding-left: 30px;
+			line-height: 60px;
 		}
 	}
 	.crossfilter-wrapper {
 		position: absolute;
-		height: calc(~"100% - 40px");
+		height: calc(~"100% - 60px");
 		width: 100%;
-		top: 40px;
-		overflow: scroll;
+		top: 60px;
+		// overflow: scroll;
 		.scrollbar(@width:6px);
 		.scrollbar-track(@background-color:transparent);
 		.scrollbar-thumb(@background-color: @ks-color-gray-1);
@@ -35,7 +37,7 @@
 	position: absolute;
 	height: 100%;
 	width: calc(~"100% - 10px");
-	min-height: 600px;
+	// min-height: 600px;
 	//border: 1px solid yellow;
 	background-color: #fff;
 	.toggle-btn {
@@ -71,15 +73,22 @@
 	margin-left: 20px;
 	margin-top: 10px;
 	padding-top: 10px;
-	.mama-box-shadow();
+	// border: 1px solid #eee;
+	// .mama-box-shadow();
 	// position: absolute;
 	// top: 0;
 	//padding-bottom: 4%;
 	//border: 1px solid #ddd;
-	min-height: 280px;
+	// min-height: 280px;
+	&:nth-child(1) {
+		margin-top: 0;
+		padding-top: 0;
+		height: calc(~"(100% - 60px)*0.367");
+	}
 	&:nth-child(2) {
 		padding-top: 10px;
-		min-height: 240px;
+		height: calc(~"(100% - 60px)*0.316");
+		border-top: 1px solid #f6f6f6;
 		// &:after{
 		// 	content: '';
 		// 	display: block;
@@ -90,7 +99,8 @@
 	}
 	&:nth-child(3) {
 		padding-top: 10px;
-		min-height: 270px;
+		height: calc(~"(100% - 60px)*0.316");
+		border-top: 1px solid #f6f6f6;
 		// top: 50%;
 		//padding-bottom: 4%;
 	}
@@ -107,7 +117,7 @@
 		padding-left: 10px;
 		display: block;
 		height: @chartTitleH;
-		font-size: 14px;//1.4rem;
+		font-size: 12px;//1.4rem;
 		color: @lulu-black;
     font-weight: normal;
     .yield-btns-container {
@@ -177,11 +187,11 @@
 .industry-quarter-chart{
 	// height: calc(~"88% - "@chartTitleH);
 	// width: 88%;
-	width: 180px;// calc(~"1vw*35/3 - 1px");
-	height: 180px;// calc(~"1vw*35/3 - 1px");
+	width: calc(~"1vw * 27.75 - 133px");//180px;// calc(~"1vw*35/3 - 1px");
+	height: calc(~"1vw * 27.75 - 133px");//180px;// calc(~"1vw*35/3 - 1px");
 
-	// max-height: calc(~"1vh*23.6 - 12px");
-	// max-width: calc(~"1vh*23.6 - 12px");
+	max-height: calc(~"1vh*31.33 - 75px - 40px");
+	max-width: calc(~"1vh*31.33 - 75px - 40px");
 	transform-origin: -25% 0;
 	margin: auto;
 	position: relative;

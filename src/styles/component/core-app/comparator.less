@@ -109,8 +109,8 @@
 
 .kline-prediction-widget-container, #comparator-chart{
   position: absolute;
-  left: 10px;
-  width: calc(~"100% - 10px");
+  left: 20px;
+  width: calc(~"100% - 20px");
   // top: calc(~"100% / 2 - 28px");
   height: calc(~"50% + 12.5px");//calc(~"100% / 2 - 28px");
   top: calc(~"50% - 12.5px");
@@ -163,7 +163,7 @@
 
 .comparator-prediction-container{
   position: absolute;
-  width: calc(~"100% - 100px");//calc(~'100% - 100px');
+  width: calc(~"100% - 120px");//calc(~'100% - 100px');
 //  width: calc(~'25% - 20px');
   height: calc(~"50% - 12.5px - 10px");//calc(~'50% + 5px');
   // right: 12px;
@@ -221,7 +221,7 @@
   top: 0;
   right: 0;
   height: 100%;
-  width: calc(~"100% - 10px");//calc(~"100% - 71px");
+  width: calc(~"100% - 20px");//calc(~"100% - 71px");
 }
 
 .pattern-tv-box-shadow-bottom{
@@ -229,7 +229,7 @@
   background-color: #fff;
   top: 0;//calc(~"50% - 28px + 1px");
   height: 100%;// calc(~"50% + 28px - 1px");
-  width: calc(~"100% - 10px");//calc(~"100% - 71px");
+  width: calc(~"100% - 20px");//calc(~"100% - 71px");
   right: 0;
   pointer-events: none;
   // box-shadow: 0px 0px 20px #DBDBDB;
@@ -242,7 +242,7 @@
   background: #fff;
   top: calc(~"50% - 12.5px");//calc(~"50% - 28px - 2px");
   right: 30px;
-  width: calc(~"100% - 70px");//calc(~"100% - 71px");
+  width: calc(~"100% - 80px");//calc(~"100% - 71px");
   height: 1px;
   border-top: 1px solid #eee;
   // border-bottom: 1px solid #eee;
@@ -400,6 +400,7 @@
   }
 
   .body-container {
+    overflow-y: hidden;
     position: relative;
     height: calc(~"100% - 60px - 15px");
     width: calc(~"100% - 50px");

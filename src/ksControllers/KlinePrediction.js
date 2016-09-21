@@ -44,10 +44,15 @@ function KlinePrediction(container, config) {
 	this._symbolDescribe = '';
 	this._klineScaleRate = 1.5;
 
+	this._predictionPriceMin = 0; //记录预测部分kline价格下限
+	this._predictionPriceMax = 0; //记录预测部分kline价格上限
+
 	this._hoverIndex = -1;
 	this._mouseX = -1;
 	this._mouseY = -1;
 	this._hoverY = -1;
+	this._cursorAtIndex = -1;
+
 	this._yAxisStates = {
 		isMouseDown: false,
 		y: -1
@@ -60,7 +65,8 @@ function KlinePrediction(container, config) {
 		yMax: null,
 		symbolName:'',
 		symbolDescribe:'',
-		baseBarRange: []
+		baseBarRange: [],
+		overflowPane: false, //超出界面的内阴影
 	};
 	this._yDrawOption = {
 		hoverY: -1
@@ -99,7 +105,7 @@ KlinePrediction.prototype._mouseMove = function(event) {
 }
 
 KlinePrediction.prototype._mouseLeave = function(event) {
-
+	this._cursorAtIndex = -1;
 }
 
 KlinePrediction.prototype._yAxisMouseDown = function(event) {
@@ -189,6 +195,20 @@ KlinePrediction.prototype._initKlineMaxMin = function() {
 	this._drawInfo.yMin = lastClosePrice ? (lastClosePrice - offset) : min;
 }
 
+KlinePrediction.prototype._initPredictionMaxMin = function() {
+	let lowArr = [],
+			highArr = [];
+	let predictionKlines = this._kline.slice(this._baseBars - this._kline.length);
+	let len = predictionKlines.length;
+	for(let i=0; i<len; i++) {
+		let klineData = predictionKlines[i];
+		lowArr.push(isNaN(+klineData[3]) ? Infinity : +klineData[3]);
+    highArr.push(isNaN(+klineData[4]) ? -Infinity : +klineData[4]);
+	}
+	this._predictionPriceMax = Math.max.apply(null, highArr);
+	this._predictionPriceMin = Math.min.apply(null, lowArr);
+}
+
 KlinePrediction.prototype._initTimeArray = function() {
 	this._timeArray = this._kline.map((priceArr) => {
 		let rawTime = priceArr[0];
@@ -220,6 +240,9 @@ KlinePrediction.prototype.updateHover = function(x, y) {
 		this._hoverIndex = curIndex;
 	}
 	this._hoverY = y;
+	//记录当前鼠标在一个bar的indext
+	this._cursorAtIndex = pointToIndex(x, y);
+
 	this.update();
 	this.render();
 }
@@ -262,7 +285,8 @@ KlinePrediction.prototype.update = function() {
 	this._klineDrawOption.symbolName = this._symbolName;
 	this._klineDrawOption.symbolDescribe = this._symbolDescribe;
 	this._klineDrawOption.hoverY = this._hoverY;
-	this._klineDrawOption.baseBarRange = [0, this._baseBars];
+	this._klineDrawOption.baseBarRange = [0, this._baseBars-1];
+	this._klineDrawOption.overflowPane = this._klineDrawOption.yMax < this._predictionPriceMax;
 
 	this._yDrawOption.hoverY = this._hoverY;
 
@@ -284,10 +308,40 @@ KlinePrediction.prototype.setData = function(kline, baseBars, interval, symbol, 
 	this._symbolDescribe = symbolDescribe || '';
 
 	this._initKlineMaxMin();
+	this._initPredictionMaxMin();
 	this._initTimeArray();
 
 	this.update();
 	this.render();
+}
+
+KlinePrediction.prototype.getHoverOCLH = function() {
+	let OCLH = this._kline[this._hoverIndex] || [];
+	return OCLH.slice(-4);
+}
+
+KlinePrediction.prototype.getHoverIndex = function() {
+	return this._hoverIndex;
+}
+
+KlinePrediction.prototype.setHoverIndex = function(index) {
+	this._hoverIndex = index;
+	this.update();
+	this.render();
+	return this.getHoverTooltipPosition();
+}
+
+KlinePrediction.prototype.getHoverTooltipPosition = function() {
+	let {indexToPoint } = this._drawInfo;
+	if(indexToPoint) {
+		let {x, y} = indexToPoint(this._hoverIndex);
+		return {x, y};
+	}
+	return {x:-1000, y:-1};
+}
+
+KlinePrediction.prototype.isCursorOverBar = function() {
+	return this._cursorAtIndex >= 0;
 }
 
 KlinePrediction.prototype.dispose = function() {

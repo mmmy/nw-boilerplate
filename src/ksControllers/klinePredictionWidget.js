@@ -1,12 +1,54 @@
 import KlinePrediction from './KlinePrediction';
+import OCLHTooltip from './OCLHTooltip';
 
 let _$root = null;
 let _$header = null;
 let _$body = null;
 
 let _klinePrediction = null;
+let _tooltip = null;
+
+let _triggerHoverOrigin = null; //func
 
 let klinePredictionWidget = {};
+
+let _triggerHover = (barIndex) => {
+	if(barIndex < 0) {
+		_tooltip.hide();
+		return;
+	}
+	let {x,y} = _klinePrediction.setHoverIndex(barIndex);
+	let OCLH = _klinePrediction.getHoverOCLH();
+	_tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
+	_tooltip.setPosition(x,y);
+	_tooltip.show();
+};
+
+let _initTooltip = () => {
+	_tooltip = new OCLHTooltip(_$body);
+	_$body.on('mousemove', (e)=>{
+		// console.log(e);
+		let x=e.pageX,
+				y=e.pageY;
+		let isCursorOverBar = _klinePrediction.isCursorOverBar();
+		if(isCursorOverBar) {
+			let OCLH = _klinePrediction.getHoverOCLH();
+			_tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
+			_tooltip.setPosition(x, y, 'fixed');
+			_tooltip.show();
+			let hoverIndex = _klinePrediction.getHoverIndex();
+			_triggerHoverOrigin && _triggerHoverOrigin(hoverIndex);
+		}else{
+			_tooltip.hide();
+			_triggerHoverOrigin &&_triggerHoverOrigin(-1);
+		}
+		// _tooltip.show();
+	}).on('mouseenter', (e) => {
+		// _tooltip.show();
+	}).on('mouseleave', (e)=>{
+		// _tooltip.hide();
+	});
+}
 
 klinePredictionWidget.init = (root) => {
 	if(!root) {
@@ -26,6 +68,7 @@ klinePredictionWidget.init = (root) => {
 	_$root.append(newDoms);
 
 	_klinePrediction = new KlinePrediction(_$body[0]);
+	_initTooltip();
 };
 
 klinePredictionWidget.setPattern = (pattern) => {
@@ -38,6 +81,14 @@ klinePredictionWidget.setPattern = (pattern) => {
 			symbolDescribe = pattern.metaData && pattern.metaData.name || '';
 
 	_klinePrediction.setData(kline, baseBars, interval, symbol, symbolDescribe);
+};
+
+klinePredictionWidget.triggerHover = (barIndex) => {
+	_triggerHover(barIndex);
+};
+
+klinePredictionWidget.setOriginHoverHandle = (handle) => {
+	_triggerHoverOrigin = handle;
 };
 
 module.exports = klinePredictionWidget;

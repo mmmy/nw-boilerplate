@@ -599,7 +599,7 @@ resizeChart1() {
 		    // .xAxisLabel("x")
 		    //.clipPadding(16)
 				.transitionDuration(transitionDuration)
-		    .colors('#757575')
+		    .colors('#555')
 		    //.colors('rgba(117, 117, 117, 1)')
 		    .symbolSize(8) //width / 50
 		    .excludedSize(8)
