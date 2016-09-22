@@ -205,7 +205,7 @@ PredictionWidget.prototype._updateKlineOption = function(){
 
 	var min = Math.min.apply(null, lowArr);
   var max = Math.max.apply(null, highArr);
-  var lastClosePrice = this._kline.length>0 && this._kline[len - 1][1];
+  var lastClosePrice = this._kline.length>0 && this._kline[len - 1][2];
   var offset = Math.max(max - lastClosePrice, lastClosePrice - min);
 
   offset *= this._klineScaleRate;

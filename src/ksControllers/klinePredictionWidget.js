@@ -35,6 +35,7 @@ let _initTooltip = () => {
 		let x=e.pageX,
 				y=e.pageY;
 		let isCursorOverBar = _klinePrediction.isCursorOverBar();
+		console.log('isCursorOverBar',isCursorOverBar);
 		if(isCursorOverBar) {
 			let OCLH = _klinePrediction.getHoverOCLH();
 			_tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);

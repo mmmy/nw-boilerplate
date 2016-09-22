@@ -1,5 +1,5 @@
 
-import { betterCanvasSize } from '../canvasHelper';
+import { betterCanvasSize, roundRect } from '../canvasHelper';
 
 let _to05 = (number) => {
 	return Math.floor(number) + 0.5;
@@ -65,7 +65,13 @@ let drawBlockHeatMap = (canvas, data, options) => {
 	ctx.font = 'italic ' + fontSize + 'px Arial';
 	blocksY.forEach((y, i) => {
 		ctx.fillStyle = blocksColor[i];
-		ctx.fillRect(0, y, blockWidth, drawEachHeight);
+		if(i==0) {
+			roundRect(ctx, 0, y, blockWidth, drawEachHeight, {tl:3, tr:3}, true);
+		}else if(i==blocksLen-1) {
+			roundRect(ctx, 0, y, blockWidth, drawEachHeight, {bl:3, br:3}, true);
+		}else{
+			ctx.fillRect(0, y, blockWidth, drawEachHeight);
+		}
 		let label = labels[i];
 		if(label) {
 			ctx.fillStyle = textColor;

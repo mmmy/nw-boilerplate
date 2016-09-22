@@ -258,6 +258,9 @@ let _initToggle = () => {
 	_$toggle.find('.btn-container').click(function(event) {
 		/* Act on the event */
 		if(_$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
+			if ((process.env.NODE_ENV !== 'development') && (process.env.NODE_ENV !== 'beta')) {
+				return;
+			}
 			// return;
 		}
 

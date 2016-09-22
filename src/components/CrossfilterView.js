@@ -592,7 +592,7 @@ resizeChart1() {
 		yieldDateScatterChart
 			.width(width)
 			.height(height)
-			.margins({top:5, right:20, bottom:25, left:45})
+			.margins({top:5, right:5, bottom:25, left:40})
 		    .x(d3.scale.linear().domain([this.timeRange[0]-timeOffset, this.timeRange[1]+timeOffset]))
 		    .y(d3.scale.linear().domain(this.yield100Range))  //设置为50的整数倍,上下延长50
 		    //.yAxisLabel("y")

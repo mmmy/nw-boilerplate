@@ -197,7 +197,7 @@ class PatternView extends React.Component {
 		try { 
 			// setHightlightPrediction(window.eChart, id);
 			// setHightlightPrediction(window.comChart, id);
-			// setPredictionChartHighlight(id);
+			setPredictionChartHighlight(id);
 			require('../ksControllers/klinePredictionWidget').setPattern(this.props.pattern);
 		} catch(e) {
 			console.error(e);

@@ -124,6 +124,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let symbolName = options && options.symbolName;
 	let symbolDescribe = options && options.symbolDescribe;
 	let overflowPane = options && options.overflowPane;
+	let ratio = getCanvasPixRatio();
 
 	//start draw
 	let upBorderColor = options && options.upBorderColor || '#888888',//'#8B171B',//'#ae0006',
@@ -213,7 +214,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	}
 	//hoverY
 	if(hoverY >= 0) {
-		let ratio = getCanvasPixRatio();
+		// let ratio = getCanvasPixRatio();
 		hoverY *= ratio;
 		hoverY = _to05(hoverY);
 		ctx.beginPath();
@@ -243,7 +244,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		//text
 		ctx.beginPath();
 		let text = selectedRange[1] - selectedRange[0] + 1 + '根K线';
-		ctx.font = 'bold 12px Microsoft Yahei';
+		ctx.font = `bold ${12*ratio}px Microsoft Yahei`;
 		ctx.textAlign = 'center';
 		// ctx.lineWidth = 1;
 		ctx.fillStyle = '#fff';
@@ -298,12 +299,12 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.beginPath();
 		ctx.fillStyle = '#333';
 		ctx.strokeStyle = '#333';
-		ctx.font = '10px Microsoft Yahei';
+		ctx.font = `${10*ratio}px Microsoft Yahei`;
 		ctx.fillText(textSymbol, (rangeX1 + rangeX2)/2, 30);
 		ctx.stroke();
 
 		let textDescribe = symbolDescribe || '';
-		ctx.font = '12px Microsoft Yahei';
+		ctx.font = `${12*ratio}px Microsoft Yahei`;
 		ctx.beginPath();
 		ctx.fillStyle = '#666';
 		ctx.strokeStyle = '#666';
@@ -329,16 +330,16 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	// }
 	// console.debug('time used', new Date() - d2, new Date() - d1);
 	let pointToIndex = (x, y) => {
-		let ratio = getCanvasPixRatio();
+		// let ratio = getCanvasPixRatio();
 		x *= ratio;
-		y *= ratio;
+		y = typeof y == 'number' ? y * ratio : false;
 		let index = Math.floor((x - left) / klineXSpace); //先得到x 的index
 		if(klineWhisker[index] == undefined) {
 			return -1;
 		}
 		let indexYMin = klineWhisker[index][0][0][1];         //high 的y坐标
 		let indexYMax = klineWhisker[index][1][1][1];         //low 的y坐标
-		if(!y || (y > indexYMin - 10) && (y < indexYMax + 10)) {  //在10px 误差范围内, 或者 y == false
+		if(typeof y!='number' || (y > indexYMin - 10) && (y < indexYMax + 10)) {  //在10px 误差范围内, 或者 y == false
 			return index;
 		}
 		return -1;
@@ -387,7 +388,9 @@ let drawAxisY = (canvas, priceRange, options) => {
 	let height = canvas.height;
 	let priceMin = priceRange[0],
 			priceMax = priceRange[1];
-	
+
+	let ratio = getCanvasPixRatio();
+
 	let rate = height / (priceMin - priceMax);
 
 	let priceInterval = _getPriceInterval(priceMin, priceMax, height);
@@ -411,7 +414,7 @@ let drawAxisY = (canvas, priceRange, options) => {
 	}
 
 	if(hoverY >=0) {
-		let ratio = getCanvasPixRatio();
+		// let ratio = getCanvasPixRatio();
 		hoverY *= ratio;
 		let rectH = 20;
 		ctx.fillStyle = '#222';
@@ -433,7 +436,7 @@ let drawAxisX = (canvas, len, options) => {
 	let height = canvas.height;
 
 	let spaceX = width / len;
-
+	let ratio = getCanvasPixRatio();
 	//options
 	let hoverIndex = options && options.hoverIndex;
 	let selectedIndex = options && options.selectedIndex;
@@ -442,7 +445,7 @@ let drawAxisX = (canvas, len, options) => {
 	ctx.clearRect(0,0, width, height);
 	// ctx.fillStyle = 'rgba(0,0,0,0.1)';
 	// ctx.fillRect(0, 0, width, height);
-	ctx.font = '10px Arial';
+	ctx.font = `${10*ratio}px Arial`;
 	ctx.textAlign = 'center';
 	for(let i=0; i<len; i++) {
 		ctx.strokeStyle = '#000';
@@ -488,6 +491,7 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	let spaceX = width / len;
 	let interval = 1;
 	let minSpaceX = 0;
+	let ratio = getCanvasPixRatio();
 
 	//options
 	let hoverIndex = options && options.hoverIndex;
@@ -504,7 +508,7 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	ctx.clearRect(0,0, width, height);
 	// ctx.fillStyle = 'rgba(0,0,0,0.1)';
 	// ctx.fillRect(0, 0, width, height);
-	ctx.font = '10px Arial';
+	ctx.font = `${10*ratio}px Arial`;
 	ctx.textAlign = 'center';
 	for(let i=interval-1; i<len; i+=interval) {
 		ctx.strokeStyle = '#000';

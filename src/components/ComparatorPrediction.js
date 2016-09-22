@@ -78,7 +78,7 @@ class ComparatorPrediction extends React.Component {
 
   initPredictionChart() {
     let drawOption = {
-      showRange: true
+      showRange: false
     };
     this._predictionChart = new PredictionWidget(this.refs.eChartPredictionLine, drawOption);
     window._predictionChart = this._predictionChart;

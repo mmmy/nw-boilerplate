@@ -113,6 +113,7 @@ class ReportDetailView extends React.Component {
 			'ks-show': fullView
 		});
 
+		let iconClassName = classNames('icon', {up: this.state.showSelect});
 
 		return (<div className={className}>
 
@@ -156,9 +157,9 @@ class ReportDetailView extends React.Component {
 			<div className='header-container' tabIndex='0' ref='header_container'>
 				<span className={titleClassName}>数据统计</span>
 				<span className='select-container'>
-					<button className='statistic-type-select font-simsun' onFocus={this.handleTypeButtonFocus.bind(this)} onBlur={this.handleTypeButtonBlur.bind(this)}>
+					<button ref='select_btn' className='statistic-type-select font-simsun' onMouseDown={this.handleTypeMouseDown.bind(this)} onFocus={this.handleTypeButtonFocus.bind(this)} onBlur={this.handleTypeButtonBlur.bind(this)}>
 						<span className='label-value'>{this.state.type}</span>
-						<span className='icon'></span>
+						<span className={iconClassName}></span>
 						{this.state.showSelect ? 
 							<div className='select-dropdown'>
 								{TYPES.map((type,i)=>{
@@ -185,6 +186,15 @@ class ReportDetailView extends React.Component {
 		let type = e.target.innerHTML;
 		this.setState({type:type});
 		this.refs.header_container.focus();
+	}
+
+	handleTypeMouseDown(e) {
+		if(this.state.showSelect){
+			e.preventDefault();
+			e.stopPropagation();
+			this.refs.select_btn.blur();
+			// this.setState({showSelect:false});
+		}
 	}
 
 	handleTypeButtonFocus() {

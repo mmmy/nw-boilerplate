@@ -15,6 +15,7 @@ export default {
         port: 15501,
         path: '/query',
         url: 'http://139.196.226.133:30011/query',  //stock, Future
+        // url: 'http://192.168.0.102:35501/query',  //stock, Future
         // url: 'http://120.24.71.4:15501/query',  //btb
         method: 'POST',
     },
