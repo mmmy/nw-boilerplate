@@ -346,7 +346,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	};
 	let indexToPoint = (index) => {
 		let x = (index>-1) && klineWhisker[index][0][0][0];
-		let y = klineWhisker[index][1][0][1]; //box bottom y
+		let y = (index>-1) && klineWhisker[index][1][0][1]; //box bottom y
 		return {x, y};
 	};
 

@@ -102,7 +102,7 @@ class ComparatorStatic extends React.Component {
       let title = '将此图形作为原始研究对象?';
       let p = '选择"是"将返回首页, 当前结果将不被保存';
       let contentStr = `<h4 style='margin-top:70px'>${title}</h4><p style='margin-top:10px'>${p}</p><p style='margin-top:30px'><button class='confirm-btn'>是</button></p><div class='footer'><i class='fa fa-square-o' style="margin-right: 10px;"></i>不再提示</div>`;
-      let modalStr = `<div class='modal-wrapper search-remainder' style='width:400px;height:250px'><div class='close-icon-container'><span class='close-btn'></span></div>${contentStr}</div>`;
+      let modalStr = `<div class='modal-wrapper search-remainder' style='width:470px;height:250px'><div class='close-icon-container'><span class='close-btn'></span></div>${contentStr}</div>`;
       let nodeStr = `<div class='modal-overlay flex-center font-simsun'>${modalStr}</div>`;
 
       let $node = $(nodeStr);

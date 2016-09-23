@@ -70,6 +70,12 @@ class ComparatorPrediction extends React.Component {
 
   componentWillReceiveProps(nextProps){
     // console.info(nextProps);
+    if(nextProps.patterns !== this.props.patterns) {
+      let patterns = nextProps.patterns;
+      let baseBars = patterns.searchMetaData && patterns.searchMetaData.bars;
+      let additionBars = patterns.searchConfig && patterns.searchConfig.additionDate.value;
+      this.updatePredictionNamePosition(baseBars, additionBars);
+    }
   }
 
   shouldComponentUpdate(nextProps){
@@ -158,6 +164,20 @@ class ComparatorPrediction extends React.Component {
     }
   }
 
+  updatePredictionNamePosition(baseBars, additionBars) { //"预测分布"的位置
+    baseBars = parseInt(baseBars);
+    additionBars = parseInt(additionBars);
+    let node = this.refs.info_prediction_name;
+    let rate = baseBars / (baseBars + additionBars) * 100;
+    rate = rate<15 ? 15 : rate;
+    rate = rate>85 ? 85 : rate;
+    if(!isNaN(rate) && isFinite(rate)) {
+      node.style.left = rate + '%';
+    } else {
+      node.style.left = '';
+    }
+  }
+
   componentDidUpdate() {
     this.predictionChartSetData();
   }
@@ -230,6 +250,7 @@ class ComparatorPrediction extends React.Component {
     return (<div style={{position:'absolute',height:'100%',width:'100%'}}>
       <div className='comparator-info-container'>
         <span ref='info_title' className='title font-simsun'>匹配图形</span><i ref='info_O'>O</i><i ref='info_H'>H</i><i ref='info_L'>L</i><i ref='info_C'>C</i>
+        <span ref='info_prediction_name' className='title font-simsun prediction-name'>预测分布</span>
         <button className='flat-btn add-btn' onFocus={ this.showFavoritesMenu.bind(this) } onBlur={ this.removeFavoritesMenu.bind(this) }>add</button>
       </div>
       <div ref='eChartPredictionLine' className={ className }></div>

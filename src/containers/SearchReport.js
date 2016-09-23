@@ -145,7 +145,7 @@ class SearchReport extends React.Component {
 
 		return (<div className={dataPanelClass} ref='container'>
 			{/*<Comparator />*/}
-			<div className='container-comparator container-comparator-stretch'></div>
+			{/*<div className='container-comparator container-comparator-stretch'></div>*/}
 			<SearchDetail />
 			{errorPanel}
 		</div>);

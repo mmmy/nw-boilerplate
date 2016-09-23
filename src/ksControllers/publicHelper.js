@@ -11,7 +11,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 	}
 	let folders = favoritesManager.getFavoritesFolders();
 	let optionsNode = $(`<div class='shoucang-pop-menu font-simsun'></div>`);
-	let btnTemplate = `<span class='ks-input-wrapper'><input placeholder='新建文件夹'><i class='button ks-check'></i><i class='button ks-delete'></i></span>`;
+	let btnTemplate = `<span class='ks-input-wrapper border'><input placeholder='新建文件夹'><i class='button ks-check'></i><i class='button ks-delete'></i></span>`;
 	let $btnGroup = $(`<div class='input-wrapper'></div>`).append($(btnTemplate));
 	$btnGroup.find('input').blur(() => { $target.focus() });
 	$btnGroup.find('.ks-check').click(function(event) {
@@ -52,6 +52,8 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 		$title.find('input').val('');
 	});
 
+  let $label = type===1 ? $(`<div class="label-title">收藏至</div>`) : '';
+
 	let $content = $(`<div class='content transition-all'></div>`);
 	let $footer = $(`<div class='footer-shoucang transition-all ${showSaveBtn?"heighter":""}'></div>`)
 								.append($(`<span class='new-folder'>新建文件夹</span>`))
@@ -89,7 +91,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 		$content.append(button);
 	});
 
-	optionsNode.append($title).append($content).append($footer);
+	optionsNode.append($title).append($label).append($content).append($footer);
 	$target.append(optionsNode);
 
 };

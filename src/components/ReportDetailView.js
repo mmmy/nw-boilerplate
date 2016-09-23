@@ -3,6 +3,12 @@ import classNames from 'classnames';
 import statisticKline from './utils/statisticKline';
 import { getDecimalForStatistic } from '../shared/storeHelper';
 
+let stopPropagationHelper =(e) => {
+	if(e && e.stopPropagation) {
+		e.stopPropagation();
+	}
+};
+
 const propTypes = {
 	crossFilter: PropTypes.object.isRequired,
 	//report: PropTypes.object.isRequired,
@@ -163,7 +169,7 @@ class ReportDetailView extends React.Component {
 						{this.state.showSelect ? 
 							<div className='select-dropdown'>
 								{TYPES.map((type,i)=>{
-									return <div className='option' onClick={this.handleTypeChange.bind(this)}>{type}</div>
+									return <div className='option' onMouseDown={stopPropagationHelper} onClick={this.handleTypeChange.bind(this)}>{type}</div>
 								})}
 							</div> 
 							: 
@@ -246,7 +252,7 @@ class ReportDetailView extends React.Component {
 		unit = unit || '%';
 		return <span className='statistic-data-cell'>
 			<div className='cell-title font-simsun'>{title}</div>
-			<div className='cell-data font-number'><span className='value'>{data.toFixed(decimal)}</span><span className='unit'>{unit}</span></div>
+			<div className='cell-data font-fangzhengcuhei'><span className='value'>{data.toFixed(decimal)}</span><span className='unit'>{unit}</span></div>
 		</span>;
 	}
 

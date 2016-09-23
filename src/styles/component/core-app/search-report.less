@@ -49,7 +49,7 @@
 		margin: auto;
 		background: url(@logo_url_png) no-repeat;
 		background-position: 43% 40%;
-		background-size: 34px;//3rem;
+		background-size: 0px;//3rem;
 
 		//border: 1px solid @ks-color-gray-9;
 		// box-shadow: 0 0 20px 0 rgba(204, 204, 204, 0.44);
@@ -66,7 +66,7 @@
 		}
 		
 		.title{
-			margin-left: 51%;
+			margin-left: 40%;
 			//padding: 5px;
 			font-size: 16px;//1.3rem;
 		}
@@ -128,6 +128,10 @@
 			border-color: transparent;
 			box-shadow: none;
 			background-color: transparent;
+			background-size: 34px;//3rem;
+			.title{
+				margin-left: 51%;
+			}
 		}
 	}
 }
@@ -182,6 +186,8 @@
 	z-index: 2;
 	&.white {
 		background-color: #fff;
+		height: calc(~"100% - 50px");
+		top: 40px;
 	}
 	//.transition-delay(.2s);
 	&.small {

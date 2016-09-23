@@ -212,7 +212,7 @@ let _updateEarnChart = (rawDataArr) => {
 	_earnChart = _earnChart || DC.barChart(_earnchartDom[0]);
 	_earnChart.width(width)
 						.height(height)
-						.margins({top: 0, right: 0, bottom: 15, left: 15})
+						.margins({top: 0, right: 10, bottom: 15, left: 20})
 						.dimension(earnDimension)
 						.group(group)
 						.renderHorizontalGridLines(false)
