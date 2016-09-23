@@ -116,7 +116,7 @@ class StockView extends React.Component {
 					showLiveBtn: true,
 					alwaysUpdateCache: true,
 					// candleStyle: 9,
-					ksPaneBackground: ['#222','#111'],
+					// ksPaneBackground: ['#222','#111'],
 
 					lineToolTimeAxisView: {
 						background: '#333',

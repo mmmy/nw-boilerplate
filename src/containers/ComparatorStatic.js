@@ -10,6 +10,7 @@ import _ from 'underscore';
 import { setStockViewSymbol } from '../shared/actionTradingview';
 import store from '../store';
 import klinePredictionWidget from '../ksControllers/klinePredictionWidget';
+import searchResultController from '../ksControllers/searchResultController';
 
 let _showRemainder = true;
 
@@ -19,6 +20,14 @@ let setActiveSymol = () => {
   if(symbol) {
     setStockViewSymbol(symbol);
   }
+};
+
+let showStockView = () => {
+  $(document.querySelector('.content-wrapper.favorites')).addClass('hide');
+  $(document.querySelector('.content-wrapper.history')).addClass('hide');
+  $(document.querySelector('.flat-btn.curve')).addClass('active');
+  $(document.querySelector('.flat-btn.favorites')).removeClass('active');
+  $(document.querySelector('.flat-btn.history')).removeClass('active');
 };
 
 const propTypes = {
@@ -94,8 +103,10 @@ class ComparatorStatic extends React.Component {
   goToSearchPage() {
     let { dispatch } = this.props;
     let goAction = () => {
-      dispatch(layoutActions.toggleStockView());
+      // dispatch(layoutActions.toggleStockView()); //弃用了 
+      searchResultController.triggerToggle();
       setActiveSymol();
+      showStockView();
     };
 
     if(_showRemainder) {

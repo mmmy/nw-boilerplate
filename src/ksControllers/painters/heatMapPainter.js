@@ -1,5 +1,5 @@
 
-import { betterCanvasSize, roundRect } from '../canvasHelper';
+import { betterCanvasSize, getCanvasPixRatio, roundRect } from '../canvasHelper';
 
 let _to05 = (number) => {
 	return Math.floor(number) + 0.5;
@@ -20,13 +20,13 @@ let drawBlockHeatMap = (canvas, data, options) => {
 	}
 
 	betterCanvasSize(canvas);
-
+	let ratio = getCanvasPixRatio();
 	let ctx = canvas.getContext('2d');
 
 	options = options || {};
 	let blockWidth = options.blockWidth || 10;
 	let blockGap = options.blockGap || 1;
-	blockWidth = _toInt(blockWidth);
+	blockWidth = _toInt(blockWidth) * ratio;
 
 	let width = canvas.width,
 			height = canvas.height,
@@ -62,7 +62,7 @@ let drawBlockHeatMap = (canvas, data, options) => {
 	let drawEachHeight = Math.floor(eachBlockHeight);
 	ctx.save();
 	ctx.textAlign = 'center';
-	ctx.font = 'italic ' + fontSize + 'px Arial';
+	ctx.font = 'italic ' + fontSize*ratio + 'px Arial';
 	blocksY.forEach((y, i) => {
 		ctx.fillStyle = blocksColor[i];
 		if(i==0) {

@@ -17,7 +17,7 @@ let historyController = stockviewController.historyController;
 // import { setComparatorVisibleRange } from '../../shared/actionTradingview';
 
 let startSearch = ()=>{
-	searchResultController.removeErrorPanel();
+	// searchResultController.removeErrorPanel();
 	searchResultController.reportSlideDown(true);
 	wavesController.start();
 	wavesController.speedUp();

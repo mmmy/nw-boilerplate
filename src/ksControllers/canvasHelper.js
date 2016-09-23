@@ -33,7 +33,7 @@ let roundRect = function roundRect(ctx, x, y, width, height, radius, fill, strok
       radius[side] = radius[side] || defaultRadius[side];
     }
   }
-  ctx.save();
+  // ctx.save();
   ctx.beginPath();
   ctx.moveTo(x + radius.tl, y);
   ctx.lineTo(x + width - radius.tr, y);
@@ -51,7 +51,7 @@ let roundRect = function roundRect(ctx, x, y, width, height, radius, fill, strok
   if (stroke) {
     ctx.stroke();
   }
-  ctx.restore();
+  // ctx.restore();
 }
 
 module.exports = {

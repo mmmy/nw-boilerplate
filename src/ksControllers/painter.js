@@ -17,7 +17,7 @@ let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H) => {
 	return {open:_to05(oY), close:_to05(cY), low:_to05(lY), high:_to05(hY)};
 };
 
-//options: {hoverIndex: , selectedIndex: , activeIndex: , mouse:{x}, yMin: number | '200%', yMax: ,selectedRange:[], predictionBars:, baseBarRange:[], symbolName:, symbolDescribe:, overflowPane:上下界限渐变}
+//options: {hoverIndex: , selectedIndex: , activeIndex: , mouse:{x}, yMin: number | '200%', yMax: ,selectedRange:[], predictionBars:, baseBarRange:[], symbolName:, symbolDescribe:, overflowPane:上界限渐变, overfowPaneBottom:}
 let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C, L,H]
 	let ctx = null;
 	let d1 = new Date();
@@ -124,6 +124,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let symbolName = options && options.symbolName;
 	let symbolDescribe = options && options.symbolDescribe;
 	let overflowPane = options && options.overflowPane;
+	let overflowPaneBottom = options && options.overflowPaneBottom;
 	let ratio = getCanvasPixRatio();
 
 	//start draw
@@ -177,6 +178,30 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.stroke();
 	}
 	//overflowPane , after baseBarRange
+	if(overflowPaneBottom) {
+		let rangeX1 = 0,
+				rangeX2 = width;
+		// if(baseBarRange){
+		// 	rangeX1 = klineWhisker[baseBarRange[1]][0][0][0];
+		// }
+		let angle = Math.PI/36;
+		let x0 = rangeX1/2 + rangeX2/2,
+				y0 = height + (rangeX2 - rangeX1) / 2 / Math.tan(angle),
+				r0 = y0 - height,
+				r1 = (rangeX2 - rangeX1) / 2 / Math.sin(angle);
+
+		let overflowTopGradient = ctx.createRadialGradient(x0, y0, r0, x0, y0, r1+2);
+
+		overflowTopGradient.addColorStop(0, 'rgba(0,0,0,0.05)');
+		overflowTopGradient.addColorStop(Math.sin(angle), 'rgba(0,0,0,0.05)');
+		overflowTopGradient.addColorStop(1, 'rgba(0,0,0,0)');
+		
+		ctx.save();
+		ctx.fillStyle = overflowTopGradient;
+		ctx.fillRect(rangeX1,0,rangeX2-rangeX1,height);
+		ctx.restore();
+	}
+	//overflowPaneBottom , after baseBarRange
 	if(overflowPane) {
 		let rangeX1 = 0,
 				rangeX2 = width;
@@ -393,7 +418,7 @@ let drawAxisY = (canvas, priceRange, options) => {
 
 	let rate = height / (priceMin - priceMax);
 
-	let priceInterval = _getPriceInterval(priceMin, priceMax, height);
+	let priceInterval = _getPriceInterval(priceMin, priceMax, height/ratio);
 
 	let priceShow = Math.floor(priceMin/10) * 10,
 			priceShowMax = Math.ceil(priceMax);
@@ -407,6 +432,8 @@ let drawAxisY = (canvas, priceRange, options) => {
 	// ctx.fillRect(0, 0, width, height);
 	ctx.fillStyle = '#000';
 	ctx.textAlign = 'center';
+	ctx.font = `${10*ratio}px Arial`;
+	
 	while(priceShow < priceShowMax) {
 		let centerY = (priceShow - priceMax) * rate + 0;
 		ctx.fillText(priceShow.toFixed(2), width/2, centerY);
@@ -473,7 +500,7 @@ let drawAxisX = (canvas, len, options) => {
 		ctx.fillStyle = '#222';
 		ctx.fillRect(center - rectW/2, 0, rectW, height);
 		ctx.fillStyle = '#fff';
-		ctx.fillText(hoverIndex+1+'', center, 15);
+		ctx.fillText(hoverIndex+1+'', center, 15*ratio);
 	}
 
 };
@@ -498,10 +525,10 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	let selectedIndex = options && options.selectedIndex;
 	let showTime = options && options.showTime || false; //是否显示时分秒
 	if(showTime) {
-		minSpaceX = 55;
+		minSpaceX = 55 * ratio;
  		interval = Math.ceil(minSpaceX / spaceX);
 	} else {
- 		minSpaceX = 20;
+ 		minSpaceX = 20 * ratio;
  		interval = Math.ceil(minSpaceX / spaceX);
 	}
 	//paint
@@ -516,7 +543,7 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 		let center = i*spaceX + spaceX/2;
 		let timeText = timeArr[i];
 		let text = showTime ? timeText.slice(-8) : timeText.slice(8, 10);
-		ctx.fillText(text, center, 15);
+		ctx.fillText(text, center, 15*ratio);
 	}
 
 	//selectedIndex

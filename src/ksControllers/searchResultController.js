@@ -218,6 +218,9 @@ let _updateEarnChart = (rawDataArr) => {
 						.renderHorizontalGridLines(false)
 						.colors('#4F4F4F')
 						.gap(1)
+						.transitionDuration(0)
+						.elasticY(false)
+						.elasticX(false)
 						.title('aaa',function(){ return 'nihaoa' })
 						.brushOn(false)
 						.renderTitle(true)
@@ -251,42 +254,46 @@ let _initResize = () => {
 	window.addEventListener('resize', _handleResize);
 };
 
+let _triggerToggle = () => { //作为外部接口
+	if(_$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
+		if ((process.env.NODE_ENV !== 'development') && (process.env.NODE_ENV !== 'beta')) {
+			return;
+		}
+		// return;
+	}
+
+	let $detailReport = $('.container-searchreport:not(.static)');   //详情页
+	let $comparatorContainer = $('#__comparator_prediction_container');
+	$comparatorContainer.css('opacity', '0');
+	$detailReport.css('opacity', '0');
+
+	_$reportWrapper.css('display', 'none');
+
+	_$reportContainer.one('transitionend', ()=>{
+		let zIndex = $detailReport.css('z-index');
+		if(zIndex == '0') {
+			$detailReport.css({'z-index':'2', 'opacity':'1'});
+			$comparatorContainer.css({'z-index':'3', 'opacity':'1'});
+		}else {
+			$detailReport.css('z-index', '0');
+			$comparatorContainer.css('z-index', '0');
+			_$reportWrapper.css('display', 'block');
+			//resize charts
+			_handleResize();
+		}
+	});
+	_$reportContainer.toggleClass('searchreport-full');
+	_$toggle.toggleClass('up');
+	_$toggle.find('.btn-toggle').toggleClass('rotate');
+};
+
 let _initToggle = () => {
 
 	_toggleSlideCenter(true);
 
-	_$toggle.find('.btn-container').click(function(event) {
+	_$toggle.find('.btn-container').click(function() {
 		/* Act on the event */
-		if(_$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
-			if ((process.env.NODE_ENV !== 'development') && (process.env.NODE_ENV !== 'beta')) {
-				return;
-			}
-			// return;
-		}
-
-		let $detailReport = $('.container-searchreport:not(.static)');   //详情页
-		let $comparatorContainer = $('#__comparator_prediction_container');
-		$comparatorContainer.css('opacity', '0');
-		$detailReport.css('opacity', '0');
-
-		_$reportWrapper.css('display', 'none');
-
-		_$reportContainer.one('transitionend', ()=>{
-			let zIndex = $detailReport.css('z-index');
-			if(zIndex == '0') {
-				$detailReport.css({'z-index':'2', 'opacity':'1'});
-				$comparatorContainer.css({'z-index':'3', 'opacity':'1'});
-			}else {
-				$detailReport.css('z-index', '0');
-				$comparatorContainer.css('z-index', '0');
-				_$reportWrapper.css('display', 'block');
-				//resize charts
-				_handleResize();
-			}
-		});
-		_$reportContainer.toggleClass('searchreport-full');
-		_$toggle.toggleClass('up');
-		_$toggle.find('.btn-toggle').toggleClass('rotate');
+		_triggerToggle();
 	});
 };
 
@@ -380,8 +387,9 @@ searchResultController.updateCharts = (patterns) => {
 	_updateEarnChart(rawData);
 };
 
-searchResultController.reportSlideDown = (slideDown, cb) => {
+searchResultController.reportSlideDown = (slideDown, cb) => { 
 	let $target = _$reportContainer.find('.search-report-wrapper');
+	$target.off('transitionend', '**');
 	$target.one('transitionend', () => {
 		cb && cb();
 	});
@@ -408,7 +416,7 @@ searchResultController.showErrorPanel = (searchKline) => {
 	//重新搜索
 	$errorPanel.find('.research').click(function(event) {
 		/* Act on the event */
-		// let actions = require('../flux/actions');
+		let actions = require('../flux/actions');
 		store.dispatch(actions.patternActions.getPatterns({}));
 	});
 	//返回
@@ -419,6 +427,10 @@ searchResultController.showErrorPanel = (searchKline) => {
 
 searchResultController.removeErrorPanel = () => {
 	_$reportWrapper.find('.error-panel').remove();
+};
+
+searchResultController.triggerToggle = () => {
+	_triggerToggle();
 };
 
 module.exports = searchResultController;

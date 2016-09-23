@@ -140,7 +140,7 @@ class PatternContainer extends React.Component {
 			</div>
 			<div className={ collectionClass }>
 				<PatternCollection ref='pattern_collection' dispatch={ dispatch } />
-				<h3 className='title'>匹配结果</h3>
+				<h3 className='title'>匹配相似结果</h3>
 			</div>
 			<div ref='pattern_statistics_container' className={ patternInfoClass }>
 				<PatternStatisticsPanel showTrashPanel={this.showTrashPanel.bind(this, true)}/>

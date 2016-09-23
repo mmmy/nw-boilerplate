@@ -66,7 +66,8 @@ function KlinePrediction(container, config) {
 		symbolName:'',
 		symbolDescribe:'',
 		baseBarRange: [],
-		overflowPane: false, //超出界面的内阴影
+		overflowPane: false, //超出上界面的内阴影
+		overflowPaneBottom: false, //超出上界面的内阴影
 	};
 	this._yDrawOption = {
 		hoverY: -1
@@ -287,6 +288,7 @@ KlinePrediction.prototype.update = function() {
 	this._klineDrawOption.hoverY = this._hoverY;
 	this._klineDrawOption.baseBarRange = [0, this._baseBars-1];
 	this._klineDrawOption.overflowPane = this._klineDrawOption.yMax < this._predictionPriceMax;
+	this._klineDrawOption.overflowPaneBottom = this._klineDrawOption.yMin > this._predictionPriceMin;
 
 	this._yDrawOption.hoverY = this._hoverY;
 

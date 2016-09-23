@@ -278,15 +278,16 @@ let generateKlineOption = () => {
 };
 
 
-let getKlineImgSrc = (kline) => {
+let getKlineImgSrc = (kline, height) => {
   if(!kline || kline.length==0) {
     return './image/kline.png';
   }
+  height = height || 100;
   let len = kline.length;
   let perfectW = len * 5;
   perfectW = perfectW > 500 ? 500 : perfectW;
   let canvas = document.createElement('canvas');
-  canvas.height = 100;
+  canvas.height = height;
   canvas.width = perfectW;
   painter.drawKline(canvas, kline);
   return canvas.toDataURL();
