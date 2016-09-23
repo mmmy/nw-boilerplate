@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+		div{
+			width: 500px;
+			height: 300px;
+			position: relative;
+			border: 1px solid green;
+		}
+		canvas {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border: 1px solid red;
+		}
+	</style>
+</head>
+<body>
+	<div><canvas></canvas></div>
+	<script type="text/javascript">
+		window.addEventListener('load',function() {
+			var canvas = document.querySelector('canvas');
+			var ctx = canvas.getContext('2d');
+			let ratio = 2;
+			var width = 500 * ratio;
+			var height = 300 * ratio;
+			canvas.width = width;
+			canvas.height = height;
+			ctx.fillStyle = '#000';
+			ctx.fillText('招财进宝', 100, 100);
+			ctx.strokeRect(200, 200, 50, 50);
+			ctx.scale(ratio, ratio);
+		});
+	</script>
+</body>
+</html>
