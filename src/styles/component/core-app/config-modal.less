@@ -29,13 +29,15 @@
 
 .config-modal-container {
 	position: relative;
-	width: 480px;
+	width: 470px;
 	// top: 50px;
-	height: 480px;
+	height: 470px;
 	margin: 0 auto;
 	z-index: 10001;
+	border-radius: 5px;
 	background-color: #fff;
 	// box-shadow: 0 0 15px 0 #aaa;
+	.modal-box-shadow();
 
 	.close-icon {
 		float: right;
@@ -75,10 +77,11 @@
 	padding: 0 30px;
 	.title {
 		font-size: 16px;
+		margin-bottom: 35px;
 	}
 	.item-title{
-		margin-top: 40px;
-		margin-bottom: 8px;
+		margin-top: 20px;
+		margin-bottom: 10px;
 		color: @ks-color-gray-4;
 		font-size: 13px;
 	}
@@ -106,21 +109,54 @@
 		.selected{
 			color: @ks-color-gray-2;
 		}
-		
+		.inputs-groups {
+			display: inline-block;
+			.times {
+				max-width: 160px;
+				margin-top: 10px;
+				span {
+					display: inline-block;
+					line-height: 30px;
+					width: 12px;
+					text-align: center;
+				}
+				input {
+					height: 30px;
+					border: 1px solid #eee;
+					border-radius: 2px;
+					width: 44px;
+					text-align: center;
+					.disable-input-spin();
+					&:not(:first-child) {
+						// margin-left: 10px;
+					}
+				}
+			}
+		}
+		.inputs-wrapper {
+			position: relative;
+			display: inline-block;
+			border-radius: 2px;
+			border: 1px solid #eee;
+			&.date {
+				max-width: 160px;
+			}
+		}
+
 		input {
-			font-size: 11px;
+			font-size: 12px;
 			font-family: 'AvantGarde';
-			width: 30%;
+			width: 130px;
 			padding: 5px 7px;
-			color: @ks-color-gray-4;
-			background-color: @config-modal-input-background-color;
+			color: #666;//@ks-color-gray-4;
+			background-color: #fff;//@config-modal-input-background-color;
 			box-shadow: none;
 			border: none;
 		}
 		.date-icon {
-			font-size: 11px;
-			color: @ks-color-gray-6;
-			background-color: @config-modal-input-background-color;
+			font-size: 12px;
+			color: #666;//@ks-color-gray-6;
+			background-color: #fff;//@config-modal-input-background-color;
 			padding: 7px 9px 4px 5px;
 			display: inline-block;
 			//margin-bottom: 2px;
@@ -130,19 +166,34 @@
 			color: @ks-color-gray-6;
 			font-size: 12px;
 			margin: auto 10px;
+			position: relative;
+			bottom: 20px;
 		}
 		&.days{
 			button {
+				height: 30px;
 				border: none;
-				width: 25px;
-				background-color: @config-modal-button-background-color;
+				outline: none;
+				width: 30px;
+				background-color: #fff;//@config-modal-button-background-color;
 				padding-top: 3px;
 			}
 			input {
-				width: 20%;
+				color: #000;
+				text-align: center;
+				height: 30px;
+				line-height: 30px;
+				padding: 0;
+				width: 70px;
+				font-size: 14px;
+				background-color: #fff;
+				.disable-input-spin();
 			}
 			&>span {
+				line-height: 30px;
 				padding-left: 10px;
+				color: #999;
+				font-size: 12px;
 			}
 		}
 	}
@@ -150,15 +201,16 @@
 	.footer {
 		margin-top: 50px;
 		button {
-			width: 160px;
-			margin-left: 29%;
+			width: 165px;
+			margin-left: 25%;
 			border: none;
 			font-size: 12px;
 			padding: 6px;
-			background-color: @config-modal-button-background-color;
+			background-color: @brown-red-light;//@config-modal-button-background-color;
 			border-radius: 2px;
+			color: #fff;
 			&:hover {
-				background-color: #fff;
+				background-color: @brown-red;
 				box-shadow: 0 3px 10px 0 #eee;
 			}
 		}
@@ -180,9 +232,11 @@
 
 .modal-confirm-container {
 	background-color: #fff;
-	width: 500px;
-	height: 280px;
+	width: 470px;
+	height: 250px;
 	position: relative;
+	border-radius: 5px;
+	.modal-box-shadow();
 	.close-btn {
 		float: right;
 		margin-top: 10px;
@@ -209,21 +263,29 @@
 
 	.button {
 		position: absolute;
-		width: 160px;
+		width: 165px;
 		height: 30px;
-		bottom: 80px;
+		bottom: 70px;
 		color: #fff;
 		font-size: 12px;
+		border-radius: 2px;
 	}
 
 	.btn-yes {
-		left: 80px;
+		left: 60px;
 		background-color: @brown-red-light;
+		&:hover {
+			background-color: @brown-red;
+		}
 	}
 
 	.btn-no {
-		right: 80px;
-		background-color: #aaa;
+		right: 60px;
+		background-color: #eee;
+		color: #666;
+		&:hover {
+			background-color: #ccc;
+		}	
 	}
 
 	.footer {
@@ -232,7 +294,7 @@
 		width: 100%;
 		color: #666;
 		font-size: 12px;
-		bottom: 34px;
+		bottom: 35px;
 		.no-check-icon {
 			vertical-align: middle;
 			display: inline-block;

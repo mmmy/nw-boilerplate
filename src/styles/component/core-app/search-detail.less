@@ -1,7 +1,7 @@
 
 
 .container-searchdetail{
-	float: left;
+	float: right;
 	//border: 1px solid red;
 	height: @comparator_H;
 	// width: calc(~"100% - 10px - "@comparator_W);
@@ -12,4 +12,7 @@
 	// width: calc(~"100% - "@comparatorStretch_W);
 	position: relative;
 	width: @searchDetail_W;
+	@media (min-width: 1600px) {
+		width: 970px;
+	}
 }

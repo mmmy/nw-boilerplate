@@ -4,14 +4,14 @@
 	position: relative;
 	display: inline-block;
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-	border-radius: 2px;
+	border-radius: 5px;
 	width: 100%;
 	height: 100%;
 	.main-editor {
 		position: absolute;
 		left: 0;
 		top: 0;
-		width: calc(~"100% - 380px");
+		width: calc(~"100% - 390px");
 		height: 100%;
 		box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
 		// border-right: 1px solid #eee;
@@ -29,7 +29,8 @@
 			.kline-editor-container {
 				position: absolute;
 				top: 15px;
-				width: 100%;
+				left: 10px;
+				width: calc(~"100% - 20px");
 				height: calc(~"100% - 15px");
 			}
 		}
@@ -43,14 +44,20 @@
 		position: absolute;
 		right: 0;
 		top: 0;
-		width: 380px;
+		width: 390px;
 		height: 100%;
-		padding-left: 40px;
+		// padding-left: 40px;
 		overflow: hidden;
+		.modal-content-contianer {
+			padding: 0 20px;
+		}
 		.config-editor-inner {
 			margin-top: 20px;
 			.item-title {
 				margin-top: 25px;
+			}
+			input {
+				outline: none;
 			}
 		}
 		.search-info-container {
@@ -335,7 +342,7 @@
 	z-index: 102;
 	top: 25px;
 	background-color: #fff;
-	box-shadow: 0 10px 10px #ccc;
+	box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
 	border-radius: 2px;
 	width: 200px;
 	min-height: 200px;
@@ -343,23 +350,25 @@
 	font-size: 12px;
 	color: #000;
 	.title {
-		height: 30px;
-		font-size: 12px;
-		color: #fff;
-		background-color: #666;
-		margin: 0;
-		padding-top: 8px;
+		line-height: 40px;
+		font-size: 14px;
+		color: #000;
+		// background-color: #666;
+		margin: 0 20px;
+		border-bottom: 1px solid #eee;
 	}
 	.name-container {
-		height: 80px;
+		height: 65px;
 		font-size: 12px;
-		color: #fff;
-		background-color: #666;
+		color: #000;
+		// background-color: #666;
 		margin: 0;
 		h5 {
-			height: 40px;
+			// height: 40px;
 			margin: 0;
-			padding: 10px 20px;
+			line-height: 14px;
+			margin-top: 20px;
+			margin-bottom: 10px;
 		}
 		.input-wrapper {
 			color: #000;
@@ -368,6 +377,12 @@
 			height: 32px;
 			width: calc(~"100% - 40px");
 		}
+	}
+	.label-title {
+		line-height: 30px;
+		margin: 10px 20px 0;
+		font-size: 13px;
+		border-top: 1px solid #eee;
 	}
 	.content {
 		max-height: 200px;
@@ -386,7 +401,8 @@
 			padding-top: 6px;
 			padding-left: 20px;
 			&:hover {
-				background-color: #f6f6f6;
+				background-color: #000;
+				color: #fff;
 			}
 		}
 		&.strech {
@@ -398,7 +414,7 @@
 		position: relative;
 		// bottom: 0;
 		width: 100%;
-		height: 70px;
+		height: 80px;
 		border: none;
 		overflow: hidden;
 		&.heighter {
@@ -419,10 +435,11 @@
 			color: transparent;
 			background-image: url(@icons_url);
 			.icon_position(1, 2, 1);
+			display: inline-block;
 		}
 		.input-wrapper {
 			top: 30px;
-			border: 1px solid #eee;
+			// border: 1px solid #eee;
 			position: relative;
 			height: 32px;
 			// padding: 2px 10px;

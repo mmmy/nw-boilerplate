@@ -37,13 +37,13 @@ class SearchConfigModal extends React.Component {
 
 		$(this.refs.startDate).datepicker(datePickerOptions).on('hide', (e) => { 
 			let dateStr = e.format();
-			searchConfig.dateRange[0] = dateStr;
+			searchConfig.dateRange[0].date = dateStr;
 			that.setState({searchConfig});
 		});
 
 		$(this.refs.endDate).datepicker(datePickerOptions).on('hide', (e) => { 
 			let dateStr = e.format();
-			searchConfig.dateRange[1] = dateStr;
+			searchConfig.dateRange[1].date = dateStr;
 			that.setState({searchConfig});
 		});
 	}
@@ -63,7 +63,8 @@ class SearchConfigModal extends React.Component {
 	renderContent() {
 
 		let { dateRange, additionDate, spaceDefinition } = this.state.searchConfig;
-
+		let d0 = dateRange[0],
+				d1 = dateRange[1];
 		const stockSelected = spaceDefinition.stock;
 		const futureSelected = spaceDefinition.future;
 
@@ -82,17 +83,37 @@ class SearchConfigModal extends React.Component {
 
 		return <div className='modal-content-contianer'>
 			<div className='title'>搜索配置</div>
+			<div className='item-title font-simsun'>统计天数</div>
+			<div className='item-body-container days'>
+				<div className='inputs-wrapper'><button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button></div><span className='font-simsun'>根</span>
+			</div>
 			<div className='item-title font-simsun'>选择时间</div>
 			<div className='item-body-container date'>
-				<input ref='startDate' value={dateRange[0]} onChange={this.changeStartDate.bind(this)}/><span className='date-icon fa fa-calendar-o'></span><span className='zhi'>至</span><input ref='endDate' value={dateRange[1]} onChange={this.changeEndDate.bind(this)}/><span className='date-icon fa fa-calendar-o'></span>
+				<div className="inputs-groups">
+					<div className="inputs-wrapper date"><input ref='startDate' value={dateRange[0].date} onChange={this.changeStartDate.bind(this)}/><span className='date-icon fa fa-calendar-o'></span></div>
+					<div className="times">
+						<input type="number" min='0' max='23' value={d0.hour} onChange={this.changeTime.bind(this, 0,'hour')}/>
+						<span>:</span>
+						<input type="number" min='0' max='59' value={d0.minute} onChange={this.changeTime.bind(this, 0,'minute')}/>
+						<span>:</span>
+						<input type="number" min='0' max='59' value={d0.second} onChange={this.changeTime.bind(this, 0,'second')}/>
+					</div>
+				</div>
+				<span className='zhi'>至</span>
+				<div className="inputs-groups">
+					<div className="inputs-wrapper date"><input ref='endDate' value={dateRange[1].date} onChange={this.changeEndDate.bind(this)}/><span className='date-icon fa fa-calendar-o'></span></div>
+					<div className="times">
+						<input type="number" min='0' max='24' value={d1.hour} onChange={this.changeTime.bind(this, 1,'hour')}/>
+						<span>:</span>
+						<input type="number" min='0' max='59' value={d1.minute} onChange={this.changeTime.bind(this, 1,'minute')}/>
+						<span>:</span>
+						<input type="number" min='0' max='59' value={d1.second} onChange={this.changeTime.bind(this, 1,'second')}/>
+					</div>
+				</div>
 			</div>
 			<div className='item-title font-simsun'>标的类型</div>
 			<div className='item-body-container sid'>
 				<span className={stockClass} onClick={this.toggleType.bind(this, 'stock')}>股票</span><span className={futureClass} onClick={this.toggleType.bind(this, 'future')}>期货</span>
-			</div>
-			<div className='item-title font-simsun'>统计天数</div>
-			<div className='item-body-container days'>
-				<button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button><span className='font-simsun'>天</span>
 			</div>
 			<div className='footer font-simsun'>
 				<button onClick={this.handleSaveConfig.bind(this)}>保存配置</button><span onClick={this.resetState.bind(this)}>重置</span>
@@ -132,17 +153,24 @@ class SearchConfigModal extends React.Component {
 		this.setState({searchConfig});
 	}
 
+	changeTime(index, name, e) {
+		let value = e.target.value || '0';
+		let { searchConfig } = this.state;
+		searchConfig.dateRange[index][name] = value;
+		this.setState({searchConfig});
+	}
+
 	changeStartDate(e) {
 		let str = e.target.value;
 		let { searchConfig } = this.state;
-		searchConfig.dateRange[0] = str;
+		searchConfig.dateRange[0].date = str;
 		this.setState({searchConfig});
 	}
 	
 	changeEndDate(e) {
 		let str = e.target.value;
 		let { searchConfig } = this.state;
-		searchConfig.dateRange[1] = str;
+		searchConfig.dateRange[1].date = str;
 		this.setState({searchConfig});
 	}
 

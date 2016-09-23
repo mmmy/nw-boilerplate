@@ -743,7 +743,7 @@ resizeChart1() {
 			.drawPaths(false)
 			//.colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
 			//.colors(['#0f0'])
-			.linearColors(['#555555','#dadada'])
+			.linearColors(['#313131','#dadada'])
 			//.linearColors(['#ddd','#333'])
 			.colorDomain([0, this.industryGroup.size() - 1])
 			.minAngleForLabel(30)

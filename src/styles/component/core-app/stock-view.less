@@ -12,13 +12,16 @@
   z-index: 1;
   .container-stockview-inner {
   	// border: 1px solid red;
-  	background-color: #000;
+  	// background-color: #000;
+  	z-index: 1;
   	box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   	position: absolute;
   	left: 20px;
   	top: 10px;
   	width: calc(~"100% - 40px");
   	height: calc(~"100% - 20px");
+  	border-radius: 5px;
+  	overflow: hidden;
   }
   // border-bottom: 1px solid #fafafa;
 	.left-toolbar-container {
@@ -58,7 +61,9 @@
 		left: @left-width;
 		width: calc(~"100% -"@left-width);
 		height: 100%;//calc(~"100% - 20px");
-
+		border-top-right-radius: 5px;
+		border-bottom-right-radius: 5px;
+		overflow: hidden;
 		&.favorites {
 			background-color: #fff;
 			height: 100%;
@@ -118,7 +123,7 @@
 			.delete {
 				background-image: url('./image/trash-btn.png');
 			}
-			&.active, &:hover {
+			&:hover {
 				background-color: #eee;
 				// background-image: linear-gradient(to right,rgba(0, 0, 0, 0),#d4d4d4);
 				button{
@@ -127,6 +132,10 @@
 					margin-right: 10px;
 					margin-top: 4px;
 				}
+			}
+			&.active {
+				background-color: #000;
+				color: #fff;
 			}
 		}
 
@@ -182,12 +191,14 @@
 				color: transparent;
 			}
 			.new-folder {
-				background-image: url('./image/check.png');
+				background-image: url(@icons_url);
+				.icon_position(2,5,3);
 			}
 			.clear {
-				background-image: url('./image/clear.png');
+				background-image: url(@icons_url);
+				.icon_position(2,7,0);
 				&:hover {
-					background-position: 0 100%;
+					// background-position: 0 100%;
 				}
 			}
 		}
@@ -199,12 +210,14 @@
 		// border: 1px solid green;
 		background: #fff;
 		// box-shadow: -12px 0 16px -12px rgba(0, 0, 0, 0.1);
-		width: calc(~"100% - 200px");
+		width: calc(~"100% - 200px - 10px");
 		height: 100%;
 		overflow: scroll;
+		border-top-left-radius: 5px;
+		border-bottom-right-radius: 5px;
 		.scrollbar(@width:6px);
 		.scrollbar-track(@background-color:transparent);
-		.scrollbar-thumb(@background-color: @ks-color-gray-4);
+		.scrollbar-thumb(@background-color: #000);
 		>.history-items-wrapper {
 			float: left;
 			padding: 30px;
@@ -476,6 +489,7 @@
 			height: calc(~"100% - 40px - 20px");
 			background: #fff;
 			margin: 0 20px;
+			border-radius: 5px;
 			// box-shadow: 0 0 20px #ddd;
 		}
 	}
