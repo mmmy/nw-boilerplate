@@ -33,7 +33,7 @@ Promise.all([
 ]).then(() => {
 
   initJquery();
-
+  require('./update/ksUpdate');
   showLogin(loginSuccess);
   // initAfterLogin();
 
