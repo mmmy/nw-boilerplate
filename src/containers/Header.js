@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import LoginSmall from '../components/LoginSmall';
+// import LoginSmall from '../components/LoginSmall';
 import {connect} from 'react-redux';
 import {accountActions} from '../flux/actions';
 import { removeAccount } from '../backend/localStorage';
@@ -124,7 +124,7 @@ class Header extends React.Component {
 	handleLogined(username, password, autoLogin, cb) {
 		let {dispatch} = this.props;
 		dispatch(accountActions.setUser(username, password, autoLogin));
-		$('.container-toggle').css('z-index', '');
+		// $('.container-toggle').css('z-index', '');
 		cb && cb();
 	}
 

@@ -138,6 +138,7 @@ let deleteOneFavorite = (name, dataObj, clean) => { //clean: bool, true: 永久�
 	name = name || _getNameByData(dataObj);
 	let fileName = _getFileByName(name);
 	let state = dataObj.state || {isTrashed:true, trashDate:null};
+	state.isTrashed = true;
 	state.trashDate = new Date();
 	dataObj.state = state;
 	let data = _favoritesData[fileName];
@@ -165,7 +166,7 @@ let recoverOneFavorite = (dataObj) => {
 	return true;
 };
 
-let updateFavorites = (name, dataObj) => {
+let updateFavorites = (name, dataObj, showMessage) => {
 	name = name || _getNameByData(dataObj);
 	try {
 		let fileName = _getFileByName(name);
@@ -174,7 +175,7 @@ let updateFavorites = (name, dataObj) => {
 		let index = dataArr.indexOf(dataObj);
 		let filePath = path.join(_favoritesPath, fileName);
 		saveFile(filePath, JSON.stringify(data));
-		showSuccessMessage('保存成功!');
+		showMessage && showSuccessMessage('保存成功!');
 		return true;
 	} catch (e) {
 		console.error(e);

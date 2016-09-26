@@ -11,7 +11,8 @@ let getSymbolHistory = (postData, callback, errorCallback) => {
   };
 
   const errorCb = (err) => {
-    callback && callback(err);
+    console.error('getSymbolHistory error', err);
+    // callback && callback(err);
   };
 
   request(options, requestCb, errorCb, JSON.stringify(postData));

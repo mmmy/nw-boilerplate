@@ -315,7 +315,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.fillStyle = manGradient;//'rgba(200,200,200,0.15)';
 		ctx.fillRect(rangeX1, headerHeight, rangeX2 - rangeX1, height);
 
-		ctx.fillStyle = '#B70017';
+		ctx.fillStyle = $.keyStone.configDefault.brownRed || '#B70017';
 		// ctx.fillRect(rangeX1, 0, rangeX2 - rangeX1, headerHeight);
 		roundRect(ctx, rangeX1, 0, rangeX2 - rangeX1, headerHeight, {tl:3,tr:3}, true);
 		//text
@@ -443,7 +443,7 @@ let drawAxisY = (canvas, priceRange, options) => {
 	if(hoverY >=0) {
 		// let ratio = getCanvasPixRatio();
 		hoverY *= ratio;
-		let rectH = 20;
+		let rectH = 20 * ratio;
 		ctx.fillStyle = '#222';
 		let priceAtHover = hoverY /rate + priceMax;
 		ctx.fillRect(0, hoverY - rectH / 2, width, rectH);
@@ -494,7 +494,7 @@ let drawAxisX = (canvas, len, options) => {
 
 	//hoverIndex
 	if(hoverIndex>=0) {
-		let rectW = 50;
+		let rectW = 50 * ratio;
 		let center = hoverIndex*spaceX + spaceX/2;
 		center = _toInt(center);
 		ctx.fillStyle = '#222';
@@ -549,6 +549,7 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	//selectedIndex
 	if(selectedIndex >=0) {
 		let rectW = showTime ? 120 : 60;
+		rectW *= ratio;
 		let center = selectedIndex*spaceX + spaceX/2;
 		center = _toInt(center);
 		ctx.fillStyle = '#BD3035';
@@ -560,6 +561,7 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	//hoverIndex
 	if(hoverIndex>=0) {
 		let rectW = showTime ? 120 : 70;
+		rectW *= ratio;
 		let timeText = timeArr[hoverIndex];
 		let text = showTime ? timeText : timeText.slice(0, 10);
 		let center = hoverIndex*spaceX + spaceX/2;

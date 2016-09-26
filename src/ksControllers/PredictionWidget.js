@@ -60,7 +60,7 @@ let PredictionWidget = function(dom, config){
 		emptyLeftLen: 10,
 		activeIndex: 0,
 		lineColor: 'rgba(200,200,200,0.5)',
-		activeColor: '#862020',
+		activeColor: $.keyStone.configDefault.brownRed || '#862020',
 		visibilitys: null
 	};
 

@@ -254,7 +254,7 @@ SearchEditor.prototype.handleEndDrawRange = function(range) { //
 SearchEditor.prototype.handleRemoveRange = function() {
 	this._floatTools.rangeTool.hide();
 }
-
+//修改名字
 SearchEditor.prototype._handleRename = function(e) {
 	// this._favoritesManager.updateFavorites(this._dataObj)
 	let name = $(e.target).siblings('input').val() || '';

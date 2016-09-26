@@ -257,7 +257,9 @@ class SortBar extends React.Component {
 
 	filterSymbol(symbol){
 		this.initDimensions();
-		this.symbolDim.filter(function(d){ return d.indexOf(symbol) >=0; });
+		this.searchDim.filter(function(d){ 
+			return (typeof d[0] == 'string' && d[0].indexOf(symbol) >=0) || typeof d[1] == 'string' && d[1].indexOf(symbol) >= 0;
+		});
 		DC.redrawAll();
 		this.props.dispatch(filterActions.setFilterSymbol(symbol));
 	}
@@ -265,7 +267,10 @@ class SortBar extends React.Component {
 	initDimensions() {
 		let {crossFilter} = this.props;
 		if(this.oldCrossFilter !== crossFilter) {
-			this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
+			this.searchDim = crossFilter.dimension(function(d){ 
+				let name = d.metaData && d.metaData.name;
+				return [d.symbol, name];
+			});
 			this.similarityDim = crossFilter.dimension(function(d) {return Math.floor(d.similarity*1000) / 10; });
 			this.oldCrossFilter = crossFilter;
 		}
