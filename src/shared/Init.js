@@ -22,6 +22,15 @@ let initJqueryPlugins = () => {
 			    }
 			});
 	}
+	//ksDefaultConfig
+	$.extend({
+		keyStone: {
+			configDefault:{
+				brownRed: '#8D151B',
+				brownRedLight: '#AC1822'
+			}
+		}
+	});
 	//load tradingview libs
 	
 	/*let TradingView =*/ require('../../tradingview/charting_library/charting_library');
@@ -58,7 +67,10 @@ let initGolbalKeyEvent = () => {
 		if(e.altKey && e.ctrlKey && e.shiftKey) {
 			switch(e.keyCode) {
 				case 73: //i
-					window._gui && window._gui.Window.get().showDevTools();
+					// window._gui && window._gui.Window.get().showDevTools();
+					setTimeout(() => {
+						window.require('nw.gui').Window.get().showDevTools();
+					},100);
 					break;
 				default:
 					break;
