@@ -133,10 +133,12 @@
 				color: transparent;
 			}
 			.rename {
-				background-image: url('./image/pencil.png');
+				background-image: url(@icons_url);
+				.icon_position(2,0,1,5px,5px);
 			}
 			.delete {
-				background-image: url('./image/trash-btn.png');
+				background-image: url(@icons_url);
+				.icon_position(2,1,1,5px,5px);
 			}
 			&:hover {
 				background-color: #eee;
@@ -149,8 +151,14 @@
 				}
 			}
 			&.active {
-				background-color: #000;
+				background-color: @brown-red;
 				color: #fff;
+				.rename {
+					.icon_position(4,0,1,5px,5px);
+				}
+				.delete {
+					.icon_position(4,1,1,5px,5px);
+				}
 			}
 		}
 
@@ -171,7 +179,8 @@
 				background-color: transparent;
 			}
 			.delete {
-				background-image: url('./image/trash-btn.png');
+				background-image: url(@icons_url);
+				.icon_position(1,1,1,5px,5px);
 				margin-top: 4px;
 			}
 			&:hover {
@@ -182,7 +191,7 @@
 					margin-right: 20px;
 					display: inline;
 					&:hover {
-						background-position: 0 100%;
+						.icon_position(3,1,1,5px,5px);
 					}
 				}
 			}

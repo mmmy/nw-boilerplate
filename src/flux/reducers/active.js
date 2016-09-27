@@ -6,7 +6,8 @@ const initialState = {
   dateStart: null,
   dateEnd: null,
   similarity: null,
-  yieldRate: null
+  yieldRate: null,
+  industry: ''
 };
 
 export default function active(state = initialState, action) {
@@ -18,7 +19,7 @@ export default function active(state = initialState, action) {
       let { active } = action;
       let { id } = active;
       if (id !== state.id){
-        let { symbol, dateStart, dateEnd, similarity, yieldRate } = active;
+        let { symbol, dateStart, dateEnd, similarity, yieldRate, industry } = active;
         return {
         	...state,
         	id: id,
@@ -26,7 +27,8 @@ export default function active(state = initialState, action) {
           dateStart: dateStart,
           dateEnd: dateEnd,
           similarity: similarity,
-          yieldRate: yieldRate
+          yieldRate: yieldRate,
+          industry: industry
         };
       }
       return state;
@@ -36,7 +38,7 @@ export default function active(state = initialState, action) {
       if (Object.keys(pattern0).length === 0 && pattern0.constructor === Object) {
         return state;
       } else {
-        let { symbol, begin, end, similarity } = pattern0;
+        let { symbol, begin, end, similarity, industry } = pattern0;
         let yieldRate = pattern0.yield;
         return {
           ...state,
@@ -45,7 +47,8 @@ export default function active(state = initialState, action) {
           dateStart: begin,
           dateEnd: end,
           similarity: similarity,
-          yieldRate: yieldRate
+          yieldRate: yieldRate,
+          industry: industry
         };
       }
 

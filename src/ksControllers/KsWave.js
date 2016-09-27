@@ -4,7 +4,7 @@ import getSineWaves from '../components/lib/sine-waves';
 function KsWave(canvas, config){
 	this._canvas = canvas;
 	this._slow = config && config.slow || true;
-	this._slowSpeed = 0.4;
+	this._slowSpeed = 1;
 	this._baseSpeed = 3;
 	this._waves = null;
 	this._init();
@@ -25,7 +25,7 @@ KsWave.prototype._init = function() {
     wavesWidth: "200%",
     ease: "SineInOut",
     waves: [{
-        timeModifier: 3,
+        timeModifier: 4,
         lineWidth: 1,
         amplitude: 50,
         wavelength: 100,

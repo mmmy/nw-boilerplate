@@ -490,7 +490,7 @@ favoritesController.addFavorites  = (name, dataObj) => {
 };
 
 favoritesController.updateFavorites = (dataObj) => {
-	favoritesManager.updateFavorites(null, dataObj); //更新数据
+	favoritesManager.updateFavorites(null, dataObj, true); //更新数据
 	// 更新UI
 	_refreshFavoritesBody();
 };

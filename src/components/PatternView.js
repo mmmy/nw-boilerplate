@@ -138,7 +138,7 @@ class PatternView extends React.Component {
 		}
 		//#2
 		let matchPie = getPieSlice(industry);
-		let piePath = matchPie.firstChild;// && matchPie.lastChild;
+		let piePath = matchPie && matchPie.firstChild;// && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = color;
 			matchPie.dispatchEvent(new window.MouseEvent('mouseenter'));
@@ -209,7 +209,7 @@ class PatternView extends React.Component {
 
     let dateStart = begin;//kLine[0][0];
     let dateEnd = end;//kLine[kLine.length - 5][0];
-    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate));
+    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate, industry));
 
 
     // let oneDay = 60 * 60 * 24;

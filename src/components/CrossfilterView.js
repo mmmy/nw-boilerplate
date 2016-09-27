@@ -16,7 +16,7 @@ import DC from 'dc';
 import classnames from 'classnames';
 import _ from 'underscore';
 import lodash from 'lodash';
-import { setScatters, setPieCollection, setCountBars } from '../cache/crossfilterDom';
+import { setScatters, setPieCollection, setCountBars, getPieSlice } from '../cache/crossfilterDom';
 
 import { filterActions } from '../flux/actions';
 import store from '../store';
@@ -683,15 +683,28 @@ resizeChart1() {
 		this.positionBubbleChart = positionBubbleChart;
 	}
 
-
+	triggerActiveHover() {
+		let active = store.getState().active;
+		let industry = active.industry;
+		let matchPie = getPieSlice(industry);
+		let piePath = matchPie && matchPie.firstChild;// && matchPie.lastChild;
+		console.assert(piePath, 'piePath do not exist!', industry);
+		if(piePath) {
+			console.log('fuck hover',matchPie);
+			let color = $.keyStone.configDefault.brownRed || '#b61c15';
+			piePath.style.fill = '';
+			matchPie.dispatchEvent(new window.MouseEvent('mouseenter'));
+		}
+	}
 	//显示行业百分比信息
-	setIndustryInfo(show = true, event) {
-		//console.log(event);
+	setIndustryInfo(showHover = true, event) {
+		console.log(event, 'fuck event!!!');
 
-		if(!show) {
+		if(!showHover) {
 			this.refs.industry_percent.innerHTML = '';
 			this.refs.industry_name.innerHTML = '';
 			$(this.refs.industry_percent.parentNode).hide();
+			this.triggerActiveHover();
 			return;
 		}
 
@@ -770,6 +783,9 @@ resizeChart1() {
 			let state = store.getState();
 			let pattern = state.patterns.rawData[state.active.id];
 			setPieCollection(pieSlices[0], pattern && pattern.industry);
+			
+			that.triggerActiveHover();
+
 		});
 		//industryPieChart.on('hover', (e) => { console.log(e); })
 		this.industryPieChart = industryPieChart;

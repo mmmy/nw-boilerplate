@@ -1,6 +1,6 @@
 import * as types from '../constants/ActionTypes';
 
-let setActiveId = (id, symbol, dateStart, dateEnd, similarity, yieldRate) => {
+let setActiveId = (id, symbol, dateStart, dateEnd, similarity, yieldRate, industry) => {
 	return {
     type: types.SET_ACTIVE_ID,
     active: {
@@ -9,7 +9,8 @@ let setActiveId = (id, symbol, dateStart, dateEnd, similarity, yieldRate) => {
       dateStart: dateStart,
       dateEnd: dateEnd,
       similarity: similarity,
-      yieldRate: yieldRate
+      yieldRate: yieldRate,
+      industry: industry
     }
   };
 };
