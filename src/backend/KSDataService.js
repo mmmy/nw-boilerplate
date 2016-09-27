@@ -13,7 +13,7 @@ let { patternOptions } = config;
  * @param  {[type]} chunks [description]
  * @return {[type]}        [description]
  */
-let chunksToKline = (chunks) => {
+let chunksToKline = (chunks, metaAdj) => {
 	
 	let klineData = [];
 	
@@ -25,8 +25,8 @@ let chunksToKline = (chunks) => {
 		if(type === 'RecordChunk' || type === undefined) {
 			
 			chunkKline = chunk.records.map((record) => {
-				let { datetime, open, close, low, high } = record;
-				return [datetime, open, close, low, high];
+				let { datetime, open, close, low, high, adjfactor=1 } = record;
+				return [datetime, open*adjfactor/metaAdj, close*adjfactor/metaAdj, low*adjfactor/metaAdj, high*adjfactor/metaAdj];
 			});
 			
 		} else {
@@ -87,8 +87,8 @@ let postSymbolData = (startIndex, args, bars, cb, errorCb) => {
 			let mergeData = () => {
 
 				let klineArr = resObj.batchDataSet.map(({metaData, chunks}) => {
-
-					let kLine = chunksToKline(chunks);  //k线数据
+					let metaAdj = metaData.adjfactor || 1;
+					let kLine = chunksToKline(chunks, metaAdj);  //k线数据
 					let yieldRate = calcYieldRate(kLine, bars);
 
 					return {
