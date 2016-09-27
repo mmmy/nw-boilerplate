@@ -3,7 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var assert = require('assert');
-var _BASEPATH = './Cache'; 
+var _BASEPATH = '../Cache'; 
 var _Cache = {};
 var _mTime = {};
 var _limitTime = 3600 * 2 * 1000;
