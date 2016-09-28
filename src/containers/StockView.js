@@ -136,14 +136,13 @@ class StockView extends React.Component {
 					debug: false,
 				}
 			};
-
 		return (
 	    <div ref='container' className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
 	    	<div className='container-stockview-inner'>
 	      	<div className='left-toolbar-container'>
-	      		<div><button ref='curve_btn' className='flat-btn curve active' onClick={ this.showSockView.bind(this) }>quxian</button></div>
-	      		<div><button ref='favorites_btn' className='flat-btn favorites' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
-	      		<div><button ref='history_btn' className='flat-btn history' onClick={ this.showHistory.bind(this) }>history</button></div>
+	      		<div><button data-kstooltip="K线图" ref='curve_btn' className='flat-btn curve active' onClick={ this.showSockView.bind(this) }>quxian</button></div>
+	      		<div><button data-kstooltip="收藏夹" ref='favorites_btn' className='flat-btn favorites' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
+	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onClick={ this.showHistory.bind(this) }>history</button></div>
 	      	</div>
 
 		      <div ref='stock_view' className='content-wrapper'>
