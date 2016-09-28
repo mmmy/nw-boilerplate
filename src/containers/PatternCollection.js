@@ -71,7 +71,8 @@ class PatternCollection extends React.Component {
 			//显示垃圾桶数目
 			// setTimeout(() => {
 				let trashedNumber = _idTrashed.reduce((pre,cur) => { return cur ? (pre + 1) : pre; }, 0);
-				$('.trashed-number', '.pattern-statistics-panel').text(trashedNumber);
+				let trashedNumberStr = trashedNumber > 0 ? (trashedNumber+'') : '';
+				$('.trashed-number', '.pattern-statistics-panel').text(trashedNumberStr);
 			// });
 		}, 100, {leading: true});
 		//this._idTrashed = _idTrashed;

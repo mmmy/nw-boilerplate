@@ -26,6 +26,7 @@ let initJqueryPlugins = () => {
 	$.extend({
 		keyStone: {
 			configDefault:{
+				brownRedDark: '#750905',
 				brownRed: '#8D151B',
 				brownRedLight: '#AC1822'
 			}

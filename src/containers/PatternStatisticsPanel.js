@@ -82,11 +82,12 @@ class PatternStatisticsPanel extends React.Component {
 	render(){
 		let { filterNumber, total } = this.statisticsData();
 		let { trashedNumber, showTrashPanel } = this.props;
+		let trashedNumberStr = trashedNumber > 0 ? (trashedNumber+'') : '';
 		return (
       <div className="pattern-statistics-panel flex font-simsun">
       	<span>筛选结果:<span className='black font-number'>{filterNumber}</span>{/*<button onClick={onTrash}><i className='fa fa-trash'></i></button>*/}</span>
       	<span>结果总数:<span className='black font-number'>{total}</span></span>
-      	<span><button data-kstooltip="查看剔除的图形" className='trash-all-button' ref='trash_panel_container' onClick={showTrashPanel} onBlur={this.removeTrashPanel.bind(this)}><i className='fa fa-trash'></i><span className='trashed-number'>{trashedNumber}</span></button></span>
+      	<span><button data-kstooltip="查看剔除的图形" className='trash-all-button' ref='trash_panel_container' onClick={showTrashPanel} onBlur={this.removeTrashPanel.bind(this)}><i className='fa fa-trash'></i><span className='trashed-number'>{trashedNumberStr}</span></button></span>
       </div>
     );
 	}

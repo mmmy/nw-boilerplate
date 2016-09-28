@@ -167,9 +167,11 @@ class StockView extends React.Component {
 		      			<button className='flat-btn clear' onClick={this.handleClearTrashedPatterns.bind(this)}>清空</button>
 		      		</h6>
 		      	</div>
-		      	<div ref='favorites_body_container' className='body-container'>
+		      	<div className='body-container-wrap'>
+			      	<div ref='favorites_body_container' className='body-container'>
 
-		      	</div>
+			      	</div>
+			      </div>
 		      </div>
 
 		      <div ref='history_view' className='content-wrapper history hide'>
@@ -179,8 +181,11 @@ class StockView extends React.Component {
 
 		      		</div>
 		      	</div>
-		      	<div ref='history_body_container' className='body-container'>
+		      	<div className='body-container-wrap'>
+		      		<div ref='history_body_container' className='body-container'>
 
+		      		</div>
+		      		<div className='shadow-bottom'></div>
 		      	</div>
 		      </div> 
 	    	</div>
