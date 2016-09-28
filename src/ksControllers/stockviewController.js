@@ -128,8 +128,8 @@ let getIntervalString = (interval) => {
 let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 trashed
 	let startDateStr = pattern.dateRange && new Date(pattern.dateRange[0]).toISOString() || '',
 			endDateStr = pattern.dateRange && new Date(pattern.dateRange[1]).toISOString() || '';
-	startDateStr = startDateStr.slice(0, 10).replace(/-/g,'.');
-	endDateStr = endDateStr.slice(0, 10).replace(/-/g,'.');
+	startDateStr = startDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
+	endDateStr = endDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
 
 	let state = pattern.state || {};
 
@@ -149,7 +149,7 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 	// let footer = `<div class='btn-wrapper'><button class='re-search'>重新搜索</button><button class='go-detail'>查看详情</button></div>`;
 
 	//favorites 和 history 不一样
-	let fromInfoContent = (type === 0 || type === 2) ? pattern.symbol : (pattern.favoriteFolder ? `收藏夹/${pattern.favoriteFolder}` : `${pattern.symbol}<br/>${startDateStr}~${endDateStr}<br/>${getIntervalString(pattern.interval)}`); 
+	let fromInfoContent = (type === 0 || type === 2) ? pattern.symbol : (pattern.favoriteFolder ? `收藏夹/${pattern.favoriteFolder}` : `${pattern.symbol}<br/>${startDateStr}<br/>${endDateStr}<br/>${getIntervalString(pattern.interval)}`); 
 	let fromInfo = `<p class='from-info font-arial'><span class='font-simsun'>来源</span>:${fromInfoContent}</p>`;
 
 	let favoriteFolder = type === 0 ? _activeName : '';
@@ -398,7 +398,7 @@ let _handleRenameFolder = (event) => {
 	let $folderNode = $(event.target).closest('.favorites-folder');
 	let data = $folderNode.data();
 	let { name } = data;
-	let $inputGroup = $(`<div class='ks-input-wrapper'><input /><span class='flat-btn button ks-check'>check</span><span class='flat-btn button ks-delete'>delete</span></div>`);
+	let $inputGroup = $(`<div class='ks-input-wrapper border'><input /><span class='flat-btn button ks-check'>check</span><span class='flat-btn button ks-delete'>delete</span></div>`);
 	let $renameInput = $(`<div class='rename-input-container'></div>`).append($inputGroup);
 	
 	$folderNode.after($renameInput);

@@ -690,7 +690,7 @@ resizeChart1() {
 		let piePath = matchPie && matchPie.firstChild;// && matchPie.lastChild;
 		console.assert(piePath, 'piePath do not exist!', industry);
 		if(piePath) {
-			console.log('fuck hover',matchPie);
+			// console.log('fuck hover',matchPie);
 			let color = $.keyStone.configDefault.brownRed || '#b61c15';
 			piePath.style.fill = '';
 			matchPie.dispatchEvent(new window.MouseEvent('mouseenter'));

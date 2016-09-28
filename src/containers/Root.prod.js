@@ -20,7 +20,8 @@ class Root extends React.Component {
 	componentDidMount() {
 		console.log('rooot did mount');
 		setTimeout(waitingWidget.removeWaiting, 500);
-		require('../shared/initDev')();
+		// require('../shared/initDev')();
+		require('../shared/initTooltip');
 	}
 
 	render(){

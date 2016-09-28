@@ -31,7 +31,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	betterCanvasSize(dom);
 
 	let width = dom.width;
-	let height = dom.height;
+	let height = dom.height - 1;
 
 	let min = Infinity,
 			max = -Infinity;

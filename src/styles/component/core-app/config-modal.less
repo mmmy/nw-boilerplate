@@ -206,11 +206,11 @@
 			border: none;
 			font-size: 12px;
 			padding: 6px;
-			background-color: @brown-red-light;//@config-modal-button-background-color;
+			background-color: @brown-red;//@config-modal-button-background-color;
 			border-radius: 2px;
 			color: #fff;
 			&:hover {
-				background-color: @brown-red;
+				.ks-button-hover();
 				box-shadow: 0 3px 10px 0 #eee;
 			}
 		}
@@ -273,9 +273,9 @@
 
 	.btn-yes {
 		left: 60px;
-		background-color: @brown-red-light;
+		background-color: @brown-red;
 		&:hover {
-			background-color: @brown-red;
+			.ks-button-hover();
 		}
 	}
 

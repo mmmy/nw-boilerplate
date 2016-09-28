@@ -117,7 +117,7 @@ let searchPattern = (args, cb, errorCb) => {
 			};
 		});
 
-		console.log(resObj.results);
+		// console.log(resObj.results);
 		// console.info('第二步: 获取kline具体数据 [ 开始 ]');
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
 		let startIndex = 0,

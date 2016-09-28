@@ -45,7 +45,7 @@ class StockView extends React.Component {
 		let datafeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0);
 		setDataFeed(datafeed);
 		let options = {
-				symbol: 'AU',//'OKCOIN.SZ',
+				symbol: '金',//'OKCOIN.SZ',
 				interval: '5',
 				container_id: STOCK_VIEW,
 				//	BEWARE: no trailing slash is expected in feed URL
@@ -136,14 +136,13 @@ class StockView extends React.Component {
 					debug: false,
 				}
 			};
-
 		return (
 	    <div ref='container' className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
 	    	<div className='container-stockview-inner'>
 	      	<div className='left-toolbar-container'>
-	      		<div><button ref='curve_btn' className='flat-btn curve active' onClick={ this.showSockView.bind(this) }>quxian</button></div>
-	      		<div><button ref='favorites_btn' className='flat-btn favorites' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
-	      		<div><button ref='history_btn' className='flat-btn history' onClick={ this.showHistory.bind(this) }>history</button></div>
+	      		<div><button data-kstooltip="K线图" ref='curve_btn' className='flat-btn curve active' onClick={ this.showSockView.bind(this) }>quxian</button></div>
+	      		<div><button data-kstooltip="收藏夹" ref='favorites_btn' className='flat-btn favorites' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
+	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onClick={ this.showHistory.bind(this) }>history</button></div>
 	      	</div>
 
 		      <div ref='stock_view' className='content-wrapper'>
@@ -168,9 +167,11 @@ class StockView extends React.Component {
 		      			<button className='flat-btn clear' onClick={this.handleClearTrashedPatterns.bind(this)}>清空</button>
 		      		</h6>
 		      	</div>
-		      	<div ref='favorites_body_container' className='body-container'>
+		      	<div className='body-container-wrap'>
+			      	<div ref='favorites_body_container' className='body-container'>
 
-		      	</div>
+			      	</div>
+			      </div>
 		      </div>
 
 		      <div ref='history_view' className='content-wrapper history hide'>
@@ -180,8 +181,11 @@ class StockView extends React.Component {
 
 		      		</div>
 		      	</div>
-		      	<div ref='history_body_container' className='body-container'>
+		      	<div className='body-container-wrap'>
+		      		<div ref='history_body_container' className='body-container'>
 
+		      		</div>
+		      		<div className='shadow-bottom'></div>
 		      	</div>
 		      </div> 
 	    	</div>

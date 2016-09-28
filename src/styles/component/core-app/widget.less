@@ -79,8 +79,8 @@
 	height: 480px;
 	z-index: 10001;
 	background-color: #fff;
-	box-shadow: 0 0 15px 0 #aaa;
-
+	border-radius: 5px;
+	.modal-box-shadow();
 	.close-icon {
 		float: right;
 		//display: inline-block;
@@ -130,11 +130,11 @@
 			width: 160px;
 			font-size: 12px;
 			padding: 6px;
-			background-color: @config-modal-button-background-color;
+			color: #fff;
+			background-color: @brown-red;
 			border-radius: 2px;
 			&:hover {
-				background-color: #fff;
-				box-shadow: 0 3px 10px 0 #eee;
+				.ks-button-hover();
 			}
 		}
 		.info-container {
@@ -227,7 +227,7 @@
 			outline: none;
 			width: 100%;
 			font-size: 17px;
-			background-color: @config-modal-button-background-color;
+			background-color: @brown-red;
 			padding: 8px;
 			border-radius: 2px;
 			&:hover {
@@ -387,7 +387,7 @@
 		.autologin-button {
 		  // -webkit-app-region: no-drag;
 		  &.checked {
-		  	color: @brown-red-light;
+		  	color: @brown-red;
 		  }
 		}
 		.icon-not-check {
@@ -413,7 +413,7 @@
 			height: 36px;
 			font-size: 16px;
 			color: #fff;
-			background-color: @brown-red;//@config-modal-button-background-color;
+			background-color: @brown-red;
 			padding: 2px;
 			letter-spacing: 10px;
 			border-radius: 2px;
@@ -475,12 +475,18 @@
 		background-image: url(@icons_url);
 		.icon_position(2; 5; 3);
 		display: inline-block;
+		&:hover {
+			.icon_position(0,5,3,0,1px);
+		}
 	}
 	.ks-delete {
 		right: 0;
 		background-image: url(@icons_url);
 		.icon_position(2; 7; 0);
 		display: inline-block;
+		&:hover {
+			.icon_position(0,7,0);
+		}
 	}
 	&.border {
 		border: 1px solid #eee;
@@ -554,3 +560,18 @@
 	}
 }
 
+//tooltip
+.ks-tooltip-container {
+	position: fixed;
+	background-color: #000;
+	color: #fff;
+	font-size: 12px;
+	border-radius: 2px;
+	overflow: hidden;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	.tooltip-describe{
+		line-height: 1;
+		margin: 5px 8px;
+		display: inline-block;
+	}
+}

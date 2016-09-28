@@ -1,4 +1,4 @@
-
+//弃用
 module.exports = () => {
 	let scriptNode = window.document.querySelector('script#dev_script');
 	if(!scriptNode) {

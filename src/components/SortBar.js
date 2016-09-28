@@ -172,7 +172,7 @@ class SortBar extends React.Component {
 				<div className='toolbar-item item0'><h5 className='left-title'>匹配相似结果</h5></div>
 				<div className='toolbar-item item1'>
 					<button className='pattern-bar-btn' onFocus={ this.toggleSearchPanel.bind(this, true) } onBlur={ this.toggleSearchPanel.bind(this, false) }>
-						<span className={searchIconClass} ref='search_icon'></span>
+						<span data-kstooltip="关键字搜索" className={searchIconClass} ref='search_icon'></span>
 						<div className={searchPanelClass} ref='search_panel'><input value={searchSymbol} onChange={this.changeSearchSymbol.bind(this)} ref='search_input' /><i className='fa fa-close' onClick={this.clearSearchInput.bind(this)}></i></div>
 					</button>
 					{/*<button className='pattern-bar-btn' onFocus={ this.showChildPanel.bind(this, 2) } onBlur={ this.hideChildPanel.bind(this) }>
@@ -180,11 +180,11 @@ class SortBar extends React.Component {
 						{this.renderChildPanel(2)}
 					</button>*/}
 					<button className='pattern-bar-btn' onClick={ this.showChildPanel.bind(this, 1) } onBlur={ this.hideChildPanel.bind(this) }>
-						<span className={filterIconClass}></span>
+						<span data-kstooltip="收益率过滤" className={filterIconClass}></span>
 						{this.renderChildPanel(1)}
 					</button>
 					<button className='pattern-bar-btn' onClick={ this.showChildPanel.bind(this, 0) } onBlur={ this.hideChildPanel.bind(this) }>
-						<span className={'icon sort '+(panelType===0 ? 'active' : '')}></span>
+						<span data-kstooltip="排序" className={'icon sort '+(panelType===0 ? 'active' : '')}></span>
 						{this.renderChildPanel(0)}
 					</button>
 

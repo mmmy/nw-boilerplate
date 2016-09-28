@@ -146,7 +146,7 @@
 
 //
 //track
-.scrollbar-track(@box-shadow:none;@border-radius:0;@background-color:#fff; @border:none){
+.scrollbar-track(@box-shadow:none;@border-radius:0;@background-color:transparent; @border:none){
 	&::-webkit-scrollbar-track
 	{
 		-webkit-box-shadow:@box-shadow;
@@ -161,10 +161,21 @@
 	    -webkit-appearance: none;
 	    width: @width;
 	    height: @height;
+	    background: transparent;
+	    *{
+	    	background: transparent;
+	    }
+	    &:no-button {
+	    	width: 0;
+	    	height: 0;
+	    }
+	}
+	&::-webkit-scrollbar-track-piece {
+		background: transparent;
 	}
 }
 // thumb
-.scrollbar-thumb(@background-color:@ks-color-blue-dark;@box-shadow:none;@border-radius:3px; @border:none){
+.scrollbar-thumb(@background-color:#000;@box-shadow:none;@border-radius:3px; @border:none){
 	&::-webkit-scrollbar-thumb {
 		border: @border;
 	    border-radius: @border-radius;
@@ -295,10 +306,11 @@
 		padding: 7px;
 		border: none;
 		outline: none;
-		background-color: @brown-red-light;
+		background-color: @brown-red;
 		color: white;
 		&:hover {
-			background-color: @brown-red;//lighten(@lulu-red1, 10%)
+			// background-color: @brown-red;//lighten(@lulu-red1, 10%)
+			.ks-button-hover();
 		}
 	}
 }
@@ -339,5 +351,10 @@
 		-webkit-appearance: none;
 		margin: 0;
 	}
+}
+
+.ks-button-hover() {
+	background-color: @brown-red-dark;
+	color: #fff;
 }
 
