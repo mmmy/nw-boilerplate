@@ -6,6 +6,8 @@ let _comparatorWindow = null;
 
 let _searchRangeCache = null;
 
+let _onComsubscribes = [];
+
 let _getStockViewWindow = () => {
 	_stockViewWindow = _stockViewWindow || document.querySelector(`#${STOCK_VIEW} iframe`) && document.querySelector(`#${STOCK_VIEW} iframe`).contentWindow;
 	return _stockViewWindow;
@@ -21,7 +23,7 @@ let setComparatorVisibleRange = (range, widgetIndex) => {
 	let chartWindow = _getComparatorWindow();
 	if(chartWindow && _searchRangeCache) {
 		try {
-			chartWindow.setVisbleRange(_searchRangeCache, widgetIndex + '');
+			chartWindow.setVisibleRange(_searchRangeCache, widgetIndex + '');
 		} catch (e) {
 
 		}
@@ -56,6 +58,43 @@ let setStockViewSymbol = (symbol) => {
 		} catch (e) {
 			console.error(e);
 		}
+	}
+};
+
+let setStockViewVisibleRange = function(symbol, unixTimeRange) {
+	let context = _getStockViewWindow();
+	let Q5 = context && context.Q5;
+	if(Q5) {
+		try {
+
+			let chart = Q5.getAll()[0];
+			let mainSeries = chart.R99.mainSeries();
+			_onComsubscribes.forEach(function(func){
+				mainSeries._onCompleted.unsubscribe(null, func); //取消所有订阅
+			});
+			_onComsubscribes = [];
+
+			if(mainSeries.symbol() == symbol || mainSeries.symbol().split(':').indexOf(symbol) > -1) {
+				console.log('symbol not changed');
+				context.setVisibleRange(unixTimeRange, '0');
+			} else {
+				let subscribeFunc = function() {
+					console.log('call subscribeFunc');
+					if(mainSeries.symbol() == symbol || mainSeries.symbol().split(':').indexOf(symbol) > -1) {
+						context.setVisibleRange(unixTimeRange, '0');
+						mainSeries._onCompleted.unsubscribe(null, subscribeFunc); //取消订阅
+						console.log('unsubscribe subscribeFunc',unixTimeRange);
+					}
+				}
+				_onComsubscribes.push(subscribeFunc);
+				mainSeries._onCompleted.subscribe(null, subscribeFunc);
+				chart.setSymbol(symbol);
+			}
+		} catch (e) {
+			console.error(e);
+		}
+	}else{
+		console.error('error');
 	}
 };
 
@@ -149,5 +188,6 @@ module.exports = {
 	setComparatorVisibleRange,
 	setComparatorPosition,
 	setStockViewSymbol,
+	setStockViewVisibleRange
 	// updateTradingviewAfterSearch,
 }

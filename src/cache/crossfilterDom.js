@@ -95,6 +95,10 @@ let getCountBar = (yieldRate, isOutline=true) => {
 	return _yieldCountBarData[isOutline ? 'outLines' : 'bars'][index];
 };
 
+let getCountBarAll = () => {
+	return _yieldCountBarData;
+}
+
 module.exports = {
 	setScatters,
 	getScatter,
@@ -102,4 +106,5 @@ module.exports = {
 	getPieSlice,
 	setCountBars,
 	getCountBar,
+	getCountBarAll
 };

@@ -11,6 +11,7 @@ import { setStockViewSymbol } from '../shared/actionTradingview';
 import store from '../store';
 import klinePredictionWidget from '../ksControllers/klinePredictionWidget';
 import searchResultController from '../ksControllers/searchResultController';
+import { setStockViewVisibleRange } from '../shared/actionTradingview';
 
 let _showRemainder = true;
 
@@ -103,9 +104,15 @@ class ComparatorStatic extends React.Component {
   goToSearchPage() {
     let { dispatch } = this.props;
     let goAction = () => {
-      // dispatch(layoutActions.toggleStockView()); //弃用了 
+      // dispatch(layoutActions.toggleStockView()); //弃用了
+      let active = store.getState().active;
+      let metaData = active.metaData,
+          startUnixTime = new Date(active.dateStart) / 1000,
+          endUnixTime = new Date(active.dateEnd) / 1000;
+
+      metaData && setStockViewVisibleRange(metaData.name, {from: startUnixTime, to: endUnixTime}); 
       searchResultController.triggerToggle();
-      setActiveSymol();
+      // setActiveSymol();
       showStockView();
     };
 

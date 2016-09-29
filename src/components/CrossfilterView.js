@@ -698,7 +698,6 @@ resizeChart1() {
 	}
 	//显示行业百分比信息
 	setIndustryInfo(showHover = true, event) {
-		console.log(event, 'fuck event!!!');
 
 		if(!showHover) {
 			this.refs.industry_percent.innerHTML = '';

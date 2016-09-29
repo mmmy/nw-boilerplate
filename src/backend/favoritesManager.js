@@ -194,6 +194,7 @@ let renameFavorites = (name, newName) => {
 			return false;
 		}
 		let data = _favoritesData[fileName];
+		data.name = newName;
 		let filePath = path.join(_favoritesPath, fileName);
 		saveFile(filePath, JSON.stringify(data));
 		return	true;

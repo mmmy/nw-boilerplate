@@ -343,7 +343,7 @@ KlinePrediction.prototype.getHoverTooltipPosition = function() {
 }
 
 KlinePrediction.prototype.isCursorOverBar = function() {
-	console.log('cursorAtIndex', this._cursorAtIndex);
+	// console.log('cursorAtIndex', this._cursorAtIndex);
 	return this._cursorAtIndex >= 0;
 }
 

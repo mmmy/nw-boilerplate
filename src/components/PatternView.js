@@ -56,6 +56,7 @@ class PatternView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {showSymbol: true, isTrashed: false};
+		this._countBarCache = null;
 	}
 
 	setTrashed(isTrashed) {
@@ -121,13 +122,18 @@ class PatternView extends React.Component {
 	}
 
 	handleMouseEnter(){
-
 		// this.handleMouseLeave();
 		let color = '#b61c15';
 			// const showSymbol = true;
 			// this.setState({showSymbol});
 		let {id, industry} = this.props.pattern;
 		let yieldRate = this.props.pattern.yield;
+		//#3
+		let matchYieldBar = getCountBar(yieldRate, false);
+		this._countBarCache = matchYieldBar;
+		if(matchYieldBar) {
+			matchYieldBar.style.fill = color;
+		}
 		//# 1
     let matchScatter = getScatter(id);
     getScatter(id);
@@ -143,13 +149,8 @@ class PatternView extends React.Component {
 			piePath.style.fill = color;
 			matchPie.dispatchEvent(new window.MouseEvent('mouseenter'));
 		}
-		//#3
-		let matchYieldBar = getCountBar(yieldRate, false);
-		if(matchYieldBar) {
-			matchYieldBar.style.fill = color;
-		}
 
-		let that = this;
+		// let that = this;
     // this.setHightlightPrediction(id, true);
 
 	}
@@ -158,6 +159,11 @@ class PatternView extends React.Component {
 
 			// const showSymbol = false;
 			// this.setState({showSymbol});
+			//#3
+		// let matchYieldBar = getCountBar(yieldRate, false);
+		if(this._countBarCache) {
+			this._countBarCache.style.fill = '';
+		}
 			//#1
 		_clonedScatter && _clonedScatter.remove && _clonedScatter.remove();
 		_clonedScatter && (_clonedScatter = null);
@@ -169,15 +175,9 @@ class PatternView extends React.Component {
 		let piePath = matchPie.firstChild;// && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = '';
-			matchPie.dispatchEvent(new window.MouseEvent('mouseleave'));
-		}
-			//#3
-		let matchYieldBar = getCountBar(yieldRate, false);
-		if(matchYieldBar) {
-			matchYieldBar.style.fill = '';
 		}
 
-		let that = this;
+		// let that = this;
     // this.setHightlightPrediction(id, false);
 
 	}
@@ -187,7 +187,7 @@ class PatternView extends React.Component {
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
 		let { dispatch, isActive, fullView } = this.props;
-		let { id, symbol, baseBars, kLine, similarity, industry, begin, end, lastDate} = this.props.pattern;
+		let { id, symbol, baseBars, kLine, similarity, industry, begin, end, lastDate, metaData} = this.props.pattern;
     console.assert(window.store.getState().patterns.rawData[id] == this.props.pattern, 'patternview 的数据没有更新!!!!!');
     let yieldRate = this.props.pattern.yield;
 		if (!fullView) {
@@ -209,7 +209,7 @@ class PatternView extends React.Component {
 
     let dateStart = begin;//kLine[0][0];
     let dateEnd = end;//kLine[kLine.length - 5][0];
-    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate, industry));
+    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate, industry, metaData));
 
 
     // let oneDay = 60 * 60 * 24;

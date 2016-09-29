@@ -34,8 +34,12 @@ div.dc-chart {
 }
 
 .dc-chart .empty-chart .pie-slice path {
-    fill: #FFEEEE;
+    fill: #eee !important;
     cursor: default;
+}
+
+.dc-chart .empty-chart .pie-slice path + outline.selected {
+    // fill: #eee;
 }
 
 .dc-chart .empty-chart .pie-slice {
