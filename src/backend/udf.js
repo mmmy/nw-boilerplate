@@ -49,9 +49,9 @@ let dealGroupCode = (data) => {
 };
 
 let getAllSymbolsList = (callback) => {
-  if (Cache.isLegal('allSymbolesList')) {
-    console.log('allSymbolesList isLegal');
-    callback && callback(Cache.getFromFile('allSymbolesList'));
+  if (Cache.isLegal('allSymbolsList')) {
+    console.log('allSymbolsList isLegal');
+    callback && callback(Cache.getFromFile('allSymbolsList'));
     return;
   }
 
@@ -74,7 +74,7 @@ let getAllSymbolsList = (callback) => {
         arr = arr.concat(JSON.parse(r));
       });
       arr = JSON.stringify(arr);
-      Cache.setToFile(arr, 'allSymbolesList');
+      Cache.setToFile(arr, 'allSymbolsList');
       callback && callback(arr);
     });
 

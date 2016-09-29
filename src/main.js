@@ -33,7 +33,11 @@ Promise.all([
 ]).then(() => {
 
   initJquery();
-  require('./update/ksUpdate');
+  console.log(process.platform);
+  if (process.platform == 'darwin')
+    require('./update/ksUpdateMac');
+  if (process.platform == 'win' || process.platform == 'win32' || process.platform == 'win64')
+    require('./update/ksUpdate');
   showLogin(loginSuccess);
   // initAfterLogin();
 
