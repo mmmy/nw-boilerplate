@@ -32,6 +32,12 @@ let _disposeDetailPanel = (parentDom, editorCache) => {
 	// _refreshFavoritesBody();
 }; 
 
+let _removeSearchEditor = () => {
+	_searchEditorFavorites && _searchEditorFavorites.dispose && _searchEditorFavorites.dispose();
+	_searchEditorFavorites = null;
+	$('.favorites .detail-panel').remove();
+}
+
 let _reSearch = (dataObj, cb, {favoriteFolder=''}) => {  //当从收藏夹过来的 favoriteFolder 为收藏夹名
 	let actions = require('../flux/actions');
 	dataObj.favoriteFolder = favoriteFolder;
@@ -171,6 +177,7 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 };
 
 let _generatePatterns = (dataArr, type, meta) => {  //dataArr:[{symbol, dateRange, kline}], type:0(fav) 1(history) 3(trashed), meta:object
+	dataArr = dataArr.map ? dataArr : [dataArr];
 	let patterns = dataArr.map((pattern) => {
 		return _generatePattern(pattern, type);
 	});
@@ -357,6 +364,8 @@ let _handleFolderClick = (event) => {
 	$bodyDom.append(_generatePatterns(data, 0, {name:name}));
 
 	$(_navDomF).siblings('.trash-panel-btn').removeClass('active');
+	//移除编辑器
+	_removeSearchEditor();
 };
 
 let _refreshBodyItemUI = (ele) => {
@@ -393,8 +402,9 @@ let _handleDeleteFavoritesFolder = (event) => {
 		});
 	});
 };
-
+//收藏夹重命名
 let _handleRenameFolder = (event) => {
+	event.stopPropagation();
 	let $folderNode = $(event.target).closest('.favorites-folder');
 	let data = $folderNode.data();
 	let { name } = data;
@@ -481,11 +491,13 @@ let _prependFavoritesBody = (dataObj) => {
 };
 
 favoritesController.addFavorites  = (name, dataObj) => {
+	let dataCopy = $.extend(true, {}, dataObj);
+	
 	//添加数据
-	favoritesManager.addFavorites(name, dataObj);
+	favoritesManager.addFavorites(name, dataCopy);
 	//更新UI
 	if(name == _activeName) {
-		_prependFavoritesBody(dataObj);
+		_prependFavoritesBody(dataCopy);
 	}
 };
 

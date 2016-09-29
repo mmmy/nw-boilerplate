@@ -79,7 +79,7 @@ class PatternCollection extends React.Component {
 	}
 
 	handleResize() {
-		let $patternViews = $(this.refs.container).find('.pattern-view');
+		let $patternViews = $(this.refs.container).find('.pattern-view:visible');
 		if($patternViews.length > 0) {
 			let width = $patternViews[0].clientWidth,
 					height = width * 210 / 160;
@@ -132,7 +132,7 @@ class PatternCollection extends React.Component {
 						idArr = _.pluck(filteredData, 'id'),
 						node = that.refs.container;
 				$('.pattern-view', node).addClass('hide');
-				if(showNotTrashed){
+				if(showNotTrashed){ 																				//alway true
 					idArr.forEach((id) => {
 						$(`#pattern_view_${id}`,node).removeClass('hide');
 					});
@@ -141,8 +141,9 @@ class PatternCollection extends React.Component {
 					_idTrashed.forEach((isTrashed, id) => {
 						isTrashed && $(`#pattern_view_${id}`,node).removeClass('hide');
 					});
-				}		
-			// });
+				}
+				$(node).toggleClass('empty', $('.pattern-view:visible', node).length == 0);
+
 		};
 
 		if( newProps.filter !== this.props.filter ){
@@ -359,11 +360,12 @@ class PatternCollection extends React.Component {
 
 	render(){
 		// this.renderDate = new Date();
-		const className = classNames('pattern-collection', {'scroll-hidden': !this.props.fullView});
+		let patternNodes = this.getPatternNodes();
+		const className = classNames('pattern-collection', {'scroll-hidden': !this.props.fullView, 'empty': patternNodes.length==0 });
 		console.info('@@@@@', 'patternCollection render-------');
 
 		return (<div ref='container' className={className}>
-			{ this.getPatternNodes() }
+			{ patternNodes }
 		</div>);
 	}
 }

@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { readFolder, dateFormatter, saveFile, removeDir, deleteFile } from './utils';
 
-const BASEPATH = '../storage';
+const BASEPATH = './storage';
 const HISTORY = 'history';
 const _historyPath = path.join(BASEPATH, HISTORY);
 
