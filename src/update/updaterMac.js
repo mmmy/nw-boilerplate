@@ -93,11 +93,13 @@ updater.prototype.download = function(cb, newManifest) {
   pkg.on('response', function(response) {
     if (response && response.headers && response.headers['content-length']) {
       pkg['content-length'] = response.headers['content-length'];
+      console.log('pkg size',pkg['content-length']);
     }
   });
   // download the package to template folder
-  fs.unlink(path.join(this.options.temporaryDirectory, filename), function() {
-    pkg.pipe(fs.createWriteStream(destinationPath));
+  var downTmpFilename = destinationPath + '.tmp' 
+  fs.unlink(downTmpFilename, function() {
+    pkg.pipe(fs.createWriteStream(downTmpFilename));
     pkg.resume();
   });
   pkg.on('error', cb);
@@ -107,6 +109,9 @@ updater.prototype.download = function(cb, newManifest) {
   function appDownloaded() {
     process.nextTick(function() {
       if (pkg.response.statusCode >= 200 && pkg.response.statusCode < 300) {
+	console.log(downTmpFilename);
+	console.log(destinationPath);
+        fs.renameSync(downTmpFilename, destinationPath);	
         cb(null, destinationPath);
       }
     });
@@ -227,34 +232,11 @@ var pUnpack = {
       })
 
     } else if (extension === ".dmg") {
-      console.log("dmg");
       // just in case if something was wrong during previous mount
-      console.log(path.basename(filename, '.dmg'));
       console.log(filename);
-      console.log("hdiutil");
-      console.log(path.basename(filename));
       console.log('hdiutil unmount /Volumes/' + path.basename(filename, '.dmg'));
       exec('hdiutil unmount /Volumes/' + path.basename(filename, '.dmg')+'.dmg', function(err) {
-        // create a CDR from the DMG to bypass any steps which require user interaction
-        console.log('hdiutil attach "' + filename+ '"');
-        exec('hdiutil attach "' + filename +'"', function(err) {});
-        /*
-        var cdrPath = filename.replace(/.dmg$/, '.cdr');
-        console.log(cdrPath);
-        exec('hdiutil convert "' + filename + '" -format UDTO -o "' + cdrPath + '"', function(err) {
-          console.log('hdiutil convert "' + filename + '" -format UDTO -o "' + cdrPath + '"');
-          console.log('hdiutil attach "' + cdrPath + '" -nobrowse');
-          exec('hdiutil attach "' + cdrPath + '" -nobrowse', function(err) {
-            if (err) {
-              if (err.code == 1) {
-                pUnpack.mac.apply(this, args);
-              }
-              return cb(err);
-            }
-            findMountPoint(path.basename(filename, '.dmg'), cb);
-          });
-        });
-        */
+        exec('hdiutil attach "' + filename +'" -autoopen', function(err) {});
       });
 
       function findMountPoint(dmg_name, callback) {
