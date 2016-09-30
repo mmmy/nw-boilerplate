@@ -182,6 +182,28 @@ class PatternView extends React.Component {
 
 	}
 
+	assertClosePirces() {
+		let { id, kLine } = this.props.pattern;
+		let closePrice = store.getState().patterns.closePrice;
+		let patternClosePrice = closePrice[id];
+		let len = patternClosePrice.length;
+		let isSame = true;
+		let yangqiClosePrice = kLine.slice(-len).map(function(price){ 
+			return price[2];
+		});
+
+		console.log(patternClosePrice, yangqiClosePrice);
+
+		for(let i=0; i<len; i++) {
+			if(Math.abs(patternClosePrice[i] - yangqiClosePrice[i]) > 1e-4) {
+				isSame = false;
+				break;
+			} 
+		}
+
+		return isSame;
+	}
+
 	setActivePattern() {
     let widget = window.widget_comparator;
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
@@ -195,7 +217,8 @@ class PatternView extends React.Component {
 			return;
 		}
 
-		try { 
+		try {
+			console.assert(this.assertClosePirces()); 
 			// setHightlightPrediction(window.eChart, id);
 			// setHightlightPrediction(window.comChart, id);
 			setPredictionChartHighlight(id);
