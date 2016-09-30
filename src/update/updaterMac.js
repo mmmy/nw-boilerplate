@@ -4,7 +4,7 @@ var os = require('os');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
-var ncp = require('ncp');
+//var ncp = require('ncp');
 var del = require('del');
 var semver = require('semver');
 
@@ -387,7 +387,7 @@ var pInstall = {
   mac: function(to, cb) {
     console.log("from", this.getAppPath(), "from");
     console.log("to", to, "to");
-    ncp(this.getAppPath(), to, cb);
+    //ncp(this.getAppPath(), to, cb);
   },
   /**
    * @private
@@ -408,7 +408,7 @@ var pInstall = {
           return cb(err);
         }
       } else {
-        ncp(self.getAppPath(), to, appCopied);
+        //ncp(self.getAppPath(), to, appCopied);
       }
     }
 
@@ -430,7 +430,7 @@ var pInstall = {
    * @private
    */
   linux32: function(to, cb) {
-    ncp(this.getAppPath(), to, cb);
+    //ncp(this.getAppPath(), to, cb);
   }
 };
 pInstall.linux64 = pInstall.linux32;
@@ -463,7 +463,7 @@ var pInstallKS = {
           return cb(err);
         }
       } else {
-        ncp(self.getAppPath(), to, appCopied);
+       // ncp(self.getAppPath(), to, appCopied);
       }
     }
 
@@ -485,7 +485,7 @@ var pInstallKS = {
    * @private
    */
   linux32: function(from, to, cb) {
-    ncp(from, to, cb);
+    //ncp(from, to, cb);
   }
 };
 pInstallKS.linux64 = pInstall.linux32;
