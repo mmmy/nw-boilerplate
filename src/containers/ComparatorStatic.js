@@ -102,6 +102,11 @@ class ComparatorStatic extends React.Component {
   }
 
   goToSearchPage() {
+    try {
+      window.heap.track("click btn queren", {"hhah":5});
+    }catch (e) {
+
+    }
     let { dispatch } = this.props;
     let goAction = () => {
       // dispatch(layoutActions.toggleStockView()); //弃用了
