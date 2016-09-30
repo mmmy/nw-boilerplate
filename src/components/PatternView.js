@@ -188,6 +188,7 @@ class PatternView extends React.Component {
 
 		let { dispatch, isActive, fullView } = this.props;
 		let { id, symbol, baseBars, kLine, similarity, industry, begin, end, lastDate, metaData} = this.props.pattern;
+    let dateLast = lastDate.time;
     console.assert(window.store.getState().patterns.rawData[id] == this.props.pattern, 'patternview 的数据没有更新!!!!!');
     let yieldRate = this.props.pattern.yield;
 		if (!fullView) {
@@ -209,7 +210,7 @@ class PatternView extends React.Component {
 
     let dateStart = begin;//kLine[0][0];
     let dateEnd = end;//kLine[kLine.length - 5][0];
-    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate, industry, metaData));
+    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate, industry, metaData, dateLast));
 
 
     // let oneDay = 60 * 60 * 24;

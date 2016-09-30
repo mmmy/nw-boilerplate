@@ -8,6 +8,24 @@ let _searchRangeCache = null;
 
 let _onComsubscribes = [];
 
+let _getFirstBarUnitTime = function() {
+	let context = _getStockViewWindow();
+	if(context && context.Q5) {
+		try{
+			let bar = context.Q5.getAll()[0].R99.m_model.m_mainSeries.m_data.first();
+			return bar && bar.value[0];
+		}catch(e) {
+			console.error(e);
+		}
+	}
+}
+
+let _showTradingViewWaiting = function(show) {
+	let context = _getStockViewWindow();
+	let KY = context && context.KY;
+	KY[show ? 'addWaitingOverlay' : 'removeWaitingOverlay']();
+};
+
 let _getStockViewWindow = () => {
 	_stockViewWindow = _stockViewWindow || document.querySelector(`#${STOCK_VIEW} iframe`) && document.querySelector(`#${STOCK_VIEW} iframe`).contentWindow;
 	return _stockViewWindow;
@@ -54,7 +72,7 @@ let setStockViewSymbol = (symbol) => {
 	if(Q5) {
 		try {
 			let chart = Q5.getAll()[0];
-			chart.setSymbol(symbol);
+			chart.setSymbol(symbol, null, null, true);
 		} catch (e) {
 			console.error(e);
 		}
@@ -66,6 +84,8 @@ let setStockViewVisibleRange = function(symbol, unixTimeRange) {
 	let Q5 = context && context.Q5;
 	if(Q5) {
 		try {
+			let firstBarTime = _getFirstBarUnitTime();
+			let tradingviewHasRangeData = firstBarTime && (firstBarTime < unixTimeRange.from);
 
 			let chart = Q5.getAll()[0];
 			let mainSeries = chart.R99.mainSeries();
@@ -73,22 +93,37 @@ let setStockViewVisibleRange = function(symbol, unixTimeRange) {
 				mainSeries._onCompleted.unsubscribe(null, func); //取消所有订阅
 			});
 			_onComsubscribes = [];
+			_showTradingViewWaiting(true);
 
 			if(mainSeries.symbol() == symbol || mainSeries.symbol().split(':').indexOf(symbol) > -1) {
 				console.log('symbol not changed');
+				if(tradingviewHasRangeData) {
+					_showTradingViewWaiting(false);
+				}else{
+					let callback = function() {
+						_showTradingViewWaiting(false);
+					};
+					_onComsubscribes.push(callback);
+					mainSeries._onCompleted.subscribe(null, callback);					
+				}
 				context.setVisibleRange(unixTimeRange, '0');
 			} else {
 				let subscribeFunc = function() {
 					console.log('call subscribeFunc');
 					if(mainSeries.symbol() == symbol || mainSeries.symbol().split(':').indexOf(symbol) > -1) {
 						context.setVisibleRange(unixTimeRange, '0');
-						mainSeries._onCompleted.unsubscribe(null, subscribeFunc); //取消订阅
-						console.log('unsubscribe subscribeFunc',unixTimeRange);
+						let firstBarTime = _getFirstBarUnitTime();
+						let hasData = firstBarTime && firstBarTime < unixTimeRange.from;
+						if(hasData) {
+							_showTradingViewWaiting(false);
+							mainSeries._onCompleted.unsubscribe(null, subscribeFunc); //取消订阅
+							console.log('unsubscribe subscribeFunc',unixTimeRange);
+						}
 					}
 				}
 				_onComsubscribes.push(subscribeFunc);
 				mainSeries._onCompleted.subscribe(null, subscribeFunc);
-				chart.setSymbol(symbol);
+				chart.setSymbol(symbol, null, null, true);
 			}
 		} catch (e) {
 			console.error(e);

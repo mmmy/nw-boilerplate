@@ -145,14 +145,14 @@ class StockView extends React.Component {
 	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onClick={ this.showHistory.bind(this) }>history</button></div>
 	      	</div>
 
-		      <div ref='stock_view' className='content-wrapper'>
+		      <div ref='stock_view' className='content-wrapper curve top-z'>
 		        <ReactTradingView
 		          viewId={ STOCK_VIEW }
 		          options={ options }
 		          init={ logined } />
 		      </div>
 		      
-		      <div ref='favorites_view' className='content-wrapper favorites hide'>
+		      <div ref='favorites_view' className='content-wrapper favorites'>
 		      	<div className='nav-container'>
 		      		<h4 className='nav-title'>我的收藏夹</h4>
 		      		<div ref='favorites_nav_container' className='nav-item-container'></div>
@@ -174,7 +174,7 @@ class StockView extends React.Component {
 			      </div>
 		      </div>
 
-		      <div ref='history_view' className='content-wrapper history hide'>
+		      <div ref='history_view' className='content-wrapper history'>
 		      	<div className='nav-container'>
 		      		<h4 className='nav-title'>历史记录</h4>
 		      		<div ref='history_nav_container' className='nav-item-container'>
@@ -200,22 +200,25 @@ class StockView extends React.Component {
 	}
 
 	showSockView(e) {
-		$(this.refs.favorites_view).addClass('hide');
-		$(this.refs.history_view).addClass('hide');
+		$(this.refs.favorites_view).removeClass('top-z');
+		$(this.refs.history_view).removeClass('top-z');
+		$(this.refs.stock_view).addClass('top-z');
 		this.resetButton();
 		$(e.target).addClass('active');
 	}
 
 	showFavorites(e) {
-		$(this.refs.favorites_view).removeClass('hide');
-		$(this.refs.history_view).addClass('hide');
+		$(this.refs.favorites_view).addClass('top-z');
+		$(this.refs.history_view).removeClass('top-z');
+		$(this.refs.stock_view).removeClass('top-z');
 		this.resetButton();
 		$(e.target).addClass('active');
 	}
 
 	showHistory(e) {
-		$(this.refs.favorites_view).addClass('hide');
-		$(this.refs.history_view).removeClass('hide');
+		$(this.refs.favorites_view).removeClass('top-z');
+		$(this.refs.history_view).addClass('top-z');
+		$(this.refs.stock_view).removeClass('top-z');
 		this.resetButton();
 		$(e.target).addClass('active');
 		// historyController.updateNavContainer(this.refs.history_nav_container);

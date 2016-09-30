@@ -113,7 +113,7 @@ class ComparatorStatic extends React.Component {
       let active = store.getState().active;
       let metaData = active.metaData,
           startUnixTime = new Date(active.dateStart) / 1000,
-          endUnixTime = new Date(active.dateEnd) / 1000;
+          endUnixTime = (new Date(active.dateLast) / 1000) || (new Date(active.dateEnd) / 1000);
 
       metaData && setStockViewVisibleRange(metaData.name, {from: startUnixTime, to: endUnixTime}); 
       searchResultController.triggerToggle();

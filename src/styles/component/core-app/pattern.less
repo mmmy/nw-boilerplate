@@ -361,6 +361,18 @@
 }
 
 .pattern-collection{
+	&.empty{
+		&:before {
+			content: '当前操作无结果';
+			position: absolute;
+			width: 100%;
+			text-align: center;
+			top: calc(~"50% - 9px");
+			font-size: 14px;
+			font-style: italic;
+			color: #666;
+		}
+	}
 	position: relative;
 	height: 100%;
 	overflow: scroll;

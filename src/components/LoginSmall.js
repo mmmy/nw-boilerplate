@@ -12,14 +12,18 @@ let setAppStateBeforeLogin = () => {
 	let width = pkg.window.width || 400;
 	let height = pkg.window.height || 470;
 	nwApp.appSetSize(width, height);
-	nwApp.appSetResizable(false);
+	nwApp.appSetMinimumSize(width, height);
+	nwApp.appSetMaximumSize(width, height);
+	// nwApp.appSetResizable(false);
 };
 
 let setAppStateAfterLogin = () => {
 	// $('.app-drag-area').css('-webkit-app-region','drag');
 	// nwApp.appSetSize(900, 600);
 	nwApp.appSetSize(1350, 800);
-	nwApp.appSetResizable(true);
+	nwApp.appSetMinimumSize(1200, 700);
+	nwApp.appSetMaximumSize(3000, 2000);
+	// nwApp.appSetResizable(true);
 	nwApp.appSetCenter();
 };
 
