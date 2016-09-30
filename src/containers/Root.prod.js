@@ -22,6 +22,7 @@ class Root extends React.Component {
 		setTimeout(waitingWidget.removeWaiting, 500);
 		// require('../shared/initDev')();
 		require('../shared/initTooltip');
+		//require('../shared/heapA');
 	}
 
 	render(){
