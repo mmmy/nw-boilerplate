@@ -223,6 +223,7 @@ let _initDayDom = ($dayDom, dataArr) => {
 };
 
 let _handleDeleteHistoryByMonth = (event) => {
+	event.stopPropagation();
 	let $item = $(event.target).closest('.month');
 	let { year, month } = $item.data();
 	new ConfirmModal(`确认删除${year}-${month}历史记录?`, 'history-month-delete', () => {
@@ -230,6 +231,37 @@ let _handleDeleteHistoryByMonth = (event) => {
 		$item.remove();
 	});
 };
+
+let __findFirstHistoryByDate = function(year, month) {
+	let allHistoryDayWrapper = $(_bodyDom).find('.history-day-wrapper');
+
+	let matchNode = null;
+	for(let i=0; i<allHistoryDayWrapper.length; i++) {
+		let one = $(allHistoryDayWrapper[i]);
+		console.log(one);
+		let date = new Date(one.data().date);
+		if(date.getFullYear() == year && (date.getMonth() + 1 == month)){
+			matchNode = allHistoryDayWrapper[i];
+			break;
+		}
+	}
+	return matchNode;
+}
+
+let _handleGotoMonth = function(event) {
+	let $currentTarget = $(event.currentTarget);
+	let {year, month} = $currentTarget.data();
+	if(typeof year == 'undefined' || typeof month == 'undefined') return;
+	// try {
+		let matchNode = __findFirstHistoryByDate(year, month);
+		console.log(matchNode);
+		if(matchNode) {
+			matchNode.scrollIntoView();
+		}
+	// } catch(e) {
+		// console.error(e);
+	// }
+}
 
 historyController.init = (navDom, bodyDom) => {
 	_navDom = navDom;
@@ -243,7 +275,7 @@ historyController.init = (navDom, bodyDom) => {
 	let historyDataByMonth = historyMonth.map((yearMonth) => {
 		return getSortedMonthData(yearMonth);
 	}); 
-	console.log(historyDataByMonth);
+	// console.log(historyDataByMonth);
 
 	historyMonth.forEach((histroyDateName) => { //'2012-12'
 		let date = new Date(histroyDateName);
@@ -254,7 +286,11 @@ historyController.init = (navDom, bodyDom) => {
 		// 	$dom.append(`<h6 class='year'>${_year}</h6>`);
 		// 	year = _year;
 		// }
-		$navDom.append($(`<p class='month font-simsun'><span class='name'>${_month}月</span></p>`).data({year:_year, month:_month}).append($('<button class="flat-btn delete">delete</button>').click(_handleDeleteHistoryByMonth)));
+		let itemNode = $(`<p class='month font-simsun'><span class='name'>${_month}月</span></p>`).data({year:_year, month:_month})
+											.append($('<button class="flat-btn delete">delete</button>').click(_handleDeleteHistoryByMonth))
+											.on('click', _handleGotoMonth);
+
+		$navDom.append(itemNode);
 	});
 
 	let now = new Date();

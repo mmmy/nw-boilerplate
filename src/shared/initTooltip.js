@@ -14,7 +14,7 @@
 		this._delayShowTooltip = setTimeout(() => {
 			$(document.body).append($tooltip);
 			$tooltip.addClass('in');
-		},1000);
+		},200);
 	})
 	.on('mouseleave', function(e) {
 		//移除tooltip 和 延时

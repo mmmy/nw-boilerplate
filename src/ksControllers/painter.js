@@ -370,8 +370,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		return -1;
 	};
 	let indexToPoint = (index) => {
-		let x = (index>-1) && klineWhisker[index][0][0][0];
-		let y = (index>-1) && klineWhisker[index][1][0][1]; //box bottom y
+		let x = (index>-1) && klineWhisker[index][0][0][0]/ratio;
+		let y = (index>-1) && klineWhisker[index][1][0][1]/ratio; //box bottom y
 		return {x, y};
 	};
 
@@ -555,7 +555,7 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 		ctx.fillStyle = '#BD3035';
 		ctx.fillRect(center - rectW/2, 0, rectW, height);
 		ctx.fillStyle = '#fff';
-		ctx.fillText(selectedIndex+1+'', center, 15);
+		ctx.fillText(selectedIndex+1+'', center, 15*ratio);
 	}
 
 	//hoverIndex
@@ -569,7 +569,7 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 		ctx.fillStyle = '#222';
 		ctx.fillRect(center - rectW/2, 0, rectW, height);
 		ctx.fillStyle = '#fff';
-		ctx.fillText(text, center, 15);
+		ctx.fillText(text, center, 15*ratio);
 	}
 
 };
