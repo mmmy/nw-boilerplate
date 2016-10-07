@@ -238,7 +238,7 @@ let __findFirstHistoryByDate = function(year, month) {
 	let matchNode = null;
 	for(let i=0; i<allHistoryDayWrapper.length; i++) {
 		let one = $(allHistoryDayWrapper[i]);
-		console.log(one);
+		// console.log(one);
 		let date = new Date(one.data().date);
 		if(date.getFullYear() == year && (date.getMonth() + 1 == month)){
 			matchNode = allHistoryDayWrapper[i];
@@ -258,9 +258,42 @@ let _handleGotoMonth = function(event) {
 		if(matchNode) {
 			matchNode.scrollIntoView();
 		}
+		$currentTarget.siblings().removeClass('active');
+		$currentTarget.addClass('active');
 	// } catch(e) {
 		// console.error(e);
 	// }
+}
+
+let _setAcitveMonth = function(activeYear, activeMonth) {
+	var pMonthDoms = $(_navDom).find('p.month');
+	pMonthDoms && pMonthDoms.each(function(i, monthDom){
+		let $dom = $(monthDom);
+		let {year, month} = $dom.data();
+		if(year==activeYear && month==activeMonth) {
+			$dom.siblings().removeClass('active');
+			$dom.addClass('active');
+		}
+	});
+}
+
+let _handleHistoryScroll = function(e) {
+	var historyMonth = getSortedHistoryMonth();
+	var len = historyMonth.length;
+	for(let i=1; i<len; i++) {
+		let date0 = new Date(historyMonth[i-1]);
+		let date1 = new Date(historyMonth[i]);
+		let dom0 = __findFirstHistoryByDate(date0.getFullYear(), date0.getMonth()+1);
+		let dom1 = __findFirstHistoryByDate(date1.getFullYear(), date1.getMonth()+1);
+		let top0 = $(dom0).offset().top;
+		let top1 = $(dom1).offset().top;
+		if(i==len-1 && top1 <= 50) { //last one
+			_setAcitveMonth(date1.getFullYear(), date1.getMonth()+1)
+		} else if(top0 <= 50 && top1 > 50) {
+			_setAcitveMonth(date0.getFullYear(), date0.getMonth()+1)
+		}
+		// console.log(date.getMonth()+1, $(dom).offset());
+	}
 }
 
 historyController.init = (navDom, bodyDom) => {
@@ -277,7 +310,7 @@ historyController.init = (navDom, bodyDom) => {
 	}); 
 	// console.log(historyDataByMonth);
 
-	historyMonth.forEach((histroyDateName) => { //'2012-12'
+	historyMonth.forEach((histroyDateName, i) => { //'2012-12'
 		let date = new Date(histroyDateName);
 		let _year = date.getFullYear();
 		let _month = date.getMonth() + 1;
@@ -289,7 +322,7 @@ historyController.init = (navDom, bodyDom) => {
 		let itemNode = $(`<p class='month font-simsun'><span class='name'>${_month}月</span></p>`).data({year:_year, month:_month})
 											.append($('<button class="flat-btn delete">delete</button>').click(_handleDeleteHistoryByMonth))
 											.on('click', _handleGotoMonth);
-
+		if(i==0) itemNode.addClass('active');
 		$navDom.append(itemNode);
 	});
 
@@ -316,6 +349,7 @@ historyController.init = (navDom, bodyDom) => {
 		});
 	});
 
+	$bodyDom.on('scroll', _handleHistoryScroll);
 	// _initEventAndPaint($navDom, $bodyDom);
 };
 

@@ -183,15 +183,29 @@
 			}
 			button {
 				display: none;
-				width: 20px;
-				height: 20px;
+				width: 30px;
+				height: 30px;
 				color: transparent;
 				background-color: transparent;
 			}
 			.delete {
 				background-image: url(@icons_url);
-				.icon_position(1,1,1,5px,5px);
-				margin-top: 4px;
+				.icon_position(1,1,1);
+				// margin-top: 4px;
+			}
+			&.active {
+				background-color: @brown-red;
+				color: white;
+				&:hover {
+					background-color: @brown-red;
+					button {
+						.icon_position(4,1,1);
+						&:hover {
+							.icon_position(4,1,1);
+							background-color: @brown-red-dark;
+						}
+					}
+				}
 			}
 			&:hover {
 				background-color: #eee;
@@ -201,7 +215,7 @@
 					margin-right: 20px;
 					display: inline;
 					&:hover {
-						.icon_position(3,1,1,5px,5px);
+						.icon_position(3,1,1);
 					}
 				}
 			}
