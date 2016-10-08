@@ -4,6 +4,16 @@ let _setImageFuncs = [];
 let _setImageSrcFuncs = [];
 let _setCanvasVisibleFuncs = [];
 
+let _updateDescribeById = function(id) {
+	let patterns = store.getState().patterns;
+	let pattern = patterns.rawData[id];
+	let metaData = pattern && pattern.metaData;
+	if(metaData) {
+		let patternView = $(`#pattern_view_${id}`);
+		patternView.find('.describe').text(metaData.name);
+	}
+}
+
 let setFunc = (index, func) => {
 	_setImageFuncs[index] = func;
 };
@@ -26,6 +36,7 @@ let callFunc = (indexRange, patterns) => {
 				return;
 			}
 			// console.info('!!!!!!!!!!!!!sequenCall :', index);
+			_updateDescribeById(index);
 			_setImageFuncs[index](sequenCall.bind(null, index+1, indexRange[1]), patterns && patterns[index]);
 		};
 		sequenCall(indexRange[0], indexRange[1]);
