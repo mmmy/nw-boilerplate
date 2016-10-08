@@ -93,7 +93,6 @@ class ComparatorPrediction extends React.Component {
       that.setOHLC.call(that, data);
       var unixTime = _getActivePatternStartUnixTime();
       setComparatorPosition(unixTime, index, 0);
-      console.log('hover kline index');
     });
     this._predictionChart.onScaleLines((yMin, yMax) => {
       window._updateHeatMap && window._updateHeatMap(yMax - yMin, yMax, yMin);
