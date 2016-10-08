@@ -24,8 +24,9 @@ let setActiveSymol = () => {
 };
 
 let showStockView = () => {
-  $(document.querySelector('.content-wrapper.favorites')).addClass('hide');
-  $(document.querySelector('.content-wrapper.history')).addClass('hide');
+  $(document.querySelector('.content-wrapper.favorites')).removeClass('top-z');
+  $(document.querySelector('.content-wrapper.history')).removeClass('top-z');
+  $(document.querySelector('.content-wrapper.curve')).addClass('top-z');
   $(document.querySelector('.flat-btn.curve')).addClass('active');
   $(document.querySelector('.flat-btn.favorites')).removeClass('active');
   $(document.querySelector('.flat-btn.history')).removeClass('active');
