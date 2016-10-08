@@ -362,8 +362,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		if(klineWhisker[index] == undefined) {
 			return -1;
 		}
-		let indexYMin = Math.min(klineWhisker[index][0][0][1],klineWhisker[index][0][0][0],klineWhisker[index][1][1][0],klineWhisker[index][1][1][1]);         //high 的y坐标
-		let indexYMax = Math.max(klineWhisker[index][0][0][1],klineWhisker[index][0][0][0],klineWhisker[index][1][1][0],klineWhisker[index][1][1][1]);         //low 的y坐标
+		let indexYMin = Math.min(klineWhisker[index][0][0][1],klineWhisker[index][0][1][1],klineWhisker[index][1][0][1],klineWhisker[index][1][1][1]);         //high 的y坐标
+		let indexYMax = Math.max(klineWhisker[index][0][0][1],klineWhisker[index][0][1][1],klineWhisker[index][1][0][1],klineWhisker[index][1][1][1]);         //low 的y坐标
 		let offset = 10*ratio;
 		// if(y) console.log('in pointToIndex',index,y, y > indexYMin - offset , y < indexYMax + offset);
 		if(typeof y!='number' || (y > indexYMin - offset) && (y < indexYMax + offset)) {  //在10px 误差范围内, 或者 y == false
