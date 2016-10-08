@@ -240,7 +240,12 @@ class Login extends React.Component {
 				that.setState({isLogining: false, passwordError:true});
 				return; 
 			} // else console.log("login success");
-
+			try {
+				window.heap.identify(username);
+				window.USERNAME = username;
+			} catch(e) {
+				console.log(e);
+			}
 			//login success, into the stockingview
 			// setTimeout(() => {
 			that.hideLogin();
