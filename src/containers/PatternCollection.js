@@ -200,8 +200,8 @@ class PatternCollection extends React.Component {
 	shouldComponentUpdate(newProps, newState) {
 		//return true;
 		//pattern 改变 的时候 只渲染前5个, 结局搜索后渲染时间过长的问题
-		console.info('@@@@@+_+_+_+_+_+ active id',newProps.active.id,this.props.active.id, (newProps.active.id === this.props.active.id));
-		console.info('@@@@@+_+_+_+_+_+ filter',newProps.filter,this.props.filter, (newProps.filter === this.props.filter));
+		// console.info('@@@@@+_+_+_+_+_+ active id',newProps.active.id,this.props.active.id, (newProps.active.id === this.props.active.id));
+		// console.info('@@@@@+_+_+_+_+_+ filter',newProps.filter,this.props.filter, (newProps.filter === this.props.filter));
 		if(newProps.patterns.rawData !== _oldPatternRawData) {
 			this.renderLeading5 = true;
 			_oldPatternRawData = newProps.patterns.rawData;
@@ -247,7 +247,7 @@ class PatternCollection extends React.Component {
 		let { sortType } = this.props.sort;
 		//bug
 		//如果 sortType 没有变化那么不需要重新排序
-		console.info('oldSortType',this.oldSortType,'sortType', sortType);
+		// console.info('oldSortType',this.oldSortType,'sortType', sortType);
 		if(this.oldSortType === sortType) {
 			console.info('sortType 没有变化那么不需要重新排序');
 			return this.sortedData;
@@ -256,7 +256,7 @@ class PatternCollection extends React.Component {
 		let sortedData = rawData.concat([]) || [];
 
 		if(sortType === '') {
-			console.info('sortedData 直接返回!!----------------');
+			// console.info('sortedData 直接返回!!----------------');
 			return sortedData;
 		}
 
@@ -290,7 +290,7 @@ class PatternCollection extends React.Component {
 	}
 
 	filterTrashedId(id, isTrashed) {
-		console.info(id, isTrashed, 'xxxxxxxxxx000000000000');
+		// console.info(id, isTrashed, 'xxxxxxxxxx000000000000');
 		_idTrashed[id] = isTrashed;
 		this._debounceRedrawDc();
 	}

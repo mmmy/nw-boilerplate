@@ -192,7 +192,7 @@ class PatternView extends React.Component {
 			return price[2];
 		});
 
-		console.log(patternClosePrice, yangqiClosePrice);
+		// console.log(patternClosePrice, yangqiClosePrice);
 
 		for(let i=0; i<len; i++) {
 			if(Math.abs(patternClosePrice[i] - yangqiClosePrice[i]) > 1e-4) {
