@@ -34,6 +34,7 @@ export default {
         port: 25501,
         path: '/groups',
         url: 'http://139.196.226.133:30011/groups',
+        // url: 'http://112.74.17.46:25501/groups',
         method: 'GET'
     },
 
@@ -42,6 +43,7 @@ export default {
         port: 25501,
         path: "querysymbols",
         url: "http://139.196.226.133:30011/querysymbols",
+        // url: "http://112.74.17.46:25501/querysymbols",
         method: "POST"
     },
 
