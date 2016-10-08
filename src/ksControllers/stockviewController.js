@@ -222,12 +222,29 @@ let _initDayDom = ($dayDom, dataArr) => {
 	}
 };
 
+let _removeHistroiesByMonth = (year, month) => {
+	let items = $(_bodyDom).find('.history-day-wrapper');
+	let len = items.length;
+	try {
+		for(let i=0; i<len; i++) {
+			let $item = $(items[i]);
+			let date = $item.data().date;
+			if(date && date.getFullYear() == year && (date.getMonth()+1 == month)) {
+				$item.remove();
+			}
+		}
+	} catch(e) {
+		console.error(e);
+	}
+};
+
 let _handleDeleteHistoryByMonth = (event) => {
 	event.stopPropagation();
 	let $item = $(event.target).closest('.month');
 	let { year, month } = $item.data();
 	new ConfirmModal(`确认删除${year}-${month}历史记录?`, 'history-month-delete', () => {
 		deleteHistory(year, month);
+		_removeHistroiesByMonth(year, month);
 		$item.remove();
 	});
 };
@@ -376,16 +393,33 @@ historyController.updateNavContainer = (dom) => {
 let _isSameDate = (date1, date2) => {
 		return (date1.getFullYear() == date2.getFullYear() && date1.getMonth() == date2.getMonth() && date1.getDate() == date2.getDate())
 };
-
+//添加左侧月份导航
+let _insertHistoryMonth = (date) => {
+	let _year = date.getFullYear();
+	let _month = date.getMonth() + 1;
+	let $navDom = $(_navDom);
+	let itemNode = $(`<p class='month font-simsun'><span class='name'>${_month}月</span></p>`).data({year:_year, month:_month})
+									.append($('<button class="flat-btn delete">delete</button>').click(_handleDeleteHistoryByMonth))
+									.on('click', _handleGotoMonth);
+	itemNode.addClass('active');
+	$navDom.find('p.monthf').removeClass('active');
+	$navDom.prepend(itemNode);
+};
+//插入历史记录
 let _addNewDayWrapper = (data, isInsert, $wrapper0) => {  //插入历史
 	if(isInsert) {
 		let $newHistoryItem = $(_generatePattern(data, 1));
 		drawKline($newHistoryItem.find('canvas')[0], data.kline);
 		$wrapper0.find('.history-items-wrapper').prepend($newHistoryItem);
 	}else {
-		let $newWrapper = $(_generatePatterns(data, 1, new Date()));
-		$newWrapper.data('date', new Date());
-		$(_bodyDom).prepend($newWrapper);
+		// let $newWrapper = $(_generatePatterns(data, 1, new Date()));
+		// $newWrapper.data('date', new Date());
+		let now = new Date();
+		let $historyItem = _generateHistoryItem(now, data);
+		$historyItem.data('date', now);
+		$(_bodyDom).prepend($historyItem);
+		//添加导航栏
+		_insertHistoryMonth(now);
 	}
 };
 
