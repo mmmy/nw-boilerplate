@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { readFolder, dateFormatter, saveFile, removeDir, deleteFile } from './utils';
 
-const BASEPATH = './storage';
+const BASEPATH = '../storage';
 const HISTORY = 'history';
 const _historyPath = path.join(BASEPATH, HISTORY);
 
@@ -62,9 +62,11 @@ let getAllFilesFromStorage = () => {
 };
 
 let deleteHistory = (year, month, day) => {
+	year = year + '';
+	month = (month < 10 ? '0' : '') + month;
 	let toMonth = year + '-' + month;
 	console.assert(month.length == 2, `month is should format as 0?`);
-	console.assert(day.length == 2, `day is should format as 0?`);
+	// console.assert(day.length == 2, `day is should format as 0?`);
 	if(day) {
 		console.warn('unlink file !');
 		let fileName = day + '.json';
