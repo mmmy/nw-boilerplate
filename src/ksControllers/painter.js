@@ -325,7 +325,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.fillStyle = '#333';
 		ctx.strokeStyle = '#333';
 		ctx.font = `${10*ratio}px Microsoft Yahei`;
-		ctx.fillText(textSymbol, (rangeX1 + rangeX2)/2, 30);
+		ctx.fillText(textSymbol, (rangeX1 + rangeX2)/2, 30*ratio);
 		ctx.stroke();
 
 		let textDescribe = symbolDescribe || '';
@@ -333,7 +333,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.beginPath();
 		ctx.fillStyle = '#666';
 		ctx.strokeStyle = '#666';
-		ctx.fillText(textDescribe, (rangeX1 + rangeX2)/2, 50);
+		ctx.fillText(textDescribe, (rangeX1 + rangeX2)/2, 50*ratio);
 		ctx.stroke();
 
 		//left right line
