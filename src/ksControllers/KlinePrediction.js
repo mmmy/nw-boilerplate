@@ -242,10 +242,9 @@ KlinePrediction.prototype.updateHover = function(x, y) {
 	}
 	this._hoverY = y;
 	//记录当前鼠标在一个bar的indext
-	this._cursorAtIndex = pointToIndex(x, y);
-
 	this.update();
 	this.render();
+	this._cursorAtIndex = pointToIndex(x, y);
 }
 
 KlinePrediction.prototype.getHitTest = function(x, y) {
