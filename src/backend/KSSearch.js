@@ -28,7 +28,7 @@ let {searchOptions} = config;
 ******************/
 
 //symbol:'Shenzhen:000001.SZ';
-let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory }, cb, errorCb) => {
+let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory, dr }, cb, errorCb) => {
 
 	let exchangeReg = /.*\:/ ; //匹配开始到冒号的所有字符,
 	//let id = parseInt(symbol.replace(exchangeReg, '')); //去掉交易所字符
@@ -75,12 +75,40 @@ let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMa
 		}
 	};
 
+   var sSC1=new Date(`${dr[0].date} ${dr[0].hour}:${dr[0].minute}:${dr[0].second}`).toISOString();
+   var sSC2=new Date(`${dr[1].date} ${dr[1].hour}:${dr[1].minute}:${dr[1].second}`).toISOString();
+   /*
+
+	try{
+			sSC1 = new Date(
+				parseInt(new Date(dr[0].date)*1.0) +
+				1000*(
+					3600*parseInt(dr[0].hour)+
+					60*parseInt(dr[0].minute)+
+					parseInt(dr[0].second)
+				)
+			).toISOString();
+			sSC2 = new Date(
+				parseInt(new Date(dr[1].date)*1.0) +
+				1000*(
+					3600*parseInt(dr[1].hour)+
+					60*parseInt(dr[1].minute)+
+					parseInt(dr[1].second)
+				)
+			).toISOString();
+	} catch(e) {console.log(e)};
+
+*/
 	var klineObj = [];
 	kline.forEach(function (onekline) {
 		klineObj.push(formatkline(onekline));
 	});
 	let postObj = {
 		mid:"test example",
+		rangeLimit:{
+			begin: {time: sSC1},
+			end: {time: sSC2}
+		},
 		pattern:{
 			//id: id + '',     //后台要求是字符串
 			type: "Custom",
