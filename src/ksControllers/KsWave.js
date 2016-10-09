@@ -27,20 +27,20 @@ KsWave.prototype._init = function() {
     waves: [{
         timeModifier: 4,
         lineWidth: 1,
-        amplitude: 50,
+        amplitude: 30,
         wavelength: 100,
         segmentLength: 1,
         type:'sine'
     }, {
         timeModifier: 2,
         lineWidth: 1,
-        amplitude: 35,
+        amplitude: 20,
         wavelength: 150,
         segmentLength: 1
     }, {
         timeModifier: 1,
         lineWidth: 1,
-        amplitude: 20,
+        amplitude: 10,
         wavelength: 80,
         segmentLength: 1
     }],

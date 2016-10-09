@@ -709,7 +709,7 @@ SineWaves.prototype.drawWave = function(time, options) {
 
   // Stroke it
   // this.ctx.stroke();
-  this.ctx.fillStyle = 'rgba(0,0,0,0.05)';
+  this.ctx.fillStyle = 'rgba(0,0,0,0.03)';
   this.ctx.closePath();
   this.ctx.fill();
 };
