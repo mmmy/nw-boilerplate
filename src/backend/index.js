@@ -63,7 +63,6 @@ let searchPattern = (args, cb, errorCb) => {
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];
 			//let id = i;
-			console.log('industry', industry);
 			return {
 				id: i,
 				symbol: id,

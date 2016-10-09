@@ -75,13 +75,31 @@ klinePredictionWidget.init = (root) => {
 	_initTooltip();
 };
 
+let _ksIntervalToTradigviewInterval = function(dataCategory) {
+	dataCategory = dataCategory && dataCategory.toLowerCase();
+	switch(dataCategory) {
+		case 'cf_m':
+			return '1';
+			break;
+		case 'cf_m5':
+			return '5';
+			break;
+		case 'cf_d':
+			return 'D';
+			break;
+		case 'cs_d':
+			return 'D';
+			break;
+	}
+};
+
 klinePredictionWidget.setPattern = (pattern) => {
 	if(!_klinePrediction) return;
 
 	let kline = pattern.kLine || [],
 			baseBars = pattern.baseBars || 0,
 			symbol = pattern.symbol || '',
-			interval = pattern.type,
+			interval = pattern.type || pattern.metaData && _ksIntervalToTradigviewInterval(pattern.metaData.dataCategory),
 			symbolDescribe = pattern.metaData && pattern.metaData.name || '';
 
 	_klinePrediction.setData(kline, baseBars, interval, symbol, symbolDescribe);
