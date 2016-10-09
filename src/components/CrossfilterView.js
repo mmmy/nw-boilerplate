@@ -394,7 +394,7 @@ resizeChart1() {
 	    		</div>
 		    </div>
 		    <div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='yield_count_chart_wrapper'>
-		    		<strong>{/*toggleBtn3*/}收益率统计{yiledBtns}</strong>
+		    		<strong>{/*toggleBtn3*/}涨跌幅度统计{yiledBtns}</strong>
 		    		<div ref='yield_count_chart' className="yield-count-chart"></div>
 		    </div>
 		    {/*<div className="dc-chart-row" ref='dc_chart_row_2'>

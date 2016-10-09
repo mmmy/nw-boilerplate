@@ -249,7 +249,7 @@ class ComparatorPrediction extends React.Component {
     return (<div style={{position:'absolute',height:'100%',width:'100%'}}>
       <div className='comparator-info-container'>
         <span ref='info_title' className='title font-simsun'>匹配图形</span><i ref='info_O'>O</i><i ref='info_H'>H</i><i ref='info_L'>L</i><i ref='info_C'>C</i>
-        <span ref='info_prediction_name' className='title font-simsun prediction-name'>走势分布</span>
+        <span ref='info_prediction_name' className='title font-simsun prediction-name'>历史走势分布</span>
         <button data-kstooltip="添加到收藏" className='flat-btn add-btn' onFocus={ this.showFavoritesMenu.bind(this) } onBlur={ this.removeFavoritesMenu.bind(this) }>add</button>
       </div>
       <div ref='eChartPredictionLine' className={ className }></div>

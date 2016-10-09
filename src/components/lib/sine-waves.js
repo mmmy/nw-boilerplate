@@ -704,14 +704,15 @@ SineWaves.prototype.drawWave = function(time, options) {
   // this.ctx.lineTo(options.x + 50, options.y);
   // this.ctx.lineTo(options.x + 50, options.y + 1000);
   // this.ctx.lineTo(0, options.y + 1000);
-  this.ctx.lineTo(this.width, 1000);
-  this.ctx.lineTo(0, 1000);
+  
+  // this.ctx.lineTo(this.width, 1000);
+  // this.ctx.lineTo(0, 1000);
 
   // Stroke it
-  // this.ctx.stroke();
-  this.ctx.fillStyle = 'rgba(0,0,0,0.03)';
-  this.ctx.closePath();
-  this.ctx.fill();
+  this.ctx.stroke();
+  // this.ctx.fillStyle = 'rgba(0,0,0,0.03)';
+  // this.ctx.closePath();
+  // this.ctx.fill();
 };
 
 /**

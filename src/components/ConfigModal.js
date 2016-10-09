@@ -83,7 +83,7 @@ class SearchConfigModal extends React.Component {
 
 		return <div className='modal-content-contianer'>
 			<div className='title'>搜索配置</div>
-			<div className='item-title font-simsun'>统计天数</div>
+			<div className='item-title font-simsun'>后向统计范围</div>
 			<div className='item-body-container days'>
 				<div className='inputs-wrapper'><button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button></div><span className='font-simsun'>根</span>
 			</div>

@@ -39,7 +39,7 @@ class CrossfilterContainer extends React.Component {
 		let className = classNames('crossfilter-out-container');
 		return (<div className={ className }>
 				<div className='title-container'>
-					<h3 className='title'>数据模型</h3>
+					<h3 className='title'>可视化统计</h3>
 				</div>
 				<div className='crossfilter-wrapper'>
 					<CrossfilterView 

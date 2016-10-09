@@ -275,6 +275,7 @@ KlinePrediction.prototype.setCursorByHittest = function(hitTest) {
 }
 
 KlinePrediction.prototype._isMinuteTime = function() {
+	console.log(this._timeInterval);
 	return (parseInt(this._timeInterval) + '') == this._timeInterval; //说明是 this._timeInterval = '1' || '5' || '15'
 }
 

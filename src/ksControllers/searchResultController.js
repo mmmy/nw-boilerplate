@@ -66,7 +66,7 @@ let _decimal = 2;
 let _klineChart = null;
 let _earnChart = null;
 
-let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
+let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span><span class='title-zhong'>中</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
 let _$toggle = null;
 
 let patternHtml = `<div class='pattern-inner'>
@@ -90,7 +90,7 @@ let searchStatisticHtml = `<div class='container-ks-sr statistic'>
 														<span class='split-line l1'></span>
 														<span class='split-line l2'></span>
 														<span class='split-line l3'></span>
-														<span class='info-item bars'><div class='item-title font-simsun'>统计K线数</div><div class='item-value font-number'><span class='value'>0</span></div></span>
+														<span class='info-item bars'><div class='item-title font-simsun'>后向统计范围</div><div class='item-value font-number'><span class='value'>0</span></div></span>
 														<span class='info-item uprate'><div class='item-title font-simsun'>上涨比例</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 														<span class='info-item median'><div class='item-title font-simsun'>收益中位数</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 														<span class='info-item mean'><div class='item-title font-simsun'>收益平均值</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
@@ -289,7 +289,7 @@ let _triggerToggle = () => { //作为外部接口
 
 let _initToggle = () => {
 
-	_toggleSlideCenter(true);
+	_toggleSlideCenter(true, false);
 
 	_$toggle.find('.btn-container').click(function() {
 		/* Act on the event */
@@ -298,10 +298,11 @@ let _initToggle = () => {
 };
 
 //拱石搜索按钮 滑动到中间
-let _toggleSlideCenter = (slideCenter) => {
+let _toggleSlideCenter = (slideCenter, isSearching) => {
 	_$toggle.find('.btn-container').toggleClass('slide-center', slideCenter);
 	_$toggle.find('.btn-toggle')[slideCenter ? 'hide' : 'show']();
 	_$toggle.find('.title-jieguo')[slideCenter ? 'hide' : 'show']();
+	_$toggle.find('.title-zhong')[slideCenter&&isSearching ? 'show': 'hide']();
 };
 let _hideBtnToggle = (hide) => {
 	_$toggle.find('.btn-toggle')[hide ? 'hide' : 'show']();
@@ -394,7 +395,7 @@ searchResultController.reportSlideDown = (slideDown, cb) => {
 		cb && cb();
 	});
 	$target.toggleClass('slide-down', slideDown);
-	_toggleSlideCenter(slideDown);
+	_toggleSlideCenter(slideDown, true);
 	if(!slideDown) {
 		_hideBtnToggle(store.getState().patterns.error);
 	}
