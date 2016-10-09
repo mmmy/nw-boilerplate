@@ -39,6 +39,19 @@ let isLegal = (_filename) => {
   return false;
 }
 
+let isExist = (_filename) => {
+  assert(typeof(_filename) == 'string', 'isExist arguments error');
+  var _cacheFilePath = path.join(_BASEPATH, _filename+'.json');
+
+  try {
+    if (fs.existsSync(_cacheFilePath)) 
+      return true;
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
+}
+
 let getFromFile = (_filename) => {
   assert(typeof(_filename) == 'string', 'getFromFile arguments error');
   _createCacheFolder(_BASEPATH);
@@ -72,6 +85,7 @@ let setToFile = (result, _filename) => {
 
 module.exports = {
   isLegal,
+  isExist,
   getFromFile,
   setToFile
 };

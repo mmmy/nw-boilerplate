@@ -79,7 +79,36 @@ let getAllSymbolsList = (callback) => {
     });
 
   };
-  getGroupCode(cb);
+
+  let expiredCb = (_groupCodes) => {
+    callback && callback(Cache.getFromFile('allSymbolsList'));
+
+    var promises = [];
+    JSON.parse(_groupCodes).forEach(function(code) {
+      if (code != 'cf_m5')
+      promises.push(new Promise((resolve, reject) => {
+        getOneSymbolList({fileName: code, postData: { 'groupCode': code } }, function (data) {
+          resolve(data);
+        });
+      }));
+
+    });
+
+    Promise.all(promises).then(function(result) {
+      var arr = [];
+      result.forEach( function(r) {
+        arr = arr.concat(JSON.parse(r));
+      });
+      arr = JSON.stringify(arr);
+      Cache.setToFile(arr, 'allSymbolsList');
+    });
+
+  };
+
+  if (Cache.isExist('allSymbolsList')) 
+    getGroupCode(expiredCb);
+  else 
+    getGroupCode(cb);
 };
 
 /*
