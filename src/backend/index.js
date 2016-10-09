@@ -46,11 +46,13 @@ let __closePrice = [];
 
 let searchPattern = (args, cb, errorCb) => {
 
-	const { symbol, kline, bars, dateRange, searchConfig, dataCategory, interval } = args;
+	const { symbol, kline, bars, dateRange, searchConfig, dataCategory, interval} = args;
 
 	let { additionDate, searchLenMax } = searchConfig;
 
-	let searchArgs = { symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory };
+	let dr = searchConfig.dateRange;
+
+	let searchArgs = { symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory, dr};
 
 	let searchCb = (resObj) => {
 		
