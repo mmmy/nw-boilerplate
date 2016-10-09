@@ -111,8 +111,8 @@ class SearchConfigModal extends React.Component {
 					</div>
 				</div>
 			</div>
-			<div className='item-title font-simsun'>标的类型</div>
-			<div className='item-body-container sid'>
+			<div className='item-title font-simsun hide'>标的类型</div>
+			<div className='item-body-container sid hide'>
 				<span className={stockClass} onClick={this.toggleType.bind(this, 'stock')}>股票</span><span className={futureClass} onClick={this.toggleType.bind(this, 'future')}>期货</span>
 			</div>
 			<div className='footer font-simsun'>

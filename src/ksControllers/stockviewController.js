@@ -398,11 +398,16 @@ let _insertHistoryMonth = (date) => {
 	let _year = date.getFullYear();
 	let _month = date.getMonth() + 1;
 	let $navDom = $(_navDom);
+	let firstItem = $navDom.find('p.month:first-child');
+	let firstItemDate = firstItem.date();
+	if(firstItemDate && firstItemDate.year == _year && firstItemDate.month == _month) {
+		return;
+	}
 	let itemNode = $(`<p class='month font-simsun'><span class='name'>${_month}月</span></p>`).data({year:_year, month:_month})
 									.append($('<button class="flat-btn delete">delete</button>').click(_handleDeleteHistoryByMonth))
 									.on('click', _handleGotoMonth);
 	itemNode.addClass('active');
-	$navDom.find('p.monthf').removeClass('active');
+	$navDom.find('p.month').removeClass('active');
 	$navDom.prepend(itemNode);
 };
 //插入历史记录
@@ -623,7 +628,7 @@ favoritesController.getActiveName = () => {
 
 favoritesController.showTrashedPatterns = (e) => {
 	_showFolder(-1);
-	$(e.target).addClass('active');
+	$(e.currentTarget).addClass('active');
 	let trashedData = favoritesManager.getTrashedData();
 	let $bodyDom = $(_bodyDomF);
 	$bodyDom.empty();
@@ -632,7 +637,13 @@ favoritesController.showTrashedPatterns = (e) => {
 
 favoritesController.clearTrashedPatterns = () => {
 	new ConfirmModal('清空回收站?', 'clear-trashed-patterns', () => {
-		favoritesManager.clearTrashedFavorites();
+		if(favoritesManager.clearTrashedFavorites()) {
+			_updateTrashedNumber();
+			let $bodyDom = $(_bodyDomF);
+			let trashedData = [];
+			$bodyDom.empty();
+			$bodyDom.append(_generatePatterns(trashedData, 2));
+		}
 	});
 };
 
