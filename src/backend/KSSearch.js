@@ -69,9 +69,9 @@ let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMa
 	let formatkline = (onekline) => {
 		return {
 			"open": onekline[1],
-			"high": onekline[2],
+			"close": onekline[2],
 			"low": onekline[3],
-			"close": onekline[4],
+			"high": onekline[4],
 		}
 	};
 
