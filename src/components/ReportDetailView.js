@@ -247,7 +247,7 @@ class ReportDetailView extends React.Component {
 
 	generateDataCell(title, data, decimal, unit) {
 		decimal = decimal || 2;
-		if(title=='上涨比例') {
+		if(title=='上涨比例' || title=='下跌比例') {
 			decimal = 1;
 		}
 		unit = unit || '%';
