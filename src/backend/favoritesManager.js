@@ -225,10 +225,14 @@ let getTrashedDataLength = () => {
 
 let clearTrashedFavorites = () => {
 	let favorites = getTrashedData();
-	favorites.forEach((favorite) => {
-		deleteOneFavorite(null, favorite, true);
-	});
-	return true;
+	try {
+		favorites.forEach((favorite) => {
+			deleteOneFavorite(null, favorite, true);
+		});
+		return true;
+	} catch(e) {
+		console.error(e);
+	}
 };
 
 module.exports = {
