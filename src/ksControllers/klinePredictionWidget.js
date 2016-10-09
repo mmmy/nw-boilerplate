@@ -78,16 +78,13 @@ klinePredictionWidget.init = (root) => {
 let _ksIntervalToTradigviewInterval = function(dataCategory) {
 	dataCategory = dataCategory && dataCategory.toLowerCase();
 	switch(dataCategory) {
-		case 'cf_m':
-			return '1';
+		case 'cf':
+			return 'D';
 			break;
 		case 'cf_m5':
 			return '5';
 			break;
-		case 'cf_d':
-			return 'D';
-			break;
-		case 'cs_d':
+		case 'cs':
 			return 'D';
 			break;
 	}
