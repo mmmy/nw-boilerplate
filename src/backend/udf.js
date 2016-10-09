@@ -29,7 +29,7 @@ let getGroupCode = (callback) => {
   };
 
   const errorCb = (err) => {
-    callback && callback(Cache.getFromFile('groupCode'));
+    callback && Cache.isExist('groupCode')  && callback(Cache.getFromFile('groupCode'));
   };
 
   if (Cache.isLegal('groupCode')) {
@@ -131,7 +131,7 @@ let getOneSymbolList = (data, callback) => {
   };
 
   const errorCb = (err) => {
-    callback && callback(Cache.getFromFile(fileName));
+    callback && Cache.isExist(fileName) &&callback(Cache.getFromFile(fileName));
   };
 
   if (Cache.isLegal(fileName)) {
