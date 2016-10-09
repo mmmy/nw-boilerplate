@@ -90,8 +90,8 @@ ConfigEditor.prototype._init = function() {
 	this._$wrapper.append($date);
 
 	//标的类型
-	this._$wrapper.append(`<div class='item-title font-simsun'>标的类型</div>`);
-	let $sidType = $(`<div class='item-body-container sid'></div>`)
+	this._$wrapper.append(`<div class='item-title font-simsun hide'>标的类型</div>`);
+	let $sidType = $(`<div class='item-body-container sid hide'></div>`)
 									.append(this._inputs.typeStock)
 									.append(this._inputs.typeFuture);
 	this._$wrapper.append($sidType);
