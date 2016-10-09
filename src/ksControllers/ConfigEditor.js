@@ -68,7 +68,7 @@ ConfigEditor.prototype._init = function() {
 	this._$wrapper.append(`<div class='title'>搜索配置</div>`);
 	
 	//统计天数
-	this._$wrapper.append(`<div class='item-title font-simsun'>统计天数</div>`);
+	this._$wrapper.append(`<div class='item-title font-simsun'>后向统计范围</div>`);
 	let $bars = $(`<div class='item-body-container days'></div>`)
 							.append($(`<div class="inputs-wrapper"></div>`).append(this._inputs.reduceBars).append(this._inputs.additionBars).append(this._inputs.addBars))
 							.append(`<span class='font-simsun'>根</span>`);

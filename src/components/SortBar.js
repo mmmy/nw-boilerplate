@@ -169,7 +169,7 @@ class SortBar extends React.Component {
 		});
 
 		return (<div className="toolbar-container">
-				<div className='toolbar-item item0'><h5 className='left-title'>匹配相似结果</h5></div>
+				<div className='toolbar-item item0'><h5 className='left-title'>匹配结果</h5></div>
 				<div className='toolbar-item item1'>
 					<button className='pattern-bar-btn' onFocus={ this.toggleSearchPanel.bind(this, true) } onBlur={ this.toggleSearchPanel.bind(this, false) }>
 						<span data-kstooltip="关键字搜索" className={searchIconClass} ref='search_icon'></span>
