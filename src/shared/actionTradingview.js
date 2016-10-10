@@ -79,7 +79,8 @@ let setStockViewSymbol = (symbol) => {
 	}
 };
 
-let setStockViewVisibleRange = function(symbol, unixTimeRange) {
+let setStockViewVisibleRange = function(symbol, unixTimeRange, interval) {
+	interval = interval || 'D';
 	let context = _getStockViewWindow();
 	let Q5 = context && context.Q5;
 	if(Q5) {
@@ -88,6 +89,9 @@ let setStockViewVisibleRange = function(symbol, unixTimeRange) {
 			let tradingviewHasRangeData = firstBarTime && (firstBarTime < unixTimeRange.from);
 
 			let chart = Q5.getAll()[0];
+			
+			chart.setResolution(interval)
+
 			let mainSeries = chart.R99.mainSeries();
 			_onComsubscribes.forEach(function(func){
 				mainSeries._onCompleted.unsubscribe(null, func); //取消所有订阅

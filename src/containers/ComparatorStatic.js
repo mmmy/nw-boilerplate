@@ -115,8 +115,14 @@ class ComparatorStatic extends React.Component {
       let metaData = active.metaData,
           startUnixTime = new Date(active.dateStart) / 1000,
           endUnixTime = (new Date(active.dateLast) / 1000) || (new Date(active.dateEnd) / 1000);
+      
+      let dataCategory = metaData.dataCategory; // cf cf_m5 cs
+      let interval = 'D';
+      if(dataCategory.indexOf('m5')>-1) {
+        interval = '5';
+      }
 
-      metaData && setStockViewVisibleRange(metaData.name, {from: startUnixTime, to: endUnixTime}); 
+      metaData && setStockViewVisibleRange(metaData.name, {from: startUnixTime, to: endUnixTime}, interval); 
       searchResultController.triggerToggle();
       // setActiveSymol();
       showStockView();
