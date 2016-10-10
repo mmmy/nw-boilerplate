@@ -125,6 +125,14 @@ gulp.task('nw_release', function(){
 
 gulp.task('build', ['html','fonts','image','scripts','styles']);
 gulp.task('beta', ['watch', 'nw_release']);
+gulp.task('local', ['watch'], function(){
+	var env = process.env;
+	env.NODE_ENV = 'local';
+	return gulp.src('')
+					.pipe($.shell(['nw --child-clean-exit --remote-debugging-port=9000 .'], {
+						env: env
+					}));
+});
 
 gulp.task('dev_react',['styles'],function(){
   gulp.watch(paths.STYLES, ['styles']);
