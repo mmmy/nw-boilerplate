@@ -10,11 +10,11 @@ let showLogin = (onSuccessLogin) => {
   let LoginComponent = require('./components/LoginSmall').default;
   let handleLogined = (username, password, autologin, cb) => {
   	waitingWidget.startWaiting();
-  	setTimeout(unmountLogin, 100);
-  	setTimeout(() => {
+  	setTimeout(unmountLogin, 1);
+  	// setTimeout(() => {
   	onSuccessLogin && onSuccessLogin(username, password, autologin, cb);
   		
-  	}, 200);
+  	// }, 20);
   };
   ReactDOM.render(<LoginComponent onLogined={handleLogined}/>, window.document.getElementById('login-dom'));
   isShowLogin = true;

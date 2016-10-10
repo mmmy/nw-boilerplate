@@ -57,7 +57,6 @@ let searchPattern = (args, cb, errorCb) => {
 	let searchCb = (resObj) => {
 		
 		// console.info(`第一步: 搜索 [ 正常结束 ], 匹配到 ${resObj.results.length} 个`);
-
 		__data = resObj.results.map((pattern, i) => {
 
 			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type=interval} = pattern;
@@ -96,7 +95,11 @@ let searchPattern = (args, cb, errorCb) => {
 			});
 
 			if(startIndex === 0) { //获取到前五个 刷新state
-				cb && cb(__data, __closePrice);
+				if(__data.length == 0) {
+					errorCb && errorCb({type:'no_data', name:'error'});
+				} else {
+					cb && cb(__data, __closePrice);
+				}
 			} else {
 				let endIndex = startIndex + klineArr.length;
 				callFunc([startIndex, endIndex], __data);

@@ -30,9 +30,9 @@ let searchSuccess = (patterns, searchTimeSpent)=>{
 	});
 	wavesController.stop();
 };
-let searchError = (searchKline)=>{
-	searchResultController.showErrorPanel(searchKline);
+let searchError = (searchKline, error)=>{
 	searchResultController.reportSlideDown(false);
+	searchResultController.showErrorPanel(searchKline, error);
 	wavesController.stop();
 };
 
@@ -132,7 +132,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 				}, (error) => {
 					//请求错误后的处理
 					console.error(error);
-					searchError(kline);
+					searchError(kline, error);
 					// dispacth({type: types.GET_PATTERNS_ERROR, error: error});
 				}
 			);

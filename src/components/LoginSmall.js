@@ -11,18 +11,18 @@ let setAppStateBeforeLogin = () => {
 	// $('.app-drag-area').css('-webkit-app-region','');
 	let width = pkg.window.width || 400;
 	let height = pkg.window.height || 470;
-	nwApp.appSetSize(width, height);
 	nwApp.appSetMinimumSize(width, height);
 	nwApp.appSetMaximumSize(width, height);
+	nwApp.appSetSize(width, height);
 	// nwApp.appSetResizable(false);
 };
 
 let setAppStateAfterLogin = () => {
 	// $('.app-drag-area').css('-webkit-app-region','drag');
 	// nwApp.appSetSize(900, 600);
-	nwApp.appSetSize(1350, 800);
 	nwApp.appSetMinimumSize(1200, 700);
 	nwApp.appSetMaximumSize(3000, 2000);
+	nwApp.appSetSize(1350, 800);
 	// nwApp.appSetResizable(true);
 	nwApp.appSetCenter();
 };
@@ -262,13 +262,13 @@ class Login extends React.Component {
 						saveUser(username, password);
 					}
 				});
-			}, 20);
+			}, 2000);
 			// }, 0);
 		});
 	}
 
 	hideLogin() {
-		this.refs.login_panel_container.style.opacity = '0';
+		this.refs.login_panel_container.style.display = 'none';
 		window.document.body.style.opacity = '0';
 	}
 

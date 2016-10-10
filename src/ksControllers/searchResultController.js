@@ -73,7 +73,7 @@ let patternHtml = `<div class='pattern-inner'>
 										<span class='info-item symbol'><div class='item-value font-number size10'>--</div><div class='item-title font-simsun'>--</div></span>
 										<span class='kline'><canvas></canvas></span>
 										<span class='info-item similarity'><div class='item-title font-simsun'>相似度</div><div class='item-value font-number small red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
-										<span class='info-item earn'><div class='item-title font-simsun'>回报</div><div class='item-value font-number small'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+										<span class='info-item earn'><div class='item-title font-simsun'>涨跌</div><div class='item-value font-number small'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 									</div>`;
 let comparatorInner = `<div class='container-ks-sr container-ks-st meta'>
 												<h3 class='title font-msyh'>匹配相似结果</h3>
@@ -86,18 +86,18 @@ let comparatorInner = `<div class='container-ks-sr container-ks-st meta'>
 											</div>`;
 
 let searchStatisticHtml = `<div class='container-ks-sr statistic'>
-														<h3 class='title font-msyh'>数据统计</h3>
+														<h3 class='title font-msyh'>历史指标统计</h3>
 														<span class='split-line l1'></span>
 														<span class='split-line l2'></span>
 														<span class='split-line l3'></span>
 														<span class='info-item bars'><div class='item-title font-simsun'>后向统计范围</div><div class='item-value font-number'><span class='value'>0</span></div></span>
 														<span class='info-item uprate'><div class='item-title font-simsun'>上涨比例</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
-														<span class='info-item median'><div class='item-title font-simsun'>收益中位数</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
-														<span class='info-item mean'><div class='item-title font-simsun'>收益平均值</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+														<span class='info-item median'><div class='item-title font-simsun'>涨跌中位数</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+														<span class='info-item mean'><div class='item-title font-simsun'>涨跌平均值</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 													</div>`;
 
 let searchChartHtml = `<div class='container-ks-sr chart'>
-												<h3 class='title font-msyh'>收益率统计</h3>
+												<h3 class='title font-msyh'>涨跌幅度统计</h3>
 												<span class='earnchart-wrapper'><div class='earnchart'></div></span>
 											</div>`;
 
@@ -402,17 +402,28 @@ searchResultController.reportSlideDown = (slideDown, cb) => {
 	}
 };
 
-searchResultController.showErrorPanel = (searchKline) => {
+searchResultController.showErrorPanel = (searchKline, error) => {
 	searchKline = searchKline || [];
+
+	let title = '本次搜索失败了',
+			errorBody = `<span>请您尝试</span><button class='research'>重新搜索</button><span>或返回</span><button class='back'>上一次搜索</button>`;
+
+	if(error && (error.type == 'no_data')) {
+		title = `本次搜索结果数为 "0"`;
+		errorBody= "请您尝试修改搜索条件, 然后重试";
+	}
+
 	let $errorPanel = $(`<div class='error-panel flex-center'>
 												<img/>
 												<div>
-													<h2>本次搜索失败了</h2>
-													<p><span>请您尝试</span><button class='research'>重新搜索</button><span>或返回</span><button class='back'>上一次搜索</button></p>
+													<h2>${title}</h2>
+													<p>${errorBody}</p>
 												</div>
 											</div>`);
 	
 	_$reportWrapper.append($errorPanel);
+
+	_$toggle.find('.btn-toggle').hide();
 
 	$errorPanel.find('img').attr('src', getKlineImgSrc(searchKline));
 	//重新搜索
@@ -424,6 +435,7 @@ searchResultController.showErrorPanel = (searchKline) => {
 	//返回
 	$errorPanel.find('.back').click(() => {
 		searchResultController.removeErrorPanel();
+		_$toggle.find('.btn-toggle').show();
 	});
 };
 
