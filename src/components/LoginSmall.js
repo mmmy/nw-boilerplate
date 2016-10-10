@@ -249,20 +249,27 @@ class Login extends React.Component {
 			//login success, into the stockingview
 			// setTimeout(() => {
 			that.hideLogin();
-			setAppStateAfterLogin();
+
+			setTimeout(function(){
+				setAppStateAfterLogin();
+			}, 10);
 			
+			setTimeout(function(){
 				autoLogin ? storageAccount(username, password) : removeAccount();
+				window.document.body.style.opacity = '';
 				onLogined && onLogined(username, password, autoLogin, (error) => { 
 					if(!error) {
 						saveUser(username, password);
 					}
 				});
+			}, 20);
 			// }, 0);
 		});
 	}
 
 	hideLogin() {
 		this.refs.login_panel_container.style.opacity = '0';
+		window.document.body.style.opacity = '0';
 	}
 
 	startClose() { //动画结束后 移除dom
