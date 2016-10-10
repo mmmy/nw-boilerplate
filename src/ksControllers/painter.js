@@ -510,7 +510,8 @@ let drawAxisX = (canvas, len, options) => {
 let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:33']
 	let len = timeArr.length || 0;
 	if(!len) {
-		throw 'drawAxisX len is 0';
+		console.warn('drawAxisX len is 0');
+		return;
 	}
 	betterCanvasSize(canvas);
 	let ctx = canvas.getContext('2d');

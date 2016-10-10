@@ -103,11 +103,14 @@ class ComparatorPrediction extends React.Component {
     var isInit = this.initDimensions();
     if(isInit || this.props.stretchView) {
       let { closePrice, searchMetaData, searchConfig } = this.props.patterns;
+
+      let predictionBars = searchConfig.additionDate && searchConfig.additionDate.value;
+      
       let rawData = this.symbolDim.top(Infinity);
       let filteredIds = rawData.map((pattern) => {
         return pattern.id;
       });
-      this._predictionChart.setData(searchMetaData && searchMetaData.kline, closePrice);
+      this._predictionChart.setData(searchMetaData && searchMetaData.kline, closePrice, null, predictionBars);
       this._predictionChart.filterLines(filteredIds);
 
       let that = this;

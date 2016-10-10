@@ -232,6 +232,7 @@ let _updateEarnChart = (rawDataArr) => {
 	}).ticks(6).innerTickSize(5);
 	_earnChart.yAxis().tickFormat(d3.format('d')).ticks(5).innerTickSize(5);
 	_earnChart.render();
+	_earnChart.redraw();
 };
 
 let _resizeEarnChart = () => {
