@@ -11,11 +11,22 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 	}
 	let folders = favoritesManager.getFavoritesFolders();
 	let optionsNode = $(`<div class='shoucang-pop-menu font-simsun'></div>`).on('mouseenter',function(e){ e.stopPropagation() });
-	let btnTemplate = `<span class='ks-input-wrapper border'><input placeholder='新建文件夹'><i class='button ks-check'></i><i class='button ks-delete'></i></span>`;
+	let btnTemplate = `<span class='ks-input-wrapper border'><input placeholder='新建文件夹'><i class='button ks-check ks-disable'></i><i class='button ks-delete'></i></span>`;
 	let $btnGroup = $(`<div class='input-wrapper'></div>`).append($(btnTemplate));
-	$btnGroup.find('input').blur(() => { $target.focus() });
+
+	$btnGroup.find('input').blur(() => { $target.focus() })
+													.on('input', (event)=>{
+														let folderName = event.currentTarget.value;
+														if(folderName === '' || favoritesController.hasFavoriteFolder(folderName)) {
+															$btnGroup.find('.ks-check').addClass('ks-disable');
+														} else {
+															$btnGroup.find('.ks-check').removeClass('ks-disable');
+														}
+													});
+
 	$btnGroup.find('.ks-check').click(function(event) {
 																/* Act on the event */
+																if($(event.currentTarget).hasClass('ks-disable')) return;
 																let name = $footer.find('input').val();
 																if(name) {
 																	favoritesController.addNewFolder(name);

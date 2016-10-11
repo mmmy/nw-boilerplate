@@ -517,14 +517,23 @@ let _handleRenameFolder = (event) => {
 	let $folderNode = $(event.target).closest('.favorites-folder');
 	let data = $folderNode.data();
 	let { name } = data;
-	let $inputGroup = $(`<div class='ks-input-wrapper border'><input /><span class='flat-btn button ks-check'>check</span><span class='flat-btn button ks-delete'>delete</span></div>`);
+	let $inputGroup = $(`<div class='ks-input-wrapper border'><input /><span class='flat-btn button ks-check ks-disable'>check</span><span class='flat-btn button ks-delete'>delete</span></div>`);
 	let $renameInput = $(`<div class='rename-input-container'></div>`).append($inputGroup);
 	
 	$folderNode.after($renameInput);
 
-	$inputGroup.find('input').focus();
+	$inputGroup.find('input').focus().on('input', (event)=>{
+		var folderName = event.currentTarget.value;
+		if(folderName === '' || favoritesController.hasFavoriteFolder(folderName)) {
+			$inputGroup.find('.ks-check').addClass('ks-disable');
+		} else {
+			$inputGroup.find('.ks-check').removeClass('ks-disable');
+		}
+	});
+
 	$inputGroup.find('.ks-check').click(function(event) {
 		/* Act on the event */
+		if($(event.currentTarget).hasClass('ks-disable')) return;
 		let newName = $inputGroup.find('input').val();
 		newName = newName.trim();
 		if(newName && favoritesManager.renameFavorites(name, newName)) {
@@ -647,6 +656,10 @@ favoritesController.clearTrashedPatterns = () => {
 			$bodyDom.append(_generatePatterns(trashedData, 2));
 		}
 	});
+};
+
+favoritesController.hasFavoriteFolder = (folderName) => {
+	return favoritesManager.hasFavoriteFolder(folderName);
 };
 
 module.exports = {

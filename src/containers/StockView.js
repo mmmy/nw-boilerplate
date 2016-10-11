@@ -158,8 +158,8 @@ class StockView extends React.Component {
 		      		<h4 className='nav-title'>我的收藏夹</h4>
 		      		<div ref='favorites_nav_container' className='nav-item-container'></div>
 		      		<div className='favorites-input-wrapper'>
-		      			<input className='font-simsun' ref='favorite_input' placeholder='新建收藏夹'/>
-		      			<button className='flat-btn new-folder' onClick={this.handleNewFavorites.bind(this)}>+</button>
+		      			<input className='font-simsun' ref='favorite_input' onChange={this.handleChangeFoldInput.bind(this)} placeholder='新建收藏夹'/>
+		      			<button className='flat-btn new-folder ks-disable' ref='add_newfolder_btn' onClick={this.handleNewFavorites.bind(this)}>+</button>
 		      			<button className='flat-btn clear' onClick={this.handleClearInput.bind(this)}>x</button>
 		      		</div>
 		      		<h6 className='trash-panel-btn font-simsun' onClick={this.handleShowTrashedPatterns.bind(this)}>
@@ -225,7 +225,19 @@ class StockView extends React.Component {
 		// historyController.updateNavContainer(this.refs.history_nav_container);
 	}
 
-	handleNewFavorites() {
+	handleChangeFoldInput(e) {
+		let folderName = e.currentTarget.value;
+		if(folderName === '' || favoritesController.hasFavoriteFolder(folderName)) {
+			$(this.refs.add_newfolder_btn).addClass('ks-disable');
+		} else {
+			$(this.refs.add_newfolder_btn).removeClass('ks-disable');
+		}
+	}
+
+	handleNewFavorites(e) {
+		
+		if($(e.currentTarget.hasClass('ks-disable'))) return;
+
 		let folderName = $(this.refs.favorite_input).val();
 		if(folderName) {
 			favoritesController.addNewFolder(folderName);

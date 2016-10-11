@@ -238,6 +238,14 @@ let clearTrashedFavorites = () => {
 	}
 };
 
+let hasFavoriteFolder = (folderName) => {
+	let allNames = getFavoritesFolders() || [];
+	if(allNames.indexOf(folderName) > -1) {		//已有相同文件名
+		return true;
+	}
+	return false;
+};
+
 module.exports = {
 	getAllDataFromStorage,
 	addNewClass,
@@ -252,4 +260,5 @@ module.exports = {
 	getTrashedData,
 	getTrashedDataLength,
 	clearTrashedFavorites,
+	hasFavoriteFolder
 };
