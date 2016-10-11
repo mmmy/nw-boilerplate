@@ -158,6 +158,10 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 			ctx.lineTo(whisker1[0][0], height-bottom);
 			ctx.stroke();
 		}
+		if(i===selectedIndex) { //被选中的k线
+			ctx.strokeStyle = '#8d151b';
+			ctx.fillStyle = ctx.strokeStyle;
+		}
 		ctx.fillRect(rectPoints[0][0], rectPoints[0][1], rectPoints[1][0]-rectPoints[0][0], rectPoints[1][1]-rectPoints[0][1]);
 		ctx.setLineDash([]);
 		ctx.beginPath();
@@ -481,6 +485,10 @@ let drawAxisX = (canvas, len, options) => {
 
 	let spaceX = width / len;
 	let ratio = getCanvasPixRatio();
+
+	let minSpaceX = 20*ratio;
+	let interval = Math.ceil(minSpaceX / spaceX);  //min is 1;
+
 	//options
 	let hoverIndex = options && options.hoverIndex;
 	let selectedIndex = options && options.selectedIndex;
@@ -491,7 +499,7 @@ let drawAxisX = (canvas, len, options) => {
 	// ctx.fillRect(0, 0, width, height);
 	ctx.font = `${10*ratio}px Arial`;
 	ctx.textAlign = 'center';
-	for(let i=0; i<len; i++) {
+	for(let i=interval-1; i<len; i+=interval) {
 		ctx.strokeStyle = '#000';
 		ctx.fillStyle = '#000';
 		let center = i*spaceX + spaceX/2;
@@ -570,7 +578,7 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 		rectW *= ratio;
 		let center = selectedIndex*spaceX + spaceX/2;
 		center = _toInt(center);
-		ctx.fillStyle = '#BD3035';
+		ctx.fillStyle = '#8d151b';
 		ctx.fillRect(center - rectW/2, 0, rectW, height);
 		ctx.fillStyle = '#fff';
 		ctx.fillText(selectedIndex+1+'', center, 15*ratio);
