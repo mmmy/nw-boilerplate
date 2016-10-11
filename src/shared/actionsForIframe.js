@@ -28,6 +28,13 @@ module.exports = function(store) {
     store.dispatch(layoutActions.showConfigModal());
   };
 
+  const getAdditionBarValue = function() {
+    try {
+      return store.getState().searchConfig.additionDate;
+    } catch (e) {
+      console.error(e);
+    }
+  }
   // const takeScreenshot = function() {
   //     const chartDom = window.widget_comparator._innerWindow();
   //     const tvChartUrl = chartDom.Q5.getAll()[0]._paneWidgets[0].canvas.toDataURL();
@@ -140,6 +147,7 @@ module.exports = function(store) {
     // scrollToOffsetAnimated,
     searchCancel,
     updatePaneViews,
-    recalculateHeatmap
+    recalculateHeatmap,
+    getAdditionBarValue
 	};
 }

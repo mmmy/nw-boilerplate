@@ -40,6 +40,9 @@ class ReactTradingView extends React.Component {
 
       let widget = new window.TradingView.widget(options);
 
+      widget.onChartReady(function(){
+        console.log('~~~~~~widget.onCHartReady');
+      });
       // if (this.props.viewId === 'comparator-chart') window.widget_comparator = widget;
 
       this._inited = true;
