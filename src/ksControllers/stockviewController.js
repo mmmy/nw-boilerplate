@@ -618,8 +618,10 @@ favoritesController.updateFavorites = (dataObj) => {
 
 favoritesController.addNewFolder = (name) => {
 	let {fileName, initData} = favoritesManager.addNewClass(name);
-	let folderNode = _generateFolderNode(fileName, initData);
-	$(_navDomF).append(folderNode);
+	if(fileName) {
+		let folderNode = _generateFolderNode(fileName, initData);
+		$(_navDomF).append(folderNode);
+	}
 };
 
 favoritesController.getActiveName = () => {

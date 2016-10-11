@@ -67,6 +67,9 @@ let getAllDataFromStorage = () => {
 };
 
 let addNewClass = (name) => {
+	if(_getFileByName(name)) {
+		return {fileName:null, initData:null};
+	}
 	let time = new Date().getTime();
 	let fileName = time + '.json';
 	let initData = {name:name, data:[]};

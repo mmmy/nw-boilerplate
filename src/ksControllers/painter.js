@@ -305,8 +305,10 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	}
 	//baseBarRange
 	if(baseBarRange && baseBarRange[0] >=0 && baseBarRange[1] >= 0) {
-		let rangeX1 = klineWhisker[baseBarRange[0]][0][0][0];
-		let rangeX2 = klineWhisker[baseBarRange[1]][0][0][0];
+		let index0 = baseBarRange[0],
+				index1 = baseBarRange[1];
+		let rangeX1 = klineWhisker[index0][0][0][0];
+		let rangeX2 = klineWhisker[index1][0][0][0];
 		let headerHeight = 3;
 		ctx.save();
 		let manGradient = ctx.createLinearGradient(0, headerHeight, 0, height);
@@ -318,23 +320,36 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.fillStyle = $.keyStone.configDefault.brownRed || '#B70017';
 		// ctx.fillRect(rangeX1, 0, rangeX2 - rangeX1, headerHeight);
 		roundRect(ctx, rangeX1, 0, rangeX2 - rangeX1, headerHeight, {tl:3,tr:3}, true);
+		
+		//判断文字是否应该绘制 , 当K线顶部到达文字y轴区域则不绘制
+		let shouldDrawText = true;
+		for(let i=index0; i<=index1; i++) {
+			if(klineWhisker[i][0][0][1] < 40*ratio){
+				shouldDrawText = false;
+				break;
+			}
+		}
 		//text
-		ctx.textAlign = 'center';
-		let textSymbol = symbolName || '';
-		ctx.beginPath();
-		ctx.fillStyle = '#333';
-		ctx.strokeStyle = '#333';
-		ctx.font = `${10*ratio}px Microsoft Yahei`;
-		ctx.fillText(textSymbol, (rangeX1 + rangeX2)/2, 30*ratio);
-		ctx.stroke();
+		if(shouldDrawText) {
 
-		let textDescribe = symbolDescribe || '';
-		ctx.font = `${12*ratio}px Microsoft Yahei`;
-		ctx.beginPath();
-		ctx.fillStyle = '#666';
-		ctx.strokeStyle = '#666';
-		ctx.fillText(textDescribe, (rangeX1 + rangeX2)/2, 50*ratio);
-		ctx.stroke();
+			ctx.textAlign = 'center';
+			let textSymbol = symbolName || '';
+			ctx.beginPath();
+			ctx.fillStyle = '#333';
+			ctx.strokeStyle = '#333';
+			ctx.font = `${10*ratio}px Microsoft Yahei`;
+			ctx.fillText(textSymbol, (rangeX1 + rangeX2)/2, 25*ratio);
+			ctx.stroke();
+
+			let textDescribe = symbolDescribe || '';
+			ctx.font = `${12*ratio}px Microsoft Yahei`;
+			ctx.beginPath();
+			ctx.fillStyle = '#666';
+			ctx.strokeStyle = '#666';
+			ctx.fillText(textDescribe, (rangeX1 + rangeX2)/2, 40*ratio);
+			ctx.stroke();
+
+		}
 
 		//left right line
 		ctx.lineWidth = 1;
