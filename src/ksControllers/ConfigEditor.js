@@ -81,7 +81,7 @@ ConfigEditor.prototype._init = function() {
 	let endDateDoms = $('<div>').addClass('inputs-groups').append($('<div>').addClass('inputs-wrapper').append(this._inputs.endDate).append(`<span class='date-icon fa fa-calendar-o'></span>`))
 																													.append($(`<div class="times">`).append(hour1).append(`<span>:</span>`).append(minute1).append(`<span>:</span>`).append(second1));
 
-	this._$wrapper.append(`<div class='item-title font-simsun'>选择时间</div>`);
+	this._$wrapper.append(`<div class='item-title font-simsun'>搜索时间范围</div>`);
 	let $date = $(`<div class='item-body-container date'></div>`)
 							.append(startDateDoms)
 							.append(`<span class='zhi'>至</span>`)

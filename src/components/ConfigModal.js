@@ -87,7 +87,7 @@ class SearchConfigModal extends React.Component {
 			<div className='item-body-container days'>
 				<div className='inputs-wrapper'><button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button></div><span className='font-simsun'>根</span>
 			</div>
-			<div className='item-title font-simsun'>选择时间</div>
+			<div className='item-title font-simsun'>搜索时间范围</div>
 			<div className='item-body-container date'>
 				<div className="inputs-groups">
 					<div className="inputs-wrapper date"><input ref='startDate' value={dateRange[0].date} onChange={this.changeStartDate.bind(this)}/><span className='date-icon fa fa-calendar-o'></span></div>
