@@ -90,12 +90,13 @@ let setStockViewVisibleRange = function(symbol, unixTimeRange, interval) {
 
 			let chart = Q5.getAll()[0];
 			
-			chart.setResolution(interval)
-
 			let mainSeries = chart.R99.mainSeries();
 			_onComsubscribes.forEach(function(func){
 				mainSeries._onCompleted.unsubscribe(null, func); //取消所有订阅
 			});
+
+			// chart.setResolution(interval);    //设置 resolution
+			
 			_onComsubscribes = [];
 			_showTradingViewWaiting(true);
 
@@ -117,7 +118,7 @@ let setStockViewVisibleRange = function(symbol, unixTimeRange, interval) {
 					if(mainSeries.symbol() == symbol || mainSeries.symbol().split(':').indexOf(symbol) > -1) {
 						context.setVisibleRange(unixTimeRange, '0');
 						let firstBarTime = _getFirstBarUnitTime();
-						let hasData = firstBarTime && firstBarTime < unixTimeRange.from;
+						let hasData = firstBarTime && firstBarTime < unixTimeRange.from + 3600 * 24; //允许一天的误差! 否则有bug
 						if(hasData) {
 							_showTradingViewWaiting(false);
 							mainSeries._onCompleted.unsubscribe(null, subscribeFunc); //取消订阅
