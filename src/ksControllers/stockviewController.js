@@ -271,7 +271,7 @@ let _handleGotoMonth = function(event) {
 	if(typeof year == 'undefined' || typeof month == 'undefined') return;
 	// try {
 		let matchNode = __findFirstHistoryByDate(year, month);
-		console.log(matchNode);
+		// console.log(matchNode);
 		if(matchNode) {
 			matchNode.scrollIntoView();
 		}
