@@ -1,5 +1,5 @@
 import React from 'react';
-import echarts from 'echarts';
+// import echarts from 'echarts';
 import {factorCandleOption, factorLineOption} from '../../src/components/utils/echart-options';
 import {randomPatterns} from '../../src/flux/util/randomKline';
 import { drawKline } from '../../src/ksControllers/painter';
@@ -425,9 +425,10 @@ var data = [
 
 	export default React.createClass({
 		initEditor() {
-			new KlineEditor(this.refs.kline_editor, data.slice(0, 30));
+			new KlineEditor(this.refs.kline_editor, data.slice(0, 100));
 		},
 		drawChart(){
+			/*****
 			var data0 = splitData(data.slice(0,30), 4);
 			var lastClosePrice = data0.values[data0.values.length-1][1];
 			var { lineSeries, min, max } = generateSeries([data.slice(0, 3).map(function(e){ return e[3] }),data.slice(0, 3).map(function(e){ return e[2] })], lastClosePrice);
@@ -448,22 +449,23 @@ var data = [
 			chart.setOption(option);
 			this.chart = chart;
 			window.predictionChart = chart;
+			********/
 		},
 		componentDidMount() {
 			this.initEditor();
 			this.drawChart();
-			window.addEventListener('resize', function(){
-				window.predictionChart.resize();
-			});
+			// window.addEventListener('resize', function(){
+			// 	window.predictionChart.resize();
+			// });
 			drawKline(this.refs.canvas, data.slice(0, 100));
 		},
 		render(){
 			return <div>
+					<div ref='kline_editor' style={{width:'800px', height:'400px', position:'relative'}}></div>
 					<div ref='container' style={{width:'300px', height:'250px', border:'1px solid #eee'}}>
 				
 					</div>
-					<div><canvas ref='canvas' width='400' height='300' style={{width: '400px', height:'300px'}} /></div>
-					<div ref='kline_editor' style={{width:'500px', height:'300px', position:'relative'}}></div>
+					<div><canvas ref='canvas' width='800' height='400' style={{width: '800px', height:'400px'}} /></div>
 			</div>
 		}
 	});
