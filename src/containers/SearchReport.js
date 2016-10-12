@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Comparator from './Comparator';
+// import Comparator from './Comparator';
 import SearchDetail from './SearchDetail';
 import { patternActions, layoutActions } from '../flux/actions';
 import classNames from 'classnames';
@@ -11,6 +11,7 @@ import store from '../store';
 import painter from '../ksControllers/painter';
 import { afterSearchMessage } from '../ksControllers/messager.js';
 import { getKlineImgSrc } from '../ksControllers/publicHelper';
+import searchResultController from '../ksControllers/searchResultController';
 
 let _isToggled = false;
 let _patternChanged = false;
@@ -46,6 +47,13 @@ class SearchReport extends React.Component {
 		if(_isToggled) {
 			$(this.refs.inner_searchreport).css('opacity', '0');
 			// $('#__comparator_prediction_container').css('opacity', '0');
+		}
+		if(newProps.patterns !== this.props.patterns) {
+			let patterns = newProps.patterns;
+			searchResultController.updatePrediction(patterns);
+      searchResultController.updateStatistics(patterns);
+      // searchResultController.updatePatterns(patterns.rawData);
+      searchResultController.updateCharts(patterns);
 		}
 	}
 
@@ -136,7 +144,8 @@ class SearchReport extends React.Component {
 		});
 
 		return (<div className={dataPanelClass} ref='container'>
-			<Comparator />
+			{/*<Comparator />*/}
+			{/*<div className='container-comparator container-comparator-stretch'></div>*/}
 			<SearchDetail />
 			{errorPanel}
 		</div>);

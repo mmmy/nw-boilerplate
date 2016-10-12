@@ -6,6 +6,7 @@ import Header from './Header';
 import RightToolBar from './RightToolBar';
 import SearchConfigModal from './SearchConfigModal';
 import CoreApp from './CoreApp';
+import waitingWidget from '../shared/waitingWidget';
 
 //import StockView from './StockView';
 //import SearchReport from './SearchReport';
@@ -14,6 +15,14 @@ class Root extends React.Component {
 	
 	constructor(props) {
 		super(props);
+	}
+
+	componentDidMount() {
+		console.log('rooot did mount');
+		setTimeout(waitingWidget.removeWaiting, 500);
+		// require('../shared/initDev')();
+		require('../shared/initTooltip');
+		//require('../shared/heapA');
 	}
 
 	render(){

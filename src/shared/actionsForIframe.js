@@ -2,7 +2,7 @@ import { patternActions, layoutActions, tradingViewActions } from '../flux/actio
 import fs from 'fs';
 import { cancelSearch } from '../backend';
 
-export default function(store) {
+module.exports = function(store) {
 
 	const searchSymbolDateRange = function(args, cb) {
 		if (store && store.dispatch) {
@@ -28,33 +28,40 @@ export default function(store) {
     store.dispatch(layoutActions.showConfigModal());
   };
 
-  const takeScreenshot = function() {
-      const chartDom = window.widget_comparator._innerWindow();
-      const tvChartUrl = chartDom.Q5.getAll()[0]._paneWidgets[0].canvas.toDataURL();
-      const predictionUrl = window.eChart.getDataURL();
-      const heatmapUrl = window.heatmap.getDataURL();
-
-      store.dispatch({
-        type: 'TAKE_SCREENSHOT',
-        screenshotTvURL: tvChartUrl,
-        screenshotEChartURL: predictionUrl,
-        screenshotHeatmapURL: heatmapUrl
-      });
-  }
-
-  const scrollToOffsetAnimated = function() {
-    let widget = window.widget_comparator._innerWindow();
-    let chart = widget.Q5.getAll()[0];
-
-    const animationDuration = 1E3;
-
-    if (window._oldTimeScaleRightOffset) {
-      chart.model().timeScale().scrollToOffsetAnimated(window._oldTimeScaleRightOffset, animationDuration);
-      setTimeout(() => {
-        window.widget_comparator._innerWindow().KeyStone.kscale();
-      }, animationDuration + 300)
+  const getAdditionBarValue = function() {
+    try {
+      return store.getState().searchConfig.additionDate;
+    } catch (e) {
+      console.error(e);
     }
   }
+  // const takeScreenshot = function() {
+  //     const chartDom = window.widget_comparator._innerWindow();
+  //     const tvChartUrl = chartDom.Q5.getAll()[0]._paneWidgets[0].canvas.toDataURL();
+  //     const predictionUrl = window.eChart.getDataURL();
+  //     const heatmapUrl = window.heatmap.getDataURL();
+
+  //     store.dispatch({
+  //       type: 'TAKE_SCREENSHOT',
+  //       screenshotTvURL: tvChartUrl,
+  //       screenshotEChartURL: predictionUrl,
+  //       screenshotHeatmapURL: heatmapUrl
+  //     });
+  // }
+
+  // const scrollToOffsetAnimated = function() {
+  //   let widget = window.widget_comparator._innerWindow();
+  //   let chart = widget.Q5.getAll()[0];
+
+  //   const animationDuration = 1E3;
+
+  //   if (window._oldTimeScaleRightOffset) {
+  //     chart.model().timeScale().scrollToOffsetAnimated(window._oldTimeScaleRightOffset, animationDuration);
+  //     setTimeout(() => {
+  //       window.widget_comparator._innerWindow().KeyStone.kscale();
+  //     }, animationDuration + 300)
+  //   }
+  // }
 
   const _saveScreenshot = function(dataURL, path) {
     var regex = /^data:.+\/(.+);base64,(.*)$/;
@@ -135,11 +142,12 @@ export default function(store) {
 		sendSymbolHistory,          //获取股票数据
         sendSymbolList,
     sendSymbolSearchResult,
-    takeScreenshot,
+    // takeScreenshot,
     showConfigModal,
-    scrollToOffsetAnimated,
+    // scrollToOffsetAnimated,
     searchCancel,
     updatePaneViews,
-    recalculateHeatmap
+    recalculateHeatmap,
+    getAdditionBarValue
 	};
 }

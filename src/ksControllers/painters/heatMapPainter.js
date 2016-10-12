@@ -1,5 +1,5 @@
 
-import { betterCanvasSize } from '../canvasHelper';
+import { betterCanvasSize, getCanvasPixRatio, roundRect } from '../canvasHelper';
 
 let _to05 = (number) => {
 	return Math.floor(number) + 0.5;
@@ -20,13 +20,13 @@ let drawBlockHeatMap = (canvas, data, options) => {
 	}
 
 	betterCanvasSize(canvas);
-
+	let ratio = getCanvasPixRatio();
 	let ctx = canvas.getContext('2d');
 
 	options = options || {};
 	let blockWidth = options.blockWidth || 10;
 	let blockGap = options.blockGap || 1;
-	blockWidth = _toInt(blockWidth);
+	blockWidth = _toInt(blockWidth) * ratio;
 
 	let width = canvas.width,
 			height = canvas.height,
@@ -55,17 +55,23 @@ let drawBlockHeatMap = (canvas, data, options) => {
 	let labelWidth = width - blockWidth,
 			labelX = blockWidth + labelWidth / 2,
 			fontSize = options.fontSize || 10,
-			textColor = options.textColor || '#666';
+			textColor = options.textColor || '#000';
 	let labels = data.labels || [];
 
 	//draw
 	let drawEachHeight = Math.floor(eachBlockHeight);
 	ctx.save();
 	ctx.textAlign = 'center';
-	ctx.font = 'italic ' + fontSize + 'px Arial';
+	ctx.font = 'italic ' + fontSize*ratio + 'px Arial';
 	blocksY.forEach((y, i) => {
 		ctx.fillStyle = blocksColor[i];
-		ctx.fillRect(0, y, blockWidth, drawEachHeight);
+		if(i==0) {
+			roundRect(ctx, 0, y, blockWidth, drawEachHeight, {tl:3, tr:3}, true);
+		}else if(i==blocksLen-1) {
+			roundRect(ctx, 0, y, blockWidth, drawEachHeight, {bl:3, br:3}, true);
+		}else{
+			ctx.fillRect(0, y, blockWidth, drawEachHeight);
+		}
 		let label = labels[i];
 		if(label) {
 			ctx.fillStyle = textColor;

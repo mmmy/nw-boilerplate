@@ -78,14 +78,21 @@ export default function filter(state = initialState, actions) {
 				trashedIdArr,
 			};
 
-		case types.WAITING_PATTERNS:
+		case types.CHANGE_PATTERNS:
 			// state.industrys = initialState.industrys;
 			// state.yieldRange = initialState.yieldRange;
 			// state.symbol = initialState.symbol;
 			// state.similarity = initialState.similarity;
 			// state.yieldDateRange = initialState.yieldRange;
 			// state.trashedIdArr = initialState.trashedIdArr;
-			state = Object.assign(state, initialState);
+			state = {
+				industrys: [],
+				yieldRange: [], //收益率
+				symbol: '',
+				similarity: {min:0, max:100},
+				yieldDateRange: [],
+				trashedIdArr: []
+			};
 			return state;
 			
 		default:

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>keystone</title>
+	<meta charset="utf-8">
+	<title></title>
 	<link rel="stylesheet" type="text/css" href="main.css" />
 	<script type="text/javascript">
 		// if(/macintosh/i.test(navigator.appVersion)) {  //mac
@@ -41,27 +42,33 @@
 			}
 		}());
 	</script>
+	<script type="text/javascript">
+    window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(r?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","removeEventProperty","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
+      heap.load("2540454621");
+	</script>
 </head>
 <body>
 	<div id='app'></div>
+	<div id='login-dom'></div>
 	<!-- <div class="fuck"></div> -->
 	<script src="main.js"></script>
-	<script type="text/javascript">
-		if ((process.env.NODE_ENV === 'development') || (process.env.NODE_ENV === 'beta')) {
-			var gulp = require('gulp');
-			gulp.task('reload', function(){
-				//console.log('reload');
-				if(window.nw){                             //nw 0.13.2
-					chrome.runtime.reload();
-				}else{
-					var gui = require('nw.gui');
-				  	var win = gui.Window.get();
-				  	win.reloadDev();
-				}
-			});
-			gulp.watch(['./build/**/*.js'], ['reload']);
-		}
-	</script>
+	<script type="text/javascript" src='dev.js' id="dev_script"></script>
 	<!-- <div class='app-drag-panel'></div> -->
+        <!-- <script src="./update/ksUpdate.js"></script> -->
+	<script type='text/javascript'>
+      // var _vds = _vds || [];
+      // window._vds = _vds;
+      // (function(){
+      //   _vds.push(['setAccountId', 'bad038b38b043586']);
+      //   (function() {
+      //     var vds = document.createElement('script');
+      //     vds.type='text/javascript';
+      //     vds.async = true;
+      //     vds.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'dn-growing.qbox.me/vds.js';
+      //     var s = document.getElementsByTagName('script')[0];
+      //     s.parentNode.insertBefore(vds, s);
+      //   })();
+      // })();
+  </script>
 </body>
 </html>

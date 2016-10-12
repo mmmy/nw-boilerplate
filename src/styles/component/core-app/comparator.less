@@ -107,13 +107,17 @@
 
 // comparator-chart-static
 
-#comparator-chart{
+.kline-prediction-widget-container, #comparator-chart{
   position: absolute;
-  left: 10px;
-  width: calc(~"100% - 10px");
-  top: calc(~"100% / 2 - 28px");
-  height: calc(~"100% / 2 - 28px");
-  // top: 50%;
+  left: 20px;
+  width: calc(~"100% - 20px");
+  // top: calc(~"100% / 2 - 28px");
+  height: calc(~"50% + 12.5px");//calc(~"100% / 2 - 28px");
+  top: calc(~"50% - 12.5px");
+  background-color: #fff;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  z-index: 1;
 }
 
 .comparator-chart-static{
@@ -122,15 +126,20 @@
   height: @comparatorChartStatic_H ;
   top: 50px;//22px;
   left: 0;
-
+  @media (min-width: 1600px) {
+    width: calc(~"100% - 970px");
+  }
   .start-btn-container {
     // border: 1px solid red;
     position: absolute;
-    top: calc(~"50% - 28px + 2px");
+    top: calc(~"50% - 12.5px + 2px");
+    z-index: 1;
     background-color: #fff;
-    right: 0;
+    right: 5px;
     width: 60px;
     height: 40px;
+
+    //display: none;     //只能是隐藏
 
     button {
       width: 20px;
@@ -138,9 +147,10 @@
       // padding: 4px;
       margin-top: 15px;
       margin-left: 20px;
-      background: url('./image/config.png') no-repeat;
+      background: url(@icons_url) no-repeat;
+      .icon_position(0,3,3,5px,5px);
       &:hover{
-        background-position: 0 100%;
+        .icon_position(1,3,3,5px,6px);
       }
     }
   }
@@ -158,12 +168,12 @@
 
 .comparator-prediction-container{
   position: absolute;
-  width: calc(~"100% - 100px");//calc(~'100% - 100px');
+  width: calc(~"100% - 130px");//calc(~'100% - 100px');
 //  width: calc(~'25% - 20px');
-  height: calc(~"50% - 28px - 1px");//calc(~'50% + 5px');
+  height: calc(~"50% - 12.5px - 10px");//calc(~'50% + 5px');
   // right: 12px;
   // left: 40px;
-  right: 70px;
+  right: 80px;
   top: 0;//60px;
   // border: 1px solid red;
   .prediction-main{
@@ -173,9 +183,9 @@
 
     .comparator-prediction-chart{
       position: absolute;
-      top: 50px;
+      top: 60px;
       width: 100%;
-      height: calc(~"100% - 50px");
+      height: calc(~"100% - 60px");
       // border-left: 1px solid #eee;
     }
   }
@@ -216,31 +226,32 @@
   top: 0;
   right: 0;
   height: 100%;
-  width: calc(~"100% - 10px");//calc(~"100% - 71px");
+  width: calc(~"100% - 20px");//calc(~"100% - 71px");
 }
 
 .pattern-tv-box-shadow-bottom{
   position: absolute;
+  background-color: #fff;
   top: 0;//calc(~"50% - 28px + 1px");
   height: 100%;// calc(~"50% + 28px - 1px");
-  width: calc(~"100% - 10px");//calc(~"100% - 71px");
+  width: calc(~"100% - 20px");//calc(~"100% - 71px");
   right: 0;
   pointer-events: none;
   // box-shadow: 0px 0px 20px #DBDBDB;
   .mama-box-shadow();
-
-  border-radius: 2px;
+  .border-radius-inner();
 }
 
 .pattern-tv-split-line {
   position: absolute;
   background: #fff;
-  top: calc(~"50% - 28px - 2px");
-  right: 0;
-  width: calc(~"100% - 10px");//calc(~"100% - 71px");
-  height: 3px;
+  top: calc(~"50% - 12.5px");//calc(~"50% - 28px - 2px");
+  right: 30px;
+  width: calc(~"100% - 80px");//calc(~"100% - 71px");
+  height: 1px;
   border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  // border-bottom: 1px solid #eee;
+  z-index: 1;
 }
 
 .pattern-tv-box-shadow-top{
@@ -303,10 +314,10 @@
 
 .prediction-panel{
   position: absolute;
-  width: 70px;
-  height: calc(~'50% - 28px - 50px - 1px');
-  right: 0;//37px;
-  top: 50px;
+  width: 58px;
+  height: calc(~'50% - 12.5px - 60px - 10px');
+  right: 22px;//37px;
+  top: 60px;
   color: #000;
 
   .prediction-toggle{
@@ -344,14 +355,16 @@
 }
 
 .comparator-info-container {
-  margin-top: 15px;
-  padding-left: 5px;
-  width: calc(~"100% + 70px - 20px");
+  // margin-top: 15px;
+  // padding-left: 5px;
+  width: 100%;//calc(~"100% + 70px - 20px");
   color: #000;
-  font-size: 13px;
+  font-size: 14px;
+  position: relative;
 
   .title {
     padding-right: 20px;
+    line-height: 60px;
   }
 
   i {
@@ -360,16 +373,50 @@
     font-style: normal;
     padding-right: 7px;
     color: #555;
+    display: none;         //需求不需要
   }
-
+  .prediction-name {
+    // float: left;
+    padding: 0;
+    position: absolute;
+    left: 40%;
+  }
   .add-btn {
     float: right;
     position: relative;
+    right: -50px;
     color: transparent;
     width: 20px;
     height: 20px;
+    margin-top: 20px;
     background-image: url(@icons_url);
     .icon_position(1, 6, 1, 5px, 5px);
   }
 
+}
+
+.kline-prediction-widget-wrapper {
+
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  .header-container {
+    position: relative;
+    height: 60px;
+    width: 100%;
+    .title {
+      font-size: 14px;
+      line-height: 60px;
+      margin-left: 30px;
+    }
+  }
+
+  .body-container {
+    overflow-y: hidden;
+    position: relative;
+    height: calc(~"100% - 60px - 15px");
+    width: calc(~"100% - 60px");
+    margin-left: 30px;
+  }
 }

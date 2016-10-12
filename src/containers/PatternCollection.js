@@ -71,14 +71,15 @@ class PatternCollection extends React.Component {
 			//显示垃圾桶数目
 			// setTimeout(() => {
 				let trashedNumber = _idTrashed.reduce((pre,cur) => { return cur ? (pre + 1) : pre; }, 0);
-				$('.trashed-number', '.pattern-statistics-panel').text(trashedNumber);
+				let trashedNumberStr = trashedNumber > 0 ? (trashedNumber+'') : '';
+				$('.trashed-number', '.pattern-statistics-panel').text(trashedNumberStr);
 			// });
 		}, 100, {leading: true});
 		//this._idTrashed = _idTrashed;
 	}
 
 	handleResize() {
-		let $patternViews = $(this.refs.container).find('.pattern-view');
+		let $patternViews = $(this.refs.container).find('.pattern-view:visible');
 		if($patternViews.length > 0) {
 			let width = $patternViews[0].clientWidth,
 					height = width * 210 / 160;
@@ -131,7 +132,7 @@ class PatternCollection extends React.Component {
 						idArr = _.pluck(filteredData, 'id'),
 						node = that.refs.container;
 				$('.pattern-view', node).addClass('hide');
-				if(showNotTrashed){
+				if(showNotTrashed){ 																				//alway true
 					idArr.forEach((id) => {
 						$(`#pattern_view_${id}`,node).removeClass('hide');
 					});
@@ -140,8 +141,9 @@ class PatternCollection extends React.Component {
 					_idTrashed.forEach((isTrashed, id) => {
 						isTrashed && $(`#pattern_view_${id}`,node).removeClass('hide');
 					});
-				}		
-			// });
+				}
+				$(node).toggleClass('empty', $('.pattern-view:visible', node).length == 0);
+
 		};
 
 		if( newProps.filter !== this.props.filter ){
@@ -198,8 +200,8 @@ class PatternCollection extends React.Component {
 	shouldComponentUpdate(newProps, newState) {
 		//return true;
 		//pattern 改变 的时候 只渲染前5个, 结局搜索后渲染时间过长的问题
-		console.info('@@@@@+_+_+_+_+_+ active id',newProps.active.id,this.props.active.id, (newProps.active.id === this.props.active.id));
-		console.info('@@@@@+_+_+_+_+_+ filter',newProps.filter,this.props.filter, (newProps.filter === this.props.filter));
+		// console.info('@@@@@+_+_+_+_+_+ active id',newProps.active.id,this.props.active.id, (newProps.active.id === this.props.active.id));
+		// console.info('@@@@@+_+_+_+_+_+ filter',newProps.filter,this.props.filter, (newProps.filter === this.props.filter));
 		if(newProps.patterns.rawData !== _oldPatternRawData) {
 			this.renderLeading5 = true;
 			_oldPatternRawData = newProps.patterns.rawData;
@@ -245,7 +247,7 @@ class PatternCollection extends React.Component {
 		let { sortType } = this.props.sort;
 		//bug
 		//如果 sortType 没有变化那么不需要重新排序
-		console.info('oldSortType',this.oldSortType,'sortType', sortType);
+		// console.info('oldSortType',this.oldSortType,'sortType', sortType);
 		if(this.oldSortType === sortType) {
 			console.info('sortType 没有变化那么不需要重新排序');
 			return this.sortedData;
@@ -254,7 +256,7 @@ class PatternCollection extends React.Component {
 		let sortedData = rawData.concat([]) || [];
 
 		if(sortType === '') {
-			console.info('sortedData 直接返回!!----------------');
+			// console.info('sortedData 直接返回!!----------------');
 			return sortedData;
 		}
 
@@ -288,7 +290,7 @@ class PatternCollection extends React.Component {
 	}
 
 	filterTrashedId(id, isTrashed) {
-		console.info(id, isTrashed, 'xxxxxxxxxx000000000000');
+		// console.info(id, isTrashed, 'xxxxxxxxxx000000000000');
 		_idTrashed[id] = isTrashed;
 		this._debounceRedrawDc();
 	}
@@ -358,11 +360,12 @@ class PatternCollection extends React.Component {
 
 	render(){
 		// this.renderDate = new Date();
-		const className = classNames('pattern-collection', {'scroll-hidden': !this.props.fullView});
+		let patternNodes = this.getPatternNodes();
+		const className = classNames('pattern-collection', {'scroll-hidden': !this.props.fullView, 'empty': patternNodes.length==0 });
 		console.info('@@@@@', 'patternCollection render-------');
 
 		return (<div ref='container' className={className}>
-			{ this.getPatternNodes() }
+			{ patternNodes }
 		</div>);
 	}
 }

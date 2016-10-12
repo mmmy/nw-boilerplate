@@ -1,24 +1,29 @@
 import React, { PropTypes } from 'react';
-import Waves from './SearchWaitingWaves';
+// import Waves from './SearchWaitingWaves';
 import classNames from 'classnames';
-import { storageAccount, getAccount, removeAccount, saveUser, removeSavedUser, getAllSavedUsers } from '../backend/localStorage';
-import store from '../store';
+import localStorage from '../backend/localStorage';
+// import store from '../store';
 import nwApp from '../shared/nwApp';
 import pkg from '../../package.json';
+let { storageAccount, getAccount, removeAccount, saveUser, removeSavedUser, getAllSavedUsers } = localStorage;
 
 let setAppStateBeforeLogin = () => {
 	// $('.app-drag-area').css('-webkit-app-region','');
 	let width = pkg.window.width || 400;
 	let height = pkg.window.height || 470;
+	nwApp.appSetMinimumSize(width, height);
+	nwApp.appSetMaximumSize(width, height);
 	nwApp.appSetSize(width, height);
-	nwApp.appSetResizable(false);
+	// nwApp.appSetResizable(false);
 };
 
 let setAppStateAfterLogin = () => {
 	// $('.app-drag-area').css('-webkit-app-region','drag');
 	// nwApp.appSetSize(900, 600);
+	nwApp.appSetMinimumSize(1200, 700);
+	nwApp.appSetMaximumSize(3000, 2000);
 	nwApp.appSetSize(1350, 800);
-	nwApp.appSetResizable(true);
+	// nwApp.appSetResizable(true);
 	nwApp.appSetCenter();
 };
 
@@ -36,16 +41,16 @@ class Login extends React.Component {
 		super(props);
 		this.state = {isLogining: false, username: '', password:'', autoLogin: false, usernameError: false, passwordError: false};
 		let that = this;
-		this.handleRiseze = (e) => {
-			if(store.getState().account.username) return;
-			let height = $(that.refs.login_panel_container).height();
-			let waveNode = that._waveNode || $('.waves-container');
-			let logoNode = that._logoNode || $('.btn-container');
-			let waveTop =  - ((height - 232.75) - 450 - 30);
-			let logoTop =  - ((height - 232.75) - 100);
-			waveNode.css({top: waveTop, transitionProperty: (e ? 'none' : '')});
-			logoNode.css({top: logoTop, transitionProperty: (e ? 'none' : '')});
-		}
+		// this.handleRiseze = (e) => {
+		// 	if(store.getState().account.username) return;
+		// 	let height = $(that.refs.login_panel_container).height();
+		// 	let waveNode = that._waveNode || $('.waves-container');
+		// 	let logoNode = that._logoNode || $('.btn-container');
+		// 	let waveTop =  - ((height - 232.75) - 450 - 30);
+		// 	let logoTop =  - ((height - 232.75) - 100);
+		// 	waveNode.css({top: waveTop, transitionProperty: (e ? 'none' : '')});
+		// 	logoNode.css({top: logoTop, transitionProperty: (e ? 'none' : '')});
+		// }
 	}
 
 	initUI() {
@@ -110,7 +115,7 @@ class Login extends React.Component {
 	}
 
 	componentWillUnmount(){
-		setAppStateAfterLogin();
+		// setAppStateAfterLogin();
 		// window.removeEventListener('resize', this.handleRiseze);
 	}
 
@@ -123,7 +128,7 @@ class Login extends React.Component {
       <div className='login-panelsmall-container' ref='login_panel_container'>
       	{/*<div className='fix-drag-bug'></div>*/}
       	<div ref='drag_panel' className='login-titlebar-container'  onMouseDown={this.fixDragableBug.bind(this)}>
-      		<button className='flat-btn button app-close' onClick={this.fixDragableBug.bind(this)}></button>
+      		<button style={{display:'none'}} className='flat-btn button app-close' onClick={this.fixDragableBug.bind(this)}></button>
       	</div>
       	<div className='body-container'>
       		<div className='logo'></div>
@@ -235,17 +240,36 @@ class Login extends React.Component {
 				that.setState({isLogining: false, passwordError:true});
 				return; 
 			} // else console.log("login success");
-
+			try {
+				window.heap.identify(username);
+				window.USERNAME = username;
+			} catch(e) {
+				console.log(e);
+			}
 			//login success, into the stockingview
-			setTimeout(() => {
+			// setTimeout(() => {
+			that.hideLogin();
+
+			setTimeout(function(){
+				setAppStateAfterLogin();
+			}, 10);
+			
+			setTimeout(function(){
 				autoLogin ? storageAccount(username, password) : removeAccount();
+				window.document.body.style.opacity = '';
 				onLogined && onLogined(username, password, autoLogin, (error) => { 
 					if(!error) {
 						saveUser(username, password);
 					}
 				});
-			}, 0);
+			}, 2000);
+			// }, 0);
 		});
+	}
+
+	hideLogin() {
+		this.refs.login_panel_container.style.display = 'none';
+		window.document.body.style.opacity = '0';
 	}
 
 	startClose() { //动画结束后 移除dom

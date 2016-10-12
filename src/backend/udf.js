@@ -11,7 +11,8 @@ let getSymbolHistory = (postData, callback, errorCallback) => {
   };
 
   const errorCb = (err) => {
-    callback && callback(err);
+    console.error('getSymbolHistory error', err);
+    // callback && callback(err);
   };
 
   request(options, requestCb, errorCb, JSON.stringify(postData));
@@ -28,7 +29,7 @@ let getGroupCode = (callback) => {
   };
 
   const errorCb = (err) => {
-    callback && callback(Cache.getFromFile('groupCode'));
+    callback && Cache.isExist('groupCode')  && callback(Cache.getFromFile('groupCode'));
   };
 
   if (Cache.isLegal('groupCode')) {
@@ -48,9 +49,9 @@ let dealGroupCode = (data) => {
 };
 
 let getAllSymbolsList = (callback) => {
-  if (Cache.isLegal('allSymbolesList')) {
-    console.log('allSymbolesList isLegal');
-    callback && callback(Cache.getFromFile('allSymbolesList'));
+  if (Cache.isLegal('allSymbolsList')) {
+    console.log('allSymbolsList isLegal');
+    callback && callback(Cache.getFromFile('allSymbolsList'));
     return;
   }
 
@@ -73,12 +74,41 @@ let getAllSymbolsList = (callback) => {
         arr = arr.concat(JSON.parse(r));
       });
       arr = JSON.stringify(arr);
-      Cache.setToFile(arr, 'allSymbolesList');
+      Cache.setToFile(arr, 'allSymbolsList');
       callback && callback(arr);
     });
 
   };
-  getGroupCode(cb);
+
+  let expiredCb = (_groupCodes) => {
+    callback && callback(Cache.getFromFile('allSymbolsList'));
+
+    var promises = [];
+    JSON.parse(_groupCodes).forEach(function(code) {
+      if (code != 'cf_m5')
+      promises.push(new Promise((resolve, reject) => {
+        getOneSymbolList({fileName: code, postData: { 'groupCode': code } }, function (data) {
+          resolve(data);
+        });
+      }));
+
+    });
+
+    Promise.all(promises).then(function(result) {
+      var arr = [];
+      result.forEach( function(r) {
+        arr = arr.concat(JSON.parse(r));
+      });
+      arr = JSON.stringify(arr);
+      Cache.setToFile(arr, 'allSymbolsList');
+    });
+
+  };
+
+  if (Cache.isExist('allSymbolsList')) 
+    getGroupCode(expiredCb);
+  else 
+    getGroupCode(cb);
 };
 
 /*
@@ -101,7 +131,7 @@ let getOneSymbolList = (data, callback) => {
   };
 
   const errorCb = (err) => {
-    callback && callback(Cache.getFromFile(fileName));
+    callback && Cache.isExist(fileName) &&callback(Cache.getFromFile(fileName));
   };
 
   if (Cache.isLegal(fileName)) {

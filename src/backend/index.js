@@ -46,24 +46,24 @@ let __closePrice = [];
 
 let searchPattern = (args, cb, errorCb) => {
 
-	const { symbol, kline, bars, dateRange, searchConfig, dataCategory } = args;
+	const { symbol, kline, bars, dateRange, searchConfig, dataCategory, interval} = args;
 
 	let { additionDate, searchLenMax } = searchConfig;
 
-	let searchArgs = { symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory };
+	let dr = searchConfig.dateRange;
+
+	let searchArgs = { symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory, dr};
 
 	let searchCb = (resObj) => {
 		
 		// console.info(`第一步: 搜索 [ 正常结束 ], 匹配到 ${resObj.results.length} 个`);
-
 		__data = resObj.results.map((pattern, i) => {
 
-			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type='D'} = pattern;
+			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type=interval} = pattern;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];
 			//let id = i;
-
 			return {
 				id: i,
 				symbol: id,
@@ -95,7 +95,11 @@ let searchPattern = (args, cb, errorCb) => {
 			});
 
 			if(startIndex === 0) { //获取到前五个 刷新state
-				cb && cb(__data, __closePrice);
+				if(__data.length == 0) {
+					errorCb && errorCb({type:'no_data', name:'error'});
+				} else {
+					cb && cb(__data, __closePrice);
+				}
 			} else {
 				let endIndex = startIndex + klineArr.length;
 				callFunc([startIndex, endIndex], __data);
@@ -117,7 +121,7 @@ let searchPattern = (args, cb, errorCb) => {
 			};
 		});
 
-		console.log(resObj.results);
+		// console.log(resObj.results);
 		// console.info('第二步: 获取kline具体数据 [ 开始 ]');
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
 		let startIndex = 0,

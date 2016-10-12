@@ -77,7 +77,7 @@ gulp.task('image', [], function() {
 });
 
 gulp.task('styles', [], function(){
-	gulp.src(['src/styles/main.less', 'src/styles/mac_retina.less'])
+	return gulp.src(['src/styles/main.less', 'src/styles/mac_retina.less'])
 	.pipe($.plumber(function(error){
 		$.util.log($.util.colors.red('Error (' + error.plugin + '): ' + error.message + ' in ' + error.fileName));
 		    messager(error.message);
@@ -92,22 +92,26 @@ gulp.task('compile', function(cb){
 	sequence('html','fonts','image','scripts','styles',cb);
 });
 
-gulp.task('watch', ['html','fonts','image','scripts','styles'], function(){
+// gulp.task('watch', ['html','fonts','image','scripts','styles'], function(){
+gulp.task('watch', ['styles'], function(){
 	gulp.watch(paths.APP, ['html']);
 	gulp.watch(paths.STYLES, ['styles']);
 	// gulp.watch(paths.SCRIPTS, ['scripts']);
 	gulp.watch(paths.SCRIPTS, watchJsFile);
 
-	$.livereload.listen();
+  $.livereload.listen();
 });
 
 gulp.task('nw_dev', function(){
 	var env = process.env;
 	env.NODE_ENV = 'development';
-	gulp.src('')
-	.pipe($.shell(['nw --child-clean-exit --remote-debugging-port=9000 .'], {
-		env: env
-	}));
+	setTimeout(function(){
+		console.log('gulp task nw_dev11111111');
+		return gulp.src('')
+					.pipe($.shell(['nw --child-clean-exit --remote-debugging-port=9000 .'], {
+						env: env
+					}));
+	},3000);
 });
 
 gulp.task('nw_release', function(){
@@ -121,6 +125,14 @@ gulp.task('nw_release', function(){
 
 gulp.task('build', ['html','fonts','image','scripts','styles']);
 gulp.task('beta', ['watch', 'nw_release']);
+gulp.task('local', ['watch'], function(){
+	var env = process.env;
+	env.NODE_ENV = 'local';
+	return gulp.src('')
+					.pipe($.shell(['nw --child-clean-exit --remote-debugging-port=9000 .'], {
+						env: env
+					}));
+});
 
 gulp.task('dev_react',['styles'],function(){
   gulp.watch(paths.STYLES, ['styles']);

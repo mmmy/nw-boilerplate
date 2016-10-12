@@ -4,7 +4,7 @@ import getSineWaves from '../components/lib/sine-waves';
 function KsWave(canvas, config){
 	this._canvas = canvas;
 	this._slow = config && config.slow || true;
-	this._slowSpeed = 0.4;
+	this._slowSpeed = 1;
 	this._baseSpeed = 3;
 	this._waves = null;
 	this._init();
@@ -25,33 +25,42 @@ KsWave.prototype._init = function() {
     wavesWidth: "200%",
     ease: "SineInOut",
     waves: [{
-        timeModifier: 3,
+        timeModifier: 4,
         lineWidth: 1,
-        amplitude: 50,
+        amplitude: 30,
         wavelength: 100,
         segmentLength: 1,
         type:'sine'
     }, {
         timeModifier: 2,
         lineWidth: 1,
-        amplitude: 35,
+        amplitude: 20,
         wavelength: 150,
         segmentLength: 1
     }, {
         timeModifier: 1,
         lineWidth: 1,
-        amplitude: 20,
+        amplitude: 10,
         wavelength: 80,
         segmentLength: 1
     }],
     initialize: function() {},
     resizeEvent: function() {
-        var a = this.ctx.createLinearGradient(0, 0, this.width, 0);
-        a.addColorStop(0, "rgba(220, 220, 220, 0.2)"),
-        a.addColorStop(.5, "rgba(220, 220, 220, 0.8)"),
-        a.addColorStop(1, "rgba(220, 220, 220, 0.2)");
+        var a0 = this.ctx.createLinearGradient(0, 0, this.width, 0);
+        a0.addColorStop(0, "rgba(0, 0, 0, 0.03)"),
+        a0.addColorStop(.5, "rgba(0, 0, 0, 0.1)"),
+        a0.addColorStop(1, "rgba(0, 0, 0, 0.03)");
+        var a1 = this.ctx.createLinearGradient(0, 0, this.width, 0);
+        a1.addColorStop(0, "rgba(0, 0, 0, 0.03)"),
+        a1.addColorStop(.5, "rgba(0, 0, 0, 0.07)"),
+        a1.addColorStop(1, "rgba(0, 0, 0, 0.03)");
+        var a2 = this.ctx.createLinearGradient(0, 0, this.width, 0);
+        a2.addColorStop(0, "rgba(0, 0, 0, 0.03)"),
+        a2.addColorStop(.5, "rgba(0, 0, 0, 0.04)"),
+        a2.addColorStop(1, "rgba(0, 0, 0, 0.03)");
+        var a = [a0,a1,a2];
         for (var b = -1, c = this.waves.length; ++b < c; )
-            this.waves[b].strokeStyle = a;
+            this.waves[b].strokeStyle = a[b] ? a[b] : a[0];
         b = void 0,
         c = void 0,
         a = void 0

@@ -66,14 +66,14 @@ let _decimal = 2;
 let _klineChart = null;
 let _earnChart = null;
 
-let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
+let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span><span class='title-zhong'>中</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
 let _$toggle = null;
 
 let patternHtml = `<div class='pattern-inner'>
 										<span class='info-item symbol'><div class='item-value font-number size10'>--</div><div class='item-title font-simsun'>--</div></span>
 										<span class='kline'><canvas></canvas></span>
 										<span class='info-item similarity'><div class='item-title font-simsun'>相似度</div><div class='item-value font-number small red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
-										<span class='info-item earn'><div class='item-title font-simsun'>回报</div><div class='item-value font-number small'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+										<span class='info-item earn'><div class='item-title font-simsun'>涨跌</div><div class='item-value font-number small'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 									</div>`;
 let comparatorInner = `<div class='container-ks-sr container-ks-st meta'>
 												<h3 class='title font-msyh'>匹配相似结果</h3>
@@ -86,24 +86,24 @@ let comparatorInner = `<div class='container-ks-sr container-ks-st meta'>
 											</div>`;
 
 let searchStatisticHtml = `<div class='container-ks-sr statistic'>
-														<h3 class='title font-msyh'>数据统计</h3>
+														<h3 class='title font-msyh'>历史指标统计</h3>
 														<span class='split-line l1'></span>
 														<span class='split-line l2'></span>
 														<span class='split-line l3'></span>
-														<span class='info-item bars'><div class='item-title font-simsun'>统计K线数</div><div class='item-value font-number'><span class='value'>0</span></div></span>
+														<span class='info-item bars'><div class='item-title font-simsun'>后向统计范围</div><div class='item-value font-number'><span class='value'>0</span></div></span>
 														<span class='info-item uprate'><div class='item-title font-simsun'>上涨比例</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
-														<span class='info-item median'><div class='item-title font-simsun'>收益中位数</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
-														<span class='info-item mean'><div class='item-title font-simsun'>收益平均值</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+														<span class='info-item median'><div class='item-title font-simsun'>涨跌中位数</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+														<span class='info-item mean'><div class='item-title font-simsun'>涨跌平均值</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 													</div>`;
 
 let searchChartHtml = `<div class='container-ks-sr chart'>
-												<h3 class='title font-msyh'>收益率统计</h3>
+												<h3 class='title font-msyh'>涨跌幅度统计</h3>
 												<span class='earnchart-wrapper'><div class='earnchart'></div></span>
 											</div>`;
 
 let wrappersDomStr = `<div class='transition-all container-searchreport static'>
-												<div class='inner-searchreport transition-all'>
-													<div class='search-report-wrapper ${true ? 'slide-down' : ''} transition-top transition-duration2'>
+												<div class='inner-searchreport white transition-all'>
+													<div class='search-report-wrapper white ${true ? 'slide-down' : ''} transition-top transition-duration2'>
 														${comparatorInner}
 														${searchStatisticHtml}
 														${searchChartHtml}
@@ -212,12 +212,15 @@ let _updateEarnChart = (rawDataArr) => {
 	_earnChart = _earnChart || DC.barChart(_earnchartDom[0]);
 	_earnChart.width(width)
 						.height(height)
-						.margins({top: 0, right: 0, bottom: 15, left: 15})
+						.margins({top: 0, right: 10, bottom: 15, left: 20})
 						.dimension(earnDimension)
 						.group(group)
 						.renderHorizontalGridLines(false)
 						.colors('#4F4F4F')
 						.gap(1)
+						.transitionDuration(0)
+						.elasticY(false)
+						.elasticX(false)
 						.title('aaa',function(){ return 'nihaoa' })
 						.brushOn(false)
 						.renderTitle(true)
@@ -229,6 +232,7 @@ let _updateEarnChart = (rawDataArr) => {
 	}).ticks(6).innerTickSize(5);
 	_earnChart.yAxis().tickFormat(d3.format('d')).ticks(5).innerTickSize(5);
 	_earnChart.render();
+	_earnChart.redraw();
 };
 
 let _resizeEarnChart = () => {
@@ -251,47 +255,55 @@ let _initResize = () => {
 	window.addEventListener('resize', _handleResize);
 };
 
-let _initToggle = () => {
-
-	_toggleSlideCenter(true);
-
-	_$toggle.find('.btn-container').click(function(event) {
-		/* Act on the event */
-		if(_$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
+let _triggerToggle = () => { //作为外部接口
+	if(_$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
+		if ((process.env.NODE_ENV !== 'development') && (process.env.NODE_ENV !== 'beta')) {
 			return;
 		}
+		// return;
+	}
 
-		let $detailReport = $('.container-searchreport:not(.static)');   //详情页
-		let $comparatorContainer = $('#__comparator_prediction_container');
-		$comparatorContainer.css('opacity', '0');
-		$detailReport.css('opacity', '0');
+	let $detailReport = $('.container-searchreport:not(.static)');   //详情页
+	let $comparatorContainer = $('#__comparator_prediction_container');
+	$comparatorContainer.css('opacity', '0');
+	$detailReport.css('opacity', '0');
 
-		_$reportWrapper.css('display', 'none');
+	_$reportWrapper.css('display', 'none');
 
-		_$reportContainer.one('transitionend', ()=>{
-			let zIndex = $detailReport.css('z-index');
-			if(zIndex == '0') {
-				$detailReport.css({'z-index':'2', 'opacity':'1'});
-				$comparatorContainer.css({'z-index':'3', 'opacity':'1'});
-			}else {
-				$detailReport.css('z-index', '0');
-				$comparatorContainer.css('z-index', '0');
-				_$reportWrapper.css('display', 'block');
-				//resize charts
-				_handleResize();
-			}
-		});
-		_$reportContainer.toggleClass('searchreport-full');
-		_$toggle.toggleClass('up');
-		_$toggle.find('.btn-toggle').toggleClass('rotate');
+	_$reportContainer.one('transitionend', ()=>{
+		let zIndex = $detailReport.css('z-index');
+		if(zIndex == '0') {
+			$detailReport.css({'z-index':'2', 'opacity':'1'});
+			$comparatorContainer.css({'z-index':'3', 'opacity':'1'});
+		}else {
+			$detailReport.css('z-index', '0');
+			$comparatorContainer.css('z-index', '0');
+			_$reportWrapper.css('display', 'block');
+			//resize charts
+			_handleResize();
+		}
+	});
+	_$reportContainer.toggleClass('searchreport-full');
+	_$toggle.toggleClass('up');
+	_$toggle.find('.btn-toggle').toggleClass('rotate');
+};
+
+let _initToggle = () => {
+
+	_toggleSlideCenter(true, false);
+
+	_$toggle.find('.btn-container').click(function() {
+		/* Act on the event */
+		_triggerToggle();
 	});
 };
 
 //拱石搜索按钮 滑动到中间
-let _toggleSlideCenter = (slideCenter) => {
+let _toggleSlideCenter = (slideCenter, isSearching) => {
 	_$toggle.find('.btn-container').toggleClass('slide-center', slideCenter);
 	_$toggle.find('.btn-toggle')[slideCenter ? 'hide' : 'show']();
 	_$toggle.find('.title-jieguo')[slideCenter ? 'hide' : 'show']();
+	_$toggle.find('.title-zhong')[slideCenter&&isSearching ? 'show': 'hide']();
 };
 let _hideBtnToggle = (hide) => {
 	_$toggle.find('.btn-toggle')[hide ? 'hide' : 'show']();
@@ -377,45 +389,62 @@ searchResultController.updateCharts = (patterns) => {
 	_updateEarnChart(rawData);
 };
 
-searchResultController.reportSlideDown = (slideDown, cb) => {
+searchResultController.reportSlideDown = (slideDown, cb) => { 
 	let $target = _$reportContainer.find('.search-report-wrapper');
+	$target.off('transitionend', '**');
 	$target.one('transitionend', () => {
 		cb && cb();
 	});
 	$target.toggleClass('slide-down', slideDown);
-	_toggleSlideCenter(slideDown);
+	_toggleSlideCenter(slideDown, true);
 	if(!slideDown) {
 		_hideBtnToggle(store.getState().patterns.error);
 	}
 };
 
-searchResultController.showErrorPanel = (searchKline) => {
+searchResultController.showErrorPanel = (searchKline, error) => {
 	searchKline = searchKline || [];
+
+	let title = '本次搜索失败了',
+			errorBody = `<span>请您尝试</span><button class='research'>重新搜索</button><span>或返回</span><button class='back'>上一次搜索</button>`;
+
+	if(error && (error.type == 'no_data')) {
+		title = `本次搜索结果数为 "0"`;
+		errorBody= "请您尝试修改搜索条件, 然后重试";
+	}
+
 	let $errorPanel = $(`<div class='error-panel flex-center'>
 												<img/>
 												<div>
-													<h2>本次搜索失败了</h2>
-													<p><span>请您尝试</span><button class='research'>重新搜索</button><span>或返回</span><button class='back'>上一次搜索</button></p>
+													<h2>${title}</h2>
+													<p>${errorBody}</p>
 												</div>
 											</div>`);
 	
 	_$reportWrapper.append($errorPanel);
 
+	_$toggle.find('.btn-toggle').hide();
+
 	$errorPanel.find('img').attr('src', getKlineImgSrc(searchKline));
 	//重新搜索
 	$errorPanel.find('.research').click(function(event) {
 		/* Act on the event */
-		// let actions = require('../flux/actions');
+		let actions = require('../flux/actions');
 		store.dispatch(actions.patternActions.getPatterns({}));
 	});
 	//返回
 	$errorPanel.find('.back').click(() => {
 		searchResultController.removeErrorPanel();
+		_$toggle.find('.btn-toggle').show();
 	});
 };
 
 searchResultController.removeErrorPanel = () => {
 	_$reportWrapper.find('.error-panel').remove();
+};
+
+searchResultController.triggerToggle = () => {
+	_triggerToggle();
 };
 
 module.exports = searchResultController;

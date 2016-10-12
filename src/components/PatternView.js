@@ -56,6 +56,7 @@ class PatternView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {showSymbol: true, isTrashed: false};
+		this._countBarCache = null;
 	}
 
 	setTrashed(isTrashed) {
@@ -121,13 +122,18 @@ class PatternView extends React.Component {
 	}
 
 	handleMouseEnter(){
-
 		// this.handleMouseLeave();
 		let color = '#b61c15';
 			// const showSymbol = true;
 			// this.setState({showSymbol});
 		let {id, industry} = this.props.pattern;
 		let yieldRate = this.props.pattern.yield;
+		//#3
+		let matchYieldBar = getCountBar(yieldRate, false);
+		this._countBarCache = matchYieldBar;
+		if(matchYieldBar) {
+			matchYieldBar.style.fill = color;
+		}
 		//# 1
     let matchScatter = getScatter(id);
     getScatter(id);
@@ -138,18 +144,13 @@ class PatternView extends React.Component {
 		}
 		//#2
 		let matchPie = getPieSlice(industry);
-		let piePath = matchPie.firstChild;// && matchPie.lastChild;
+		let piePath = matchPie && matchPie.firstChild;// && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = color;
 			matchPie.dispatchEvent(new window.MouseEvent('mouseenter'));
 		}
-		//#3
-		let matchYieldBar = getCountBar(yieldRate, false);
-		if(matchYieldBar) {
-			matchYieldBar.style.fill = color;
-		}
 
-		let that = this;
+		// let that = this;
     // this.setHightlightPrediction(id, true);
 
 	}
@@ -158,6 +159,11 @@ class PatternView extends React.Component {
 
 			// const showSymbol = false;
 			// this.setState({showSymbol});
+			//#3
+		// let matchYieldBar = getCountBar(yieldRate, false);
+		if(this._countBarCache) {
+			this._countBarCache.style.fill = '';
+		}
 			//#1
 		_clonedScatter && _clonedScatter.remove && _clonedScatter.remove();
 		_clonedScatter && (_clonedScatter = null);
@@ -169,17 +175,33 @@ class PatternView extends React.Component {
 		let piePath = matchPie.firstChild;// && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = '';
-			matchPie.dispatchEvent(new window.MouseEvent('mouseleave'));
-		}
-			//#3
-		let matchYieldBar = getCountBar(yieldRate, false);
-		if(matchYieldBar) {
-			matchYieldBar.style.fill = '';
 		}
 
-		let that = this;
+		// let that = this;
     // this.setHightlightPrediction(id, false);
 
+	}
+
+	assertClosePirces() {
+		let { id, kLine } = this.props.pattern;
+		let closePrice = store.getState().patterns.closePrice;
+		let patternClosePrice = closePrice[id];
+		let len = patternClosePrice.length;
+		let isSame = true;
+		let yangqiClosePrice = kLine.slice(-len).map(function(price){ 
+			return price[2];
+		});
+
+		// console.log(patternClosePrice, yangqiClosePrice);
+
+		for(let i=0; i<len; i++) {
+			if(Math.abs(patternClosePrice[i] - yangqiClosePrice[i]) > 1e-4) {
+				isSame = false;
+				break;
+			} 
+		}
+
+		return isSame;
 	}
 
 	setActivePattern() {
@@ -187,17 +209,20 @@ class PatternView extends React.Component {
     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
 		let { dispatch, isActive, fullView } = this.props;
-		let { id, symbol, baseBars, kLine, similarity, industry, begin, end, lastDate} = this.props.pattern;
+		let { id, symbol, baseBars, kLine, similarity, industry, begin, end, lastDate, metaData} = this.props.pattern;
+    let dateLast = lastDate.time;
     console.assert(window.store.getState().patterns.rawData[id] == this.props.pattern, 'patternview 的数据没有更新!!!!!');
     let yieldRate = this.props.pattern.yield;
 		if (!fullView) {
 			return;
 		}
 
-		try { 
+		try {
+			console.assert(this.assertClosePirces()); 
 			// setHightlightPrediction(window.eChart, id);
 			// setHightlightPrediction(window.comChart, id);
 			setPredictionChartHighlight(id);
+			require('../ksControllers/klinePredictionWidget').setPattern(this.props.pattern);
 		} catch(e) {
 			console.error(e);
 		}
@@ -208,94 +233,94 @@ class PatternView extends React.Component {
 
     let dateStart = begin;//kLine[0][0];
     let dateEnd = end;//kLine[kLine.length - 5][0];
-    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate));
+    dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate, industry, metaData, dateLast));
 
 
-    let oneDay = 60 * 60 * 24;
-    let dateRange = {
-      from: +new Date(begin) / 1000,// - oneDay * 1,
-      to: +new Date(lastDate.time) / 1000,// + oneDay * 2
-    };
+    // let oneDay = 60 * 60 * 24;
+    // let dateRange = {
+    //   from: +new Date(begin) / 1000,// - oneDay * 1,
+    //   to: +new Date(lastDate.time) / 1000,// + oneDay * 2
+    // };
 
-    window.timeRange = dateRange;
+    // window.timeRange = dateRange;
 
-    let oldSymbol = widget._innerWindow().Q5.getAll()[0].model().mainSeries().symbol().split(':')[1];
+    // let oldSymbol = widget._innerWindow().Q5.getAll()[0].model().mainSeries().symbol().split(':')[1];
     
-    this._unsubscribeCompleted(); //取消监听
+    // this._unsubscribeCompleted(); //取消监听
 
-    if (oldSymbol !== symbol) {
-    	let that = this;
-      this._doWhenSeries1Completed(() => {   	
-        widget.setVisibleRange(dateRange, '0', () => {
-    			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
-          // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
-          let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
-					indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
-          widget.drawKsDateRangeLineTool(indexPoints, 0);
-          widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
-          widget.setVisibleRange(dateRange, '0');
-          that.setActivePattern();
-        });
-        // window.timeRange = undefined;
-      });
-	      // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-      chart.KeyStone.setSymbol(symbol, '', 0);
+    // if (oldSymbol !== symbol) {
+    // 	let that = this;
+    //   this._doWhenSeries1Completed(() => {   	
+    //     widget.setVisibleRange(dateRange, '0', () => {
+    // 			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
+    //       // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+    //       let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
+				// 	indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
+    //       widget.drawKsDateRangeLineTool(indexPoints, 0);
+    //       widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
+    //       widget.setVisibleRange(dateRange, '0');
+    //       that.setActivePattern();
+    //     });
+    //     // window.timeRange = undefined;
+    //   });
+	   //    // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+    //   chart.KeyStone.setSymbol(symbol, '', 0);
 
-    } else {
-    	widget._innerWindow().Q5.getAll()[0].R99.removeAllDrawingTools();
-      widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-      this._doWhenSeries1Completed(() => {
-        widget.setVisibleRange(dateRange, '0', () => {
-    			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
-          // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
-          let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
-					indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
-          widget.drawKsDateRangeLineTool(indexPoints, 0);
-          widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
-          // widget.setVisibleRange(dateRange, '0');
-      // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-          // 
-        });
-      });
-    }
+    // } else {
+    // 	widget._innerWindow().Q5.getAll()[0].R99.removeAllDrawingTools();
+    //   widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+    //   this._doWhenSeries1Completed(() => {
+    //     widget.setVisibleRange(dateRange, '0', () => {
+    // 			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
+    //       // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
+    //       let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
+				// 	indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
+    //       widget.drawKsDateRangeLineTool(indexPoints, 0);
+    //       widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
+    //       // widget.setVisibleRange(dateRange, '0');
+    //   // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
+    //       // 
+    //     });
+    //   });
+    // }
 	}
 
-  _doWhenSeries1Timeframe(callback) {
-    function run() {
-      chartDom.Q5.getAll()[0].R99.mainSeries().onTimeframe().unsubscribe(null, run);
-      callback();
-    }
-    const chartDom = window.widget_comparator._innerWindow();
-    chartDom.Q5.getAll()[0].R99.mainSeries().onTimeframe().subscribe(null, run);
-  }
+  // _doWhenSeries1Timeframe(callback) {
+  //   function run() {
+  //     chartDom.Q5.getAll()[0].R99.mainSeries().onTimeframe().unsubscribe(null, run);
+  //     callback();
+  //   }
+  //   const chartDom = window.widget_comparator._innerWindow();
+  //   chartDom.Q5.getAll()[0].R99.mainSeries().onTimeframe().subscribe(null, run);
+  // }
 
-  _doWhenSeries0Completed(callback) {
-    function run() {
-      let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-      chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
-      callback()
-    };
+  // _doWhenSeries0Completed(callback) {
+  //   function run() {
+  //     let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  //     chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
+  //     callback()
+  //   };
 
-    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
-  }
+  //   let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  //   chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(null, run);
+  // }
 
-  _unsubscribeCompleted(){
-  	let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(_context, _onCompleted);
-  }
+  // _unsubscribeCompleted(){
+  // 	let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  //   chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(_context, _onCompleted);
+  // }
 
-  _doWhenSeries1Completed(callback) {
-  	// function run() {
-  	// 	console.debug('_doWhenSeries1Completed', this);
-		 //  let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-		 //  chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
-		 //  callback && callback();
-  	// }
-  	_context.callback = callback;
-    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
-    chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(_context, _onCompleted);
-  }
+  // _doWhenSeries1Completed(callback) {
+  // 	// function run() {
+  // 	// 	console.debug('_doWhenSeries1Completed', this);
+		//  //  let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+		//  //  chart.Q5.getAll()[0].model().mainSeries().onCompleted().unsubscribe(null, run);
+		//  //  callback && callback();
+  // 	// }
+  // 	_context.callback = callback;
+  //   let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+  //   chart.Q5.getAll()[0].model().mainSeries().onCompleted().subscribe(_context, _onCompleted);
+  // }
 
 	render(){
 
@@ -335,18 +360,18 @@ class PatternView extends React.Component {
 		</div>);
 	}
 
-	getWH() {
-		let baseWindow_W = 1600,
-					basePatternView_W = 130,
-					basePatternView_H = 182;
+	// getWH() {
+	// 	let baseWindow_W = 1600,
+	// 				basePatternView_W = 130,
+	// 				basePatternView_H = 182;
 
-			let window_W = window.document.body.clientWidth;
+	// 		let window_W = window.document.body.clientWidth;
 
-			let pW = window_W / 1600 * 130,
-					pH = window_W / 1600 * 182;
+	// 		let pW = window_W / 1600 * 130,
+	// 				pH = window_W / 1600 * 182;
 
-			return {width: pW + 'px', height: pH + 'px'};
-	}
+	// 		return {width: pW + 'px', height: pH + 'px'};
+	// }
 
 	// handleResize() {
 

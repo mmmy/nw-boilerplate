@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
-import ReactTradingView from '../components/ReactTradingView';
+// import ReactTradingView from '../components/ReactTradingView';
 import HeatmapContainer from './HeatmapContainer';
 import PredictionContainer from './PredictionContainer';
 import ActivePatternInfoContainer from './ActivePatternInfoContainer';
@@ -9,6 +9,9 @@ import { layoutActions } from '../flux/actions';
 import _ from 'underscore';
 import { setStockViewSymbol } from '../shared/actionTradingview';
 import store from '../store';
+import klinePredictionWidget from '../ksControllers/klinePredictionWidget';
+import searchResultController from '../ksControllers/searchResultController';
+import { setStockViewVisibleRange } from '../shared/actionTradingview';
 
 let _showRemainder = true;
 
@@ -20,6 +23,15 @@ let setActiveSymol = () => {
   }
 };
 
+let showStockView = () => {
+  $(document.querySelector('.content-wrapper.favorites')).removeClass('top-z');
+  $(document.querySelector('.content-wrapper.history')).removeClass('top-z');
+  $(document.querySelector('.content-wrapper.curve')).addClass('top-z');
+  $(document.querySelector('.flat-btn.curve')).addClass('active');
+  $(document.querySelector('.flat-btn.favorites')).removeClass('active');
+  $(document.querySelector('.flat-btn.history')).removeClass('active');
+};
+
 const propTypes = {
 
 };
@@ -28,28 +40,28 @@ const defaultProps = {
 
 };
 
-function resizePrediction(context) {
-  try{
-    var timeScale = context.widget_comparator._innerWindow().Q5.getAll()[0].model().timeScale();
-    const info = $('#searching-info-content')[0].innerHTML;
-    let daysCount = parseInt(info);//parseInt(info.slice(0, info.indexOf('bars')));
-    var offset = 45;
-    var range = context.searchingRange;
-    var rangeStartIndex = range && (timeScale.timePointToIndex(range.from) + range.baseBars);
-    var lastDateIndex = rangeStartIndex || (timeScale.visibleBars().firstBar() + daysCount - 1); // for prediction DOM width
-    var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex) + offset; //  50 => width by prediction dom margin
-    var wrapperWidth = context.eChart.getDom().parentNode.parentNode.parentNode.clientWidth;
-    pixel = ((pixel > (wrapperWidth - 130)) || (pixel < 50)) ? 300 : pixel;
-    context.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
-    context.eChart.resize();
-    // context.actionsForIframe.updatePaneViews();  // align both TV and prediction
-    // window.actionsForIframe.recalculateHeatmap();
-  }catch(e){
-    console.error(e);
-  }
-}
+// function resizePrediction(context) {
+//   try{
+//     var timeScale = context.widget_comparator._innerWindow().Q5.getAll()[0].model().timeScale();
+//     const info = $('#searching-info-content')[0].innerHTML;
+//     let daysCount = parseInt(info);//parseInt(info.slice(0, info.indexOf('bars')));
+//     var offset = 45;
+//     var range = context.searchingRange;
+//     var rangeStartIndex = range && (timeScale.timePointToIndex(range.from) + range.baseBars);
+//     var lastDateIndex = rangeStartIndex || (timeScale.visibleBars().firstBar() + daysCount - 1); // for prediction DOM width
+//     var pixel = timeScale.width() - timeScale.indexToCoordinate(lastDateIndex) + offset; //  50 => width by prediction dom margin
+//     var wrapperWidth = context.eChart.getDom().parentNode.parentNode.parentNode.clientWidth;
+//     pixel = ((pixel > (wrapperWidth - 130)) || (pixel < 50)) ? 300 : pixel;
+//     context.eChart.getDom().parentNode.parentNode.style.width = pixel + 'px';
+//     context.eChart.resize();
+//     // context.actionsForIframe.updatePaneViews();  // align both TV and prediction
+//     // window.actionsForIframe.recalculateHeatmap();
+//   }catch(e){
+//     console.error(e);
+//   }
+// }
 
-window._ksResizePrediction = resizePrediction;
+// window._ksResizePrediction = resizePrediction;
 
 class ComparatorStatic extends React.Component {
 
@@ -62,6 +74,7 @@ class ComparatorStatic extends React.Component {
 	}
 
 	componentDidMount() {
+    klinePredictionWidget.init(this.refs.kline_prediction_widget);
     // this.handleResize = _.debounce(
     //   () => {
     //     try {
@@ -90,17 +103,36 @@ class ComparatorStatic extends React.Component {
   }
 
   goToSearchPage() {
+    try {
+      window.heap.track("click btn queren", {"hhah":5});
+    }catch (e) {
+
+    }
     let { dispatch } = this.props;
     let goAction = () => {
-      dispatch(layoutActions.toggleStockView());
-      setActiveSymol();
+      // dispatch(layoutActions.toggleStockView()); //弃用了
+      let active = store.getState().active;
+      let metaData = active.metaData,
+          startUnixTime = new Date(active.dateStart) / 1000,
+          endUnixTime = (new Date(active.dateLast) / 1000) || (new Date(active.dateEnd) / 1000);
+      
+      let dataCategory = metaData.dataCategory; // cf cf_m5 cs
+      let interval = 'D';
+      if(dataCategory.indexOf('m5')>-1) {
+        interval = '5';
+      }
+
+      metaData && setStockViewVisibleRange(metaData.name, {from: startUnixTime, to: endUnixTime}, interval); 
+      searchResultController.triggerToggle();
+      // setActiveSymol();
+      showStockView();
     };
 
     if(_showRemainder) {
       let title = '将此图形作为原始研究对象?';
       let p = '选择"是"将返回首页, 当前结果将不被保存';
       let contentStr = `<h4 style='margin-top:70px'>${title}</h4><p style='margin-top:10px'>${p}</p><p style='margin-top:30px'><button class='confirm-btn'>是</button></p><div class='footer'><i class='fa fa-square-o' style="margin-right: 10px;"></i>不再提示</div>`;
-      let modalStr = `<div class='modal-wrapper search-remainder' style='width:400px;height:250px'><div class='close-icon-container'><span class='close-btn'></span></div>${contentStr}</div>`;
+      let modalStr = `<div class='modal-wrapper search-remainder' style='width:470px;height:250px'><div class='close-icon-container'><span class='close-btn'></span></div>${contentStr}</div>`;
       let nodeStr = `<div class='modal-overlay flex-center font-simsun'>${modalStr}</div>`;
 
       let $node = $(nodeStr);
@@ -130,7 +162,7 @@ class ComparatorStatic extends React.Component {
   }
 
 	render() {
-    this.d1 = new Date();
+    // this.d1 = new Date();
     const {stretchView,
       isPredictionShow,
       logined } = this.props;
@@ -143,10 +175,10 @@ class ComparatorStatic extends React.Component {
     const predictionMainClassName = classNames('prediction-main');
 
     const STOCK_VIEW = 'comparator-chart';
-
+    /**
     let options = {
-      symbol: 'OKCOIN.SZ',
-      interval: '1',
+      symbol: 'OKCOIN.SZ',//'平安银行',
+      interval: '5',
       container_id: STOCK_VIEW,
       //	BEWARE: no trailing slash is expected in feed URL
       // datafeed: new Datafeeds.UDFCompatibleDatafeed("http://localhost:8888"),
@@ -246,7 +278,7 @@ class ComparatorStatic extends React.Component {
       // height: 300,
       // width: 300,
     }
-
+    **/
     const comparatorPredictionContainerClass = classNames('comparator-prediction-container',{
       'comparator-prediction-hide': !isPredictionShow
     });
@@ -256,12 +288,16 @@ class ComparatorStatic extends React.Component {
         <div className='pattern-tv-box-shadow'>
         </div>
         {/*<div className={ 'comparator-tv-wrapper' }>*/}
-          <ReactTradingView
+        {/*<ReactTradingView
             viewId={ STOCK_VIEW }
             init={ logined }
-            options={ options } />
+            options={ options } />*/}
+        <div className='kline-prediction-widget-container' ref='kline_prediction_widget'>
+
+        </div>
+
         <div className='start-btn-container'>
-          <button className='flat-btn' onClick={ this.goToSearchPage.bind(this) }></button>
+          <button data-kstooltip="切换到主K线视图" className='flat-btn' onClick={ this.goToSearchPage.bind(this) }></button>
         </div>
         {/*</div>*/}
         {/*<div className={'prediction-transparent-overlay top-left'}>
@@ -304,7 +340,7 @@ ComparatorStatic.defaultProps = defaultProps;
 var stateToProps = function(state) {
 	const {layout, account} = state;
 	const {stockView, isPredictionShow} = layout;
-  let logined = account.username !== '';
+  let logined = true;//account.username !== ''; //只有登陆后才能到这一步, 所以logined = true
 	return {
 		stretchView: !stockView,
     isPredictionShow: isPredictionShow,

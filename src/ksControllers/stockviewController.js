@@ -4,11 +4,11 @@ import favoritesManager from '../backend/favoritesManager';
 import store from '../store';
 import { drawKline } from './painter';
 import SearchEditor from './SearchEditor';
-import actionTradingview from '../shared/actionTradingview';
+// import actionTradingview from '../shared/actionTradingview';
 import { handleShouCangFocus, handleShouCangBlur } from './publicHelper';
 import ConfirmModal from './ConfirmModal';
 
-let { updateTradingviewAfterSearch } = actionTradingview;
+// let { updateTradingviewAfterSearch } = actionTradingview;
 
 let _searchEditorHistory = null;
 let _searchEditorFavorites = null;
@@ -25,12 +25,31 @@ let _createDetailPanel = (parentDom, editorCache, dataObj) => {
 };
 
 let _disposeDetailPanel = (parentDom, editorCache) => {
-	editorCache.dispose();
-	editorCache = null;
-	$(parentDom).find('.detail-panel').remove();
+	let isSaved = editorCache.isSaved();
+	let remove = () => {
+			editorCache.dispose();
+			editorCache = null;	
+			$(parentDom).find('.detail-panel').remove();
+	};
+	if(!isSaved) {
+		new ConfirmModal('编辑未保存, 是否保存?', '', ()=>{
+			editorCache.save();
+			remove();
+		}, ()=>{
+			remove();
+		});
+	} else {
+		remove();
+	}
 	//refresh UI
 	// _refreshFavoritesBody();
 }; 
+
+let _removeSearchEditor = () => {
+	_searchEditorFavorites && _searchEditorFavorites.dispose && _searchEditorFavorites.dispose();
+	_searchEditorFavorites = null;
+	$('.favorites .detail-panel').remove();
+}
 
 let _reSearch = (dataObj, cb, {favoriteFolder=''}) => {  //当从收藏夹过来的 favoriteFolder 为收藏夹名
 	let actions = require('../flux/actions');
@@ -65,7 +84,7 @@ let _handleDeleteOne = (e) => {
 let _handleReSearch = ({favoriteFolder=''},event) => {
 	let dataObj = $(event.target).closest('.history-item').data('data');
 	_reSearch(dataObj, () => {
-		updateTradingviewAfterSearch(dataObj);
+		// updateTradingviewAfterSearch(dataObj);
 	}, {favoriteFolder});
 };
 
@@ -128,8 +147,8 @@ let getIntervalString = (interval) => {
 let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 trashed
 	let startDateStr = pattern.dateRange && new Date(pattern.dateRange[0]).toISOString() || '',
 			endDateStr = pattern.dateRange && new Date(pattern.dateRange[1]).toISOString() || '';
-	startDateStr = startDateStr.slice(0, 10).replace(/-/g,'.');
-	endDateStr = endDateStr.slice(0, 10).replace(/-/g,'.');
+	startDateStr = startDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
+	endDateStr = endDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
 
 	let state = pattern.state || {};
 
@@ -149,7 +168,7 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 	// let footer = `<div class='btn-wrapper'><button class='re-search'>重新搜索</button><button class='go-detail'>查看详情</button></div>`;
 
 	//favorites 和 history 不一样
-	let fromInfoContent = (type === 0 || type === 2) ? pattern.symbol : (pattern.favoriteFolder ? `收藏夹/${pattern.favoriteFolder}` : `${pattern.symbol}<br/>${startDateStr}~${endDateStr}<br/>${getIntervalString(pattern.interval)}`); 
+	let fromInfoContent = (type === 0 || type === 2) ? pattern.symbol : (pattern.favoriteFolder ? `收藏夹/${pattern.favoriteFolder}` : `${pattern.symbol}<br/>${startDateStr}<br/>${endDateStr}<br/>${getIntervalString(pattern.interval)}`); 
 	let fromInfo = `<p class='from-info font-arial'><span class='font-simsun'>来源</span>:${fromInfoContent}</p>`;
 
 	let favoriteFolder = type === 0 ? _activeName : '';
@@ -171,6 +190,7 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 };
 
 let _generatePatterns = (dataArr, type, meta) => {  //dataArr:[{symbol, dateRange, kline}], type:0(fav) 1(history) 3(trashed), meta:object
+	dataArr = dataArr.map ? dataArr : [dataArr];
 	let patterns = dataArr.map((pattern) => {
 		return _generatePattern(pattern, type);
 	});
@@ -215,14 +235,96 @@ let _initDayDom = ($dayDom, dataArr) => {
 	}
 };
 
+let _removeHistroiesByMonth = (year, month) => {
+	let items = $(_bodyDom).find('.history-day-wrapper');
+	let len = items.length;
+	try {
+		for(let i=0; i<len; i++) {
+			let $item = $(items[i]);
+			let date = $item.data().date;
+			if(date && date.getFullYear() == year && (date.getMonth()+1 == month)) {
+				$item.remove();
+			}
+		}
+	} catch(e) {
+		console.error(e);
+	}
+};
+
 let _handleDeleteHistoryByMonth = (event) => {
+	event.stopPropagation();
 	let $item = $(event.target).closest('.month');
 	let { year, month } = $item.data();
 	new ConfirmModal(`确认删除${year}-${month}历史记录?`, 'history-month-delete', () => {
 		deleteHistory(year, month);
+		_removeHistroiesByMonth(year, month);
 		$item.remove();
 	});
 };
+
+let __findFirstHistoryByDate = function(year, month) {
+	let allHistoryDayWrapper = $(_bodyDom).find('.history-day-wrapper');
+
+	let matchNode = null;
+	for(let i=0; i<allHistoryDayWrapper.length; i++) {
+		let one = $(allHistoryDayWrapper[i]);
+		// console.log(one);
+		let date = new Date(one.data().date);
+		if(date.getFullYear() == year && (date.getMonth() + 1 == month)){
+			matchNode = allHistoryDayWrapper[i];
+			break;
+		}
+	}
+	return matchNode;
+}
+
+let _handleGotoMonth = function(event) {
+	let $currentTarget = $(event.currentTarget);
+	let {year, month} = $currentTarget.data();
+	if(typeof year == 'undefined' || typeof month == 'undefined') return;
+	// try {
+		let matchNode = __findFirstHistoryByDate(year, month);
+		// console.log(matchNode);
+		if(matchNode) {
+			matchNode.scrollIntoView();
+		}
+		$currentTarget.siblings().removeClass('active');
+		$currentTarget.addClass('active');
+	// } catch(e) {
+		// console.error(e);
+	// }
+}
+
+let _setAcitveMonth = function(activeYear, activeMonth) {
+	var pMonthDoms = $(_navDom).find('p.month');
+	pMonthDoms && pMonthDoms.each(function(i, monthDom){
+		let $dom = $(monthDom);
+		let {year, month} = $dom.data();
+		if(year==activeYear && month==activeMonth) {
+			$dom.siblings().removeClass('active');
+			$dom.addClass('active');
+		}
+	});
+}
+
+let _handleHistoryScroll = function(e) {
+	var historyMonth = getSortedHistoryMonth();
+	var len = historyMonth.length;
+	for(let i=1; i<len; i++) {
+		let date0 = new Date(historyMonth[i-1]);
+		let date1 = new Date(historyMonth[i]);
+		let dom0 = __findFirstHistoryByDate(date0.getFullYear(), date0.getMonth()+1);
+		let dom1 = __findFirstHistoryByDate(date1.getFullYear(), date1.getMonth()+1);
+		let top0 = $(dom0).offset().top;
+		let top1 = $(dom1).offset().top;
+		if(i==len-1 && top1 <= 50) { //last one
+			_setAcitveMonth(date1.getFullYear(), date1.getMonth()+1)
+		} else if(top0 <= 50 && top1 > 50) {
+			_setAcitveMonth(date0.getFullYear(), date0.getMonth()+1)
+		}
+		// console.log(date.getMonth()+1, $(dom).offset());
+	}
+}
 
 historyController.init = (navDom, bodyDom) => {
 	_navDom = navDom;
@@ -236,9 +338,9 @@ historyController.init = (navDom, bodyDom) => {
 	let historyDataByMonth = historyMonth.map((yearMonth) => {
 		return getSortedMonthData(yearMonth);
 	}); 
-	console.log(historyDataByMonth);
+	// console.log(historyDataByMonth);
 
-	historyMonth.forEach((histroyDateName) => { //'2012-12'
+	historyMonth.forEach((histroyDateName, i) => { //'2012-12'
 		let date = new Date(histroyDateName);
 		let _year = date.getFullYear();
 		let _month = date.getMonth() + 1;
@@ -247,7 +349,11 @@ historyController.init = (navDom, bodyDom) => {
 		// 	$dom.append(`<h6 class='year'>${_year}</h6>`);
 		// 	year = _year;
 		// }
-		$navDom.append($(`<p class='month font-simsun'><span class='name'>${_month}月</span></p>`).data({year:_year, month:_month}).append($('<button class="flat-btn delete">delete</button>').click(_handleDeleteHistoryByMonth)));
+		let itemNode = $(`<p class='month font-simsun'><span class='name'>${_month}月</span></p>`).data({year:_year, month:_month})
+											.append($('<button class="flat-btn delete">delete</button>').click(_handleDeleteHistoryByMonth))
+											.on('click', _handleGotoMonth);
+		if(i==0) itemNode.addClass('active');
+		$navDom.append(itemNode);
 	});
 
 	let now = new Date();
@@ -273,6 +379,7 @@ historyController.init = (navDom, bodyDom) => {
 		});
 	});
 
+	$bodyDom.on('scroll', _handleHistoryScroll);
 	// _initEventAndPaint($navDom, $bodyDom);
 };
 
@@ -299,16 +406,38 @@ historyController.updateNavContainer = (dom) => {
 let _isSameDate = (date1, date2) => {
 		return (date1.getFullYear() == date2.getFullYear() && date1.getMonth() == date2.getMonth() && date1.getDate() == date2.getDate())
 };
-
+//添加左侧月份导航
+let _insertHistoryMonth = (date) => {
+	let _year = date.getFullYear();
+	let _month = date.getMonth() + 1;
+	let $navDom = $(_navDom);
+	let firstItem = $navDom.find('p.month:first-child');
+	let firstItemDate = firstItem.date();
+	if(firstItemDate && firstItemDate.year == _year && firstItemDate.month == _month) {
+		return;
+	}
+	let itemNode = $(`<p class='month font-simsun'><span class='name'>${_month}月</span></p>`).data({year:_year, month:_month})
+									.append($('<button class="flat-btn delete">delete</button>').click(_handleDeleteHistoryByMonth))
+									.on('click', _handleGotoMonth);
+	itemNode.addClass('active');
+	$navDom.find('p.month').removeClass('active');
+	$navDom.prepend(itemNode);
+};
+//插入历史记录
 let _addNewDayWrapper = (data, isInsert, $wrapper0) => {  //插入历史
 	if(isInsert) {
 		let $newHistoryItem = $(_generatePattern(data, 1));
 		drawKline($newHistoryItem.find('canvas')[0], data.kline);
 		$wrapper0.find('.history-items-wrapper').prepend($newHistoryItem);
 	}else {
-		let $newWrapper = $(_generatePatterns(data, 1, new Date()));
-		$newWrapper.data('date', new Date());
-		$(_bodyDom).prepend($newWrapper);
+		// let $newWrapper = $(_generatePatterns(data, 1, new Date()));
+		// $newWrapper.data('date', new Date());
+		let now = new Date();
+		let $historyItem = _generateHistoryItem(now, data);
+		$historyItem.data('date', now);
+		$(_bodyDom).prepend($historyItem);
+		//添加导航栏
+		_insertHistoryMonth(now);
 	}
 };
 
@@ -357,6 +486,8 @@ let _handleFolderClick = (event) => {
 	$bodyDom.append(_generatePatterns(data, 0, {name:name}));
 
 	$(_navDomF).siblings('.trash-panel-btn').removeClass('active');
+	//移除编辑器
+	_removeSearchEditor();
 };
 
 let _refreshBodyItemUI = (ele) => {
@@ -393,19 +524,29 @@ let _handleDeleteFavoritesFolder = (event) => {
 		});
 	});
 };
-
+//收藏夹重命名
 let _handleRenameFolder = (event) => {
+	event.stopPropagation();
 	let $folderNode = $(event.target).closest('.favorites-folder');
 	let data = $folderNode.data();
 	let { name } = data;
-	let $inputGroup = $(`<div class='ks-input-wrapper'><input /><span class='flat-btn button ks-check'>check</span><span class='flat-btn button ks-delete'>delete</span></div>`);
+	let $inputGroup = $(`<div class='ks-input-wrapper border'><input /><span class='flat-btn button ks-check ks-disable'>check</span><span class='flat-btn button ks-delete'>delete</span></div>`);
 	let $renameInput = $(`<div class='rename-input-container'></div>`).append($inputGroup);
 	
 	$folderNode.after($renameInput);
 
-	$inputGroup.find('input').focus();
+	$inputGroup.find('input').focus().on('input', (event)=>{
+		var folderName = event.currentTarget.value;
+		if(folderName === '' || favoritesController.hasFavoriteFolder(folderName)) {
+			$inputGroup.find('.ks-check').addClass('ks-disable');
+		} else {
+			$inputGroup.find('.ks-check').removeClass('ks-disable');
+		}
+	});
+
 	$inputGroup.find('.ks-check').click(function(event) {
 		/* Act on the event */
+		if($(event.currentTarget).hasClass('ks-disable')) return;
 		let newName = $inputGroup.find('input').val();
 		newName = newName.trim();
 		if(newName && favoritesManager.renameFavorites(name, newName)) {
@@ -481,24 +622,28 @@ let _prependFavoritesBody = (dataObj) => {
 };
 
 favoritesController.addFavorites  = (name, dataObj) => {
+	let dataCopy = $.extend(true, {}, dataObj);
+	
 	//添加数据
-	favoritesManager.addFavorites(name, dataObj);
+	favoritesManager.addFavorites(name, dataCopy);
 	//更新UI
 	if(name == _activeName) {
-		_prependFavoritesBody(dataObj);
+		_prependFavoritesBody(dataCopy);
 	}
 };
 
 favoritesController.updateFavorites = (dataObj) => {
-	favoritesManager.updateFavorites(null, dataObj); //更新数据
+	favoritesManager.updateFavorites(null, dataObj, true); //更新数据
 	// 更新UI
 	_refreshFavoritesBody();
 };
 
 favoritesController.addNewFolder = (name) => {
 	let {fileName, initData} = favoritesManager.addNewClass(name);
-	let folderNode = _generateFolderNode(fileName, initData);
-	$(_navDomF).append(folderNode);
+	if(fileName) {
+		let folderNode = _generateFolderNode(fileName, initData);
+		$(_navDomF).append(folderNode);
+	}
 };
 
 favoritesController.getActiveName = () => {
@@ -507,7 +652,7 @@ favoritesController.getActiveName = () => {
 
 favoritesController.showTrashedPatterns = (e) => {
 	_showFolder(-1);
-	$(e.target).addClass('active');
+	$(e.currentTarget).addClass('active');
 	let trashedData = favoritesManager.getTrashedData();
 	let $bodyDom = $(_bodyDomF);
 	$bodyDom.empty();
@@ -516,8 +661,26 @@ favoritesController.showTrashedPatterns = (e) => {
 
 favoritesController.clearTrashedPatterns = () => {
 	new ConfirmModal('清空回收站?', 'clear-trashed-patterns', () => {
-		favoritesManager.clearTrashedFavorites();
+		if(favoritesManager.clearTrashedFavorites()) {
+			_updateTrashedNumber();
+			let $bodyDom = $(_bodyDomF);
+			let trashedData = [];
+			$bodyDom.empty();
+			$bodyDom.append(_generatePatterns(trashedData, 2));
+		}
 	});
+};
+
+favoritesController.hasFavoriteFolder = (folderName) => {
+	return favoritesManager.hasFavoriteFolder(folderName);
+};
+
+favoritesController.setEditorSaved = () => {
+	try {
+		_searchEditorFavorites.setSaved();
+	} catch (e) {
+		console.error(e);
+	}
 };
 
 module.exports = {

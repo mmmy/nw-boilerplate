@@ -10,12 +10,23 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 		return;
 	}
 	let folders = favoritesManager.getFavoritesFolders();
-	let optionsNode = $(`<div class='shoucang-pop-menu font-simsun'></div>`);
-	let btnTemplate = `<span class='ks-input-wrapper'><input placeholder='新建文件夹'><i class='button ks-check'></i><i class='button ks-delete'></i></span>`;
+	let optionsNode = $(`<div class='shoucang-pop-menu font-simsun'></div>`).on('mouseenter',function(e){ e.stopPropagation() });
+	let btnTemplate = `<span class='ks-input-wrapper border'><input placeholder='新建文件夹'><i class='button ks-check ks-disable'></i><i class='button ks-delete'></i></span>`;
 	let $btnGroup = $(`<div class='input-wrapper'></div>`).append($(btnTemplate));
-	$btnGroup.find('input').blur(() => { $target.focus() });
+
+	$btnGroup.find('input').blur(() => { $target.focus() })
+													.on('input', (event)=>{
+														let folderName = event.currentTarget.value;
+														if(folderName === '' || favoritesController.hasFavoriteFolder(folderName)) {
+															$btnGroup.find('.ks-check').addClass('ks-disable');
+														} else {
+															$btnGroup.find('.ks-check').removeClass('ks-disable');
+														}
+													});
+
 	$btnGroup.find('.ks-check').click(function(event) {
 																/* Act on the event */
+																if($(event.currentTarget).hasClass('ks-disable')) return;
 																let name = $footer.find('input').val();
 																if(name) {
 																	favoritesController.addNewFolder(name);
@@ -33,9 +44,10 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 																});
 	let $saveBtn = $(`<span class='flat-btn save-btn ${showSaveBtn?"":"hide"}'>保存</span>`).click((e) => { 
 																																														favoritesController.updateFavorites(dataObj);
+																																														favoritesController.setEditorSaved();
 																																														$target.children().remove();
 															 																														});
-	let $title = showRename ? $(`<div class='name-container'><h5>${dataObj.name || '未命名'}</h5></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('新建文件夹','自定义文件名')))
+	let $title = showRename ? $(`<div class='name-container'><h5>${dataObj.name || '未命名'}</h5></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('ks-disable','').replace('新建文件夹','自定义文件名')))
 													: $(`<h4 class='title'>另存为</h4>`);
 	$title.find('input').blur(() => { $target.focus(); });
 	$title.find('.ks-check').click(function(event) {
@@ -51,6 +63,8 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 		/* Act on the event */
 		$title.find('input').val('');
 	});
+
+  let $label = type===1 ? $(`<div class="label-title">收藏至</div>`) : '';
 
 	let $content = $(`<div class='content transition-all'></div>`);
 	let $footer = $(`<div class='footer-shoucang transition-all ${showSaveBtn?"heighter":""}'></div>`)
@@ -85,11 +99,13 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 		let button = $(`<div class='item'>${folder}</div>`).click((e) => {
 			favoritesController.addFavorites(folder, dataObj);
 			$target.children().remove();
+      $target.blur();
+      console.log('favorites button click');
 		});
 		$content.append(button);
 	});
 
-	optionsNode.append($title).append($content).append($footer);
+	optionsNode.append($title).append($label).append($content).append($footer);
 	$target.append(optionsNode);
 
 };
@@ -102,189 +118,16 @@ let handleShouCangBlur = (e) => {
 	$target.children().remove();
 };
 
-function splitData(rawData, predictionBars) {
-  predictionBars += 1;
-    var categoryData = [];
-    var values = [];
-
-    var lowArr = [], highArr = [];
-
-    for (var i = 0; i < rawData.length; i++) {
-        categoryData.push(rawData[i].slice(0, 1)[0]);
-        values.push(rawData[i].slice(1));
-        lowArr.push(isNaN(+rawData[i][3]) ? Infinity : +rawData[i][3]);
-        highArr.push(isNaN(+rawData[i][4]) ? -Infinity : +rawData[i][4]);
-    }
-    for (var i=0; i<predictionBars; i++) {
-      categoryData.push(i+'');
-      // values.push([undefined,undefined,undefined,undefined]);
-    }
-    //console.log(highArr);
-    var min = Math.min.apply(null, lowArr);
-    var max = Math.max.apply(null, highArr);
-
-    // var arange10 = [];
-    // for (var i=0; i < 15; i++) {
-    //  arange10.push([categoryData[baseBars], min + (max - min) / 15 * i]);
-    // }
-
-    // var areaData = categoryData.slice(baseBars).map((e) => {
-    //  return [e, max];
-    // });
-
-    return {
-        categoryData: categoryData,
-        values: values,
-        // lineData: arange10,
-        // areaData: areaData,
-        yMin: min,
-        yMax: max,
-    };
-}
-
-var generateSeries = function(closePricesArr, startPrice) {
-  var lineSeries = [],
-      maxPrice = -Infinity,
-      minPrice = Infinity;
-
-  lineSeries = closePricesArr.map(function(e,i) {
-    var rate = startPrice / e[0];
-    return {
-      data: e.map(function(price, i){return [i+'', price * rate]}),
-        type: 'line',
-        yAxisIndex: 1,
-        name: i,
-        showSymbol: false,
-        smooth: false,
-        hoverAnimation: false,
-        lineStyle: {
-          normal: {
-            color: (i==0) ? '#862020' : 'rgba(200, 200, 200, 0.5)',
-            width: 1
-          }
-        },
-        z: (i==0) ? 1 : -1
-    };
-  });
-  lineSeries.forEach((series) => {
-    series.data.forEach((data) => {
-      var price = data[1];
-      minPrice = minPrice < price ? minPrice : price;
-      maxPrice = maxPrice > price ? maxPrice : price;
-    });
-  });
-  return {
-    lineSeries,
-    max: maxPrice,
-    min: minPrice,
-  };
-};
-
-let generateKlineOption = () => {
-	var option = {
-    backgroundColor: '#fff',
-      animation: false,
-        title: { show: false },
-        tooltip: {
-          show: false,
-          showContent: false,
-        },
-        toolbox: {
-          show: false,
-        },
-      grid: {
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0
-      },
-        xAxis: {
-            type: 'category',
-            data: [],
-            scale: true,
-            boundaryGap : false,
-            axisLine: {show: false},
-            splitLine: {show: false},
-            minInterval: 1,
-            axisTick: {
-              show: false
-            },
-            axisLabel:{
-              show: false
-            },
-            splitNumber: 20,
-            min: 'dataMin',
-            max: 'dataMax'
-        },
-        yAxis: [{
-            scale: true,
-            axisLine: {
-              show: false
-            },
-            splitLine:{
-              show: false
-            },
-            axisLabel:{
-              show: false
-            },
-            axisTick: {
-              show: false
-            },
-            splitArea: {
-                show: false
-            },
-        },{
-            scale: true,
-            axisLine: {
-              show: false
-            },
-            splitLine:{
-              show: false
-            },
-            axisLabel:{
-              show: false
-            },
-            axisTick: {
-              show: false
-            },
-            splitArea: {
-                show: false
-            },
-        }],
-        series: [
-            {
-                name: '上证指数',
-                type: 'candlestick',
-                data: [],
-                z: 1,
-                itemStyle: {
-                  normal: {
-                    borderWidth: true ? '1' : '0',
-                    color: true ? '#AC1822' : '#aE0000',
-                    color0: true ? 'rgba(0, 0, 0, 0)' : '#5A5A5A',
-                    borderColor: '#8D151B',
-                    borderColor0: '#050505',
-                  },
-                  emphasis: {
-                    borderWidth: '1'
-                  }
-                },
-            },
-        ]
-    };
-  return option;
-};
-
-
-let getKlineImgSrc = (kline) => {
+let getKlineImgSrc = (kline, height) => {
   if(!kline || kline.length==0) {
     return './image/kline.png';
   }
+  height = height || 100;
   let len = kline.length;
   let perfectW = len * 5;
   perfectW = perfectW > 500 ? 500 : perfectW;
   let canvas = document.createElement('canvas');
-  canvas.height = 100;
+  canvas.height = height;
   canvas.width = perfectW;
   painter.drawKline(canvas, kline);
   return canvas.toDataURL();
@@ -293,8 +136,5 @@ let getKlineImgSrc = (kline) => {
 module.exports = {
 	handleShouCangFocus,
 	handleShouCangBlur,
-	splitData,
-	generateSeries,
-	generateKlineOption,
   getKlineImgSrc,
 };

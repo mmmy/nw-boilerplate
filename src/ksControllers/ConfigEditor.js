@@ -6,7 +6,16 @@ let datePickerOptions = {
 	autoclose: true,
 };
 
+let adjustConfig = (searchConfig) => {
+	let dateRange = searchConfig.dateRange;
+	if (dateRange && typeof dateRange[0] == 'string') { //将老格转换成新格式
+		dateRange[0] = {date:dateRange[0], hour:'0', minute:'0', second:'0'};
+		dateRange[1] = {date:dateRange[1], hour:'0', minute:'0', second:'0'};
+	}
+};
+
 function ConfigEditor(dom, searchConfig, info) {
+	adjustConfig(searchConfig);
 	this._$dom = $(dom);
 	this._$wrapper = $(`<div class='modal-content-contianer config-editor-inner'></div>`);
 	this._$info = $(`<div class='search-info-container'></div>`);
@@ -14,7 +23,18 @@ function ConfigEditor(dom, searchConfig, info) {
 	this._$dom.append(this._$info);
 	this._config = searchConfig;
 	this._info = info;
-	this._inputs = {startDate:null, endDate:null, typeStock:null, typeFuture:null, additionBars:null, reduceBars:null, addBars:null};
+	this._inputs = {startDate:null, 
+									endDate:null, 
+									typeStock:null, 
+									typeFuture:null, 
+									additionBars:null, 
+									reduceBars:null, 
+									addBars:null, 
+									startTime:{hour:null,minute:null,second:null},
+									endTime:{hour:null,minute:null,second:null},
+								};
+
+	this._onEdit = null;
 
 	this._init();
 	this._initActions();
@@ -22,39 +42,58 @@ function ConfigEditor(dom, searchConfig, info) {
 
 ConfigEditor.prototype._init = function() {
 	let { dateRange, additionDate, spaceDefinition } = this._config;
-	this._inputs.startDate = $(`<input />`).val(dateRange[0]);
-	this._inputs.endDate = $(`<input />`).val(dateRange[1]);
+	let d0 = dateRange[0],
+			d1 = dateRange[1];
+	this._inputs.startDate = $(`<input />`).val(d0.date);
+	this._inputs.endDate = $(`<input />`).val(d1.date);
 	this._inputs.typeStock = $(`<span class='stock fa'>股票</span>`).toggleClass('fa-check-square-o selected', spaceDefinition.stock).toggleClass('fa-square-o', !spaceDefinition.stock);
 	this._inputs.typeFuture = $(`<span class='stock fa'>期货</span>`).toggleClass('fa-check-square-o selected', spaceDefinition.future).toggleClass('fa-square-o', !spaceDefinition.future);
 	this._inputs.additionBars = $(`<input type='number' />`).val(additionDate.value);
 	this._inputs.reduceBars = $(`<button>-</button>`);
 	this._inputs.addBars = $(`<button>+</button>`);
 
+	let hour0 = $(`<input type="number" min="0" max="23">`).val(d0.hour);
+	let minute0 = $(`<input type="number" min="0" max="59">`).val(d0.minute);
+	let second0 = $(`<input type="number" min="0" max="59">`).val(d0.second);
+	let hour1 = $(`<input type="number" min="0" max="23">`).val(d1.hour);
+	let minute1 = $(`<input type="number" min="0" max="59">`).val(d1.minute);
+	let second1 = $(`<input type="number" min="0" max="59">`).val(d1.second);
+
+	this._inputs.startTime.hour = hour0;
+	this._inputs.startTime.minute = minute0;
+	this._inputs.startTime.second = second0;
+
+	this._inputs.endTime.hour = hour1;
+	this._inputs.endTime.minute = minute1;
+	this._inputs.endTime.second = second1;
+
 	this._$wrapper.append(`<div class='title'>搜索配置</div>`);
 	
 	//统计天数
-	this._$wrapper.append(`<div class='item-title font-simsun'>统计天数</div>`);
+	this._$wrapper.append(`<div class='item-title font-simsun'>后向统计范围</div>`);
 	let $bars = $(`<div class='item-body-container days'></div>`)
-							.append(this._inputs.reduceBars)
-							.append(this._inputs.additionBars)
-							.append(this._inputs.addBars)
-							.append(`<span class='font-simsun'>天</span>`);
+							.append($(`<div class="inputs-wrapper"></div>`).append(this._inputs.reduceBars).append(this._inputs.additionBars).append(this._inputs.addBars))
+							.append(`<span class='font-simsun'>根</span>`);
 	this._$wrapper.append($bars);
 
 	//选择时间
-	this._$wrapper.append(`<div class='item-title font-simsun'>选择时间</div>`);
+	let startDateDoms = $('<div>').addClass('inputs-groups').append($('<div>').addClass('inputs-wrapper').append(this._inputs.startDate).append(`<span class='date-icon fa fa-calendar-o'></span>`))
+																													.append($(`<div class="times">`).append(hour0).append(`<span>:</span>`).append(minute0).append(`<span>:</span>`).append(second0));
+																													
+	let endDateDoms = $('<div>').addClass('inputs-groups').append($('<div>').addClass('inputs-wrapper').append(this._inputs.endDate).append(`<span class='date-icon fa fa-calendar-o'></span>`))
+																													.append($(`<div class="times">`).append(hour1).append(`<span>:</span>`).append(minute1).append(`<span>:</span>`).append(second1));
+
+	this._$wrapper.append(`<div class='item-title font-simsun'>搜索时间范围</div>`);
 	let $date = $(`<div class='item-body-container date'></div>`)
-							.append(this._inputs.startDate)
-							.append(`<span class='date-icon fa fa-calendar-o'></span>`)
+							.append(startDateDoms)
 							.append(`<span class='zhi'>至</span>`)
-							.append(this._inputs.endDate)
-							.append(`<span class='date-icon fa fa-calendar-o'></span>`);
+							.append(endDateDoms);
 
 	this._$wrapper.append($date);
 
 	//标的类型
-	this._$wrapper.append(`<div class='item-title font-simsun'>标的类型</div>`);
-	let $sidType = $(`<div class='item-body-container sid'></div>`)
+	this._$wrapper.append(`<div class='item-title font-simsun hide'>标的类型</div>`);
+	let $sidType = $(`<div class='item-body-container sid hide'></div>`)
 									.append(this._inputs.typeStock)
 									.append(this._inputs.typeFuture);
 	this._$wrapper.append($sidType);
@@ -73,11 +112,13 @@ ConfigEditor.prototype._initActions = function() {
 	let searchConfig = this._config;
 	$(this._inputs.startDate).datepicker(datePickerOptions).on('hide', (e) => { 
 		let dateStr = e.format();
-		searchConfig.dateRange[0] = dateStr;
+		searchConfig.dateRange[0].date = dateStr;
+		this.onEdit();
 	});
 	$(this._inputs.endDate).datepicker(datePickerOptions).on('hide', (e) => { 
 		let dateStr = e.format();
-		searchConfig.dateRange[1] = dateStr;
+		searchConfig.dateRange[1].date = dateStr;
+		this.onEdit();
 	});
 	
 	//init sid type
@@ -88,6 +129,19 @@ ConfigEditor.prototype._initActions = function() {
 	this._inputs.reduceBars.on('click', this._clickReduceBars.bind(this));
 	this._inputs.addBars.on('click', this._clickAddBars.bind(this));
 	this._inputs.additionBars.on('input', this._changeBars.bind(this));
+
+	this._inputs.startTime.hour.on('input', this._changeTime.bind(this, 0, 'hour'));
+	this._inputs.startTime.minute.on('input', this._changeTime.bind(this, 0, 'minute'));
+	this._inputs.startTime.second.on('input', this._changeTime.bind(this, 0, 'second'));
+	this._inputs.endTime.hour.on('input', this._changeTime.bind(this, 1, 'hour'));
+	this._inputs.endTime.minute.on('input', this._changeTime.bind(this, 1, 'minute'));
+	this._inputs.endTime.second.on('input', this._changeTime.bind(this, 1, 'second'));
+}
+
+ConfigEditor.prototype._changeTime = function(index, name, e) {
+	let value = e.target.value || '0';
+	this._config.dateRange[index][name] = value;
+	this.onEdit()
 }
 
 ConfigEditor.prototype._clickStock = function(e) {
@@ -105,21 +159,32 @@ ConfigEditor.prototype._clickFuture = function(e) {
 ConfigEditor.prototype._clickReduceBars = function(e) {
 	if(this._config.additionDate.value > 1) this._config.additionDate.value -= 1;
 	this.updateBars();
+	this.onEdit();
 }
 
 ConfigEditor.prototype._clickAddBars = function(e) {
 	this._config.additionDate.value += 1;
 	this.updateBars();
+	this.onEdit();
 }
 
 ConfigEditor.prototype._changeBars = function(e) {
 	let val = $(e.target).val();
 	this._config.additionDate.value = +val;
 	this.updateBars();
+	this.onEdit();
 }
 
 ConfigEditor.prototype.updateBars = function() {
 	this._inputs.additionBars.val(this._config.additionDate.value);
+}
+
+ConfigEditor.prototype.onEdit = function(handle) {
+	if(handle) {
+		this._onEdit = handle;
+	}else {
+		this._onEdit && this._onEdit();
+	}
 }
 
 module.exports = ConfigEditor;

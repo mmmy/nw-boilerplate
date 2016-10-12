@@ -3,14 +3,15 @@ import React from 'react';
 window.$ = require('jquery');
 
 let tabsArr = [
-	{title:'ksprediction',component:'./component/ksprediction'},
-	{title:'searchresult',component:'./component/searchresult'},
-	{title:'heatmap',component:'./component/heatmap'},
+	// {title:'waves',component:'./component/waves'},
+	// {title:'kPrediction',component:'./component/kPrediction'},
 	{title:'prediction',component:'./component/prediction'},
-	{title:'chart',component:'./component/chart'},
-	{title:'transition',component:'./component/transition'},
-	{title:'waves',component:'./component/waves'},
-	{title:'config',component:'./component/configModal'},
+	// {title:'ksprediction',component:'./component/ksprediction'},
+	// {title:'searchresult',component:'./component/searchresult'},
+	// {title:'heatmap',component:'./component/heatmap'},
+	// {title:'chart',component:'./component/chart'},
+	// {title:'transition',component:'./component/transition'},
+	// {title:'config',component:'./component/configModal'},
 	];
 
 

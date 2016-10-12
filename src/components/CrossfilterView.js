@@ -16,7 +16,7 @@ import DC from 'dc';
 import classnames from 'classnames';
 import _ from 'underscore';
 import lodash from 'lodash';
-import { setScatters, setPieCollection, setCountBars } from '../cache/crossfilterDom';
+import { setScatters, setPieCollection, setCountBars, getPieSlice } from '../cache/crossfilterDom';
 
 import { filterActions } from '../flux/actions';
 import store from '../store';
@@ -394,7 +394,7 @@ resizeChart1() {
 	    		</div>
 		    </div>
 		    <div className="dc-chart-row transition-all transition-ease-in-out transition-duration3" ref='yield_count_chart_wrapper'>
-		    		<strong>{/*toggleBtn3*/}收益率统计{yiledBtns}</strong>
+		    		<strong>{/*toggleBtn3*/}涨跌幅度统计{yiledBtns}</strong>
 		    		<div ref='yield_count_chart' className="yield-count-chart"></div>
 		    </div>
 		    {/*<div className="dc-chart-row" ref='dc_chart_row_2'>
@@ -592,14 +592,14 @@ resizeChart1() {
 		yieldDateScatterChart
 			.width(width)
 			.height(height)
-			.margins({top:5, right:20, bottom:25, left:45})
+			.margins({top:5, right:5, bottom:25, left:40})
 		    .x(d3.scale.linear().domain([this.timeRange[0]-timeOffset, this.timeRange[1]+timeOffset]))
 		    .y(d3.scale.linear().domain(this.yield100Range))  //设置为50的整数倍,上下延长50
 		    //.yAxisLabel("y")
 		    // .xAxisLabel("x")
 		    //.clipPadding(16)
 				.transitionDuration(transitionDuration)
-		    .colors('#757575')
+		    .colors('#555')
 		    //.colors('rgba(117, 117, 117, 1)')
 		    .symbolSize(8) //width / 50
 		    .excludedSize(8)
@@ -683,15 +683,27 @@ resizeChart1() {
 		this.positionBubbleChart = positionBubbleChart;
 	}
 
-
+	triggerActiveHover() {
+		let active = store.getState().active;
+		let industry = active.industry;
+		let matchPie = getPieSlice(industry);
+		let piePath = matchPie && matchPie.firstChild;// && matchPie.lastChild;
+		console.assert(piePath, 'piePath do not exist!', industry);
+		if(piePath) {
+			// console.log('fuck hover',matchPie);
+			let color = $.keyStone.configDefault.brownRed || '#b61c15';
+			piePath.style.fill = '';
+			matchPie.dispatchEvent(new window.MouseEvent('mouseenter'));
+		}
+	}
 	//显示行业百分比信息
-	setIndustryInfo(show = true, event) {
-		//console.log(event);
+	setIndustryInfo(showHover = true, event) {
 
-		if(!show) {
+		if(!showHover) {
 			this.refs.industry_percent.innerHTML = '';
 			this.refs.industry_name.innerHTML = '';
 			$(this.refs.industry_percent.parentNode).hide();
+			this.triggerActiveHover();
 			return;
 		}
 
@@ -743,7 +755,7 @@ resizeChart1() {
 			.drawPaths(false)
 			//.colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
 			//.colors(['#0f0'])
-			.linearColors(['#555555','#dadada'])
+			.linearColors(['#313131','#dadada'])
 			//.linearColors(['#ddd','#333'])
 			.colorDomain([0, this.industryGroup.size() - 1])
 			.minAngleForLabel(30)
@@ -770,6 +782,9 @@ resizeChart1() {
 			let state = store.getState();
 			let pattern = state.patterns.rawData[state.active.id];
 			setPieCollection(pieSlices[0], pattern && pattern.industry);
+			
+			that.triggerActiveHover();
+
 		});
 		//industryPieChart.on('hover', (e) => { console.log(e); })
 		this.industryPieChart = industryPieChart;

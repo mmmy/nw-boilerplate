@@ -3,10 +3,13 @@ import * as types from '../constants/ActionTypes';
 const initialState = {
   id: 0,
   symbol: null,
+  metaData: null,
   dateStart: null,
   dateEnd: null,
+  dateLast: null,
   similarity: null,
-  yieldRate: null
+  yieldRate: null,
+  industry: ''
 };
 
 export default function active(state = initialState, action) {
@@ -18,15 +21,18 @@ export default function active(state = initialState, action) {
       let { active } = action;
       let { id } = active;
       if (id !== state.id){
-        let { symbol, dateStart, dateEnd, similarity, yieldRate } = active;
+        let { symbol, dateStart, dateEnd, similarity, yieldRate, industry, metaData, dateLast } = active;
         return {
         	...state,
         	id: id,
           symbol: symbol,
+          metaData: metaData,
           dateStart: dateStart,
           dateEnd: dateEnd,
           similarity: similarity,
-          yieldRate: yieldRate
+          yieldRate: yieldRate,
+          industry: industry,
+          dateLast: dateLast
         };
       }
       return state;
@@ -36,16 +42,20 @@ export default function active(state = initialState, action) {
       if (Object.keys(pattern0).length === 0 && pattern0.constructor === Object) {
         return state;
       } else {
-        let { symbol, begin, end, similarity } = pattern0;
+        let { symbol, begin, end, similarity, industry, metaData, lastDate } = pattern0;
         let yieldRate = pattern0.yield;
+        let dateLast = lastDate.time;
         return {
           ...state,
           id: 0,
           symbol: symbol,
+          metaData: metaData,
           dateStart: begin,
           dateEnd: end,
           similarity: similarity,
-          yieldRate: yieldRate
+          yieldRate: yieldRate,
+          industry: industry,
+          dateLast: dateLast
         };
       }
 

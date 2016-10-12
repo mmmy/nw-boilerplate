@@ -3,7 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var assert = require('assert');
-var _BASEPATH = './Cache'; 
+var _BASEPATH = '../Cache'; 
 var _Cache = {};
 var _mTime = {};
 var _limitTime = 3600 * 2 * 1000;
@@ -33,6 +33,19 @@ let isLegal = (_filename) => {
     if (new Date() - _mTime[_filename] <= _limitTime) {
       return true;
     }
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
+}
+
+let isExist = (_filename) => {
+  assert(typeof(_filename) == 'string', 'isExist arguments error');
+  var _cacheFilePath = path.join(_BASEPATH, _filename+'.json');
+
+  try {
+    if (fs.existsSync(_cacheFilePath)) 
+      return true;
   } catch (e) {
     console.log(e);
   }
@@ -72,6 +85,7 @@ let setToFile = (result, _filename) => {
 
 module.exports = {
   isLegal,
+  isExist,
   getFromFile,
   setToFile
 };

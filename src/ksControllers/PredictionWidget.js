@@ -1,4 +1,5 @@
 
+//详情左上角预测
 import painter from './painter';
 import linePainter from './linePainter';
 
@@ -37,10 +38,12 @@ let PredictionWidget = function(dom, config){
 	this._linesYOffset = 0;
 	this._activeLine = 0;
 
+	this._cursorAtIndex = -1;
+
 	this._showRange = Boolean(config.showRange);
 	this._slient = Boolean(config.slient);
 	let rate = parseFloat(config.klineScaleRate);
-	this._klineScaleRate = isNaN(rate) ? 2.8 : rate;
+	this._klineScaleRate = isNaN(rate) ? 1.5 : rate;
 
 	this._klineOption = {
 		yMin: null,
@@ -57,7 +60,7 @@ let PredictionWidget = function(dom, config){
 		emptyLeftLen: 10,
 		activeIndex: 0,
 		lineColor: 'rgba(200,200,200,0.5)',
-		activeColor: '#862020',
+		activeColor: $.keyStone.configDefault.brownRed || '#862020',
 		visibilitys: null
 	};
 
@@ -139,6 +142,7 @@ PredictionWidget.prototype._mouseLeave = function(e){
 PredictionWidget.prototype.resetState = function(){
 	this._clickHitTest = HITTEST.NONE;
 	this._linesYOffset = 0;
+	this._cursorAtIndex = -1;
 }
 
 PredictionWidget.prototype.setCursor = function(cursor){
@@ -184,6 +188,8 @@ PredictionWidget.prototype.updateHover = function(x, y){
 		this._onHoverKline && this._onHoverKline(this._hoverKlineIndex, hoverData);
 		this.update();
 	}
+	//记录当前鼠标在bar的位置
+	this._cursorAtIndex = pointToIndex(x, y);
 }
 
 PredictionWidget.prototype._updateKlineOption = function(){
@@ -199,7 +205,7 @@ PredictionWidget.prototype._updateKlineOption = function(){
 
 	var min = Math.min.apply(null, lowArr);
   var max = Math.max.apply(null, highArr);
-  var lastClosePrice = this._kline.length>0 && this._kline[len - 1][1];
+  var lastClosePrice = this._kline.length>0 && this._kline[len - 1][2];
   var offset = Math.max(max - lastClosePrice, lastClosePrice - min);
 
   offset *= this._klineScaleRate;
@@ -337,6 +343,33 @@ PredictionWidget.prototype.onHoverKline = function(handle){
 
 PredictionWidget.prototype.onScaleLines = function(handle){
 	this._onScaleLines = handle;
+}
+
+PredictionWidget.prototype.isCursorOverBar = function() {
+	return this._cursorAtIndex >= 0;
+}
+
+PredictionWidget.prototype.getHoverOCLH = function() {
+	let OCLH = this._kline[this._hoverKlineIndex] || [];
+	return OCLH.slice(-4);
+}
+PredictionWidget.prototype.getHoverIndex = function() {
+	return this._hoverKlineIndex;
+}
+//外部设置 hoverKlineIndex
+PredictionWidget.prototype.setHoverIndex = function(index){
+	this._hoverKlineIndex = index < this._kline.length ? index : -1;
+	this.update();
+	return this.getHoverTooltipPosition();
+}
+//获取hoverKlineIndex所在处的k线tooltip的位置
+PredictionWidget.prototype.getHoverTooltipPosition = function() {
+	let {indexToPoint } = this._drawKlineInfo;
+	if(indexToPoint && (this._hoverKlineIndex < this._kline.length) && (this._hoverKlineIndex > -1)) {
+		let {x, y} = indexToPoint(this._hoverKlineIndex);
+		return {x, y};
+	}
+	return {x:-1000, y:-1};
 }
 
 module.exports = PredictionWidget;

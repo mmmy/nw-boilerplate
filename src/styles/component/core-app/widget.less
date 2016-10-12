@@ -79,8 +79,8 @@
 	height: 480px;
 	z-index: 10001;
 	background-color: #fff;
-	box-shadow: 0 0 15px 0 #aaa;
-
+	border-radius: 5px;
+	.modal-box-shadow();
 	.close-icon {
 		float: right;
 		//display: inline-block;
@@ -130,11 +130,11 @@
 			width: 160px;
 			font-size: 12px;
 			padding: 6px;
-			background-color: @config-modal-button-background-color;
+			color: #fff;
+			background-color: @brown-red;
 			border-radius: 2px;
 			&:hover {
-				background-color: #fff;
-				box-shadow: 0 3px 10px 0 #eee;
+				.ks-button-hover();
 			}
 		}
 		.info-container {
@@ -227,7 +227,7 @@
 			outline: none;
 			width: 100%;
 			font-size: 17px;
-			background-color: @config-modal-button-background-color;
+			background-color: @brown-red;
 			padding: 8px;
 			border-radius: 2px;
 			&:hover {
@@ -308,7 +308,8 @@
 	input[type='text'], input[type='password'] {
 		width: 100%;
 		height: 36px;
-		border: none;
+		border: 1px solid #eee;
+		border-radius: 2px;
 		outline: none;
 		// -webkit-app-region: no-drag;
 		// border-bottom: 1px solid @ks-color-gray-9;
@@ -316,12 +317,13 @@
 		padding: 5px 10px;
 		z-index: 1;
 		&:focus {
-			background-color: #fff;
-			box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+			border-color: #ccc;
+			// background-color: #fff;
+			// box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
 		}
 		margin-bottom: 10px;
 		position: relative;
-		background-color: #F1F1F1;
+		background-color: #fff;
 	}
 	.user-name {
 		margin-top: 80px;
@@ -330,18 +332,22 @@
 			position: absolute;
 			width: 100%;
 			height: 200px;
-			top: 36px;
+			top: 38px;
 			background-color: #fff;
 			border: 1px solid #eee;
 			z-index: 2;
+			border-radius: 2px;
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 			.user-name-item {
 				list-style: none;
 				height: 30px;
+				line-height: 30px;
 				// background-color: red;
 				font-size: 14px;
 				padding-left: 10px;
 				&:hover {
-					background-color: #eee;
+					background-color: @brown-red;
+					color: #fff;
 					.delete-user {
 						display: block;
 					}
@@ -349,13 +355,16 @@
 				.delete-user{
 					float: right;
 					display: none;
-					width: 20px;
-					height: 20px;
-					margin-top: 5px;
-					margin-right: 10px;
-					background-image: url(@icons_url);
+					width: 30px;
+					height: 30px;
+					// margin-top: 5px;
+					// margin-right: 10px;
 					background-color: transparent;
-					.icon_position(3,8,2,5px,5px);
+					background-image: url(@icons_url);
+					.icon_position(4,8,2);
+					&:hover {
+						background-color: @brown-red-dark;
+					}
 				}
 			}
 		}
@@ -387,7 +396,7 @@
 		.autologin-button {
 		  // -webkit-app-region: no-drag;
 		  &.checked {
-		  	color: @brown-red-light;
+		  	color: @brown-red;
 		  }
 		}
 		.icon-not-check {
@@ -413,12 +422,12 @@
 			height: 36px;
 			font-size: 16px;
 			color: #fff;
-			background-color: @brown-red;//@config-modal-button-background-color;
+			background-color: @brown-red;
 			padding: 2px;
 			letter-spacing: 10px;
 			border-radius: 2px;
 			&:hover {
-				background-color: lighten(@brown-red, 10%);
+				background-color: @brown-red-dark;//lighten(@brown-red, 10%);
 				// box-shadow: 0 3px 10px 0 #eee;
 			}
 			.fa-spinner {
@@ -473,12 +482,27 @@
 	.ks-check{
 		right: 30px;
 		background-image: url(@icons_url);
-		.icon_position(2; 4; 1);
+		.icon_position(2; 5; 3);
+		display: inline-block;
+		&:hover {
+			.icon_position(0,5,3,0,1px);
+		}
+		&.ks-disable {
+			.icon_position(2; 5; 3);
+		}
 	}
 	.ks-delete {
 		right: 0;
 		background-image: url(@icons_url);
-		.icon_position(2; 5; 1);
+		.icon_position(2; 7; 0);
+		display: inline-block;
+		&:hover {
+			.icon_position(0,7,0);
+		}
+	}
+	&.border {
+		border: 1px solid #eee;
+		border-radius: 2px;
 	}
 }
 
@@ -490,21 +514,76 @@
 	transform: translate(-50%,-50%);
 	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 	border-radius: 2px;
-	background-color: #fff;
-	padding: 10px 20px;
+	background-color: #000;
+	padding: 0 20px;
 	.success-icon {
 		float: left;
-		width: 50px;
-		height: 50px;
+		width: 30px;
+		height: 30px;
 		background-image: url(@icons_url);
-		.icon_position(5, 0, 0, 5px, -4px);
+		.icon_position(4, 5, 3);
 		vertical-align: middle;
+		margin: 10px;
 	}
 	.success-message {
 		float: left;
 		vertical-align: middle;
-		font-size: 20px;
-		margin-top: 10px;
-		margin-left: 10px;
+		color: #fff;
+		font-size: 18px;
+		line-height: 30px;
+		margin: 10px 20px 10px 0;
+	}
+}
+
+.full-waiting-overlay{
+	position: fixed;
+	z-index: 151;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+	text-align: center;
+
+	.keystone-icon{
+		display: inline-block;
+		width: 56px;
+		height: 40px;
+		background-image: url(@icons_url);
+		background-position: 0px 0px;
+	}
+}
+
+.OCLH-tooltip-container {
+	position: absolute;
+	border-radius: 5px;
+	background-color: rgba(0, 0, 0, 0.8);
+	padding: 5px;
+	padding-right: 7px;
+	// transition: left .05s linear, top .05s linear;
+	.oclh-item {
+		font-size: 12px;
+		line-height: 1.6;
+	}
+	.label{
+
+	}
+	.value{
+		color: #fff;
+		font-size: 9px;
+	}
+}
+
+//tooltip
+.ks-tooltip-container {
+	position: fixed;
+	background-color: #000;
+	color: #fff;
+	font-size: 12px;
+	border-radius: 2px;
+	overflow: hidden;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	.tooltip-describe{
+		line-height: 1;
+		margin: 5px 8px;
+		display: inline-block;
 	}
 }

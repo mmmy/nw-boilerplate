@@ -49,13 +49,13 @@
 		margin: auto;
 		background: url(@logo_url_png) no-repeat;
 		background-position: 43% 40%;
-		background-size: 34px;//3rem;
+		background-size: 0px;//3rem;
 
 		//border: 1px solid @ks-color-gray-9;
 		// box-shadow: 0 0 20px 0 rgba(204, 204, 204, 0.44);
 		padding: 0px 8px 5px 8px;
 
-		background-color: white;
+		// background-color: white;
 		color: #000;//@lulu-gary2;
 		&:hover {
 			// box-shadow: 0 0 20px 0 rgba(204, 204, 204, 0.7);
@@ -66,7 +66,7 @@
 		}
 		
 		.title{
-			margin-left: 51%;
+			margin-left: 80px;//40%;
 			//padding: 5px;
 			font-size: 16px;//1.3rem;
 		}
@@ -89,6 +89,7 @@
 			padding-left: 10px;
 			padding-right: 10px;
 			border-radius: 2px; 
+			background-color: #fff;
 			// margin-top: 1%;
 			color:@lulu-black;
 			//opacity: 1;
@@ -127,6 +128,10 @@
 			border-color: transparent;
 			box-shadow: none;
 			background-color: transparent;
+			background-size: 34px;//3rem;
+			.title{
+				margin-left: 51%;
+			}
 		}
 	}
 }
@@ -142,9 +147,13 @@
 	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 	// border-radius: 3px;
 	overflow: hidden;
+	background-color: #f8f8f8;
 	// overflow-x: scroll;
 	// overflow-y: hidden;
 	.top-red-line();
+	&.white {
+		background-color: #fff;
+	}
 	//padding: 20px 5px 10px 5px;
 	//border: 1px solid red;
 	//margin: 10px 5px 5px 5px;
@@ -157,8 +166,8 @@
   top: 0;
   box-shadow: none;
 	.inner-searchreport{
-		top: 10px;//2.2%;
-		height: calc(~"100% - 10px");//calc(~'97.8%');
+		top: 0;//10px;//2.2%;
+		height: calc(~"100%");//calc(~'97.8%');
 	}
 }
 
@@ -171,10 +180,15 @@
 .search-report-wrapper {
 	position: absolute;
 	width: 100%;
-	height: calc(~"100% - 50px");
-	top: 40px;
-	background-color: #fff;
+	height: calc(~"100% - 60px");
+	top: 50px;
+	background-color: #f8f8f8;
 	z-index: 2;
+	&.white {
+		background-color: #fff;
+		height: calc(~"100% - 50px");
+		top: 40px;
+	}
 	//.transition-delay(.2s);
 	&.small {
 		// height: calc(~"100% - 65px - 20px");
@@ -194,6 +208,7 @@
 		box-shadow:  0 0 0 20px #fff;
 		img {
 			// width: 130px;
+			height: 100px;
 			margin-right: 20px;
 		}
 		h2{
@@ -208,7 +223,7 @@
 			outline: none;
 			border: none;
 			background-color: transparent;
-			color: @lulu-red1;
+			color: @brown-red;
 		}
 	}
 }

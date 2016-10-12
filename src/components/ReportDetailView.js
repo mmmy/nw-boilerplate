@@ -3,6 +3,12 @@ import classNames from 'classnames';
 import statisticKline from './utils/statisticKline';
 import { getDecimalForStatistic } from '../shared/storeHelper';
 
+let stopPropagationHelper =(e) => {
+	if(e && e.stopPropagation) {
+		e.stopPropagation();
+	}
+};
+
 const propTypes = {
 	crossFilter: PropTypes.object.isRequired,
 	//report: PropTypes.object.isRequired,
@@ -13,7 +19,7 @@ const defaultProps = {
   	fullView: true
 };
 
-const TYPES = ['收益','上涨','下跌'];
+const TYPES = ['涨跌','上涨','下跌'];
 
 class ReportDetailView extends React.Component {
 
@@ -113,6 +119,7 @@ class ReportDetailView extends React.Component {
 			'ks-show': fullView
 		});
 
+		let iconClassName = classNames('icon', {up: this.state.showSelect});
 
 		return (<div className={className}>
 
@@ -154,15 +161,15 @@ class ReportDetailView extends React.Component {
 
 			</div>*/}
 			<div className='header-container' tabIndex='0' ref='header_container'>
-				<span className={titleClassName}>数据统计</span>
+				<span className={titleClassName}>历史指标统计</span>
 				<span className='select-container'>
-					<button className='statistic-type-select font-simsun' onFocus={this.handleTypeButtonFocus.bind(this)} onBlur={this.handleTypeButtonBlur.bind(this)}>
+					<button ref='select_btn' className='statistic-type-select font-simsun' onMouseDown={this.handleTypeMouseDown.bind(this)} onFocus={this.handleTypeButtonFocus.bind(this)} onBlur={this.handleTypeButtonBlur.bind(this)}>
 						<span className='label-value'>{this.state.type}</span>
-						<span className='icon'></span>
+						<span className={iconClassName}></span>
 						{this.state.showSelect ? 
 							<div className='select-dropdown'>
 								{TYPES.map((type,i)=>{
-									return <div className='option' onClick={this.handleTypeChange.bind(this)}>{type}</div>
+									return <div className='option' onMouseDown={stopPropagationHelper} onClick={this.handleTypeChange.bind(this)}>{type}</div>
 								})}
 							</div> 
 							: 
@@ -187,6 +194,15 @@ class ReportDetailView extends React.Component {
 		this.refs.header_container.focus();
 	}
 
+	handleTypeMouseDown(e) {
+		if(this.state.showSelect){
+			e.preventDefault();
+			e.stopPropagation();
+			this.refs.select_btn.blur();
+			// this.setState({showSelect:false});
+		}
+	}
+
 	handleTypeButtonFocus() {
 		this.setState({showSelect:true});
 	}
@@ -204,22 +220,23 @@ class ReportDetailView extends React.Component {
 		if(this.state.type == TYPES[0]) {
 			dataArr = [
 									{name:'上涨比例', value:upPercent},
-									{name:'收益中位数', value:median},
-									{name:'收益平均数', value:mean},
-									{name:'上涨收益平均数', value:up.mean},
-									{name:'下跌收益平均数', value:down.mean},
+									{name:'下跌比例', value:(1-upPercent)},
+									{name:'涨跌中位数', value:median},
+									{name:'涨跌平均数', value:mean},
+									// {name:'上涨收益平均数', value:up.mean},
+									// {name:'下跌收益平均数', value:down.mean},
 								];
 		} else if(this.state.type == TYPES[1]) {
 			dataArr = [
 									{name:'上涨极值', value:up.max},
 									{name:'上涨中位数', value:up.median},
-									{name:'上涨收益平均数', value:up.mean}
+									{name:'上涨平均数', value:up.mean}
 								];
 		} else if(this.state.type == TYPES[2]) {
 			dataArr = [
 									{name:'下跌极值', value:down.min},
 									{name:'下跌中位数', value:down.median},
-									{name:'下跌收益平均数', value:down.mean}
+									{name:'下跌平均数', value:down.mean}
 								];
 		}
 		let nodes = dataArr.map(({name, value}) => {
@@ -230,10 +247,13 @@ class ReportDetailView extends React.Component {
 
 	generateDataCell(title, data, decimal, unit) {
 		decimal = decimal || 2;
+		if(title=='上涨比例' || title=='下跌比例') {
+			decimal = 1;
+		}
 		unit = unit || '%';
 		return <span className='statistic-data-cell'>
 			<div className='cell-title font-simsun'>{title}</div>
-			<div className='cell-data font-number'><span className='value'>{data.toFixed(decimal)}</span><span className='unit'>{unit}</span></div>
+			<div className='cell-data font-fangzhengcuhei'><span className='value'>{data.toFixed(decimal)}</span><span className='unit'>{unit}</span></div>
 		</span>;
 	}
 

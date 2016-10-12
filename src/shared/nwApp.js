@@ -41,6 +41,14 @@ let appSetSize = (width, height) => {
 
 };
 
+let appSetMaximumSize = (width, height) => {
+	getNwWindow().setMaximumSize(width, height);
+};
+
+let appSetMinimumSize = (width, height) => {
+	getNwWindow().setMinimumSize(width, height);
+};
+
 let appSetResizable = (resizable) => {
 	getNwWindow().setResizable(resizable);
 };
@@ -69,6 +77,8 @@ module.exports = {
 	appMinimize,
 	appClose,
 	appSetSize,
+	appSetMinimumSize,
+	appSetMaximumSize,
 	appSetResizable,
 	updateAppDragable,
 	appMoveTo,

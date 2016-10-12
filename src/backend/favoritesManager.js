@@ -4,7 +4,7 @@ import path from 'path';
 import { readFolder, dateFormatter, saveFile, deleteFile } from './utils';
 import { showSuccessMessage } from '../ksControllers/messager';
 
-const BASEPATH = './storage';
+const BASEPATH = '../storage';
 const FAVORITES = 'favorites';
 const _favoritesPath = path.join(BASEPATH, FAVORITES);
 const _defaultFilePath = path.join(BASEPATH, FAVORITES, '0.json');
@@ -67,6 +67,9 @@ let getAllDataFromStorage = () => {
 };
 
 let addNewClass = (name) => {
+	if(_getFileByName(name)) {
+		return {fileName:null, initData:null};
+	}
 	let time = new Date().getTime();
 	let fileName = time + '.json';
 	let initData = {name:name, data:[]};
@@ -138,6 +141,7 @@ let deleteOneFavorite = (name, dataObj, clean) => { //clean: bool, true: 永久�
 	name = name || _getNameByData(dataObj);
 	let fileName = _getFileByName(name);
 	let state = dataObj.state || {isTrashed:true, trashDate:null};
+	state.isTrashed = true;
 	state.trashDate = new Date();
 	dataObj.state = state;
 	let data = _favoritesData[fileName];
@@ -165,7 +169,7 @@ let recoverOneFavorite = (dataObj) => {
 	return true;
 };
 
-let updateFavorites = (name, dataObj) => {
+let updateFavorites = (name, dataObj, showMessage) => {
 	name = name || _getNameByData(dataObj);
 	try {
 		let fileName = _getFileByName(name);
@@ -174,7 +178,7 @@ let updateFavorites = (name, dataObj) => {
 		let index = dataArr.indexOf(dataObj);
 		let filePath = path.join(_favoritesPath, fileName);
 		saveFile(filePath, JSON.stringify(data));
-		showSuccessMessage('保存成功!');
+		showMessage && showSuccessMessage('保存成功!');
 		return true;
 	} catch (e) {
 		console.error(e);
@@ -193,6 +197,7 @@ let renameFavorites = (name, newName) => {
 			return false;
 		}
 		let data = _favoritesData[fileName];
+		data.name = newName;
 		let filePath = path.join(_favoritesPath, fileName);
 		saveFile(filePath, JSON.stringify(data));
 		return	true;
@@ -223,10 +228,22 @@ let getTrashedDataLength = () => {
 
 let clearTrashedFavorites = () => {
 	let favorites = getTrashedData();
-	favorites.forEach((favorite) => {
-		deleteOneFavorite(null, favorite, true);
-	});
-	return true;
+	try {
+		favorites.forEach((favorite) => {
+			deleteOneFavorite(null, favorite, true);
+		});
+		return true;
+	} catch(e) {
+		console.error(e);
+	}
+};
+
+let hasFavoriteFolder = (folderName) => {
+	let allNames = getFavoritesFolders() || [];
+	if(allNames.indexOf(folderName) > -1) {		//已有相同文件名
+		return true;
+	}
+	return false;
 };
 
 module.exports = {
@@ -243,4 +260,5 @@ module.exports = {
 	getTrashedData,
 	getTrashedDataLength,
 	clearTrashedFavorites,
+	hasFavoriteFolder
 };

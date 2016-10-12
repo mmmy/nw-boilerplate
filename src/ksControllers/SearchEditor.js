@@ -7,7 +7,8 @@ import store from '../store';
 
 function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 	this._$root = $(dom);
-	this._dataObj = dataObj;
+	this._originDataObj = dataObj;
+	this._dataObj = $.extend(true, {}, dataObj);               //copy
 	this._favoritesManager = favoritesManager;
 	this._favoritesController = favoritesController;
 	this._$main = $('<div class="main-editor"></div>');
@@ -18,6 +19,7 @@ function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 
 	this._klineEditor = null;
 	this._configEditor = null;
+	this._notSaved = false;
 
 	this._$root.append($('<div class="search-editor-wrapper"></div>').append(this._$main).append(this._$config));
 	this._init();
@@ -36,11 +38,14 @@ SearchEditor.prototype._initKlineEditor = function(){
 	this._klineEditor.onUpdateInfo(this.updateInfo.bind(this));
 	this._klineEditor.onEndDrawRange(this.handleEndDrawRange.bind(this));
 	this._klineEditor.onRemoveRange(this.handleRemoveRange.bind(this));
+	this._klineEditor.onEdit(this.setNotSaved.bind(this));
+
 	this.updateInfo(this._dataObj.kline.length);
 }
 
 SearchEditor.prototype._initConfigEditor = function() {
 	this._configEditor = new ConfigEditor(this._$config, this._dataObj.searchConfig, {symbol:this._dataObj.symbol, dateRange:this._dataObj.dateRange});
+	this._configEditor.onEdit(this.setNotSaved.bind(this));
 }
 
 SearchEditor.prototype._initMain = function() {
@@ -78,9 +83,10 @@ SearchEditor.prototype._initMain = function() {
 		C: $('<input class="OCLH-input font-arial" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexC(+event.target.value) }),
 	};
 
+	let editorToolbar = $(`<div class='kline-editor-toolbar'></div>`);
 	let searchEditorContainer = $(`<div class='kline-editor-container'></div>`);
 
-	let body = $(`<div class='body'></div>`).append(searchEditorContainer);
+	let body = $(`<div class='body'></div>`).append(editorToolbar).append(searchEditorContainer);
 
 	let OCLHInputs = $(`<span style='display:none' class='OCLH-inputs-container'></span>`)
 									.append($('<span class="input-label font-arial">O</span>')).append(this._OHLCInputs.O)
@@ -109,7 +115,17 @@ SearchEditor.prototype._initMain = function() {
 	this._$main.append(header).append(body).append(footer).append(footer).append(this._floatTools.addBars).append(this._floatTools.rangeTool);
 	this._initKlineEditor();
 	this._initConfigEditor();
+	this._initToolbar();
 };
+
+SearchEditor.prototype._initToolbar = function() {
+	let toolbarBtns = [];
+	toolbarBtns[0] = '';
+
+	for(let i=0; i<toolbarBtns.length; i++) {
+		this._$main.find('.kline-editor-toolbar').append(toolbarBtns[i]);
+	}
+}
 
 SearchEditor.prototype.updateOHLC = function(O, H, L, C) {
 	this._OHLC.O.text(O.toFixed(2)).css('color', '');
@@ -254,7 +270,7 @@ SearchEditor.prototype.handleEndDrawRange = function(range) { //
 SearchEditor.prototype.handleRemoveRange = function() {
 	this._floatTools.rangeTool.hide();
 }
-
+//修改名字
 SearchEditor.prototype._handleRename = function(e) {
 	// this._favoritesManager.updateFavorites(this._dataObj)
 	let name = $(e.target).siblings('input').val() || '';
@@ -266,6 +282,23 @@ SearchEditor.prototype._handleRename = function(e) {
 		this._favoritesManager.updateFavorites(folderName, this._dataObj);
 	}
 	$(e.target).closest('.rename-container').hide();
+}
+
+SearchEditor.prototype.setNotSaved = function() {
+	this._notSaved = true;	
+}
+
+SearchEditor.prototype.setSaved = function() {
+	this._notSaved = false;
+}
+
+SearchEditor.prototype.isSaved = function() {
+	return !this._notSaved;
+}
+
+SearchEditor.prototype.save = function() {
+	$.extend(true, this._originDataObj, this._dataObj);
+	this._favoritesController.updateFavorites(this._originDataObj);
 }
 
 SearchEditor.prototype.dispose = function() {

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import LoginSmall from '../components/LoginSmall';
+// import LoginSmall from '../components/LoginSmall';
 import {connect} from 'react-redux';
 import {accountActions} from '../flux/actions';
 import { removeAccount } from '../backend/localStorage';
@@ -65,7 +65,7 @@ class Header extends React.Component {
 			if(newProps.account.username === '') {
 				this.setState({showLogin: true});
 			}else{
-				this.refs.login_panel.startClose();
+				// this.refs.login_panel.startClose();
 			}
 			return false;
 		}
@@ -78,7 +78,7 @@ class Header extends React.Component {
 	
 	renderToolbar() {
 		let {account} = this.props;
-		let userPanel = this.state.showUserPanel ? <div className='user-panel-container'><div>{account.username}</div><div onClick={this.handleLogout.bind(this)}>登出</div></div> : '';
+		let userPanel = this.state.showUserPanel ? <div className='user-panel-container'><div className='username'>{account.username}</div><div className="logout-btn" onClick={this.handleLogout.bind(this)}>登出</div></div> : '';
 
 		let toolbar = <div className='header-toolbar-container flex-center'>
 			<button className='account-button' onBlur={this.hideUserPanel.bind(this)} onClick={this.showLoginPanel.bind(this)}>{userPanel}</button>
@@ -103,7 +103,7 @@ class Header extends React.Component {
 			<span className='header-icon'></span>
 			{this.renderToolbar()}
 			{/*this.renderAppTool()*/}
-			{showLogin ? <LoginSmall ref='login_panel' onLogined={this.handleLogined.bind(this)} close={this.closeLogModal.bind(this)}/> : '' }
+			{/*showLogin ? <LoginSmall ref='login_panel' onLogined={this.handleLogined.bind(this)} close={this.closeLogModal.bind(this)}/> : '' */}
 		</div>;
 	}
 
@@ -124,7 +124,7 @@ class Header extends React.Component {
 	handleLogined(username, password, autoLogin, cb) {
 		let {dispatch} = this.props;
 		dispatch(accountActions.setUser(username, password, autoLogin));
-		$('.container-toggle').css('z-index', '');
+		// $('.container-toggle').css('z-index', '');
 		cb && cb();
 	}
 
@@ -136,6 +136,8 @@ class Header extends React.Component {
 		let {dispatch} = this.props;
 		removeAccount();
 		dispatch(accountActions.setUser('', '', false));
+		let login = require('../login');
+		login.showLogin(this.handleLogined.bind(this));
 		// let patterns = {
 		// 	rawData: [],
 		// 	closePirce: [],
