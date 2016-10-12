@@ -61,6 +61,11 @@ class PatternContainer extends React.Component {
 	}
 
 	shouldComponentUpdate(newProps, newState){
+		//patterns 更新 那么一定刷新
+		if(newProps.patterns !== this.props.patterns) {
+			return true;
+		}
+		
 		if (newProps.filter !== this.props.filter) {
 			let newFilter = newProps.filter;
 			let {industrys, yieldRange, symbol, similarity, yieldDateRange} = newFilter;
