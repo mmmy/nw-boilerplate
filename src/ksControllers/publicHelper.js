@@ -46,7 +46,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 																																														favoritesController.updateFavorites(dataObj);
 																																														$target.children().remove();
 															 																														});
-	let $title = showRename ? $(`<div class='name-container'><h5>${dataObj.name || '未命名'}</h5></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('新建文件夹','自定义文件名')))
+	let $title = showRename ? $(`<div class='name-container'><h5>${dataObj.name || '未命名'}</h5></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('ks-disable','').replace('新建文件夹','自定义文件名')))
 													: $(`<h4 class='title'>另存为</h4>`);
 	$title.find('input').blur(() => { $target.focus(); });
 	$title.find('.ks-check').click(function(event) {
