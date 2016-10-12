@@ -16,8 +16,24 @@ let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H) => {
 			hY = (H - yMax) * rate + marginTop;
 	return {open:_to05(oY), close:_to05(cY), low:_to05(lY), high:_to05(hY)};
 };
-
-//options: {hoverIndex: , selectedIndex: , activeIndex: , mouse:{x}, yMin: number | '200%', yMax: ,selectedRange:[], predictionBars:, baseBarRange:[], symbolName:, symbolDescribe:, overflowPane:上界限渐变, overfowPaneBottom:}
+/**
+options: {
+	padding: {left: number, right: number},
+	hoverIndex: , 
+	selectedIndex: , 
+	activeIndex: , 
+	mouse:{x}, 
+	yMin: number | '200%', 
+	yMax: ,
+	selectedRange:[], 
+	predictionBars:, 
+	baseBarRange:[], 
+	symbolName:, 
+	symbolDescribe:, 
+	overflowPane:上界限渐变, 
+	overfowPaneBottom:
+}
+**/
 let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C, L,H]
 	let ctx = null;
 	let d1 = new Date();
@@ -62,11 +78,11 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 
 	let len = kline.length;
 
-	let margin = options && options.margin;
-	let top = margin && margin.top || 0,
-			left = margin && margin.left || 0,
-			right = margin && margin.right || 0,
-			bottom = margin && margin.bottom || 0;
+	let padding = options && options.padding;
+	let top = padding && padding.top || 0,
+			left = padding && padding.left || 0,
+			right = padding && padding.right || 0,
+			bottom = padding && padding.bottom || 0;
 
 	let viewYheight = height - top -bottom;
 	let klineXSpace = (width - left - right) / (len + predictionBars);
@@ -250,8 +266,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.setLineDash([2, 2]);
 		ctx.lineDashOffset = 1;
 		ctx.strokeStyle = '#aaa';
-		ctx.moveTo(left, hoverY);
-		ctx.lineTo(width - right, hoverY);
+		ctx.moveTo(0, hoverY);
+		ctx.lineTo(width, hoverY);
 		ctx.stroke();
 	}
 	//drawRangeRect
@@ -472,26 +488,33 @@ let drawAxisY = (canvas, priceRange, options) => {
 		ctx.fillText(priceAtHover.toFixed(2), width/2, hoverY+5);
 	}
 };
-
+/*
+	options: {
+		hoverIndex: ,
+		selectedIndex: ,
+		padding: {left:,right:,top:,bottom},
+	}
+ */
 let drawAxisX = (canvas, len, options) => {
 	len = parseInt(len) || 0;
 	if(!len) {
 		throw 'drawAxisX len is 0';
 	}
 	betterCanvasSize(canvas);
+	//options
+	let hoverIndex = options && options.hoverIndex;
+	let selectedIndex = options && options.selectedIndex;
+	let padding = options && options.padding || {left:0, right:0, top:0, bottom:0};
+	
 	let ctx = canvas.getContext('2d');
 	let width = canvas.width;
 	let height = canvas.height;
 
-	let spaceX = width / len;
+	let spaceX = (width - padding.left - padding.right) / len;
 	let ratio = getCanvasPixRatio();
 
 	let minSpaceX = 20*ratio;
 	let interval = Math.ceil(minSpaceX / spaceX);  //min is 1;
-
-	//options
-	let hoverIndex = options && options.hoverIndex;
-	let selectedIndex = options && options.selectedIndex;
 
 	//paint
 	ctx.clearRect(0,0, width, height);
@@ -499,19 +522,19 @@ let drawAxisX = (canvas, len, options) => {
 	// ctx.fillRect(0, 0, width, height);
 	ctx.font = `${10*ratio}px Arial`;
 	ctx.textAlign = 'center';
-	for(let i=interval-1; i<len; i+=interval) {
+	for(let i=0; i<len; i+=interval) {
 		ctx.strokeStyle = '#000';
 		ctx.fillStyle = '#000';
-		let center = i*spaceX + spaceX/2;
+		let center = padding.left + i*spaceX + spaceX/2;
 		ctx.fillText(i+1+'', center, 15);
 	}
 
 	//selectedIndex
 	if(selectedIndex >=0) {
 		let rectW = 50;
-		let center = selectedIndex*spaceX + spaceX/2;
+		let center = padding.left + selectedIndex*spaceX + spaceX/2;
 		center = _toInt(center);
-		ctx.fillStyle = '#BD3035';
+		ctx.fillStyle = '#8d151b';
 		ctx.fillRect(center - rectW/2, 0, rectW, height);
 		ctx.fillStyle = '#fff';
 		ctx.fillText(selectedIndex+1+'', center, 15);
@@ -520,7 +543,7 @@ let drawAxisX = (canvas, len, options) => {
 	//hoverIndex
 	if(hoverIndex>=0) {
 		let rectW = 50 * ratio;
-		let center = hoverIndex*spaceX + spaceX/2;
+		let center = padding.left + hoverIndex*spaceX + spaceX/2;
 		center = _toInt(center);
 		ctx.fillStyle = '#222';
 		ctx.fillRect(center - rectW/2, 0, rectW, height);

@@ -25,9 +25,22 @@ let _createDetailPanel = (parentDom, editorCache, dataObj) => {
 };
 
 let _disposeDetailPanel = (parentDom, editorCache) => {
-	editorCache.dispose();
-	editorCache = null;
-	$(parentDom).find('.detail-panel').remove();
+	let isSaved = editorCache.isSaved();
+	let remove = () => {
+			editorCache.dispose();
+			editorCache = null;	
+			$(parentDom).find('.detail-panel').remove();
+	};
+	if(!isSaved) {
+		new ConfirmModal('编辑未保存, 是否保存?', '', ()=>{
+			editorCache.save();
+			remove();
+		}, ()=>{
+			remove();
+		});
+	} else {
+		remove();
+	}
 	//refresh UI
 	// _refreshFavoritesBody();
 }; 
@@ -660,6 +673,14 @@ favoritesController.clearTrashedPatterns = () => {
 
 favoritesController.hasFavoriteFolder = (folderName) => {
 	return favoritesManager.hasFavoriteFolder(folderName);
+};
+
+favoritesController.setEditorSaved = () => {
+	try {
+		_searchEditorFavorites.setSaved();
+	} catch (e) {
+		console.error(e);
+	}
 };
 
 module.exports = {

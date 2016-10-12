@@ -31,7 +31,7 @@ ConfirmModal.prototype._init = function() {
 	let yesBtn = `<button class='flat-btn button btn-yes'>是</button>`;
 	let noBtn = `<button class='flat-btn button btn-no'>否</button>`;
 
-	let footer = `<div class='footer'><span class='no-check-icon'></span>下次不再提醒</div>`;
+	let footer = this._sessionName ? `<div class='footer'><span class='no-check-icon'></span>下次不再提醒</div>` : '';
 
 	let $modal = $(`<div class='modal-confirm-container font-simsun'></div>`)
 								.append(closeBtn)
@@ -66,7 +66,7 @@ ConfirmModal.prototype._initHandle = function() {
 	this._$modal.find('.btn-no').click(function(event) {
 		/* Act on the event */
 		me._$wrapper.remove();
-		me._onNo && me.onNo();
+		me._onNo && me._onNo();
 	});
 
 	this._$modal.find('.no-check-icon').click(function(event) {

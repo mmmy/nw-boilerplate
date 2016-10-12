@@ -44,6 +44,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 																});
 	let $saveBtn = $(`<span class='flat-btn save-btn ${showSaveBtn?"":"hide"}'>保存</span>`).click((e) => { 
 																																														favoritesController.updateFavorites(dataObj);
+																																														favoritesController.setEditorSaved();
 																																														$target.children().remove();
 															 																														});
 	let $title = showRename ? $(`<div class='name-container'><h5>${dataObj.name || '未命名'}</h5></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('ks-disable','').replace('新建文件夹','自定义文件名')))

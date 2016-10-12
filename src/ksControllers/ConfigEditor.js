@@ -34,6 +34,8 @@ function ConfigEditor(dom, searchConfig, info) {
 									endTime:{hour:null,minute:null,second:null},
 								};
 
+	this._onEdit = null;
+
 	this._init();
 	this._initActions();
 }
@@ -111,10 +113,12 @@ ConfigEditor.prototype._initActions = function() {
 	$(this._inputs.startDate).datepicker(datePickerOptions).on('hide', (e) => { 
 		let dateStr = e.format();
 		searchConfig.dateRange[0].date = dateStr;
+		this.onEdit();
 	});
 	$(this._inputs.endDate).datepicker(datePickerOptions).on('hide', (e) => { 
 		let dateStr = e.format();
 		searchConfig.dateRange[1].date = dateStr;
+		this.onEdit();
 	});
 	
 	//init sid type
@@ -137,6 +141,7 @@ ConfigEditor.prototype._initActions = function() {
 ConfigEditor.prototype._changeTime = function(index, name, e) {
 	let value = e.target.value || '0';
 	this._config.dateRange[index][name] = value;
+	this.onEdit()
 }
 
 ConfigEditor.prototype._clickStock = function(e) {
@@ -154,21 +159,32 @@ ConfigEditor.prototype._clickFuture = function(e) {
 ConfigEditor.prototype._clickReduceBars = function(e) {
 	if(this._config.additionDate.value > 1) this._config.additionDate.value -= 1;
 	this.updateBars();
+	this.onEdit();
 }
 
 ConfigEditor.prototype._clickAddBars = function(e) {
 	this._config.additionDate.value += 1;
 	this.updateBars();
+	this.onEdit();
 }
 
 ConfigEditor.prototype._changeBars = function(e) {
 	let val = $(e.target).val();
 	this._config.additionDate.value = +val;
 	this.updateBars();
+	this.onEdit();
 }
 
 ConfigEditor.prototype.updateBars = function() {
 	this._inputs.additionBars.val(this._config.additionDate.value);
+}
+
+ConfigEditor.prototype.onEdit = function(handle) {
+	if(handle) {
+		this._onEdit = handle;
+	}else {
+		this._onEdit && this._onEdit();
+	}
 }
 
 module.exports = ConfigEditor;
