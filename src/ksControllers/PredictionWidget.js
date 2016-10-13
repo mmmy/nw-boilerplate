@@ -213,7 +213,7 @@ PredictionWidget.prototype._updateKlineOption = function(){
 
   this._klineOption.yMax = lastClosePrice + offset;
   this._klineOption.yMin = lastClosePrice - offset;
-  this._klineOption.predictionBars = this._predictionBars - 1;
+  this._klineOption.predictionBars = +this._predictionBars;
 }
 
 PredictionWidget.prototype._updateLinesOption = function(){
