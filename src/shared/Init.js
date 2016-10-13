@@ -32,6 +32,66 @@ let initJqueryPlugins = () => {
 			}
 		}
 	});
+
+	$.fn.extend({
+		ksDragable: function() {      //可拖动工具栏
+			var $container = $(this);
+			var _offsetX = 0;
+	    var _offsetY = 0;
+	    $container.on('mousedown', function(e){
+					var $parent = $container.parent();
+	        _offsetX = e.offsetX;
+	        _offsetY = e.offsetY;
+	        $parent.on('mousemove.ksDrag', divMove);
+	        $parent.one('mouseup', function() {
+	            $parent.off('mousemove.ksDrag');
+	        });
+	    })
+	    function divMove(e) {
+					var $parent = $container.parent();
+					var parentOffset = $parent.offset();
+	        var containerW = $container.width();
+	        var containerH = $container.height();
+	        var bodyW = $parent.width();
+	        var bodyH = $parent.height();
+	        var right = bodyW - (e.clientX - parentOffset.left) - containerW + _offsetX;
+	        var top = e.clientY - parentOffset.top - _offsetY;
+	        if(e.clientX > 0 && right > 0) {    //没有超出边界
+	            $container.css('right', right);
+	        }
+	        if(e.clientY > 50 && top > 0) {
+	            $container.css('top', top);
+	        }
+	        // $container.css({
+	        //     right: right,
+	        //     bottom: bottom
+	        // })
+	    }
+	    return this;
+		},
+		ksTooltip: function() {
+			var $this = $(this);
+			$this.on('mouseenter', function(e) {
+				let that = this;
+				let kstooltip = $(that).data().kstooltip;
+				let top = e.pageY - 12,
+						left = e.pageX + 12;
+				let $tooltip = $(`<div class="ks-tooltip-container fade"><span class="tooltip-describe">${kstooltip}</span></div>`).css({left, top});
+				clearTimeout(this._delayShowTooltip);
+				this._delayShowTooltip = setTimeout(() => {
+					$(document.body).append($tooltip);
+					$tooltip.addClass('in');
+				},200);
+			})
+			.on('mouseleave', function(e) {
+				//移除tooltip 和 延时
+				$('.ks-tooltip-container').one('transitionend',function(e){
+					$(this).remove();
+				}).removeClass('in');
+				clearTimeout(this._delayShowTooltip);
+			});
+		}
+	});
 	//load tradingview libs
 	
 	/*let TradingView =*/ require('../../tradingview/charting_library/charting_library');

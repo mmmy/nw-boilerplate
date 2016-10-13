@@ -32,11 +32,16 @@ let _disposeDetailPanel = (parentDom, editorCache) => {
 			$(parentDom).find('.detail-panel').remove();
 	};
 	if(!isSaved) {
-		new ConfirmModal('编辑未保存, 是否保存?', '', ()=>{
-			editorCache.save();
-			remove();
-		}, ()=>{
-			remove();
+		new ConfirmModal({
+			title:'编辑未保存, 是否保存?', 
+			sessionName:'', 
+			onYes:()=>{
+				editorCache.save();
+				remove();
+			}, 
+			onNo:()=>{
+				remove();
+			}
 		});
 	} else {
 		remove();
@@ -255,10 +260,14 @@ let _handleDeleteHistoryByMonth = (event) => {
 	event.stopPropagation();
 	let $item = $(event.target).closest('.month');
 	let { year, month } = $item.data();
-	new ConfirmModal(`确认删除${year}-${month}历史记录?`, 'history-month-delete', () => {
-		deleteHistory(year, month);
-		_removeHistroiesByMonth(year, month);
-		$item.remove();
+	new ConfirmModal({
+		title:`确认删除${year}-${month}历史记录?`, 
+		sessionName:'history-month-delete', 
+		onYes:() => {
+			deleteHistory(year, month);
+			_removeHistroiesByMonth(year, month);
+			$item.remove();
+		}
 	});
 };
 
@@ -513,15 +522,19 @@ let _handleDeleteFavoritesFolder = (event) => {
 	let $item = $(event.target).closest('.favorites-folder');
 	let { fileName, name } = $item.data();
 	let title = `确认删除"${name}"?`;
-	new ConfirmModal(title, 'delete-favorite-folder', () => {
-		favoritesManager.deleteFavorites(fileName, (e, d) => {
-			if(e) {
-				console.error(e);
-			} else {
-				$item.remove();
-				_showFolder(0); //显示默认
-			}
-		});
+	new ConfirmModal({
+		title, 
+		sessionName: 'delete-favorite-folder', 
+		onYes:() => {
+			favoritesManager.deleteFavorites(fileName, (e, d) => {
+				if(e) {
+					console.error(e);
+				} else {
+					$item.remove();
+					_showFolder(0); //显示默认
+				}
+			});
+		}
 	});
 };
 //收藏夹重命名
@@ -660,13 +673,17 @@ favoritesController.showTrashedPatterns = (e) => {
 }
 
 favoritesController.clearTrashedPatterns = () => {
-	new ConfirmModal('清空回收站?', 'clear-trashed-patterns', () => {
-		if(favoritesManager.clearTrashedFavorites()) {
-			_updateTrashedNumber();
-			let $bodyDom = $(_bodyDomF);
-			let trashedData = [];
-			$bodyDom.empty();
-			$bodyDom.append(_generatePatterns(trashedData, 2));
+	new ConfirmModal({
+		title:'清空回收站?', 
+		sessionName:'clear-trashed-patterns', 
+		onYes:() => {
+			if(favoritesManager.clearTrashedFavorites()) {
+				_updateTrashedNumber();
+				let $bodyDom = $(_bodyDomF);
+				let trashedData = [];
+				$bodyDom.empty();
+				$bodyDom.append(_generatePatterns(trashedData, 2));
+			}
 		}
 	});
 };

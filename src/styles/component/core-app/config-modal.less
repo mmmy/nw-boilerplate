@@ -124,7 +124,7 @@
 					height: 30px;
 					border: 1px solid #eee;
 					border-radius: 2px;
-					width: 44px;
+					width: 40px;
 					text-align: center;
 					.disable-input-spin();
 					&:not(:first-child) {
@@ -146,7 +146,7 @@
 		input {
 			font-size: 12px;
 			font-family: 'AvantGarde';
-			width: 130px;
+			width: 116px;
 			padding: 5px 7px;
 			color: #666;//@ks-color-gray-4;
 			background-color: #fff;//@config-modal-input-background-color;
@@ -259,6 +259,19 @@
 		top: 80px;
 		text-align: center;
 		font-size: 16px;
+		letter-spacing: 1px;
+		&.up {
+			top: 70px;
+		}
+	}
+
+	.detail {
+		position: absolute;
+		text-align: center;
+		font-size: 12px;
+		top: 105px;
+		width: 100%;
+		letter-spacing: 1px;
 	}
 
 	.button {
@@ -276,6 +289,9 @@
 		background-color: @brown-red;
 		&:hover {
 			.ks-button-hover();
+		}
+		&.center {
+			left: 118px;
 		}
 	}
 

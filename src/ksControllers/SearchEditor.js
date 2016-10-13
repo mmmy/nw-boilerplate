@@ -5,6 +5,10 @@ import { handleShouCangFocus, handleShouCangBlur } from './publicHelper';
 import ConfirmModal from './ConfirmModal';
 import store from '../store';
 
+const EDIT_A_BAR = "EDIT_A_BAR";
+const EDIT_RANGE_BARS = "EDIT_RANGE_BARS";
+const ADD_BARS = "ADD_BARS";
+
 function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 	this._$root = $(dom);
 	this._originDataObj = dataObj;
@@ -15,7 +19,9 @@ function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 	this._$config = $('<div class="config-editor"></div>');
 	this._OHLC = { barsInfo:null, O:null, H:null, L:null, C:null}; //缓存dom
 	this._OHLCInputs = {O:null, H:null, L:null, C:null}; //缓存input dom
-	this._floatTools = {addBars:null, rangeTool:null};
+	this._floatTools = {_container:null, addBars:null, rangeTool:null};
+
+	this._editMode = EDIT_A_BAR;
 
 	this._klineEditor = null;
 	this._configEditor = null;
@@ -65,6 +71,7 @@ SearchEditor.prototype._initMain = function() {
 
 	let $name = $(`<span class='title-name'><span class='name-content'>${name}</span></span>`).append($(`<button class='flat-btn'>改</button>`).click((e)=>{ $nameInput.show(); }));
 
+	// let barsInfo = $(`<span class="bars-info-container"></span>`).append(this._OHLC.barsInfo);
 	let OCLH = $(`<span class='OCLH-container'></span>`).append(this._OHLC.barsInfo)
 																											.append(`<span class='font-arial'>O</span>`).append(this._OHLC.O)
 																											.append(`<span class='font-arial'>H</span>`).append(this._OHLC.H)
@@ -74,7 +81,7 @@ SearchEditor.prototype._initMain = function() {
 	header.append($name).append($nameInput).append(OCLH).append($(`<button class='flat-btn tool-btn select-range'>区域</button>`).click(this._handleStartSelectRange.bind(this)))
 											// .append($(`<button class='flat-btn tool-btn delete-range'>删除</button>`).click(this._handleDeleteBars.bind(this)))
 											.append($(`<button class='flat-btn tool-btn save'>保存</button>`))
-											.append($(`<button class='flat-btn tool-btn add-favorites'>收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj, {type:0})).blur(handleShouCangBlur.bind(null)));
+											.append($(`<button class='flat-btn tool-btn add-favorites' data-kstooltip="添加到收藏夹">收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj, {type:0})).blur(handleShouCangBlur.bind(null)));
 
 	this._OHLCInputs = {
 		O: $('<input class="OCLH-input font-arial" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexO(+event.target.value) }),
@@ -99,32 +106,74 @@ SearchEditor.prototype._initMain = function() {
 	//重新搜索
 	footer.find('.search').click(this._handleResearch.bind(this));
 	
-	this._floatTools.addBars = $(`<span class='add-bars-container'></span>`).append($(`<span class='two-button-wrapper'></span>`)
-																																									.append($(`<button class='flat-btn add-bars font-simsun'>新增</button>`).click(this._handleAddBars.bind(this)))
+	this._floatTools.addBars = $(`<div class='float-toolbar add-bars-container'></div>`).append($(`<span class='two-button-wrapper'></span>`)
 																																									.append($(`<input type='number' value='1' min='1'/>`)))
+																																									.append($(`<button class='flat-btn add-bars ks-disable font-simsun' data-kstooltip="先用鼠标选择一根K线, 添加后K线数量不能超过100!">添加</button>`).click(this._handleAddBars.bind(this)))
 												.append($(`<button class='flat-btn delete-bars'>Del</button>`).click(this._handleDeleteBars.bind(this)))
 												.hide();
 												// .append($(`<button class='flat-btn bars-count font-number'>1<i class='fa fa-caret-down'><i/></button>`));
 
-	this._floatTools.rangeTool = $(`<span class='range-tools-container'></span>`).append($(`<span class='two-button-wrapper'></span>`)
+	this._floatTools.rangeTool = $(`<div class='float-toolbar range-tools-container'></div>`).append($(`<span class='two-button-wrapper'></span>`)
 																																											.append($(`<button class='flat-btn mode-single active font-simsun'>单</button>`).click(this._handleSetRangeMode.bind(this, 0)))
 																																											.append($(`<button class='flat-btn mode-linear font-simsun'>线</button>`).click(this._handleSetRangeMode.bind(this, 1))))
-															.append($(`<button class='flat-btn delete-bars'>Del</button>`).click(this._handleDeleteBars.bind(this)))
-	this._floatTools.rangeTool.hide();															
+															.append($(`<button class='flat-btn delete-bars ks-disable'>Del</button>`).click(this._handleDeleteBars.bind(this)))
 
-	this._$main.append(header).append(body).append(footer).append(footer).append(this._floatTools.addBars).append(this._floatTools.rangeTool);
+	this._floatTools._container = $(`<div class="float-toolbar-container"><span class="drag-icon"></span><div class="float-toolbar-wrapper"></div></div>`)
+																.ksDragable();
+	this._floatTools._container.find('.float-toolbar-wrapper')
+															.append(this._floatTools.rangeTool)											
+															.append(this._floatTools.addBars);
+
+	this._$main.append(header).append(body).append(footer).append(footer).append(this._floatTools._container);
 	this._initKlineEditor();
 	this._initConfigEditor();
 	this._initToolbar();
+	this._$main.find('[data-kstooltip]').ksTooltip();
+
 };
 
 SearchEditor.prototype._initToolbar = function() {
 	let toolbarBtns = [];
-	toolbarBtns[0] = '';
+	toolbarBtns[0] = $(`<button class="flat-btn edit-a-bar active" data-kstooltip="整体模式">abar</button>`).click(this.changeEditMode.bind(this, EDIT_A_BAR));
+	toolbarBtns[1] = $(`<button class="flat-btn edit-range-bars" data-kstooltip="区域模式">rangebars</button>`).click(this.changeEditMode.bind(this, EDIT_RANGE_BARS));
+	toolbarBtns[2] = $(`<button class="flat-btn add-bars" data-kstooltip="添加删除模式">addbars</button>`).click(this.changeEditMode.bind(this, ADD_BARS));
 
 	for(let i=0; i<toolbarBtns.length; i++) {
 		this._$main.find('.kline-editor-toolbar').append(toolbarBtns[i]);
 	}
+}
+
+SearchEditor.prototype.changeEditMode = function(type, e) {
+	let $target = $(e.currentTarget);
+	$target.addClass('active');
+	$target.siblings().removeClass('active');
+	if(this._editMode != type) {
+		this._editMode = type;
+		this.resetKlineEditorState();
+	}
+
+	switch(type) {
+		case EDIT_A_BAR:
+			this._floatTools.addBars.hide();
+			this._floatTools.rangeTool.show();
+			this._klineEditor.setInsertOnly(false);
+			break;
+		case EDIT_RANGE_BARS:
+			this._floatTools.addBars.hide();
+			this._floatTools.rangeTool.show();
+			this._klineEditor.startSelectRange();
+			break;
+		case ADD_BARS:
+			this._floatTools.addBars.show();
+			this._floatTools.rangeTool.hide();
+			this._klineEditor.setInsertOnly(true);
+			break;
+	}
+}
+
+SearchEditor.prototype.resetKlineEditorState = function() {
+	this._OHLCInputs.O.closest('.OCLH-inputs-container').hide();
+	this._klineEditor.resetState();
 }
 
 SearchEditor.prototype.updateOHLC = function(O, H, L, C) {
@@ -142,8 +191,10 @@ SearchEditor.prototype.updateOHLC = function(O, H, L, C) {
 
 SearchEditor.prototype.handleMoveIndex = function(index, data, showAddBtn) { //data:[time, O, C, L, H]
 	if(index > -1) {
-		this._OHLCInputs.O.closest('.OCLH-inputs-container').show();
-		showAddBtn && this._floatTools.addBars.show();
+		if(!this._klineEditor.isInsertOnly()) {
+			this._OHLCInputs.O.closest('.OCLH-inputs-container').show();
+		}
+		// showAddBtn && this._floatTools.addBars.show();
 		let O = data[1],
 				C = data[2],
 				L = data[3],
@@ -153,9 +204,13 @@ SearchEditor.prototype.handleMoveIndex = function(index, data, showAddBtn) { //d
 		this._OHLCInputs.H.val(H.toFixed(2));
 		this._OHLCInputs.L.val(L.toFixed(2));
 		this._OHLCInputs.C.val(C.toFixed(2));
+		this._floatTools.rangeTool.find('.delete-bars').removeClass('ks-disable');
+		this._floatTools.addBars.find('.add-bars').removeClass('ks-disable');
 	} else {
 		this._OHLCInputs.O.closest('.OCLH-inputs-container').hide();
-		this._floatTools.addBars.hide();
+		this._floatTools.rangeTool.find('.delete-bars').addClass('ks-disable');
+		this._floatTools.addBars.find('.add-bars').addClass('ks-disable');
+		// this._floatTools.addBars.hide();
 	}
 }
 
@@ -181,9 +236,17 @@ SearchEditor.prototype._handleStartSelectRange = function(e) {
 }
 
 SearchEditor.prototype._handleDeleteBars = function(e) {
-	new ConfirmModal('确认删除?', 'kline-editor-delete', () => {
-		if(!this._klineEditor.deleteAtRange()) {
-			this._klineEditor.deleteAtSelectedIndex();
+	e.stopPropagation();
+	if($(e.currentTarget).hasClass('ks-disable')) {
+		return;
+	}
+	new ConfirmModal({
+		title:'确认删除?', 
+		sesstionName:'kline-editor-delete', 
+		onYes: () => {
+			if(!this._klineEditor.deleteAtRange()) {
+				this._klineEditor.deleteAtSelectedIndex();
+			}
 		}
 	});
 }
@@ -244,8 +307,18 @@ SearchEditor.prototype._handleShouCangBlur = function(e) {
 }
 
 SearchEditor.prototype._handleAddBars = function(e) {
-	let bars = $(e.target).next().val();
-	this._klineEditor.insertNewAfterSelectedIndex(bars);
+	e.stopPropagation();
+	let bars = $(e.target).siblings().find('input[type="number"]').val();
+	if((bars + this._klineEditor.getKlineLength()) > 100) {
+		new ConfirmModal({
+			title: '添加失败!',
+			detail: '编辑的K线总数最高支持100根!',
+			isAlert: true,
+			width: 400
+		});
+	} else {
+		this._klineEditor.insertNewAfterSelectedIndex(bars);
+	}
 }
 
 SearchEditor.prototype._handleResearch = function(e) {
@@ -255,6 +328,7 @@ SearchEditor.prototype._handleResearch = function(e) {
 }
 
 SearchEditor.prototype._handleSetRangeMode = function(mode, e) { //0:single, 1:range
+	e.stopPropagation();
 	this._klineEditor.setRangeMoveMode(mode);
 	let $target = $(e.target);
 	$target.addClass('active');
@@ -268,7 +342,7 @@ SearchEditor.prototype.handleEndDrawRange = function(range) { //
 }
 
 SearchEditor.prototype.handleRemoveRange = function() {
-	this._floatTools.rangeTool.hide();
+	// this._floatTools.rangeTool.hide();
 }
 //修改名字
 SearchEditor.prototype._handleRename = function(e) {

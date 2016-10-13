@@ -11,7 +11,7 @@
 		position: absolute;
 		left: 0;
 		top: 0;
-		width: calc(~"100% - 390px");
+		width: calc(~"100% - 360px");
 		height: 100%;
 		box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
 		// border-right: 1px solid #eee;
@@ -19,6 +19,7 @@
 			height: 50px;
 			position: relative;
 			border-bottom: 1px solid #eee;
+			z-index: 1;
 		}
 		.body {
 			position: relative;
@@ -32,6 +33,32 @@
 				width: 45px;
 				height: 100%;
 				border-right: 1px solid #eee;
+				.flat-btn {
+					background-image: url(@icons_url);
+					width: 30px;
+					height: 30px;
+					margin: 8px;
+					margin-bottom: 0;
+					color: transparent;
+				}
+				.edit-a-bar {
+					.icon_position(0,6,3);
+					&.active {
+						.icon_position(3,6,3);
+					}
+				}
+				.edit-range-bars {
+					.icon_position(0,3,2);
+					&.active {
+						.icon_position(3,3,2);
+					}
+				}
+				.add-bars {
+					.icon_position(0,7,3);
+					&.active {
+						.icon_position(3,7,3);
+					}
+				}
 			}
 			.kline-editor-container {
 				position: absolute;
@@ -51,7 +78,7 @@
 		position: absolute;
 		right: 0;
 		top: 0;
-		width: 390px;
+		width: 360px;
 		height: 100%;
 		// padding-left: 40px;
 		overflow: hidden;
@@ -132,11 +159,20 @@
 			font-size: 13px;
 			margin-right: 20px;
 			color: #666;
+			position: relative;
+			left: 0;
+			top: 0;
 		}
 		span {
 			font-size: 10px;
+			position: relative;
+			left: -180px;
+			top: 35px;
 		}
 		.number {
+			position: relative;
+			left: -180px;
+			top: 35px;
 			color: #666;
 			padding:  0 5px;
 		}
@@ -157,6 +193,7 @@
 			background-image: url(@icons_url);
 			.icon_position(0, 3, 2, 5px, 5px);
 			right: 50px;
+			display: none;
 			&.active {
 				.icon_position(3, 3, 2, 5px, 5px);				
 			}
@@ -221,6 +258,7 @@
 				width: 70px;
 				height: 35px;
 				right: 30px;
+				border-radius: 3px;
 				box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 				cursor: pointer;
 				&:hover {
@@ -256,37 +294,72 @@
 		}
 	}
 
-	.add-bars-container {
+	.float-toolbar-container {
 		position: absolute;
-		font-size: 12px;
-		// height: 30px;
 		top: 60px;
 		background-color: #fff;
 		right: 80px;
+		cursor: move;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+		border-radius: 2px;
+		.drag-icon {
+			display: inline-block;
+			height: 40px;
+			width: 30px;
+			vertical-align: middle;
+			background-image: url(@icons_url);
+			.icon_position(0, 8, 0, 0, -5px);
+		}
+		.float-toolbar-wrapper {
+			display: inline-block;
+		}
+		.float-toolbar {
+			font-size: 12px;
+		}
+	}
+
+	.add-bars-container {
+		// height: 30px;
 		// box-shadow: 0 2px 10px #ddd;
 		// padding: 1px 5px;
 		.two-button-wrapper {
-			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+			// box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 			display: inline-block;
 			// border: 1px solid red;
 		}
 		.add-bars {
 			// margin-top: 5px;
-			width: 40px;
+			width: 50px;
 			height: 30px;
+			background-color: #eee;
+			border-radius: 2px;
+			margin-left: 5px;
+			margin-right: 10px;
+			color: #000;
+			&:hover {
+				background-color: @brown-red;
+				color: #fff;
+			}
+			&.ks-disable {
+				background-color: #eee !important;
+				color: #000;
+			}
 		}
 		input {
-			width: 50px;
-			border: none;
-			text-align: right;
+			border-radius: 2px;
+			width: 60px;
+			height: 30px;
+			border: 1px solid #eee;
+			text-align: left;
 			outline: none;
-			padding: 2px;
+			padding: 5px 10px;
 			font-size: 10px;
 			&:focus {
 
 			}
 		}
 		.delete-bars {
+			display: none;
 			width: 30px;
 			height: 30px;
 			margin-left: 10px;
@@ -305,39 +378,40 @@
 	}
 
 	.range-tools-container {
-		position: absolute;
-		font-size: 12px;
 		height: 30px;
-		top: 60px;
-		background-color: #fff;
-		right: 70px;
 		// overflow: visible;
 		button {
 			background-image: url(@icons_url);
 			color: transparent;
-			width: 30px;
-			height: 30px;
+			width: 40px;
+			height: 40px;
 		}
 		.two-button-wrapper {
-			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+			// box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 			display: inline-block;
 		}
 		.mode-single {
-			.icon_position(1, 10, 1);
+			.icon_position(1, 10, 1, -5px, -5px);
 			&.active {
-				.icon_position(3, 10, 1);
+				.icon_position(3, 10, 1, -5px, -5px);
 			}
 		}
 		.mode-linear {
-			.icon_position(1, 11, 1);
+			.icon_position(1, 11, 1, -5px, -5px);
 			&.active {
-				.icon_position(3, 11, 1);
+				.icon_position(3, 11, 1, -5px, -5px);
 			}
 		}
 		.delete-bars {
-			margin-left: 10px;
-			background-color: #AC1822;
-			.icon_position(4, 1, 1, 2px, 2px);
+			// margin-left: 10px;
+			// background-color: #AC1822;
+			.icon_position(0, 1, 1, -5px, -5px);
+			&:hover {
+				.icon_position(3, 1, 1, -5px, -5px);
+			}
+			&.ks-disable:hover {
+			.icon_position(0, 1, 1, -5px, -5px);
+			}
 			border-radius: 2px;
 		}
 	}

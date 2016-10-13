@@ -273,6 +273,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	//drawRangeRect
 	if(selectedRange && selectedRange[0] >= 0 && selectedRange[1] >=0) {
 		let rangeOption = options && options.rangeOption || {};
+		let offsetTop = (rangeOption.top || 0) * ratio;
+		let rangeHeight = 20 * ratio;
 
 		let rangeX1 = klineWhisker[selectedRange[0]][0][0][0];
 		let rangeX2 = klineWhisker[selectedRange[1]][0][0][0];
@@ -282,10 +284,10 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.shadowOffsetX = 0;
 		ctx.shadowOffsetY = 0;
 		ctx.fillStyle = 'rgba(200,200,200,0.1)';
-		ctx.fillRect(rangeX1, 20.5, rangeX2 - rangeX1, height);
+		ctx.fillRect(rangeX1, rangeHeight+offsetTop, rangeX2 - rangeX1, height);
 		ctx.restore();
 		ctx.fillStyle = '#333';
-		ctx.fillRect(rangeX1, 0, rangeX2 - rangeX1, 20.5);
+		ctx.fillRect(rangeX1, offsetTop, rangeX2 - rangeX1, rangeHeight);
 		//text
 		ctx.beginPath();
 		let text = selectedRange[1] - selectedRange[0] + 1 + '根K线';
@@ -294,22 +296,23 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		// ctx.lineWidth = 1;
 		ctx.fillStyle = '#fff';
 		ctx.strokeStyle = '#fff';
-		ctx.fillText(text, (rangeX2 + rangeX1)/2, 15);
+		ctx.fillText(text, (rangeX2 + rangeX1)/2, 15*ratio + offsetTop);
 		ctx.stroke();
 		// ctx.strokeText(text, (rangeX2 + rangeX1)/2, 13);
 		//close btn
 		if(!rangeOption.noCloseBtn) {
 			ctx.fillStyle = '#444';
-			ctx.fillRect(rangeX2 - 20, 0, 20, 20);
+			ctx.fillRect(rangeX2 - rangeHeight, offsetTop, rangeHeight, rangeHeight);
 			ctx.setLineDash([]);
 			ctx.lineWidth = 2;
-			let crossXCenter = rangeX2 - 10;
-			let crossYCenter = 10;
-			ctx.moveTo(crossXCenter - 3, crossYCenter - 3);
-			ctx.lineTo(crossXCenter + 3, crossYCenter + 3);
+			let crossXCenter = rangeX2 - rangeHeight/2;
+			let crossYCenter = rangeHeight/2 + offsetTop;
+			let lineHalfLength = 3*ratio;
+			ctx.moveTo(crossXCenter - lineHalfLength, crossYCenter - lineHalfLength);
+			ctx.lineTo(crossXCenter + lineHalfLength, crossYCenter + lineHalfLength);
 			ctx.stroke();		
-			ctx.moveTo(crossXCenter - 3, crossYCenter + 3);
-			ctx.lineTo(crossXCenter + 3, crossYCenter - 3);
+			ctx.moveTo(crossXCenter - lineHalfLength, crossYCenter + lineHalfLength);
+			ctx.lineTo(crossXCenter + lineHalfLength, crossYCenter - lineHalfLength);
 			ctx.stroke();
 		}
 

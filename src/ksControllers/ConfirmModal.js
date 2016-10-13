@@ -9,15 +9,18 @@ let getSession = (name) => {
 	return window.sessionStorage[name];
 };
 
-var ConfirmModal = function(title, sessionName, onYes, onNo) {
+var ConfirmModal = function({title, detail, isAlert, sessionName, onYes, onNo, width=470}) {
 	let notShowNextTime = getSession(sessionName);
 	if(notShowNextTime=='true') {
 		onYes && onYes();
 		return null;
 	}
+	this._isAlert = isAlert;
+	this._width = width;
 	this._onYes = onYes;
 	this._onNo = onNo;
 	this._title = title;
+	this._detail = detail;
 	this._sessionName = sessionName;
 	this._notShowNextTime = false;
 	this._init();
@@ -27,15 +30,18 @@ ConfirmModal.prototype._init = function() {
 	let $wrapper = $(`<div class='modal-overlay flex-center'></div>`);
 
 	let closeBtn = `<div class='close-btn'><span class='close-icon'></span></div>`;
-	let title = `<div class='title'>${this._title}</div>`;
-	let yesBtn = `<button class='flat-btn button btn-yes'>是</button>`;
-	let noBtn = `<button class='flat-btn button btn-no'>否</button>`;
+	let title = `<div class='title ${this._isAlert ? "up" : ""}'>${this._title}</div>`;
+	let detail = this._detail && `<div class="detail">${this._detail}</div>`;
+	let yesBtn = `<button class='flat-btn button btn-yes ${this._isAlert ? "center" : ""}'>${this._isAlert ? "确定" : "是"}</button>`;
+	let noBtn = !this._isAlert && `<button class='flat-btn button btn-no'>否</button>`;
 
 	let footer = this._sessionName ? `<div class='footer'><span class='no-check-icon'></span>下次不再提醒</div>` : '';
 
 	let $modal = $(`<div class='modal-confirm-container font-simsun'></div>`)
+								.css({width: this._width})
 								.append(closeBtn)
 								.append(title)
+								.append(detail)
 								.append(yesBtn)
 								.append(noBtn)
 								.append(footer);
