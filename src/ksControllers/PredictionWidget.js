@@ -57,6 +57,7 @@ let PredictionWidget = function(dom, config){
 	this._linesOptions = {
 		yMin: null,
 		yMax: null,
+		dataLen: null, //一定要设置
 		emptyLeftLen: 10,
 		activeIndex: 0,
 		lineColor: 'rgba(200,200,200,0.5)',
@@ -237,6 +238,7 @@ PredictionWidget.prototype._updateLinesOption = function(){
 	this._linesOptions.yMax = yMax;
 	this._linesOptions.yMin	= yMin;
 	this._linesOptions.emptyLeftLen = this._baseBars;
+	this._linesOptions.dataLen = +this._predictionBars;
 }
 
 PredictionWidget.prototype._drawKline = function(){
