@@ -19,6 +19,7 @@ let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H) => {
 /**
 options: {
 	padding: {left: number, right: number},
+	drawLen: ,
 	hoverIndex: , 
 	selectedIndex: , 
 	activeIndex: , 
@@ -76,7 +77,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	}
 	let predictionBars = options && options.predictionBars || 0;
 
-	let len = kline.length;
+	let len = kline.length,
+			drawLen = options && options.drawLen || len;
 
 	let padding = options && options.padding;
 	let top = padding && padding.top || 0,
@@ -85,7 +87,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 			bottom = padding && padding.bottom || 0;
 
 	let viewYheight = height - top -bottom;
-	let klineXSpace = (width - left - right) / (len + predictionBars);
+	let klineXSpace = (width - left - right) / (drawLen + predictionBars);
 	let klineW = 3;
 	
 	klineW = Math.round(klineXSpace/2) * 1.2;
@@ -143,6 +145,9 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let overflowPaneBottom = options && options.overflowPaneBottom;
 	let ratio = getCanvasPixRatio();
 
+	if(baseBarRange && baseBarRange[1] && baseBarRange[1]+1>=len) {
+		baseBarRange[1] = len - 1;
+	}
 	//start draw
 	let upBorderColor = options && options.upBorderColor || '#888888',//'#8B171B',//'#ae0006',
 			upColor = options && options.upColor || '#eee',//'#AC1822',
@@ -157,7 +162,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	if(!kline || kline.length == 0) {
 		return  {};
 	}
-	let d2 = new Date();
+	// let d2 = new Date();
 	for (let i=0; i<len; i++) {
 		let rectPoints = klineBox[i];
 		let whisker1 = klineWhisker[i][0],
@@ -564,10 +569,12 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	}
 	betterCanvasSize(canvas);
 	let ctx = canvas.getContext('2d');
+	let drawLen = options && options.drawLen || len;
+
 	let width = canvas.width;
 	let height = canvas.height;
 
-	let spaceX = width / len;
+	let spaceX = width / drawLen;
 	let interval = 1;
 	let minSpaceX = 0;
 	let ratio = getCanvasPixRatio();
@@ -576,6 +583,7 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	let hoverIndex = options && options.hoverIndex;
 	let selectedIndex = options && options.selectedIndex;
 	let showTime = options && options.showTime || false; //是否显示时分秒
+
 	if(showTime) {
 		minSpaceX = 55 * ratio;
  		interval = Math.ceil(minSpaceX / spaceX);
