@@ -308,7 +308,11 @@ SearchEditor.prototype._handleShouCangBlur = function(e) {
 
 SearchEditor.prototype._handleAddBars = function(e) {
 	e.stopPropagation();
+	if($(e.currentTarget).hasClass('ks-disable')) {
+		return;
+	}
 	let bars = $(e.target).siblings().find('input[type="number"]').val();
+	bars = parseInt(bars);
 	if((bars + this._klineEditor.getKlineLength()) > 100) {
 		new ConfirmModal({
 			title: '添加失败!',
