@@ -62,7 +62,7 @@ function KlineEditor(container, kline) {  //container dom is div dom
 	this._drawingState = {drawingRange: false, moveMode:0, isInsertOnly:false}; //moveMode:0(single) 1(linear)
 	this._selectedRange = [];
 	this._rangeOption = {top: 20};
-	// this._clickHitTest = NONE;
+	this._clickHitTest = NONE;
 
 	//move kline states
 	this._moveKlineStates = {isMouseDown: false, x:-1, y:-1};
@@ -164,6 +164,8 @@ KlineEditor.prototype.deleteAtRange = function() {
 		this._selectedIndex = -1;
 		this._moveIndex = -1;
 		this.resetRangeIndex();
+		this._onRemoveRange && this._onRemoveRange();
+		this._onUpdateInfo && this._onUpdateInfo(this._kline.length);
 		this._onEdit && this._onEdit();
 		return true;
 	}
@@ -201,7 +203,7 @@ KlineEditor.prototype._keyDown = function(event) {
 }
 //K线画布 mousedonw事件
 KlineEditor.prototype._mouseDown = function(event) {
-	console.log('KlineEditor mousedown', event);
+	// console.log('KlineEditor mousedown', event);
 	let x = event.offsetX;
 	let y = event.offsetY;
 	this._setClickHitTest(event.offsetX, event.offsetY);  //记录click hit test
@@ -216,7 +218,7 @@ KlineEditor.prototype._mouseDown = function(event) {
 	if(this._isDrawingRange()) {
 		let drawIndex = this._getDrawRangePoints();
 		this.setRangeIndex(drawIndex, event.offsetX, event.offsetY, 1);
-		console.log('add mouse down event', drawIndex, this._selectedRange);
+		// console.log('add mouse down event', drawIndex, this._selectedRange);
 		if(drawIndex > 1) {
 			this._endDrawRange();
 		}
@@ -255,7 +257,7 @@ KlineEditor.prototype._mouseMove = function(event){
 
 	let hitTest = this.getHitTest(event.offsetX, event.offsetY);
 	if(this._clickHitTest === NONE) {
-		// this.setCursorByHittest(hitTest);
+		this.setCursorByHittest(hitTest);
 	}
 	// console.log(hitTest);
 
@@ -634,6 +636,7 @@ KlineEditor.prototype.setCursor = function(cursor) {
 KlineEditor.prototype._endDrawRange = function() {
 	this._drawingState.drawingRange = false;
 	this.setCursor();
+	this._resetClickHitTest();
 	this._onEndDrawRange && this._onEndDrawRange(this._selectedRange);
 }
 
@@ -763,11 +766,12 @@ KlineEditor.prototype.setRangeMoveMode = function(mode) { //0  or 1
 
 KlineEditor.prototype.resetState = function() {
 	this._selectedRange = [];
-	this._selectedIndex = -1;
-	this._moveIndex = -1;
+	// this._selectedIndex = -1;
+	// this._moveIndex = -1;
 	this._drawingState.drawingRange = false;
 	this.setCursor();
 	this.updateCanvas();
+	// this._onMoveIndex && this._onMoveIndex(this._selectedIndex);
 }
 
 KlineEditor.prototype.onRemoveRange = function(func) {
@@ -788,6 +792,10 @@ KlineEditor.prototype.isInsertOnly = function() {
 
 KlineEditor.prototype.getKlineLength = function() {
 	return this._kline.length;
+}
+
+KlineEditor.prototype.getSelectedRange = function() {
+	return this._selectedRange.concat([]);
 }
 
 KlineEditor.prototype.getSelectedIndex = function() {

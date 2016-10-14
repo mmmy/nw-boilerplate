@@ -42,15 +42,15 @@
 					color: transparent;
 				}
 				.edit-a-bar {
-					.icon_position(0,6,3);
+					.icon_position(0,6,3,1px);
 					&.active {
-						.icon_position(3,6,3);
+						.icon_position(3,6,3,1px);
 					}
 				}
 				.edit-range-bars {
-					.icon_position(0,3,2);
+					.icon_position(0,3,2,-1px);
 					&.active {
-						.icon_position(3,3,2);
+						.icon_position(3,3,2,-1px);
 					}
 				}
 				.add-bars {
@@ -257,7 +257,7 @@
 				display: inline-block;
 				width: 70px;
 				height: 35px;
-				right: 30px;
+				right: 15px;
 				border-radius: 3px;
 				box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 				cursor: pointer;
@@ -296,13 +296,13 @@
 
 	.float-toolbar-container {
 		position: absolute;
-		top: 60px;
+		top: 100px;
 		background-color: #fff;
 		right: 80px;
-		cursor: move;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 		border-radius: 2px;
 		.drag-icon {
+			cursor: move;
 			display: inline-block;
 			height: 40px;
 			width: 30px;

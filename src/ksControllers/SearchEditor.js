@@ -108,7 +108,7 @@ SearchEditor.prototype._initMain = function() {
 	
 	this._floatTools.addBars = $(`<div class='float-toolbar add-bars-container'></div>`).append($(`<span class='two-button-wrapper'></span>`)
 																																									.append($(`<input type='number' value='1' min='1'/>`)))
-																																									.append($(`<button class='flat-btn add-bars ks-disable font-simsun' data-kstooltip="先用鼠标选择一根K线, 添加后K线数量不能超过100!">添加</button>`).click(this._handleAddBars.bind(this)))
+																																									.append($(`<button class='flat-btn add-bars ks-disable font-simsun' data-kstooltip="先选择一根K线, 作为起始位置">添加</button>`).click(this._handleAddBars.bind(this)))
 												.append($(`<button class='flat-btn delete-bars'>Del</button>`).click(this._handleDeleteBars.bind(this)))
 												.hide();
 												// .append($(`<button class='flat-btn bars-count font-number'>1<i class='fa fa-caret-down'><i/></button>`));
@@ -119,7 +119,7 @@ SearchEditor.prototype._initMain = function() {
 															.append($(`<button class='flat-btn delete-bars ks-disable'>Del</button>`).click(this._handleDeleteBars.bind(this)))
 
 	this._floatTools._container = $(`<div class="float-toolbar-container"><span class="drag-icon"></span><div class="float-toolbar-wrapper"></div></div>`)
-																.ksDragable();
+																.ksDragable({targetSelector:'.drag-icon'});
 	this._floatTools._container.find('.float-toolbar-wrapper')
 															.append(this._floatTools.rangeTool)											
 															.append(this._floatTools.addBars);
@@ -134,9 +134,9 @@ SearchEditor.prototype._initMain = function() {
 
 SearchEditor.prototype._initToolbar = function() {
 	let toolbarBtns = [];
-	toolbarBtns[0] = $(`<button class="flat-btn edit-a-bar active" data-kstooltip="整体模式">abar</button>`).click(this.changeEditMode.bind(this, EDIT_A_BAR));
-	toolbarBtns[1] = $(`<button class="flat-btn edit-range-bars" data-kstooltip="区域模式">rangebars</button>`).click(this.changeEditMode.bind(this, EDIT_RANGE_BARS));
-	toolbarBtns[2] = $(`<button class="flat-btn add-bars" data-kstooltip="添加删除模式">addbars</button>`).click(this.changeEditMode.bind(this, ADD_BARS));
+	toolbarBtns[0] = $(`<button class="flat-btn edit-a-bar active" data-kstooltip="选择工具">abar</button>`).click(this.changeEditMode.bind(this, EDIT_A_BAR));
+	toolbarBtns[1] = $(`<button class="flat-btn edit-range-bars" data-kstooltip="区域选择工具">rangebars</button>`).click(this.changeEditMode.bind(this, EDIT_RANGE_BARS));
+	toolbarBtns[2] = $(`<button class="flat-btn add-bars" data-kstooltip="添加工具">addbars</button>`).click(this.changeEditMode.bind(this, ADD_BARS));
 
 	for(let i=0; i<toolbarBtns.length; i++) {
 		this._$main.find('.kline-editor-toolbar').append(toolbarBtns[i]);
@@ -150,6 +150,7 @@ SearchEditor.prototype.changeEditMode = function(type, e) {
 	if(this._editMode != type) {
 		this._editMode = type;
 		this.resetKlineEditorState();
+		this._updateButtonsState();
 	}
 
 	switch(type) {
@@ -187,6 +188,14 @@ SearchEditor.prototype.updateOHLC = function(O, H, L, C) {
 		this._OHLC.L.css('color', '#ae0006');
 		this._OHLC.C.css('color', '#ae0006');
 	}
+}
+SearchEditor.prototype._updateButtonsState = function() {   //主动更新按钮的状态
+	let selectedRange = this._klineEditor.getSelectedRange();
+	let selectedIndex = this._klineEditor.getSelectedIndex();
+	let hasRange = selectedRange.length > 1,	
+			hasSelectedIndex = selectedIndex > -1;
+	this._floatTools.rangeTool.find('.delete-bars').toggleClass('ks-disable', !hasSelectedIndex && !hasRange);
+	this._floatTools.addBars.find('.delete-bars').toggleClass('ks-disable', !hasSelectedIndex);
 }
 
 SearchEditor.prototype.handleMoveIndex = function(index, data, showAddBtn) { //data:[time, O, C, L, H]
@@ -240,9 +249,18 @@ SearchEditor.prototype._handleDeleteBars = function(e) {
 	if($(e.currentTarget).hasClass('ks-disable')) {
 		return;
 	}
+	let title = '确认删除';
+	try {
+		let selectedRange = this._klineEditor.getSelectedRange(),
+				selectedIndex = this._klineEditor.getSelectedIndex();
+		title += selectedRange.length > 1 ? `第${selectedRange[0]+1}到${selectedRange[1]+1}根K线` : `第${selectedIndex+1}根K线`;
+	}catch(e) {
+		console.error(e);
+	}
+	title += '?';
 	new ConfirmModal({
-		title:'确认删除?', 
-		sesstionName:'kline-editor-delete', 
+		title: title, 
+		sessionName:'kline-editor-delete', 
 		onYes: () => {
 			if(!this._klineEditor.deleteAtRange()) {
 				this._klineEditor.deleteAtSelectedIndex();
@@ -342,11 +360,16 @@ SearchEditor.prototype._handleSetRangeMode = function(mode, e) { //0:single, 1:r
 SearchEditor.prototype.handleEndDrawRange = function(range) { //
 	// this._$main.find('.select-range').css('box-shadow','');
 	this._$main.find('.select-range').removeClass('active');
+	this._floatTools.rangeTool.find('.delete-bars').removeClass('ks-disable');
 	this._floatTools.rangeTool.show();
 }
-
+// 关闭select range 时间
 SearchEditor.prototype.handleRemoveRange = function() {
 	// this._floatTools.rangeTool.hide();
+	//关闭后直接开始继续绘制
+	setTimeout(()=>{
+		this._klineEditor.startSelectRange();
+	}, 100);
 }
 //修改名字
 SearchEditor.prototype._handleRename = function(e) {

@@ -34,11 +34,16 @@ let initJqueryPlugins = () => {
 	});
 
 	$.fn.extend({
-		ksDragable: function() {      //可拖动工具栏
+		ksDragable: function(options) {      //可拖动工具栏
 			var $container = $(this);
 			var _offsetX = 0;
 	    var _offsetY = 0;
+	    var targetSelector = options && options.targetSelector;
 	    $container.on('mousedown', function(e){
+	    		//首先判断是否为触发按钮
+	    		if(targetSelector && ($container.find(targetSelector)[0] != e.target)) {
+	    			return;
+	    		}
 					var $parent = $container.parent();
 	        _offsetX = e.offsetX;
 	        _offsetY = e.offsetY;
