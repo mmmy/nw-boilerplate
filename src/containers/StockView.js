@@ -236,7 +236,7 @@ class StockView extends React.Component {
 
 	handleNewFavorites(e) {
 		
-		if($(e.currentTarget.hasClass('ks-disable'))) return;
+		if($(e.currentTarget).hasClass('ks-disable')) return;
 
 		let folderName = $(this.refs.favorite_input).val();
 		if(folderName) {
