@@ -62,9 +62,11 @@
 		// border: 1px solid red;
 		width: 26px;
 		height: 26px;
-		background: url('./image/trash-icon.png') no-repeat;
-		background-size: 100%;
-		background-position: 0 0;
+		background: url(@icons_url) no-repeat;
+
+		// background-size: 100%;
+		// background-position: 0 0;
+		.icon_position(1,2,2,2px,2px);
 		&:before {
 			content: '';
 		}
