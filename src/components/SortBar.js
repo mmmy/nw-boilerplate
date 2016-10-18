@@ -27,7 +27,7 @@ let savePatternsToCsv = function(path) {
 		var patterns = window.KEYSTONE.patternsSorted;
 		var fields = ['symbol', 'similarity', 'yield', 'begin', 'end', 'industry', 'baseBars', 'kLine'];
 
-		// var csvData = json2csv({data:patterns, fields: fields});
+		var csvData = json2csv({data:patterns, fields: fields});
 		var csvDataGBK = require('iconv-lite').encode(csvData, 'GBK');
 		console.log(path, csvDataGBK);
 		fs.writeFileSync(path, csvDataGBK);
