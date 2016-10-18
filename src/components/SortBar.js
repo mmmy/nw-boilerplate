@@ -200,6 +200,7 @@ class SortBar extends React.Component {
 		return (<div className="toolbar-container">
 				<div className='toolbar-item item0'><h5 className='left-title'>匹配结果</h5></div>
 				<div className='toolbar-item item1'>
+					<span className="save-as-container" data-kstooltip="保存结果"><input type="file" ref='save_as' /></span>
 					<button className='pattern-bar-btn' onFocus={ this.toggleSearchPanel.bind(this, true) } onBlur={ this.toggleSearchPanel.bind(this, false) }>
 						<span data-kstooltip="关键字搜索" className={searchIconClass} ref='search_icon'></span>
 						<div className={searchPanelClass} ref='search_panel'><input value={searchSymbol} onChange={this.changeSearchSymbol.bind(this)} ref='search_input' /><i className='fa fa-close' onClick={this.clearSearchInput.bind(this)}></i></div>
@@ -216,7 +217,6 @@ class SortBar extends React.Component {
 						<span data-kstooltip="排序" className={'icon sort '+(panelType===0 ? 'active' : '')}></span>
 						{this.renderChildPanel(0)}
 					</button>
-					<span className="save-as-container" data-kstooltip="保存结果"><input type="file" ref='save_as' /></span>
 				</div>
 			</div>);
 	}
