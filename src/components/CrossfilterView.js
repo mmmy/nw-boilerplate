@@ -717,7 +717,7 @@ resizeChart1() {
 		let percent = (value * 100 / total).toFixed(1) + '%';
 
 		this.refs.industry_percent.innerHTML = `<div class='animated fadeIn'>${percent}</div>`;
-		this.refs.industry_name.innerHTML = `<div class='animated fadeIn'>${key}</div>`;
+		this.refs.industry_name.innerHTML = `<abbr class='animated fadeIn' title='${key}'>${key}</abbr>`;
 
 		let baseWidth = 50;
 		let containerWidth = this.refs.industry_percent.clientWidth;
