@@ -29,7 +29,7 @@ let savePatternsToCsv = function(path) {
 
 		var csvData = json2csv({data:patterns, fields: fields});
 		var csvDataGBK = require('iconv-lite').encode(csvData, 'GBK');
-		console.log(path, csvDataGBK);
+		// console.log(path, csvDataGBK);
 		fs.writeFileSync(path, csvDataGBK);
 	} catch(e) {
 		console.error(e);
