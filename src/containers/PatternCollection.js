@@ -336,6 +336,11 @@ class PatternCollection extends React.Component {
 			let index = 0; //显示出来的index, -1为隐藏的
 			//sortedData = sortedData.slice(0 ,5);
 			let dataArr = /*this.renderLeading5*/false ? sortedData.slice(0, 5) : sortedData;
+			try{
+				window.KEYSTONE.patternsSorted = dataArr;
+			}catch(e) {
+				console.error(e);
+			}
 			__visibleNumber = 0;
 			nodes = dataArr.map((e, i) => {
 				let show = false;

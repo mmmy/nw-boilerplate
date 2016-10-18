@@ -5,6 +5,10 @@ let initJquery = () => {
 	let $ = require('jquery');
 	window.jQuery = window.$ = $;
 	global.jQuery = global.$ = $;
+
+	window.KEYSTONE = {
+		patternsSorted: []
+	};
 };
 
 let initJqueryPlugins = () => {

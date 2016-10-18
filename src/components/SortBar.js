@@ -20,6 +20,21 @@ const defaultProps = {
   	
 };
 
+let savePatternsToCsv = function(path) {
+	try {
+		var json2csv = require('../../vendor/json2csv');
+		var fs = require('fs');
+		var patterns = window.KEYSTONE.patternsSorted;
+		var fields = ['symbol', 'similarity', 'yield', 'begin', 'end', 'industry', 'baseBars', 'kLine'];
+
+		var csvData = json2csv({data:patterns, fields: fields});
+		console.log(path, csvData);
+		fs.writeFileSync(path, csvData);
+	} catch(e) {
+		console.error(e);
+	}
+}
+
 class SortBar extends React.Component {
 
 	constructor(props) {
@@ -35,12 +50,26 @@ class SortBar extends React.Component {
 	}
 
 	componentDidMount() {
-
+		var chooseFileDom = this.refs.save_as;
+		// chooseFileDom.setAttribute('nwsaveas', '新建文件.csv');
+		var chooseFile = require('../shared/fileHelper').chooseFile;
+		chooseFile(this.refs.save_as, savePatternsToCsv);
 	}
 
 	componentWillReceiveProps(newProps){
 		if(newProps.crossFilter !== this.props.crossFilter) {
 			this.setState({values: {min:0, max:100}, searchSymbol: ''});
+			//设置 保存默认名
+			try{
+				var searchMetaData = store.getState().patterns.searchMetaData;
+				var symbol = searchMetaData.symbol,
+						bars = searchMetaData.bars;
+				symbol = symbol.indexOf(':') > -1 ? symbol.split(':')[1] : symbol;
+				var nameDefault = `${symbol}(${bars}根K线).csv`;
+				this.refs.save_as.setAttribute('nwsaveas', nameDefault);
+			}catch(e){
+				console.error(e);
+			}
 		}
 	}
 
@@ -187,7 +216,7 @@ class SortBar extends React.Component {
 						<span data-kstooltip="排序" className={'icon sort '+(panelType===0 ? 'active' : '')}></span>
 						{this.renderChildPanel(0)}
 					</button>
-
+					<span className="save-as-container" data-kstooltip="保存结果"><input type="file" ref='save_as' /></span>
 				</div>
 			</div>);
 	}

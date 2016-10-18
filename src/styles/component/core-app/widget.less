@@ -587,3 +587,34 @@
 		display: inline-block;
 	}
 }
+
+//custom-file-input
+input[nwsaveas] {
+	outline: none !important;
+	width: 20px;
+	height: 20px;
+	&::-webkit-file-upload-button {
+		visibility: hidden;
+	}
+	&::before {
+		width: 20px;
+		height: 20px;
+		content: '';
+	  display: inline-block;
+	  background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+	  // border: 1px solid #999;
+	  // border-radius: 3px;
+	  // padding: 5px 8px;
+	  outline: none;
+	  white-space: nowrap;
+	  -webkit-user-select: none;
+	  cursor: pointer;
+	  // text-shadow: 1px 1px #fff;
+	  // font-weight: 700;
+	  // font-size: 10pt;
+	  background-image: url(@icons_url);
+	  .icon_position(1,8,3,5px,5px);
+	}
+
+}
+
