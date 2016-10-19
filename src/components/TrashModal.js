@@ -117,7 +117,8 @@ class TrashModal extends React.Component {
 
 			patternViewNode.mouseenter(function() {
 				/* Stuff to do when the mouse enters the element */
-				patternViewNode.append(`<div class='reset-container flex-center'><i class='fa fa-undo'></i></div>`);
+				// patternViewNode.append(`<div class='reset-container flex-center'><i class='fa fa-undo'></i></div>`);
+				patternViewNode.append(`<div class='reset-container flex-center'><i class='ks-undo-icon'></i></div>`);
 			}).mouseleave(function(event) {
 				/* Act on the event */
 				patternViewNode.find('.reset-container').remove();
