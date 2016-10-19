@@ -25,7 +25,7 @@ class PatternInfo extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {showSwitch: true};
+		this.state = {showSwitch: false};
 	}
 
 	componentDidMount() {
