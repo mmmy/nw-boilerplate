@@ -62,9 +62,11 @@
 		// border: 1px solid red;
 		width: 26px;
 		height: 26px;
-		background: url('./image/trash-icon.png') no-repeat;
-		background-size: 100%;
-		background-position: 0 0;
+		background: url(@icons_url) no-repeat;
+
+		// background-size: 100%;
+		// background-position: 0 0;
+		.icon_position(1,2,2,2px,2px);
 		&:before {
 			content: '';
 		}
@@ -118,6 +120,7 @@
 		.scrollbar-track(@background-color:transparent);
 		.scrollbar-thumb();
 		margin-right: 15px;
+		margin-left: 20px;
 	}
 	.footer {
 		border-top: 1px solid @ks-color-gray-9;
@@ -589,7 +592,7 @@
 }
 
 //custom-file-input
-input[nwsaveas] {
+input[nwsaveas], input.nwsaveas {
 	outline: none !important;
 	width: 20px;
 	height: 20px;

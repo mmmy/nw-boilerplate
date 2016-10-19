@@ -160,7 +160,7 @@ class StockView extends React.Component {
 		      		<div className='favorites-input-wrapper'>
 		      			<input className='font-simsun' ref='favorite_input' onChange={this.handleChangeFoldInput.bind(this)} placeholder='新建收藏夹'/>
 		      			<button className='flat-btn new-folder ks-disable' ref='add_newfolder_btn' onClick={this.handleNewFavorites.bind(this)}>+</button>
-		      			<button className='flat-btn clear' onClick={this.handleClearInput.bind(this)}>x</button>
+		      			<button className='flat-btn clear ks-disable' ref='clear_btn' onClick={this.handleClearInput.bind(this)}>x</button>
 		      		</div>
 		      		<h6 className='trash-panel-btn font-simsun' onClick={this.handleShowTrashedPatterns.bind(this)}>
 		      			<span className='name'>回收站</span>
@@ -227,6 +227,9 @@ class StockView extends React.Component {
 
 	handleChangeFoldInput(e) {
 		let folderName = e.currentTarget.value;
+		
+		$(this.refs.clear_btn).toggleClass('ks-disable', folderName==='');
+
 		if(folderName === '' || favoritesController.hasFavoriteFolder(folderName)) {
 			$(this.refs.add_newfolder_btn).addClass('ks-disable');
 		} else {
@@ -247,6 +250,8 @@ class StockView extends React.Component {
 
 	handleClearInput() {
 		$(this.refs.favorite_input).val('');
+		$(this.refs.clear_btn).addClass('ks-disable');
+		$(this.refs.add_newfolder_btn).addClass('ks-disable');
 	}
 
 	handleShowTrashedPatterns(e) {

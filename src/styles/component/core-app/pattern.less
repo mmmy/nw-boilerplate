@@ -13,6 +13,7 @@
 .pattern-container{
 	// float: left;
 	position: absolute;
+	overflow: hidden;
 	// right: 0;
 	left: 20px;
 	bottom: 10px;
@@ -120,13 +121,13 @@
 		//width: px;
 		font-size: 12px;//1.2rem;
 		color: @lulu-gary3;
-		margin-right: 6.8%;
+		margin-right: 20px;//6.8%;
 		padding: 5px 0;
 	}
 
 	.slider-container{
 		display: inline-block;
-		width: 55%;
+		width: calc(~"100% - 60px - 20px");//55%;
 		padding-left: 3%;
 		//padding: 8px;
 	}
@@ -185,7 +186,7 @@
 
 	.child-panel-search {
 		position: absolute;
-		right: 20px;
+		right: 46px;
 		top: 0;
 		background-color: white;
 		width: 0;
@@ -428,6 +429,7 @@
 	&.trashed {
 		width: 160px;
 		height: 200px;
+		cursor: pointer;
 	}
 
 	&:nth-child(2n) {
@@ -575,6 +577,13 @@
 		.fa-undo {
 			font-size: 50px;
 			color: @ks-color-gray-6;
+		}
+		.ks-undo-icon {
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			background-image: url(@icons_url);
+			.icon_position(0,9,2);
 		}
 	}
 
