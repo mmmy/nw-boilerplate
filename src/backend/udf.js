@@ -24,8 +24,13 @@ let getGroupCode = (callback) => {
   
   const requestCb = (result) => {
     result = dealGroupCode(result);
-    Cache.setToFile(result, 'groupCode');
-    callback && callback(result);
+    if (JSON.parse(result)) {
+        //result != "[]"
+        Cache.setToFile(result, 'groupCode');
+        callback && callback(result);
+    } else if (Cache.isExist('groupCode')) {
+        callback && callback(Cache.getFromFile('groupCode'));
+    }
   };
 
   const errorCb = (err) => {
