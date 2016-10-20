@@ -92,8 +92,14 @@ class CrossfilterView extends React.Component {
 	componentDidMount() {
 
 		this.drawDc();
-
-		this.bindResizeFunc = lodash.debounce(this.handleResize.bind(this), 200, {trailing: true});
+		let that = this;
+		this.bindResizeFunc = lodash.debounce((e)=>{
+			that.handleResize.call(that, e, true);
+			setTimeout(()=>{
+				that.industryPieChart.redraw();
+			},100);
+			// this.handleResize.bind(this);
+		}, 500, {trailing: true});
 
 		window.addEventListener('resize', this.bindResizeFunc);
 	}
@@ -147,14 +153,14 @@ class CrossfilterView extends React.Component {
 			let xTicks = 3, yTicks = 5;
 			if(bubbleChartW > 400) xTicks = 6;
 			if(bubbleChartH > 200) yTicks = 9;
-			setTimeout(() => { 
+			// setTimeout(() => { 
 				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH)/*.symbolSize(size).excludedSize(size)*/.redraw(); 
 				that.yieldDateScatterChart.xAxis().ticks(xTicks);
 				that.yieldDateScatterChart.yAxis().ticks(yTicks);
 				that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart);
 				that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart);
 				disableTrasitionOnce && that.yieldDateScatterChart.transitionDuration(transitionDuration);
-			});
+			// });
 			// setTimeout(()=> {that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart) })
 			// setTimeout(() => {that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart) });
 			this.scatterChartW = bubbleChartW;
@@ -162,11 +168,11 @@ class CrossfilterView extends React.Component {
 		}
 
 		if (pieChartR != this.pieChartR) {
-			setTimeout(() => {
+			// setTimeout(() => {
 				// console.debug('pie chart resize !!!!'); 
 				that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); 
 				disableTrasitionOnce && that.industryPieChart.transitionDuration(transitionDuration);
-			});
+			// });
 			//setTimeout(()=> { that.industryPieChart.renderYAxis(that.industryPieChart) });
 			//setTimeout(() => { that.industryPieChart.renderXAxis(that.industryPieChart) });
 			this.pieChartR = pieChartR;
@@ -175,12 +181,16 @@ class CrossfilterView extends React.Component {
 		}
 
 		if (yieldChartW != this.yieldChartW || yieldChartH != this.yieldChartH) {
-			setTimeout(() => {
+			// setTimeout(() => {
 				that.yieldDimCountChart.width(yieldChartW).height(yieldChartH).redraw(); 
 				disableTrasitionOnce && that.yieldDimCountChart.transitionDuration(transitionDuration);
-			});
-			setTimeout(()=> {that.yieldDimCountChart.renderYAxis(that.yieldDimCountChart) });
-			setTimeout(() => {that.yieldDimCountChart.renderXAxis(that.yieldDimCountChart) });
+			// });
+			//setTimeout(()=> {
+				that.yieldDimCountChart.renderYAxis(that.yieldDimCountChart) 
+			//});
+			// setTimeout(() => {
+				that.yieldDimCountChart.renderXAxis(that.yieldDimCountChart) 
+			// });
 			this.yieldChartW = yieldChartW;
 			this.yieldChartH = yieldChartH;
 		}
