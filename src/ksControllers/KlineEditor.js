@@ -551,9 +551,11 @@ KlineEditor.prototype.movingUpDownRange = function(x, y, hasMoveIndex, all) {
 					}
 				} else {          //两侧以线性移动 linear
 					if(i <= this._moveIndex) {
-						rate *= (i - index0) / (this._moveIndex - index0);
+						if(this._moveIndex - index0 !==0)
+							rate *= (i - index0) / (this._moveIndex - index0);
 					} else {
-						rate *= (index1 - i) / (index1 - this._moveIndex);
+						if(index1 - this._moveIndex !==0)
+							rate *= (index1 - i) / (index1 - this._moveIndex);
 					}
 				}
 			}
