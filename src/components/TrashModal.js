@@ -103,7 +103,7 @@ class TrashModal extends React.Component {
 			
 			that._idArr.push(id);
 
-			let symbol = node.find('.symbol-container').text();
+			let symbol = node.find('.symbol-container>span').text();
 			let describe = node.find('.describe').text();
 			let imgSrc = node.find('img').attr('src');
 			let infoNode = node.find('.font-number');
