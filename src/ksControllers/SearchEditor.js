@@ -388,6 +388,7 @@ SearchEditor.prototype._handleRename = function(e) {
 }
 
 SearchEditor.prototype.setNotSaved = function() {
+	this.changeBaseBar();
 	this._notSaved = true;	
 }
 
@@ -402,6 +403,15 @@ SearchEditor.prototype.isSaved = function() {
 SearchEditor.prototype.save = function() {
 	$.extend(true, this._originDataObj, this._dataObj);
 	this._favoritesController.updateFavorites(this._originDataObj);
+}
+
+SearchEditor.prototype.changeBaseBar = function(len) {
+	try {
+		len = len || this._dataObj.kline.length;
+		this._dataObj.bars = len;
+	} catch(e) {
+		console.error(e);
+	}
 }
 
 SearchEditor.prototype.dispose = function() {
