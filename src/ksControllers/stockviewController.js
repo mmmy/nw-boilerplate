@@ -14,14 +14,16 @@ let _searchEditorHistory = null;
 let _searchEditorFavorites = null;
 
 //显示K线编辑器
-let _createDetailPanel = (parentDom, editorCache, dataObj) => {
+let _createDetailPanel = (parentDom, type, dataObj) => {
 	let editorContainer = $(`<div class='search-editor-container'></div>`);
 	let $newDom = $(`<div class='detail-panel'><div class='head-nav'><button class='flat-btn font-simsun return'><span class='icon-return'></span>返回</button></div></div>`).append(editorContainer);
+	let editorCache = null;
 	$newDom.find('button.return').click((event) => { //返回
 		_disposeDetailPanel(parentDom, editorCache);
 	});
 	$(parentDom).append($newDom);
 	editorCache = new SearchEditor(editorContainer, dataObj, favoritesManager, favoritesController);
+	(type == 'favorites') ? (_searchEditorFavorites = editorCache) : (_searchEditorHistory = editorCache);
 };
 
 let _disposeDetailPanel = (parentDom, editorCache) => {
@@ -96,7 +98,7 @@ let _handleReSearch = ({favoriteFolder=''},event) => {
 let _handleDetail = (event) => {
 	let dataObj = $(event.target).closest('.history-item').data('data');
 	let bodyNode = $(event.target).closest('.body-container')[0];
-	_createDetailPanel(bodyNode.parentNode, (bodyNode==_bodyDom ? _searchEditorHistory : _searchEditorFavorites), dataObj);
+	_createDetailPanel(bodyNode.parentNode, (bodyNode==_bodyDom ? 'history' : 'favorites'), dataObj);
 };
 
 let _handleRecoverPattern = (event) => {
@@ -695,6 +697,7 @@ favoritesController.hasFavoriteFolder = (folderName) => {
 favoritesController.setEditorSaved = () => {
 	try {
 		_searchEditorFavorites.setSaved();
+		_searchEditorFavorites.save();
 	} catch (e) {
 		console.error(e);
 	}
