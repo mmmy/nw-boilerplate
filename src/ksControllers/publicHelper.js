@@ -11,12 +11,14 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 	}
 	let folders = favoritesManager.getFavoritesFolders();
 	let optionsNode = $(`<div class='shoucang-pop-menu font-simsun'></div>`).on('mouseenter',function(e){ e.stopPropagation() });
-	let btnTemplate = `<span class='ks-input-wrapper border'><input placeholder='新建文件夹'><i class='button ks-check ks-disable'></i><i class='button ks-delete'></i></span>`;
+	let btnTemplate = `<span class='ks-input-wrapper border'><input placeholder='新建文件夹'><i class='button ks-check ks-disable'></i><i class='button ks-delete ks-disable'></i></span>`;
 	let $btnGroup = $(`<div class='input-wrapper'></div>`).append($(btnTemplate));
+	$btnGroup.find('.ks-delete').removeClass('ks-disable');
 
 	$btnGroup.find('input').blur(() => { $target.focus() })
 													.on('input', (event)=>{
 														let folderName = event.currentTarget.value;
+														// $btnGroup.find('.ks-delete').toggleClass('ks-disable', folderName==='');
 														if(folderName === '' || favoritesController.hasFavoriteFolder(folderName)) {
 															$btnGroup.find('.ks-check').addClass('ks-disable');
 														} else {
@@ -35,6 +37,8 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 																		$target.children().remove();
 																	});
 																	$content.append(button);
+																	$footer.find('input').val('');
+																	$(event.currentTarget).addClass('ks-disable');
 																}
 																$btnGroup.toggleClass('show', false);
 															});
@@ -47,9 +51,13 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 																																														favoritesController.setEditorSaved();
 																																														$target.children().remove();
 															 																														});
-	let $title = showRename ? $(`<div class='name-container'><h5>${dataObj.name || '未命名'}</h5></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('ks-disable','').replace('新建文件夹','自定义文件名')))
+	let $title = showRename ? $(`<div class='name-container'><h5>${dataObj.name || '未命名'}</h5></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('新建文件夹','自定义文件名')))
 													: $(`<h4 class='title'>另存为</h4>`);
-	$title.find('input').blur(() => { $target.focus(); });
+	$title.find('input').blur(() => { $target.focus(); }).on('input', function(e){
+		let newName = e.currentTarget.value;
+		$title.find('.button').toggleClass('ks-disable', newName==='');
+	});
+
 	$title.find('.ks-check').click(function(event) {
 		/* Act on the event */
 		let name = $title.find('input').val();
@@ -57,11 +65,13 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 			$title.find('h5').text(name);
 			dataObj.name = name;
 			$title.find('input').val('');
+			$title.find('.button').addClass('ks-disable');
 		}
 	});
 	$title.find('.ks-delete').click(function(event) {
 		/* Act on the event */
 		$title.find('input').val('');
+		$title.find('.button').addClass('ks-disable');
 	});
 
   let $label = type===1 ? $(`<div class="label-title">收藏至</div>`) : '';
