@@ -123,7 +123,12 @@ class PatternView extends React.Component {
 
 	handleMouseEnter(){
 		// this.handleMouseLeave();
-		let color = '#b61c15';
+		let color = '#8D151B';
+		try {
+			color = $.keyStone.configDefault.brownRed;
+		} catch(e) {
+			console.error(e);
+		}
 			// const showSymbol = true;
 			// this.setState({showSymbol});
 		let {id, industry} = this.props.pattern;
