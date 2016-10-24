@@ -22,7 +22,7 @@ function KlinePrediction(container, config) {
 
 	let $wrapper = $(`<div class='kline-editor-wrapper'></div>`).append(`<div class='kline-canvas-wrapper flex-center'><canvas tabindex='1' class='kline-canvas'/></div>`)
 														.append(`<div class='right-axis-y-wrapper'><canvas class=''/></div>`)
-														.append(`<div class='bottom-axis-x-wrapper'><canvas class=''/></div>`);
+														.append(`<div class='bottom-axis-x-wrapper silent'><canvas class=''/></div>`);
 
 	$(container).append($wrapper);
 
