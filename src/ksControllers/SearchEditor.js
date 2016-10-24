@@ -101,7 +101,7 @@ SearchEditor.prototype._initMain = function() {
 									.append($('<span class="input-label font-arial">L</span>')).append(this._OHLCInputs.L)
 									.append($('<span class="input-label font-arial">C</span>')).append(this._OHLCInputs.C);
 	let footer = $(`<div class='footer'></div>`).append(OCLHInputs)
-																							.append(`<span class='tool-btn search-button-wrapper'><button class='flat-btn search font-simsun'>搜索</button></span>`);
+																							.append(`<span class='tool-btn search-button-wrapper'><button class='flat-btn search font-simsun' data-kstooltip='搜索'>搜索</button></span>`);
 																							// .append($(`<button class='flat-btn tool-btn save'>保存</button>`));
 	//重新搜索
 	footer.find('.search').click(this._handleResearch.bind(this));
