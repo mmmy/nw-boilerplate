@@ -14,6 +14,9 @@ let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H) => {
 			cY = (C - yMax) * rate + marginTop,
 			lY = (L - yMax) * rate + marginTop,
 			hY = (H - yMax) * rate + marginTop;
+	if(oY == cY) { //至少绘制一个像素的高度
+		cY += 1;
+	}
 	return {open:_to05(oY), close:_to05(cY), low:_to05(lY), high:_to05(hY)};
 };
 /**
@@ -115,7 +118,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		let x = left + (i+1) * klineXSpace - klineXSpace/2;
 		x = _to05(x);
 		let prices = kline[i];
-		isUpCandle.push(prices[2] > prices[1]);
+		isUpCandle.push(prices[2] >= prices[1]);
 		let ys = _dataToPointY(top, viewYheight, min, max, prices[1], prices[2], prices[3], prices[4]);
 
 		// console.assert(ys.open < (height - top));
