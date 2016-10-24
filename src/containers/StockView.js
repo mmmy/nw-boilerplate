@@ -113,7 +113,7 @@ class StockView extends React.Component {
 					OHLCBarBorderColor: true,
 					ksSearch: true,
 					ksSearchFloat: true,
-					ksSearchRange: [10, 100],
+					ksSearchRange: [10, 250],
 					showLiveBtn: true,
 					alwaysUpdateCache: true,
 					// candleStyle: 9,
