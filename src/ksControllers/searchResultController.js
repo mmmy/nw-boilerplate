@@ -70,7 +70,7 @@ let toggleHtml = `<div class="container-toggle float transition-all"><div class=
 let _$toggle = null;
 
 let patternHtml = `<div class='pattern-inner'>
-										<span class='info-item symbol'><div class='item-value font-number size10'>--</div><div class='item-title font-simsun'>--</div></span>
+										<span class='info-item symbol ks-abbr'><div class='item-value font-number size10'>--</div><abbr class='item-title font-simsun'>--</abbr></span>
 										<span class='kline'><canvas></canvas></span>
 										<span class='info-item similarity'><div class='item-title font-simsun'>相似度</div><div class='item-value font-number small red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 										<span class='info-item earn'><div class='item-title font-simsun'>涨跌</div><div class='item-value font-number small'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
@@ -155,7 +155,7 @@ let _updatePatternUI = (symbol, name, similarity, earn, kline, decimal) => {
 	earn = parseFloat(earn * 100).toFixed(decimal);
 
 	_patternDoms.symbol.text(symbol);
-	_patternDoms.name.text(name);
+	_patternDoms.name.text(name).attr('title', name);
 	_patternDoms.similarity.text(similarity);
 	_patternDoms.earn.text(earn);
 
