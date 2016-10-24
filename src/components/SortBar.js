@@ -286,9 +286,10 @@ class SortBar extends React.Component {
 	}
 
 	filterSymbol(symbol){
+		symbol = symbol.toUpperCase();
 		this.initDimensions();
 		this.searchDim.filter(function(d){ 
-			return (typeof d[0] == 'string' && d[0].indexOf(symbol) >=0) || typeof d[1] == 'string' && d[1].indexOf(symbol) >= 0;
+			return (typeof d[0] == 'string' && d[0].toUpperCase().indexOf(symbol) >=0) || typeof d[1] == 'string' && d[1].toUpperCase().indexOf(symbol) >= 0;
 		});
 		DC.redrawAll();
 		this.props.dispatch(filterActions.setFilterSymbol(symbol));
