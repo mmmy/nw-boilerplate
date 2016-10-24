@@ -207,7 +207,7 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 	let fromInfoContent = (type === 0 || type === 2) ? pattern.symbol : (pattern.favoriteFolder ? `收藏夹/${pattern.favoriteFolder}` : `${pattern.symbol}<br/>${startDateStr}<br/>${endDateStr}<br/>${getIntervalString(pattern.interval)}`); 
 	let fromInfo = `<p class='from-info font-arial'><span class='font-simsun'>来源</span>:${fromInfoContent}</p>`;
 
-	let favoriteFolder = type === 0 ? _activeName : '';
+	let favoriteFolder = (type === 0 ? _activeName : pattern.favoriteFolder) || '';
 
 	let typeClass = (type === 0 || type ===2) ? 'favorites' : 'history';
 	let trashClass = (type!=2 && state.isTrashed) ? 'hide' : '';//被删除
