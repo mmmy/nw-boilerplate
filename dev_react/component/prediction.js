@@ -457,7 +457,12 @@ var data = [
 			// window.addEventListener('resize', function(){
 			// 	window.predictionChart.resize();
 			// });
-			drawKline(this.refs.canvas, data.slice(0, 100));
+			let data1 = data.slice(0, 100);
+			for(var i=0; i<data1.length; i++) {
+				// if(i>50)
+					// data1[i][4] = data1[i][2] = data1[i][3] = data1[i][1];
+			}
+			drawKline(this.refs.canvas, data1);
 		},
 		render(){
 			return <div>
@@ -465,7 +470,7 @@ var data = [
 					<div ref='container' style={{width:'300px', height:'250px', border:'1px solid #eee'}}>
 				
 					</div>
-					<div><canvas ref='canvas' width='800' height='400' style={{width: '800px', height:'400px'}} /></div>
+					<div style={{width: '100px', height:'400px', border: "1px solid red"}}><canvas ref='canvas' width='100' height='400'/></div>
 			</div>
 		}
 	});
