@@ -157,13 +157,14 @@ ConfigEditor.prototype._clickFuture = function(e) {
 }
 
 ConfigEditor.prototype._clickReduceBars = function(e) {
-	if(this._config.additionDate.value > 1) this._config.additionDate.value -= 1;
+	if(this._config.additionDate.value > 0) this._config.additionDate.value -= 1;
 	this.updateBars();
 	this.onEdit();
 }
 
 ConfigEditor.prototype._clickAddBars = function(e) {
-	this._config.additionDate.value += 1;
+	var additionDateValue = +this._config.additionDate.value;
+	this._config.additionDate.value = additionDateValue + 1;
 	this.updateBars();
 	this.onEdit();
 }
