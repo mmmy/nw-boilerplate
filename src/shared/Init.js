@@ -65,7 +65,7 @@ let initJqueryPlugins = () => {
 	        var bodyH = $parent.height();
 	        var right = bodyW - (e.clientX - parentOffset.left) - containerW + _offsetX;
 	        var top = e.clientY - parentOffset.top - _offsetY;
-	        if(e.clientX > 0 && right > 0) {    //没有超出边界
+	        if(e.clientX > 0 && right > 0 && (containerW + right) < bodyW) {    //没有超出边界
 	            $container.css('right', right);
 	        }
 	        if(e.clientY > 50 && top > 0) {
