@@ -245,6 +245,8 @@ class StockView extends React.Component {
 		if(folderName) {
 			favoritesController.addNewFolder(folderName);
 			$(this.refs.favorite_input).val('');
+			$(this.refs.add_newfolder_btn).addClass('ks-disable');
+			$(this.refs.clear_btn).addClass('ks-disable');
 		}
 	}
 

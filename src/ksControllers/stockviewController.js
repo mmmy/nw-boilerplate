@@ -31,7 +31,7 @@ let _disposeDetailPanel = (parentDom, editorCache) => {
 	let remove = () => {
 			editorCache.dispose();
 			editorCache = null;	
-			$(parentDom).find('.detail-panel').remove();
+			parentDom && $(parentDom).find('.detail-panel').remove();
 	};
 	if(!isSaved) {
 		new ConfirmModal({
@@ -52,10 +52,39 @@ let _disposeDetailPanel = (parentDom, editorCache) => {
 	// _refreshFavoritesBody();
 }; 
 
-let _removeSearchEditor = () => {
-	_searchEditorFavorites && _searchEditorFavorites.dispose && _searchEditorFavorites.dispose();
-	_searchEditorFavorites = null;
-	$('.favorites .detail-panel').remove();
+let _removeSearchEditor = (onDispose) => {
+	try {
+		if(!_searchEditorFavorites) {
+			onDispose && onDispose();
+			return;
+		}
+		let isSaved = _searchEditorFavorites.isSaved();
+		let remove = () => {
+				_searchEditorFavorites.dispose();
+				_searchEditorFavorites = null;	
+				$('.favorites .detail-panel').remove();
+		};
+		if(!isSaved) {
+			new ConfirmModal({
+				title:'编辑未保存, 是否保存?', 
+				sessionName:'', 
+				onYes:()=>{
+					_searchEditorFavorites.save();
+					remove();
+					onDispose && onDispose();
+				}, 
+				onNo:()=>{
+					remove();
+					onDispose && onDispose();
+				}
+			});
+		} else {
+			remove();
+			onDispose && onDispose();
+		}
+	} catch(e) {
+		console.error(e);
+	}
 }
 
 let _reSearch = (dataObj, cb, {favoriteFolder=''}) => {  //当从收藏夹过来的 favoriteFolder 为收藏夹名
@@ -485,20 +514,23 @@ let _bodyDomF = null;
 let _activeName = '';
 
 let _handleFolderClick = (event) => {
-	let $item = $(event.target).closest('.favorites-folder');
-	let data = $item.data('data');
-	let name = $item.data('name');
-	if(_activeName == name) return;
-	$item.siblings('.favorites-folder').removeClass('active');
-	$item.addClass('active');
-	let $bodyDom = $(_bodyDomF);
-	_activeName = name;
-	$bodyDom.empty();
-	$bodyDom.append(_generatePatterns(data, 0, {name:name}));
+	let onDispose = () => {
+		let $item = $(event.target).closest('.favorites-folder');
+		let data = $item.data('data');
+		let name = $item.data('name');
+		if(_activeName == name) return;
+		$item.siblings('.favorites-folder').removeClass('active');
+		$item.addClass('active');
+		let $bodyDom = $(_bodyDomF);
+		_activeName = name;
+		$bodyDom.empty();
+		$bodyDom.append(_generatePatterns(data, 0, {name:name}));
 
-	$(_navDomF).siblings('.trash-panel-btn').removeClass('active');
+		$(_navDomF).siblings('.trash-panel-btn').removeClass('active');
+	};
+
 	//移除编辑器
-	_removeSearchEditor();
+	_removeSearchEditor(onDispose);
 };
 
 let _refreshBodyItemUI = (ele) => {
