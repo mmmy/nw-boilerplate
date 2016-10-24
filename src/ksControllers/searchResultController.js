@@ -221,9 +221,8 @@ let _updateEarnChart = (rawDataArr) => {
 						.transitionDuration(0)
 						.elasticY(false)
 						.elasticX(false)
-						.title('aaa',function(){ return 'nihaoa' })
 						.brushOn(false)
-						.renderTitle(true)
+						.renderTitle(false)
 						.x(d3.scale.linear().domain([0, barChartBars+1]));
 	
 	_earnChart.xAxis().tickFormat((v) => {
