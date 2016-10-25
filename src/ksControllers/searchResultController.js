@@ -219,7 +219,7 @@ let _updateEarnChart = (rawDataArr) => {
 						.colors('#4F4F4F')
 						.gap(1)
 						.transitionDuration(0)
-						.elasticY(false)
+						.elasticY(true)
 						.elasticX(false)
 						.brushOn(false)
 						.renderTitle(false)
