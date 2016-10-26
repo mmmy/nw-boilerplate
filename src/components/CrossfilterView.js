@@ -596,7 +596,7 @@ resizeChart1() {
 		this.scatterChartW = width;
 		this.scatterChartH = height;
 
-		let yieldDateScatterChart = this.yieldDateScatterChart || DC.scatterPlot(position_bubble_chart);
+		let yieldDateScatterChart = /*this.yieldDateScatterChart ||*/ DC.scatterPlot(position_bubble_chart);
 		let timeOffset = parseInt(this.timeRange[1] - this.timeRange[0]) * 0.05;
 
 		yieldDateScatterChart
@@ -813,7 +813,9 @@ resizeChart1() {
 		this.yieldChartH = height;
 
 		//收益率统计
-		let yieldDimCountChart = this.yieldDimCountChart || DC.barChart(yield_count_chart);
+		let yieldDimCountChart = /*this.yieldDimCountChart ||*/ DC.barChart(yield_count_chart);
+		// yieldDimCountChart.filterAll();
+
 		yieldDimCountChart
 			.width(width)
 			.height(height)
@@ -860,7 +862,7 @@ resizeChart1() {
 		//_dimensionFilter(chart.dimension(), chart.filters());
 		// return;
 		let { dispatch } = this.props;
-		// console.info('onChartFiltered !!!',filter);
+		// console.info('yieldDimCountChart onChartFiltered !!!',filter);
 		switch (chart) {
 			case this.industryPieChart: 			//行业过滤
 				this.setResetBtnVisibility(chart);
