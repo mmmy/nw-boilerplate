@@ -180,6 +180,7 @@ class PatternView extends React.Component {
 		let piePath = matchPie.firstChild;// && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = '';
+			matchPie.dispatchEvent(new window.MouseEvent('mouseleave'));
 		}
 
 		// let that = this;
