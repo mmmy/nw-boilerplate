@@ -13,7 +13,7 @@ let { patternOptions } = config;
  * @param  {[type]} chunks [description]
  * @return {[type]}        [description]
  */
-let chunksToKline = (chunks) => {
+let chunksToKline = (chunks, metaAdj) => {
 	
 	let klineData = [];
 	
@@ -25,8 +25,8 @@ let chunksToKline = (chunks) => {
 		if(type === 'RecordChunk' || type === undefined) {
 			
 			chunkKline = chunk.records.map((record) => {
-				let { datetime, open, close, low, high } = record;
-				return [datetime, open, close, low, high];
+				let { datetime, open, close, low, high, adjfactor=1 } = record;
+				return [datetime, open*adjfactor/metaAdj, close*adjfactor/metaAdj, low*adjfactor/metaAdj, high*adjfactor/metaAdj];
 			});
 			
 		} else {
@@ -47,22 +47,22 @@ let chunksToKline = (chunks) => {
  * args: [{symbol, dateRange:[]},]
  */
 
-let postSymbolData = (args, cb, errorCb) => {
-
-	const { bars } = args;
+let postSymbolData = (startIndex, args, bars, cb, errorCb) => {
 
 	let options = {           		
 		...patternOptions
 	};
 
-	let batchCondition = args.map(({symbol, dateRange, timeUnit='d', category='cs', additionDate = { type:'days', value: 10 } }) => {
-		
+	let batchCondition = args.map(({symbol, dateRange, lastDate, timeUnit='d', dataCategory='cs', additionDate = { type:'days', value: 30 } }) => {
+		lastDate = typeof lastDate === 'string' ? lastDate : lastDate.time;
+		let begin = moment.utc(dateRange[0]).add(-1, 'seconds').toISOString();
+		let end = lastDate && moment.utc(lastDate).add(1, 'seconds').toISOString() || moment.utc(dateRange[1]).add(additionDate.value, additionDate.type).toISOString();
 		return {
-			dataCategory: category,
+			dataCategory: dataCategory,
 			dataTimeUnit: timeUnit,
 			id: symbol,
-			begin: moment.utc(dateRange[0]).toISOString(),
-	        end: moment.utc(dateRange[1]).add(additionDate.value, additionDate.type).toISOString()
+			begin: begin,
+	    end: end
 		};
 	});
 
@@ -74,7 +74,7 @@ let postSymbolData = (args, cb, errorCb) => {
 	// 	'pt': args.map(({symbol, dateRange}) => { return path.join('/', symbol, ''+dateRange[0], ''+dateRange[1]); })
 	// });
 	let postData = JSON.stringify(postObj);
-	console.log(postData);
+	// console.log('--------------------------------------', postData);
 
 	let dataCb = (resStr) => {
 		
@@ -87,8 +87,8 @@ let postSymbolData = (args, cb, errorCb) => {
 			let mergeData = () => {
 
 				let klineArr = resObj.batchDataSet.map(({metaData, chunks}) => {
-
-					let kLine = chunksToKline(chunks);  //k线数据
+					let metaAdj = metaData.adjfactor || 1;
+					let kLine = chunksToKline(chunks, metaAdj);  //k线数据
 					let yieldRate = calcYieldRate(kLine, bars);
 
 					return {
@@ -99,7 +99,7 @@ let postSymbolData = (args, cb, errorCb) => {
 
 				});
 
-				cb && cb(klineArr);
+				cb && cb(startIndex, klineArr);
 			};
 			//TODO:获取文件chunk, 并合并数据
 			let fileChunkCount = 0;
@@ -112,7 +112,7 @@ let postSymbolData = (args, cb, errorCb) => {
 							chunkObj.data = data;
 							fileChunkCount -= 1;
 							if(fileChunkCount === 0) {
-								console.log('got all chunks');
+								// console.log('got all chunks');
 								mergeData();
 							}
 						}, errorCb);
@@ -131,7 +131,7 @@ let postSymbolData = (args, cb, errorCb) => {
 
 	};
 
-	request(options, dataCb, errorCb, postData);
+	return request(options, dataCb, errorCb, postData);
 }
 
 module.exports = {

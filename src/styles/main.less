@@ -1,4 +1,8 @@
+@import (less) 'lulu';
+
 @import 'bootstrap/bootstrap';
+
+@import (less) 'animate.css';
 
 @import 'font-awesome/font-awesome';
 
@@ -10,15 +14,21 @@
 
 @import 'mixin/slider';
 
-@import (less) '../../node_modules/react-input-range/dist/react-input-range.css';
+// @import (less) '../../node_modules/react-input-range/dist/react-input-range.css';
 
 @import (less) '../../node_modules/rc-slider/assets/index.css';
 
 @import (less) 'mixin/bootstrap';
+
 
 #app{
 	position: fixed;
 	width: 100%;
 	height: 100%;
 	.font-msyh();
+}
+html {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
 }

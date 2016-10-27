@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
+import Switch from './Switch';
 import classNames from 'classnames';
+import store from '../store';
+import {getDecimalForStatistic} from '../shared/storeHelper';
 
 const propTypes = {
 	pattern: PropTypes.object.isRequired,
@@ -7,6 +10,8 @@ const propTypes = {
 	colomn: PropTypes.bool,
 	index: PropTypes.number,
 	fullView: PropTypes.bool,
+	isTrashed: PropTypes.bool,
+	toggleTrash: PropTypes.func
 };
 
 const defaultProps = {
@@ -14,22 +19,38 @@ const defaultProps = {
   	//index: -1,
 };
 
+let _decimal = 2;
+
 class PatternInfo extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {showSwitch: false};
 	}
 
 	componentDidMount() {
 
 	}
 
-	componentWillReceiveProps(){
-
+	componentWillReceiveProps(newProps){
+		if(newProps.index == 0 && newProps.pattern != this.props.pattern) {
+			_decimal = getDecimalForStatistic();
+		}
 	}
 
-	shouldComponentUpdate(){
+	shouldComponentUpdate(newProps){
+
+		let {similarity} = newProps.pattern;
+		let yieldRate = newProps.pattern.yield;
+
+		let {old_similarity} = this.props.pattern;
+		let old_yieldRate = this.props.pattern.yield;
+
+		//属性发生变化才渲染
+		if (old_similarity === similarity && old_yieldRate == yieldRate) {
+			return false;
+		}
+
 		return true;
 	}
 
@@ -38,11 +59,11 @@ class PatternInfo extends React.Component {
 	}
 
 	render(){
-
+		//console.log('pattern-info-container');
 		let {similarity} = this.props.pattern;
 		let yieldRate = this.props.pattern.yield;
 
-		let { column, index, fullView } = this.props;
+		let { column, index, fullView, isTrashed } = this.props;
 
 		const smaller = !fullView && index > 0 && index < 5,
 				larger = !fullView && index === 0;
@@ -54,20 +75,39 @@ class PatternInfo extends React.Component {
 		});
 
 		let flexClass = classNames('flex-container', { 'column':  column});
+		let switchWidget = this.state.showSwitch ? <div className='pattern-info-switch-wrapper'><Switch trasded={isTrashed} onToggle={this.props.toggleTrash}/></div> : '';
 		// console.log(column,smaller, index);
-		return (<div className = {containerClass}>
+		let brownRed = $.keyStone.configDefault.brownRed || '#8D151B';
+
+		return (<div className = {containerClass} onMouseEnter={this.mouseEnter.bind(this)} onMouseLeave={this.mouseLeave.bind(this)}>
 			<div className = {flexClass}>
 				<div>
-					<h5>相似度</h5>
-					<p className='font-number'>{(similarity*100).toFixed(0)+'%'}</p>
+					<h5 className='font-simsun'>相似度</h5>
+					<p className='font-number'>{(similarity*100 + '').slice(0, 4)}{'%'}</p>
 				</div>
 				{ (column && smaller) ? [] : (<div>
-					<h5>返回</h5>
-					<p className='font-number'>{(yieldRate*100).toFixed(1)+'%'}</p>
+					<h5 className='font-simsun'>涨跌</h5>
+					<p className='font-number' style={{color: (yieldRate>0 ? brownRed : '')}}>{(yieldRate*100).toFixed(_decimal)+'%'}</p>
 				</div>)}
 			</div>
+			{switchWidget}
 		</div>);
 	}
+
+	mouseEnter() {
+		let {column} = this.props;
+		let fullView = !store.getState().layout.stockView;
+		if(fullView) {
+			this.setState({showSwitch: true});
+		}
+	}
+
+	mouseLeave() {
+		if(this.state.showSwitch) {
+			this.setState({showSwitch: false});
+		}
+	}
+
 }
 
 PatternInfo.propTypes = propTypes;

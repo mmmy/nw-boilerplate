@@ -1,5 +1,7 @@
-const getChart = (type) => {
-  let i = null;
+'use strict';
+
+var getChart = function getChart(type) {
+  var i = null;
   switch (type) {
     case 'main':
       i = 1;
@@ -12,22 +14,21 @@ const getChart = (type) => {
   }
 
   return document[window.document.getElementsByTagName('iframe')[i].id];
-}
+};
 
-const setChartLayout = () => {
-  setInterval(() => {
-    let chart = document[window.document.getElementsByTagName('iframe')[0].id]
-    if (chart.W76 && chart.Q5) {
-      setChartLayout();
-      chart.W76.setChartLayout(chart.Q5, '2v');
-    }
-  }, 0);
-}
+// var setChartLayout = function setChartLayout() {
+//   setInterval(function () {
+//     var chart = window.widget_comparator;
+//     if (chart.W76 && chart.Q5) {
+//       setChartLayout();
+//       chart.W76.setChartLayout(chart.Q5, 'ks');
+//     }
+//   }, 0);
+// };
 
-
-const getComparatorSize = () => {
-  setTimeout(() => {
-    let chart = getChart('comparator');
+var getComparatorSize = function getComparatorSize() {
+  setTimeout(function () {
+    var chart = getChart('comparator');
     if (!chart.Q2) {
       getComparatorSize();
     } else {
@@ -35,13 +36,13 @@ const getComparatorSize = () => {
       return {
         h: chart.Q2._jqMainDiv.context.clientHeight,
         w: chart.Q2._jqMainDiv.context.clientWidth
-      }
+      };
     }
-  }, 1E3)
-}
+  }, 1E3);
+};
 
 module.exports = {
-	setChartLayout,
-  getChart,
-  getComparatorSize
-}
+  // setChartLayout: setChartLayout,
+  getChart: getChart,
+  getComparatorSize: getComparatorSize
+};

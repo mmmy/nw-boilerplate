@@ -3,7 +3,7 @@ let randomDate = function() {
 	let millionSeconds1990 = new Date('1990/01/01').getTime();
 	let millionSeconds2016 = new Date().getTime();
 	let dis = millionSeconds2016 - millionSeconds1990;
-	
+
 	let randomDate = millionSeconds1990 + Math.round(Math.random() * dis);
 
 	return randomDate;
@@ -44,7 +44,7 @@ const randomPartterns = function(n) {
 	let partterns = [];
 	for(let i=0; i<n; i++){
 		partterns.push({
-			symbol: '000001',
+			symbol: '00000' + parseInt(Math.random() * 10) + '.SZ',
 			similarity: Math.random(),
 			kLine: randomKLine(),
 		});

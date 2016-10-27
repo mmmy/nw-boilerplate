@@ -16,7 +16,7 @@ const defaultProps = {
 
 };
 
-class Template extends React.Component {
+class statisticsContainer extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -31,38 +31,39 @@ class Template extends React.Component {
 
 	}
 
-	shouldComponentUpdate(){
-		return true;
-	}
+	// shouldComponentUpdate(newProps, newState){
+	// 	// return true;
+	// 	return newProps.filter === this.props.filter;
+	// }
 
 	componentWillUnmount(){
 
 	}
 
 	componentDidUpdate() {
-		console.log('statisticsContainer did update', new Date() - this.renderDate);
+		// console.info('statisticsContainer did update', new Date() - this.renderDate);
 	}
 
 	render(){
-		this.renderDate = new Date();
-		const { fullView, statisticsLarger, report, crossFilter, dispatch} = this.props;
+		// this.renderDate = new Date();
+		const { fullView, statisticsLarger, report, crossFilter, dispatch, filter, searchConfig} = this.props;
 		const className = classNames('transition-all', 'statistics-container', {
 			'full': fullView,
 			'larger': statisticsLarger,
 		});
 
-		const fistReportClass = classNames('transition-all', 'transition-delay2','report-container-wrap',{
+		const fistReportClass = classNames('transition-all', 'transition-delay2','report-container-wrap font-simsun',{
 			'stretch': !fullView
 		});
 		
-		const reportClass2 = classNames('report-container-wrap', {
+		const reportClass2 = classNames('report-container-wrap font-simsun', {
 			'ks-hidden': !fullView,
 			//'transition-delay0': !fullView,
 			'ks-fade-in': fullView,
 			'ks-show': fullView
 		});
 
-		const reportClass3 = classNames('reporttype-container-wrap', {
+		const reportClass3 = classNames('reporttype-container-wrap flex-center', {
 			'ks-hidden': !fullView,
 			//'transition-delay0': !fullView,
 			'ks-fade-in': fullView,
@@ -71,33 +72,37 @@ class Template extends React.Component {
 
 	    return (
 	      <div className={ className }>
-	        <div className={fistReportClass}><ReportDetailView report={report} fullView={fullView}/></div>
-	        <div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>
-	        <div className={reportClass3}><ReportTypeView report={report} /></div>
-	        <div className={'crossfilter-container-wrap'}>
-	          <CrossfilterView
-	            dispatch={dispatch}
-	            crossFilter={crossFilter}
-	            stretchView={fullView} />
-	        </div>
+	      	<div className='statistics-container-inner'>
+		        <div className={fistReportClass}><ReportDetailView searchConfig={searchConfig} crossFilter={crossFilter} fullView={fullView}/></div>
+		        {/*<div className={reportClass2}><ReportDetailView report={report} fullView={true}/></div>*/}
+		        {/*<div className={reportClass3}><ReportTypeView report={report} searchConfig={searchConfig}/></div>*/}
+		        {/*<div className={'crossfilter-container-wrap'}>
+		          <CrossfilterView
+		            dispatch={dispatch}
+		            crossFilter={crossFilter}
+		            stretchView={fullView} />
+		        </div>*/}
+		      </div>
 	      </div>
 	    );
 	}
 }
 
-Template.propTypes = propTypes;
-Template.defaultProps = defaultProps;
+statisticsContainer.propTypes = propTypes;
+statisticsContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const {layout, report, patterns} = state;
+	const {layout, report, patterns, filter} = state;
 	const {stockView, patternSmallView} = layout;
-	const {crossFilter} = patterns;
+	const {crossFilter, searchConfig} = patterns;
 	return {
 			fullView: !stockView,
 			statisticsLarger: patternSmallView,
 			crossFilter,
 			report,
+			filter,
+			searchConfig: searchConfig || state.searchConfig,
 		};
 };
 
-export default connect(stateToProps)(Template);
+export default connect(stateToProps)(statisticsContainer);

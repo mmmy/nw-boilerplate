@@ -5,7 +5,9 @@ import MainContainer from './MainContainer';
 import Header from './Header';
 import RightToolBar from './RightToolBar';
 import CoreApp from './CoreApp';
+import SearchConfigModal from './SearchConfigModal';
 import DevTools from './DevTools';
+import waitingWidget from '../shared/waitingWidget';
 
 // import StockView from './StockView';
 // import SearchReport from './SearchReport';
@@ -16,19 +18,32 @@ class Root extends React.Component {
 		super(props);
 	}
 
+	componentDidMount() {
+		console.log('rooot did mount');
+		// require('../shared/initDev')();
+		setTimeout(waitingWidget.removeWaiting, 500);
+		//init tooltip
+		require('../shared/initTooltip');
+		//require('../shared/heapA');
+	}
+
 	render(){
 
-		return (<MainContainer>
+		return (
+				<MainContainer>
+					<div className='fix-drag-bug'></div>
+					<Header />
 
-			<Header />
+					<RightToolBar />
 
-			<RightToolBar />
+					<CoreApp />
 
-			<CoreApp />
+					<SearchConfigModal />
 
-      <DevTools />
+		      <DevTools />
 
-		</MainContainer>);
+				</MainContainer>
+			);
 	}
 
 }

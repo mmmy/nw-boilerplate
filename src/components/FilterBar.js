@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { filterActions } from '../flux/actions';
 import DC from 'dc';
-import ReactInputRange from 'react-input-range';
+// import ReactInputRange from 'react-input-range';
 import RCSlider from 'rc-slider';
 
 const propTypes = {

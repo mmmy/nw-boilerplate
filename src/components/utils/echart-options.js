@@ -1,6 +1,46 @@
-import echarts from 'echarts';
-var factorCandleOption=function(){
+// import echarts from 'echarts';
+var factorCandleOption=function(candleBorder = true){
+
+	var markLineOpt = {
+	    animation: false,
+	    // label: {
+	    //     normal: {
+	    //         formatter: 'y = 0.5 * x + 3',
+	    //         textStyle: {
+	    //             align: 'right'
+	    //         }
+	    //     }
+	    // },
+	    lineStyle: {
+	        normal: {
+	            type: 'solid',
+	            color: '#f00',
+	            width: '1',
+	        }
+	    },
+	    // tooltip: {
+	    //     formatter: 'y = 0.5 * x + 3'
+	    // },
+	    // data: [[{
+	    //     coord: [0, 3],
+	    //     symbol: 'none'
+	    // }, {
+	    //     coord: [20, 13],
+	    //     symbol: 'none'
+	    // }]]
+	};
+
+	var markPoint = {
+		symbolSize: '10',
+		itemStyle: {
+			borderColor: '#0f0',
+			borderWidth: 1,
+			color: 'transparent',
+		}
+	};
+
 	let option = {
+		backgroundColor: '#fff',
 			animation: false,
 		    title: { show: false },
 		    tooltip: {
@@ -12,9 +52,9 @@ var factorCandleOption=function(){
 		    },
 		    grid: {
 		    	show: false,
-		        left: '0',
-		        right: '0',
-		        bottom: '0'
+		        left: '3px',
+		        right: '3px',
+		        bottom: '3px'
 		    },
 		    xAxis: {
 		        type: 'category',
@@ -23,6 +63,7 @@ var factorCandleOption=function(){
 		        boundaryGap : false,
 		        axisLine: {show: false},
 		        splitLine: {show: false},
+		        minInterval: 1,
 		        axisTick: {
 		        	show: false
 		        },
@@ -35,6 +76,7 @@ var factorCandleOption=function(){
 		    },
 		    yAxis: {
 		        scale: true,
+		        minInterval: 1,
 		        axisLine: {
 		        	show: false
 		        },
@@ -49,24 +91,72 @@ var factorCandleOption=function(){
 		        },
 		        splitArea: {
 		            show: false
-		        }
+		        },
+		        min: 'dataMin',
+		        max: 'dataMax'
 		    },
 		    series: [
 		        {
 		            name: '上证指数',
 		            type: 'candlestick',
+		            candleOverrides: {
+		            	minWidth: 1,
+		            	minNiceWidth: 3,
+		            	minGap: 0,
+		            },
 		            data: [],
+		            z: 1,
 		            itemStyle: {
 		            	normal: {
-		            		borderWidth: '0',
-		            		color0: 'green',
-		            		borderColor0: 'green',
+		            		borderWidth: candleBorder ? '1' : '0',
+		            		color: candleBorder ? '#8F151C' : '#aE0000',
+		            		color0: candleBorder ? '#9f9f9f' : '#5A5A5A',
+		            		borderColor: '#8F151C',
+		            		borderColor0: '#9f9f9f',
 		            	},
 		            	emphasis: {
 		            		borderWidth: '1'
 		            	}
 		            },
-		        }
+		        },
+		        {
+		            name: 'dot line',
+		            type: 'scatter',
+		            symbolSize: 2,
+		            itemStyle: {
+		            	normal: {
+		            		color: '#111',
+		            	}
+		            },
+		            z: 3,
+		            //xAxisIndex: [3],
+		            //yAxisIndex: [3],
+		            //data: dataAll[3],
+		            markLine: markLineOpt,
+		            markPoint: markPoint
+		        },
+		        {
+		            name: '指数',
+		            type: 'line',
+		            smooth: true,
+		            data: [],
+		            symbol: 'none',
+            		sampling: 'average',
+		            showSymbol: false,
+		            clipOverflow: false,
+		            lineStyle: {
+		            	normal: {
+		            		width: '0',
+		            	}
+		            },
+		            z: 2,
+		            areaStyle: {
+		                normal: {
+		                    color: 'rgb(255,255,255)',
+		                    opacity: 0.6
+                		}
+           		 	},
+           		}
 		    ]
 		};
 		return option;
@@ -136,15 +226,15 @@ var factorLineOption = function(){
 		            	}
 		            },
 		            areaStyle: {
-		                normal: {
-		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-		                        offset: 0,
-		                        color: 'rgb(255, 158, 68)'
-		                    }, {
-		                        offset: 1,
-		                        color: 'rgb(255, 70, 131)'
-		                    }])
-                		}
+		                // normal: {
+		                //     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+		                //         offset: 0,
+		                //         color: 'rgb(255, 158, 68)'
+		                //     }, {
+		                //         offset: 1,
+		                //         color: 'rgb(255, 70, 131)'
+		                //     }])
+                		// }
            		 	},
            		 }
 		    ],

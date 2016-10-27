@@ -160,6 +160,8 @@ var symbols = [
 { name: "600000.SS", description:"浦发银行", exchange:"Shanghai", type:"stock" },
 { name: "000001.SS", description:"上证", exchange:"Shanghai", type:"index" },
 { name: "000001.SZ", description:"平安银行", exchange:"Shenzhen", type:"stock" },
+{ name: "000002.SZ", description:"万科A", exchange:"Shenzhen", type:"stock" },
+{ name: "000004.SZ", description:"国农科技", exchange:"Shenzhen", type:"stock" },
 { name: "000166.SZ", description:"Shenwan Hongyuan", exchange:"Shenzhen", type:"stock" },
 ];
 

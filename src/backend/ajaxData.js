@@ -2,7 +2,7 @@ import $ from 'jquery';
 import http from 'http';
 import url from 'url';
 import config from './config';
-import { randomPartterns } from '../flux/util/randomKline';
+import { randomPatterns } from '../flux/util/randomKline';
 
 /**
  * args: {symbol, dateRange:[]}
@@ -33,7 +33,7 @@ let getPatterns = (args, cb, errorCb) => {
 	setTimeout(()=>{
 
 		let patterns = {
-			"rawData": randomPartterns(200)
+			"rawData": randomPatterns(200)
 		};
 
 		Math.random() > 0.5 ? (cb(JSON.stringify(patterns))) : (errorCb && errorCb('error test '+ new Date()));

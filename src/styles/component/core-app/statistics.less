@@ -1,15 +1,33 @@
-@reportContainer_H: 100px;
+@reportContainer_H: 20%;
+@reportTypeContainer_H: 12%;
 
 
 .statistics-container{
 	float: left;
-	width: @statisticsContainer_W;
+	position: relative;
+	width: calc(~"100% * 6 / 13 - 47.7px");//@statisticsContainer_W;
 	height: @statisticsContainer_H;
 	//border-top: 1px solid @ks-color-gray-8;
-	padding: 0 5%;
+	padding: 0;
+	// margin-left: 10px;
+	// margin-right: 10px;
+	// border: 1px solid red;
+	.statistics-container-inner {
+		position: absolute;
+		width: calc(~"100% - 40px");
+		left: 20px;
+		height: 100%;
+		background-color: #fff;
+		// box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+		.mama-box-shadow();
+		.border-radius-inner();
+	}
 	&.full{
 		width: @statisticsContainerStretch_W;
 		height: @statisticsContainerStretch_H;
+		.statistics-container-inner {
+		 // padding: 12px 3.5% 20px 6%;
+		}
 	}
 
 	&.larger{
@@ -18,20 +36,22 @@
 }
 
 .report-container-wrap {
-	height: @reportContainer_H;
+	height: 100%;//@reportContainer_H;
 	margin: 0;
 	&.stretch{
-		height: calc(@searchResultWrap_H~" - 33px");
+		height: 100%;//calc(@searchResultWrap_H~" - 33px");
 		//margin: 5px;
+		margin-top: 0;//10px;
 	}
 }
 
 .reporttype-container-wrap {
-	height: @reportContainer_H*0.9;
+	height: @reportTypeContainer_H;
 }
 
 .crossfilter-container-wrap {
-	height: calc(~'100% - '@reportContainer_H*2~' - '@reportContainer_H*0.9);
+	height: calc(~'100% - '@reportContainer_H~' - '@reportTypeContainer_H);
 	//border-left: 1px solid @ks-color-gray-8;
 	//border-right: 1px solid @ks-color-gray-8;
 }
+

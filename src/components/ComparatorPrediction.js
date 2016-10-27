@@ -2,14 +2,51 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { layoutActions } from '../flux/actions';
-import echarts from 'echarts';
-import { predictionRandomData } from './utils/comparatorPredictionEchart';
+// import { layoutActions } from '../flux/actions';
+// import echarts from 'echarts';
+// import { predictionRandomData } from './utils/comparatorPredictionEchart';
+import _ from 'underscore';
+import { setComparatorPosition } from '../shared/actionTradingview';
+import store from '../store';
+import { handleShouCangFocus, handleShouCangBlur } from '../ksControllers/publicHelper';
+import historyManager from '../backend/historyManager';
+import favoritesManager from '../backend/favoritesManager';
+import { favoritesController } from '../ksControllers/stockviewController';
+import PredictionWidget from '../ksControllers/PredictionWidget';
+import OCLHTooltip from '../ksControllers/OCLHTooltip';
+import klinePredictionWidget from '../ksControllers/klinePredictionWidget';
+
+let createEmptyKline = (len) => {
+  let data = [];
+  for (let i=0; i<len; i++) {
+    data.push([undefined, undefined, undefined, undefined]);
+  }
+  return data;
+};
+
+let createEmptyLine = (xArr) => {
+  return xArr.map((x) => {
+    return [x+'', undefined];
+  });
+};
+
+let _getActivePatternStartUnixTime = () => {
+  let state = store.getState();
+  let id = state.active.id;
+  let begin = state.patterns.rawData[id].begin;
+  return new Date(begin) / 1000;
+};
+
+let _isMouseDowned = false;
+let _cursorY = 0;
+let _mouseoverDate = null;
+let _scale = 1;
+let _y2diff = 0;
 
 const propTypes = {
   patterns: PropTypes.object.isRequired,
-  filter: PropTypes.object.isRequired,
-  lastClosePrice: PropTypes.number.isRequired,
+  stretchView: PropTypes.object.bool,
+  filter: PropTypes.object.object
 };
 
 const defaultProps = {
@@ -21,33 +58,140 @@ class ComparatorPrediction extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this._predictionChart = null;
+    this._tooltip = null;
   }
 
   componentDidMount() {
-    this.initEchart();
+    this.initTooltip();
+    this.initPredictionChart();
     window.addEventListener('resize', this.handleResize);
   }
 
   componentWillReceiveProps(nextProps){
-    let option = window.eChart.getOption();
-    option.series = this.generateSeriesData();
-    window.eChart.setOption(option, true);
+    // console.info(nextProps);
+    if(nextProps.patterns !== this.props.patterns) {
+      let patterns = nextProps.patterns;
+      let baseBars = patterns.searchMetaData && patterns.searchMetaData.bars;
+      let additionBars = patterns.searchConfig && patterns.searchConfig.additionDate.value;
+      this.updatePredictionNamePosition(baseBars, additionBars);
+    }
   }
 
-  shouldComponentUpdate(){
-    return true;
+  shouldComponentUpdate(nextProps){
+    return nextProps.stretchView === this.props.stretchView;
   }
+
+  initPredictionChart() {
+    let drawOption = {
+      showRange: false
+    };
+    this._predictionChart = new PredictionWidget(this.refs.eChartPredictionLine, drawOption);
+    window._predictionChart = this._predictionChart;
+    let that = this;
+    this._predictionChart.onHoverKline((index, data) => { 
+      that.setOHLC.call(that, data);
+      var unixTime = _getActivePatternStartUnixTime();
+      setComparatorPosition(unixTime, index, 0);
+    });
+    this._predictionChart.onScaleLines((yMin, yMax) => {
+      window._updateHeatMap && window._updateHeatMap(yMax - yMin, yMax, yMin);
+      window._blockHeatMapChart && window._blockHeatMapChart.setData(that._predictionChart.getLastPrices(), yMin, yMax);
+    });
+  }
+  predictionChartSetData() {
+    var isInit = this.initDimensions();
+    if(isInit || this.props.stretchView) {
+      let { closePrice, searchMetaData, searchConfig } = this.props.patterns;
+
+      let predictionBars = searchConfig.additionDate && searchConfig.additionDate.value;
+      
+      let rawData = this.symbolDim.top(Infinity);
+      let filteredIds = rawData.map((pattern) => {
+        return pattern.id;
+      });
+      this._predictionChart.setData(searchMetaData && searchMetaData.kline, closePrice, null, predictionBars);
+      this._predictionChart.filterLines(filteredIds);
+
+      let that = this;
+      let { yMin, yMax } = this._predictionChart.getLineChartMinMax();
+      window._updateHeatMap && window._updateHeatMap(yMax - yMin, yMax, yMin);
+      window._blockHeatMapChart && window._blockHeatMapChart.setData(that._predictionChart.getLastPrices(), yMin, yMax);
+    }
+  }
+
+  initTooltip() {
+    this._tooltip = this._tooltip || new OCLHTooltip(this.refs.eChartPredictionLine);
+    let that = this;
+    this.refs.eChartPredictionLine.addEventListener('mousemove', (e) => {
+      let x = e.pageX,
+          y = e.pageY;
+      let predictionChart = that._predictionChart;
+      if(predictionChart) {
+        let isCursorOverBar = predictionChart.isCursorOverBar();
+        if(isCursorOverBar) {
+          let OCLH = predictionChart.getHoverOCLH();
+          that._tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
+          that._tooltip.setPosition(x,y,'fixed');
+          that._tooltip.show();
+          //触发下面的tooltip
+        } else {
+          that._tooltip.hide();
+        }
+        let index = predictionChart.getHoverIndex();
+        klinePredictionWidget.triggerHover(index, isCursorOverBar);
+      }
+
+    });
+    klinePredictionWidget.setOriginHoverHandle(this.triggerTooltipHover.bind(this));
+  }
+
+  triggerTooltipHover(index, showTooltip) {
+    if(index < 0) {
+      this._tooltip.hide();
+      return;
+    }
+    let {x,y} = this._predictionChart.setHoverIndex(index);
+    if(showTooltip) {
+      let OCLH = this._predictionChart.getHoverOCLH();
+      if(OCLH.length==4) {
+        this._tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
+        this._tooltip.setPosition(x,y);
+        this._tooltip.show();
+      }else{
+        this._tooltip.hide();
+      }
+    } else {
+      this._tooltip.hide();
+    }
+  }
+
+  updatePredictionNamePosition(baseBars, additionBars) { //"预测分布"的位置
+    baseBars = parseInt(baseBars);
+    additionBars = parseInt(additionBars);
+    let node = this.refs.info_prediction_name;
+    let rate = baseBars / (baseBars + additionBars) * 100;
+    rate = rate<15 ? 15 : rate;
+    rate = rate>85 ? 85 : rate;
+    if(!isNaN(rate) && isFinite(rate)) {
+      node.style.left = rate + '%';
+    } else {
+      node.style.left = '';
+    }
+  }
+
+  componentDidUpdate() {
+    this.predictionChartSetData();
+  }
+
 
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleResize);
   }
 
-  getLastValueData() {
-  // TODO
-  }
-
   handleResize() {
-    window.onresize = setTimeout(window.eChart.resize, 0);
+    // window.eChart.resize();
+    this._predictionChart.resize();
   }
 
   initDimensions() {
@@ -55,115 +199,64 @@ class ComparatorPrediction extends React.Component {
 		if(this.oldCrossFilter !== crossFilter) {
 			this.symbolDim = crossFilter.dimension(function(d){ return d.symbol });
 			this.oldCrossFilter = crossFilter;
+      return true;
 		}
-    this.xAxisData = [];
-    for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
+    return false;
+    // this.xAxisData = [];
+    //
+    // if (this.symbolDim.top(Infinity).length !== 0)
+    //   for(let i = 0; i < this.symbolDim.top(1)[0].kLine.length; i++) { this.xAxisData.push(i); }
 	}
 
-  splitData(kLine) {
-    let data = [];
-    let percentage = 0;
-    kLine.forEach((e, i) => {
-      if (i === 0) percentage = this.props.lastClosePrice / e[2];
-      data.push(e[2] * percentage);
-    });
-    return data;
-  }
 
-  generateSeriesData() {
-    this.initDimensions();
-    let eChartSeriesData = [];
-    // demo
-    this.symbolDim.top(Infinity).forEach((e, i) => {
-      eChartSeriesData.push({
-        data: this.splitData(e.kLine),
-        name: '模拟数据',
-        type: 'line',
-        showSymbol: false,
-        hoverAnimation: false,
-        lineStyle: {
-          normal: {
-            color: i === 5 ? '#c23531' : '#ccc',
-            width: 0.8
-          }
-        },
-        z: i === 5 ? 9999 : 2
-      });
-    });
-    return eChartSeriesData;
-  }
-
-  initEchart() {
-    const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionLine']);
-    window.eChart = echarts.init(dom);
-    let option = {
-      title: {
-        show: false,
-      },
-      animation: 'false',
-      animationDuration: '0',
-      // color: ['#ccc', '#c23531', '#ccc'],
-      color: ['#ccc'],
-      backgroundColor: 'RGBA(250, 251, 252, 1.00)',
-      grid: {
-        x: 0,
-        x2: 0,
-        y: 14,
-        y2: 15
-      },
-      tooltip: {
-        show: false,
-        trigger: 'axis',
-        // formatter: function (params) {
-        //   params = params[0];
-        //   var date = new Date(params.name);
-        //   return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
-        // },
-        axisPointer: {
-          animation: false
-        }
-      },
-      xAxis: {
-        type: 'category',
-        show: false,
-        splitLine: {
-          show: false
-        },
-        // data: this.xAxisData
-      },
-      yAxis: {
-        show: false,
-        position: 'right',
-        type: 'value',
-        boundaryGap: [0, '100%'],
-        splitLine: {
-          show: false
-        },
-        // scale: true,
-        // interval: 0.5,
-        max: 'maxData',
-        min: 5.5
-      },
-      series: this.generateSeriesData()
-      // series: predictionRandomData()
-    };
-
-
-    if (option && typeof option === "object") {
-      var startTime = +new Date();
-      window.eChart.setOption(option, true);
-      var endTime = +new Date();
-      var updateTime = endTime - startTime;
-      console.log("Time used:", updateTime);
+  setOHLC(data){
+    if(!data || data.length < 4 || data[0]===undefined || data[1] ===undefined || data[2]===undefined || data[3] ===undefined) return;
+    data = data.slice(data.length-4, data.length);
+    let O = data && data[0].toFixed(2) || 'N/A';
+    let C = data && data[1].toFixed(2) || 'N/A';
+    let L = data && data[2].toFixed(2) || 'N/A';
+    let H = data && data[3].toFixed(2) || 'N/A';
+    this.refs.info_O.innerHTML = `O ${O}`;
+    this.refs.info_C.innerHTML = `C ${C}`;
+    this.refs.info_L.innerHTML = `L ${L}`;
+    this.refs.info_H.innerHTML = `H ${H}`;
+    if(C > O) {
+      this.refs.info_O.style.color = '#ae0006';
+      this.refs.info_C.style.color = '#ae0006';
+      this.refs.info_L.style.color = '#ae0006';
+      this.refs.info_H.style.color = '#ae0006';
+    } else {
+      this.refs.info_O.style.color = '';
+      this.refs.info_C.style.color = '';
+      this.refs.info_L.style.color = '';
+      this.refs.info_H.style.color = '';
     }
   }
 
+  showFavoritesMenu(e) {
+    if(e.target.children.length>0 || e.target.nodeName=='INPUT') {
+      return;
+    }
+    let latestHistory = historyManager.getLatestData();
+    handleShouCangFocus(favoritesManager, favoritesController, latestHistory, {type: 1}, e);
+  }
+
+  removeFavoritesMenu(e) {
+    handleShouCangBlur(e);
+  }
+
   render(){
+    // this.d1 = new Date();
     let className = classNames('comparator-prediction-chart');
 
-    return (
+    return (<div style={{position:'absolute',height:'100%',width:'100%'}}>
+      <div className='comparator-info-container'>
+        <span ref='info_title' className='title font-simsun'>匹配图形</span><i ref='info_O'>O</i><i ref='info_H'>H</i><i ref='info_L'>L</i><i ref='info_C'>C</i>
+        <span ref='info_prediction_name' className='title font-simsun prediction-name'>历史走势分布</span>
+        <button data-kstooltip="添加到收藏" className='flat-btn add-btn' onFocus={ this.showFavoritesMenu.bind(this) } onBlur={ this.removeFavoritesMenu.bind(this) }>add</button>
+      </div>
       <div ref='eChartPredictionLine' className={ className }></div>
-    );
+    </div>);
   }
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import echarts from 'echarts';
 import {factorCandleOption, factorLineOption} from '../../src/components/utils/echart-options';
-import {randomPartterns} from '../../src/flux/util/randomKline';
+import {randomPatterns} from '../../src/flux/util/randomKline';
 
 var data = [
 		    ['2013/1/24', 2320.26,2320.26,2287.3,2362.94],
@@ -226,7 +226,8 @@ var data1 = data.map((e,i) => {
 // console.log(data);
 
 var data0 = splitData(data);
-function splitData(rawData) {
+function splitData(rawData, baseBars) {
+	console.log('baseBars', baseBars);
     var categoryData = [];
     var values = [];
 
@@ -238,12 +239,26 @@ function splitData(rawData) {
         lowArr.push(isNaN(+rawData[i][2]) ? Infinity : +rawData[i][2]);
         highArr.push(isNaN(+rawData[i][3]) ? -Infinity : +rawData[i][3]);
     }
-    console.log(highArr);
+    //console.log(highArr);
+    var min = Math.floor(Math.min.apply(null, lowArr));
+    var max = Math.ceil(Math.max.apply(null, highArr));
+
+    var arange10 = [];
+    for (var i=0; i < 15; i++) {
+    	arange10.push([categoryData[baseBars], min + (max - min) / 15 * i]);
+    }
+
+    var areaData = categoryData.slice(baseBars).map((e) => {
+    	return [e, max];
+    });
+
     return {
         categoryData: categoryData,
         values: values,
-        yMin: Math.min.apply(null, lowArr),
-        yMax: Math.max.apply(null, highArr),
+        lineData: arange10,
+        areaData: areaData,
+        yMin: min,
+        yMax: max,
     };
 }
 function formatDate(data) {
@@ -416,16 +431,20 @@ lineOption.series[0].data = data1;
 
 
 
-let patterns = randomPartterns(10),
+let { patterns } = randomPatterns(10),
 	candleOptions = [],
 	lineOptions = [];
 patterns.forEach((e, i) => {
 	let candleOption = factorCandleOption();
-	let candleData = splitData(e.kLine);
+	let candleData = splitData(e.kLine, e.baseBars);
 	candleOption.xAxis.data = candleData.categoryData;
 	candleOption.series[0].data = candleData.values;
 	candleOption.yAxis.min = candleData.yMin;
 	candleOption.yAxis.max = candleData.yMax;
+
+	candleOption.series[1].data = candleData.lineData;
+	candleOption.series[2].data = candleData.areaData;
+	
 	console.log(candleData);
 	let lineOption = factorLineOption();
 	lineOption.series[0].data = e.kLine.map((e,i) => {
@@ -471,7 +490,7 @@ export default React.createClass({
 		this.drawChart();
 	},
 	getInitialState(){
-		return {height: 200, width: 600};
+		return {height: 140, width: 172};
 	},
 	componentDidUpdate(){
 		setTimeout((e) => {

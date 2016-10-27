@@ -1,10 +1,22 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
-import echarts from 'echarts';
+// import echarts from 'echarts';
+import { generateHeatMapOption } from './utils/heatmap-options';
+import {getDecimalForStatistic} from '../shared/storeHelper';
+import _ from 'underscore';
+
+let _heatmapYAxis = 0;
+let _yMax = 100;
+let _yMin = -100;
+let _decimal = 2;
 
 const propTypes = {
-
+  stretchView: PropTypes.bool,
+  heatmapYAxis: PropTypes.number,
+  scaleMinValue: PropTypes.number,
+  scaleMaxValue: PropTypes.number,
+  patterns: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -20,46 +32,172 @@ class ComparatorHeatmap extends React.Component {
 
   componentDidMount() {
     this.initEchart()
-
-    window.addEventListener('resize', this.handleResize);
+    this._deboundUpdateHeatmap = _.debounce(this.updateHeatMap.bind(this), 200);
+    window._updateHeatMap = this.updateHeatMap.bind(this);
+    this._handleResize = this.handleResize.bind(this);
+    window.addEventListener('resize', this._handleResize);
   }
 
-  componentWillReceiveProps(){
-
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.patterns != this.props.patterns) {
+      _decimal = getDecimalForStatistic();
+    }
   }
 
-  shouldComponentUpdate(){
-    return true;
+  shouldComponentUpdate(nextProps){
+    return nextProps.stretchView === this.props.stretchView;
+  }
+
+  updateHeatMap(heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale=1){
+    // console.debug('heatmap did update', heatmapYAxis, scaleMinValue, scaleMaxValue, manulScale);
+    heatmapYAxis = heatmapYAxis || _heatmapYAxis;
+    scaleMaxValue = scaleMaxValue || _yMax;
+    scaleMinValue = scaleMinValue || _yMin;
+
+    _heatmapYAxis = heatmapYAxis;
+    _yMin = scaleMinValue;
+    _yMax = scaleMaxValue;
+
+    // let eachBlockValue = Math.round(Math.sqrt(heatmapYAxis)); // 根据振幅幅度划分每一个小格的容量
+    // let eachValueInPercentage = eachBlockValue / heatmapYAxis;
+    // let blocksNumber = Math.round(1 / eachValueInPercentage);
+    let blocksNumber = 8;
+    let yAxisData = [];
+
+    let height = window.heatmap.getHeight();
+    let eachBlockHeight = height / blocksNumber;
+
+    let min = 0;
+    for (let i = 0; i < blocksNumber; i++) {
+      yAxisData.push(Math.round(min) - 0.5 + ':' + (Math.round(min += eachBlockHeight)-0.5));
+    }
+
+    // let linesOption = window.parent.eChart.getOption();
+    // let lastPrices = linesOption.series.slice(0, linesOption.series.length - 1).map((serie, idx) => {
+    //   return serie.data[serie.data.length - 1][1];
+    // });
+    let lastPrices = window.parent._predictionChart.getLastPrices();
+    lastPrices.sort((a, b) => {return a - b}); // sort numerically
+    let bunch = lastPrices;
+
+    let eChartSeriesData = [];
+    let countMax = 0;
+
+    // for (let idx = 0; idx < yAxisData.length; idx++) {
+    //   let range = yAxisData[idx].split(':');
+    //   let count = 0;
+    //   for (let i = 0; i < bunch.length; i++) {
+    //     let value = bunch[i];
+    //     let position = (value + Math.abs(scaleMinValue * manulScale)) / heatmapYAxis * height;
+
+    //     if (position > range[0] && position <= range[1]) count = i + 1;
+    //   }
+    //   eChartSeriesData.push([0, idx, count])
+    //   bunch = bunch.slice(count);
+    //   countMax = Math.max(count, countMax);
+    // }
+    for (let idx = 0; idx < yAxisData.length; idx++) {
+      let range = yAxisData[idx].split(':');
+      let count = 0;
+      for (let i = 0; i < bunch.length; i++) {
+        let value = bunch[i];
+        // let position = (value + Math.abs(scaleMinValue * manulScale)) / heatmapYAxis * height;
+        let position = (value - scaleMinValue) / heatmapYAxis * ( height - 0 );
+
+        if (position > (parseFloat(range[0]) - 0.5) && position <= (parseFloat(range[1]) + 0.5)) count += 1;
+      }
+      countMax = Math.max(countMax, count);
+      eChartSeriesData.push([0, idx, count])
+      bunch = bunch.slice(count);
+    }
+    //将eChartSeriesData 的 count 标准到[0 , 100]
+    if(countMax > 0) {
+      for(let i=0; i<eChartSeriesData.length; i++) {
+        let count = eChartSeriesData[i][2];
+        eChartSeriesData[i][2] = count / countMax * 100;
+      }
+    }
+
+    let option = window.heatmap.getOption();
+    option.yAxis[0].data = yAxisData;
+    option.series[0].data = eChartSeriesData;
+
+    setTimeout(() => { window.heatmap.setOption(option, true); });
+  }
+
+  componentDidUpdate() {
+    let { heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale } = this.props;
+    
+    // this.updateHeatMap(heatmapYAxis, scaleMaxValue, scaleMinValue, manulScale);
+
+    // console.info('ComparatorHeatmap did update1', new Date() - this.d1);
+
+    // console.info('ComparatorHeatmap did update2', new Date() - this.d1);
   }
 
   componentWillUnmount(){
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', this._handleResize);
   }
 
   handleResize() {
-    window.onresize = setTimeout(window.heatmap.resize, 0);
+    window.heatmap.resize();
+    this._deboundUpdateHeatmap();  
+    // window.heatmap.setOption(window.heatmap.getOption()); 
+  }
+
+  initDimensions() {
+    let { crossFilter } = this.props.patterns;
+    if(this.oldCrossFilter !== crossFilter) {
+      this.symbolDim = crossFilter.dimension((d) => { return d.symbol });
+      this.oldCrossFilter = crossFilter;
+    }
+  }
+
+  generateSeriesData(newYAxis) {
+    this.initDimensions();
+    let eChartSeriesData = [];
+    let yAxis = newYAxis;
+
+    yAxis.unshift(yAxis[0] + yAxis[0] - yAxis[1]);
+
+    for (let i = 0; i < yAxis.length; i++) {
+      eChartSeriesData.push([0, i, 0]);
+    }
+
+    let lastPrices = [];
+    let percentage = 0;
+
+    let series = window.eChart.getOption().series;
+    for (let i = 0; i < series.length - 1; i++) {
+      let serie = series[i];
+      lastPrices.push(serie.data[serie.data.length - 1][1]);
+    }
+
+    let maxPrice = Math.max(...lastPrices);
+    let minPrice = Math.min(...lastPrices);
+
+    for (let i = 0; i < lastPrices.length; i++) {
+      let price = lastPrices[i];
+      for (var index = 0; index < eChartSeriesData.length; index++) {
+        let item = eChartSeriesData[index];
+        if (index + 1 < yAxis.length) {
+          if (price >= yAxis[index] && price < yAxis[index + 1]) {
+            eChartSeriesData[index][2] = eChartSeriesData[index][2] + 1;
+          }
+        }
+      }
+    }
+
+    return eChartSeriesData;
   }
 
   initEchart() {
     const dom = ReactDOM.findDOMNode(this.refs['eChartPredictionHeatmap']);
     window.heatmap = echarts.init(dom);
-
-    const priceScale = [-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
-
-    const data = [
-      //
-      // [0, price_position(last data), number_of_lines_hits]
-      //
-      [0,3.5,4],
-      [0,5,6],
-      [0,7,3],
-      [0,11,30],
-      [0,9,12],
-      [0,6.4,5],
-      [0,8.2,10],
-      [0,16,4]
-    ];
-
+    let that = this;
+    let $chartDom = $(this.refs.eChartPredictionHeatmap);
+    // const priceScale = [];
+    // const data = [];
     let option = {
       tooltip: {
         show: false,
@@ -68,7 +206,11 @@ class ComparatorHeatmap extends React.Component {
       animation: false,
       grid: {
         height: '100%',
-        // width: '10'
+        y: 0,
+        borderColor: '#000',
+        borderWidth: 0,
+        right: 57.5,
+        left: 0.5
       },
       xAxis: {
         show: false,
@@ -76,50 +218,104 @@ class ComparatorHeatmap extends React.Component {
         data: ['0']
       },
       yAxis: {
-        show: false,
+        show: true,
         type: 'category',
-        data: priceScale
+        data: [],//priceScale,
+        axisLine: {
+          show: false,
+        },
+        splitNumber: 5,
+        axisLabel: {
+          formatter: function(params){
+            // console.debug(arguments);
+            if(!params) return;
+            var points = params.split(':');
+            // var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
+            var top = parseFloat(points[1]);
+            var percentage = (_yMax - _yMin) / $chartDom.height() * top + _yMin;
+            return  percentage.toFixed(_decimal) + '%';
+          },
+          textStyle: {
+            color: '#656565',
+            fontStyle: 'italic',
+            fontWeight: 'lighter',
+            fontSize: 10
+          },
+          margin: 16,
+          yPosition: 'top'
+        },
+        axisTick: {
+          show: false
+        },
+        position: 'right',
+        // type: 'value',
+        boundaryGap: [0, '100%'],
+        // splitLine: {
+        //   show: false
+        // },
+        // minInterval: 1,
       },
       visualMap: {
         show: false,
-        min: 1,
-        max: 8,
+        min: 0,
+        max: 100,
         calculable: false,
         orient: 'vertical',
         left: 'center',
         bottom: '15%',
-        color: ['#CB0020', '#D72B44', '#E1586B', '#E9828E', '#F0AEB6'] // 从大到小排列
+        // color: ['#982C2F', '#C23433', '#E42329', '#F63A3B'] // 从大到小排列
+        color: ['#831211', '#A40A07', '#B70A05', '#D90A03', '#FC0900', '#C6C7C8'] // 从大到小排列
+
       },
       series: [{
         name: 'Punch Card',
         type: 'heatmap',
-        data: data,
+        data: [],//data,
         label: {
           normal: {
             show: false
           }
         },
         itemStyle: {
-          emphasis: {
-            shadowBlur: 20,
-            shadowColor: 'rgba(100, 110, 110, 1)'
+          normal: {
+            borderColor: '#C6C7C8',
+            borderWidth: 1
           }
         }
       }],
-      backgroundColor: '#F6DADD',
-
+      // backgroundColor: '#C6C7C8',
     };
+    option = generateHeatMapOption();
+    option.yAxis.axisLabel.formatter = function(params){
+            if(!params) return;
+            var points = params.split(':');
+            // var center = (parseFloat(points[0]) + parseFloat(points[1])) / 2;
+            var domH = $chartDom.height();
+            var topPosition = parseFloat(points[1]);
+            if(Math.abs(topPosition - domH) < 20) { //最上面那个被截断的不显示
+              return '';
+            }
+            // var percentage = (_yMax - _yMin) / domH * topPosition + _yMin;
+            // percentage = Math.round(percentage * 1000) / 1000; 
+            // return  percentage.toFixed(_decimal) + '%';
+            var closePrice = (_yMax + _yMin)/2;
+            var centerPrice = (topPosition / $chartDom.height()) * (_yMax - _yMin) + _yMin;
+            var percentage = (centerPrice - closePrice) / closePrice * 100;
+            percentage = Math.round(percentage * 1000) / 1000; 
+            return percentage.toFixed(_decimal) + '%';
+          };
 
     if (option && typeof option === "object") {
-      var startTime = +new Date();
+      let startTime = +new Date();
       window.heatmap.setOption(option, true);
-      var endTime = +new Date();
-      var updateTime = endTime - startTime;
-      console.log("Time used:", updateTime);
+      let endTime = +new Date();
+      let updateTime = endTime - startTime;
+      // console.log("Time used:", updateTime);
     }
   }
 
   render(){
+    // this.d1 = new Date();
     let className = classNames('comparator-heatmap');
 
     return (

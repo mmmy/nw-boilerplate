@@ -1,5 +1,5 @@
 div.dc-chart {
-    float: left;
+    // float: left;
 }
 
 .dc-chart rect.bar {
@@ -9,6 +9,17 @@ div.dc-chart {
 
 .dc-chart rect.bar:hover {
     fill-opacity: .5;
+    .earnchart-wrapper &{
+        fill-opacity: 1;
+        cursor: default;
+    }
+}
+
+.dc-chart rect.outline {
+    fill: transparent;
+    &.selected {
+        fill: @brown-red;
+    }
 }
 
 .dc-chart rect.stack1 {
@@ -27,26 +38,51 @@ div.dc-chart {
 }
 
 .dc-chart .empty-chart .pie-slice path {
-    fill: #FFEEEE;
+    fill: #eee !important;
     cursor: default;
+}
+
+.dc-chart .empty-chart .pie-slice path + outline.selected {
+    // fill: #eee;
 }
 
 .dc-chart .empty-chart .pie-slice {
     cursor: default;
 }
 
+.industry-quarter-chart svg {
+    background-color: #fafafa;
+    border-radius: 50%;
+}
+
 .dc-chart .pie-slice {
     fill: white;
     font-size: 12px;
     cursor: pointer;
+    stroke: #f4f4f4;
+    stroke-width: 0;
 }
 
 .dc-chart .pie-slice.external{
     fill: black;
 }
 
-.dc-chart .pie-slice :hover {
-    fill-opacity: .8;
+// .dc-chart .pie-slice:not(.deselected) :hover {
+//     fill-opacity: .2;
+//     fill: @brown-red;
+// }
+
+.dc-chart .pie-slice .outline {
+    fill: transparent;
+    &.selected {
+        fill-opacity: 1;
+        fill: @brown-red;
+    }
+}
+
+.dc-chart .pie-slice path:nth-child(1):hover {
+    fill-opacity: 1;
+    fill: #8D151B;
 }
 
 .dc-chart .pie-slice.highlight {
@@ -61,15 +97,20 @@ div.dc-chart {
 }
 
 .dc-chart .selected path {
-    stroke-width: 3;
-    stroke: #ccc;
+    stroke-width: 0;
+    stroke: #fff;
     fill-opacity: 1;
+    fill: @brown-red;
 }
 
 .dc-chart .deselected path {
     stroke: none;
-    fill-opacity: .5;
-    fill: #ccc;
+    fill-opacity: 0;
+    /*fill: #ccc;*/
+}
+
+.dc-chart .deselected path:hover {
+    fill-opacity: 0.2 !important;
 }
 
 .dc-chart .axis path,
@@ -80,8 +121,12 @@ div.dc-chart {
 }
 
 .dc-chart .axis text {
-    fill: #999;
-    font: 10px sans-serif;
+    fill: #444;
+    font: 0.9rem 'AvantGarde';
+  //   font-size: 9px;
+  //   font-family: 'Helvetica, AvantGarde';
+  // -webkit-font-smoothing: none;
+    letter-spacing: 1px;
 }
 
 .dc-chart .grid-line,
@@ -95,7 +140,7 @@ div.dc-chart {
 .dc-chart .grid-line line,
 .dc-chart .axis .grid-line line {
     fill: none;
-    stroke: #ccc;
+    stroke: #ddd;
     opacity: .5;
     shape-rendering: crispEdges;
 }
@@ -105,13 +150,14 @@ div.dc-chart {
 }
 
 .dc-chart .brush rect.extent {
-    fill: steelblue;
-    fill-opacity: .125;
+    // fill: steelblue;
+    fill: #000;
+    fill-opacity: .3;
 }
 
 .dc-chart .brush .resize path {
-    fill: #eee;
-    stroke: #666;
+    fill: transparent;//#eee;
+    //stroke: #666;
 }
 
 .dc-chart path.line {
@@ -195,7 +241,7 @@ div.dc-chart {
 }
 
 .dc-chart g.deselected path {
-    fill: grey;
+    /*fill: #ccc;*/
 }
 
 .dc-chart g.selected text {
@@ -262,6 +308,12 @@ div.dc-chart {
 .dc-chart .fadeout {
     fill-opacity: 0.2;
     stroke-opacity: 0.2;
+}
+
+.dc-chart .chart-body path.selected {
+    fill: transparent;
+    stroke: @brown-red;
+    stroke-width: 1;
 }
 
 .dc-chart path.dc-symbol,

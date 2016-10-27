@@ -3,6 +3,7 @@ import moment from 'moment';
 
 const propTypes = {
 	report: PropTypes.object,
+	searchConfig: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -34,16 +35,18 @@ class ReportTypeView extends React.Component {
 
 	render(){
 
-		const {searchSpace, searchDate, spaceDefinition, patternType} = this.props.report
+		const {searchSpace, dateRange, spaceDefinition, matchType} = this.props.searchConfig;
 
-		const startDate = searchDate[0] ? moment(searchDate[0]).format('YYYY.MM.DD') : '--';
-		const endDate = searchDate[1] ? moment(searchDate[1]).format('YYYY.MM.DD') : '--';
+		const startDate = dateRange[0] ? moment(dateRange[0]).format('YYYY.MM.DD') : '--';
+		const endDate = dateRange[1] ? moment(dateRange[1]).format('YYYY.MM.DD') : '--';
 
-		return (<div className="reporttype-container">
-				<div className='type-item-container'>{`搜索空间: ${searchSpace}`}</div>
-				<div className='type-item-container'>{`搜索时间: ${startDate} ~ ${endDate}`}</div>
-				<div className='type-item-container'>{`空间定义: ${spaceDefinition}`}</div>
-				<div className='type-item-container'>{`匹配形态: ${patternType}`}</div>
+		let spaceDefinitionStr = (spaceDefinition.stock ? '股票' : '') + (spaceDefinition.future ? ' 期货' : '');
+		spaceDefinitionStr = spaceDefinitionStr || '--';
+		return (<div className="reporttype-container font-simsun">
+				<div className='type-item-container'>搜索空间: <span className='lulu font-number'>{`${searchSpace}`}</span></div>
+				<div className='type-item-container'>搜索时间: <span className='lulu font-number'>{`${startDate} ~ ${endDate}`}</span></div>
+				<div className='type-item-container'>空间定义: <span className='lulu'>{`${spaceDefinitionStr}`}</span></div>
+				<div className='type-item-container'>匹配形态: <span className='lulu'>{`${matchType}`}</span></div>
 			</div>);
 	}
 }

@@ -3,50 +3,50 @@ import React, { PropTypes } from 'react';
 const propTypes = {
 	viewId: PropTypes.string.isRequired,
 	options: PropTypes.object.isRequired,
+  init: PropTypes.bool,
 };
 
 const defaultProps = {
-
+  init: false
 };
 
 class ReactTradingView extends React.Component {
 	constructor(props) {
 		super(props);
-
+    this._inited = false;
 	}
 
   componentDidMount() {
-    console.log('componentDidMountm');
     // let getParameterByName = (name) => {
     //   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     //   var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     //   results = regex.exec(location.search);
     //   return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-    // };
+    // }
+    setTimeout(this.tryInitTradingView.bind(this), 800);
+  }
 
-    let options = window.$.extend(this.props.options, {container_id: this.props.viewId});
-    if (process.env.yq == 'yes') return;
+  componentDidUpdate() {
+    setTimeout(this.tryInitTradingView.bind(this), 800);
+    // this.tryInitTradingView();
+  }
 
-    let widget = new window.TradingView.widget(options);
+  tryInitTradingView() {
+    if (this._inited) return;
+    let {init} = this.props;
+    if (init) {
+      let options = window.$.extend(this.props.options, {container_id: this.props.viewId});
+      if (process.env.yq == 'yes') return;
 
-    if (this.props.viewId === 'comparator-chart') {
-      this.setChartLayout();
+      let widget = new window.TradingView.widget(options);
+
+      widget.onChartReady(function(){
+        console.log('~~~~~~widget.onCHartReady');
+      });
+      // if (this.props.viewId === 'comparator-chart') window.widget_comparator = widget;
+
+      this._inited = true;
     }
-  }
-
-  getChartDom() {
-    return document[window.document.getElementsByTagName('iframe')[0].id];
-  }
-
-  setChartLayout() {
-    setTimeout(() => {
-      let chart = this.getChartDom();
-      if ( chart && chart.W76 && chart.Q5 && chart.Q15.studyCounter > 0) {
-        chart.W76.setChartLayout(chart.Q5, '2v');
-      } else {
-        this.setChartLayout();
-      }
-    }, 0)
   }
 
 	render(){
