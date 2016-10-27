@@ -192,6 +192,11 @@ let _createEarnDimension = (rawDataArr) => {
 	yield100Range[0] = widerNumber(yield100Range[0]);
 	yield100Range[1] = widerNumber(yield100Range[1]);
 	yield100Range = scalize(yield100Range);
+	//fix 搜索结果只有一个的时候的bug
+	if(yield100Range[0] == yield100Range[1]) {
+		yield100Range[0] < 0 ? (yield100Range[1] = -yield100Range[0]) : (yield100Range[0] = -yield100Range[0]);
+	}
+	
 	let rangeInterval = (yield100Range[1] - yield100Range[0] ) / barChartBars;
 	let earnDimension = crossFilter.dimension((data) => {
 		return Math.floor((data.yield*100 - yield100Range[0]) / rangeInterval);
