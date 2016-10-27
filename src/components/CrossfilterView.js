@@ -511,6 +511,13 @@ resizeChart1() {
 			});
 			//console.log(timeArr);
 			this.timeRange = [Math.min.apply(null, timeArr) || new Date('1990/1/1')/1000, Math.max.apply(null, timeArr) || new Date()/1000];     //年份的最大最小值
+   		//fix 只有一个搜索结果的时候x轴显示不合理的bug
+   		if(this.timeRange[0] == this.timeRange[1]) {
+   			let oneYear = 365 * 24 * 3600;
+   			this.timeRange[0] -= oneYear;
+   			this.timeRange[1] += oneYear;
+   		}
+
 			this.yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)]; //收益率的最大最小值
 			//this.yield100Range[0] = Math.floor(this.yield100Range[0] / 20) * 20; // -23 => -4, 34 => 20
 			//this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 20) * 20; // 88 => 100, 129 => 140
@@ -520,6 +527,11 @@ resizeChart1() {
 			this.yield100Range[0] = widerNumber(this.yield100Range[0]);
 			this.yield100Range[1] = widerNumber(this.yield100Range[1]);
 			this.yield100Range = scalize(this.yield100Range);
+			//fix 搜索结果只有一个的时候的bug
+			if(this.yield100Range[0] == this.yield100Range[1]) {
+				this.yield100Range[0] < 0 ? (this.yield100Range[1] = -this.yield100Range[0]) : (this.yield100Range[0] = -this.yield100Range[0]);
+			}
+
 			let rangeInterval = ( this.yield100Range[1] -  this.yield100Range[0] ) / barChartBars;
 			// console.info(this.yield100Range);
 			// console.info(rangeInterval);
