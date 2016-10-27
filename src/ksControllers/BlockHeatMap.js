@@ -82,6 +82,7 @@ BlockHeatMap.prototype._createBlocks = function() {
 	for(let i=0; i<dataLen; i++) {
 		let dataValueRelateMin = data[i] - yMin;
 		let index = Math.floor(dataValueRelateMin / blockValueInterval);
+		// console.log('blocks index',index, dataValueRelateMin, blockValueInterval, dataValueRelateMin / blockValueInterval);
 		if(index>=0 && index<blocksNumber) {
 			blocks[index] += 1;
 		}
@@ -103,6 +104,9 @@ BlockHeatMap.prototype._createBlocks = function() {
 	for(let i=0; i<blocks.length; i++) {
 		let value = blocks[i];
 		let rate = (value/maxValue) ** 0.5;
+		if(isNaN(rate)) {
+			rate = 0;
+		}
 		let R = (rate * rRange) + colorFrom.R,
 				G = (rate * gRange) + colorFrom.G,
 				B = (rate * bRange) + colorFrom.B;
