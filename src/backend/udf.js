@@ -44,13 +44,26 @@ let getGroupCode = (callback) => {
   }
 };
 
+let uniq = (xs) => {
+  var y = new Array();
+  for (var i = 0; i < xs.length; i++) {
+    var dup = false;
+    for (var j = 0; j < i; j++) 
+        if (xs[i] == xs[j]) { dup = true; break; } 
+    if (!dup) y.push(xs[i]);
+  }
+  return y;
+};
+
 let dealGroupCode = (data) => {
   var groups = [];
   JSON.parse(data)['groups'].forEach(
     function (group) {
-      groups.push(group['code']);
+      groups.push(group['category']);
     });
-  return JSON.stringify(groups);
+  var uniqueGroups = uniq(groups);//Array.from(new Set(groups));
+  //return JSON.stringify(groups);
+  return JSON.stringify(uniqueGroups);
 };
 
 let getAllSymbolsList = (callback) => {
