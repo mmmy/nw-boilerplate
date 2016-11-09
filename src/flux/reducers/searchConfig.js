@@ -22,8 +22,9 @@ try {
 var searchConfigFilePath = '../searchConfig/searchConfigFilePath.json';
 try {
     var sC = JSON.parse(fs.readFileSync(searchConfigFilePath).toString());
-    for (let x in initialState) 
+    for (let x in initialState) {
     	initialState[x] = sC[x] || initialState[x];
+    }
 } catch(e) {
     console.log(e);
 }
