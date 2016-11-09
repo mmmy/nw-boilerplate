@@ -16,6 +16,7 @@ const defaultProps = {
 let datePickerOptions = {
 	format: "yyyy/mm/dd",
 	language: "zh-CN",
+	todayBtn: "linked",
 	keyboardNavigation: false,
 	autoclose: true,
 };
