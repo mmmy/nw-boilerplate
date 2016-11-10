@@ -359,7 +359,6 @@ class PatternCollection extends React.Component {
 			//nodes = nodes.length > 0 ? nodes.slice(0,10) : [];
 		//}
 		// this.renderDate2 = new Date();
-		console.info('@@@@@', 'getPatternNodes++++++++');
 		return nodes;
 	}
 
@@ -381,7 +380,6 @@ PatternCollection.defaultProps = defaultProps;
 let stateToProps = function(state) {
 	const {layout, patterns, sort, active, filter, patternTrashed} = state;
 	const {stockView, patternSmallView} = layout;
-		console.info('@@@@@', 'patternCollection stateToProps========');
 	//const {crossFilter,rawData} = patterns;
 	return {fullView: !stockView, patternSmallView, patterns, sort, active, filter, patternTrashed, _setIdTrashed };
 };
