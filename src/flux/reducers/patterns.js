@@ -3,8 +3,6 @@ import * as types from '../constants/ActionTypes';
 import { randomPatterns } from '../util/randomKline';
 import crossfilter from 'crossfilter';
 
-let d1 = new Date();
-
 let getInitialState = () => {
 	let randomData = (process.env.NODE_ENV == 'development') ? randomPatterns(10) : randomPatterns(0);
 	let initialState = {
@@ -19,7 +17,6 @@ let getInitialState = () => {
 	return initialState;
 };
 
-console.log('randomPatterns time spent', new Date() - d1);
 // window.filter = initialState.crossFilter;
 
 export default function patterns(state = getInitialState(), actions){

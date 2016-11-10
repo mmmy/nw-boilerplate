@@ -63,7 +63,6 @@ class SearchReport extends React.Component {
 	}
 
 	componentDidUpdate() {
-		// console.info('SearchReport did update in:', new Date() - this.d1);
 		let { fullView, waitingForPatterns } = this.props;
 		let { error } = store.getState().patterns;
 
@@ -102,7 +101,6 @@ class SearchReport extends React.Component {
 	}
 
 	render(){
-		this.d1 = new Date();
 		const { fullView, statisticsLarger} = this.props;
 		const className = classNames('container-searchreport', {
 			'searchreport-full': fullView,

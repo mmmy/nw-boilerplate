@@ -269,7 +269,6 @@ class StockView extends React.Component {
 StockView.propTypes = propTypes;
 
 let mapStateToProps = function mapStateToProps(state) {
-	console.log('state changed');
 	const { layout, account } = state;
 	const { stockView } = layout;
 	let logined = true;//account.username !== '';
