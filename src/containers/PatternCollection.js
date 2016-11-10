@@ -378,10 +378,10 @@ PatternCollection.propTypes = propTypes;
 PatternCollection.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	const {layout, patterns, sort, active, filter, patternTrashed} = state;
+	const {layout, patternsAsync, sort, active, filter, patternTrashed} = state;
 	const {stockView, patternSmallView} = layout;
 	//const {crossFilter,rawData} = patterns;
-	return {fullView: !stockView, patternSmallView, patterns, sort, active, filter, patternTrashed, _setIdTrashed };
+	return {fullView: !stockView, patternSmallView, patterns:patternsAsync, sort, active, filter, patternTrashed, _setIdTrashed };
 };
 
 export default connect(stateToProps)(PatternCollection);

@@ -56,7 +56,7 @@ CrossfilterContainer.propTypes = propTypes;
 CrossfilterContainer.defaultProps = defaultProps;
 
 let stateToProps = function(state) {
-	let crossFilter = state.patterns.crossFilter,
+	let crossFilter = state.patternsAsync.crossFilter,
 			fullView = !state.layout.stockView;
 	return {
 		crossFilter,

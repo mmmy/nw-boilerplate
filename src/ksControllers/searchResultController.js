@@ -258,6 +258,15 @@ let _handleResize = () => {
 let _initResize = () => {
 	window.addEventListener('resize', _handleResize);
 };
+//更新详情页
+let updateDetailPane = () => {
+	try {
+		let actions = require('../flux/actions');
+		store.dispatch(actions.patternActions.changePatternsAsync());
+	} catch(e) {
+		console.error(e);
+	}
+};
 
 let _triggerToggle = () => { //作为外部接口
 	if(_$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
@@ -266,7 +275,6 @@ let _triggerToggle = () => { //作为外部接口
 		}
 		// return;
 	}
-
 	let $detailReport = $('.container-searchreport:not(.static)');   //详情页
 	let $comparatorContainer = $('#__comparator_prediction_container');
 	$comparatorContainer.css('opacity', '0');
@@ -277,6 +285,7 @@ let _triggerToggle = () => { //作为外部接口
 	_$reportContainer.one('transitionend', ()=>{
 		let zIndex = $detailReport.css('z-index');
 		if(zIndex == '0') {
+			updateDetailPane();
 			$detailReport.css({'z-index':'2', 'opacity':'1'});
 			$comparatorContainer.css({'z-index':'3', 'opacity':'1'});
 		}else {

@@ -148,9 +148,15 @@ let resetError = () => {
 let getLastKline = () => {
 	return _lastSearch.kline;
 };
+//设置patterns的备份版本, 用来刷新详情页, 当切换到第二页时候调用
+let changePatternsAsync = () => {
+	let patterns = store.getState().patterns;
+	return {type: types.CHANGE_PATTERNS_ASYNC, patterns: patterns};
+};
 
 module.exports = {
 	getPatterns,
 	resetError,
 	getLastKline,
+	changePatternsAsync,
 };

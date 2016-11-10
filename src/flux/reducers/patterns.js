@@ -17,25 +17,30 @@ let getInitialState = () => {
 	return initialState;
 };
 
+let initialState = getInitialState();
 // window.filter = initialState.crossFilter;
 
-export default function patterns(state = getInitialState(), actions){
+module.exports = {
+	patterns: function patterns(state = initialState, actions){
 
-	switch (actions.type) {
+		switch (actions.type) {
 
-		case types.CHANGE_PATTERNS:
-			actions.patterns.crossFilter = actions.patterns.crossFilter || crossfilter([]);
-			return actions.patterns || [];
+			case types.CHANGE_PATTERNS:
+				actions.patterns.crossFilter = actions.patterns.crossFilter || crossfilter([]);
+				return actions.patterns || [];
 
-		case types.GET_PATTERNS_ERROR:
-			state.error = actions.error;
-			return state;    //不进行刷新
+			case types.GET_PATTERNS_ERROR:
+				state.error = actions.error;
+				return state;    //不进行刷新
 
-		case types.RESET_ERROR:
-			state.error = null;
-			return state;
+			case types.RESET_ERROR:
+				state.error = null;
+				return state;
 
-		default:
-			return state;
-	}
+			default:
+				return state;
+		}
+	},
+	
+	initialState: initialState
 }
