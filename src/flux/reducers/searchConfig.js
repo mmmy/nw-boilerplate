@@ -6,7 +6,7 @@ var now = new Date();
 var initialState = {
 	additionDate: {type:'days', value:30},
 	searchSpace: '000010',
-	dateRange: [{date:'1990/01/01', hour:'0', minute:'0', second:'0'}, {date:`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`, hour:'0', minute:'0', second:'0'}],
+	dateRange: [{date:'1990/01/01', hour:'0', minute:'0', second:'0'}, {date:`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`, hour:'23', minute:'59', second:'59'}],
 	spaceDefinition: { stock: true, future: false },
 	matchType: MATCH_TYPE.MORPHO,
 	searchLenMax: 200
