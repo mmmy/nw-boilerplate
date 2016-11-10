@@ -211,7 +211,7 @@ class SortBar extends React.Component {
 						{this.renderChildPanel(2)}
 					</button>*/}
 					<button className='pattern-bar-btn' onClick={ this.showChildPanel.bind(this, 1) } onBlur={ this.hideChildPanel.bind(this) }>
-						<span data-kstooltip="涨跌幅度过滤" className={filterIconClass}></span>
+						<span data-kstooltip="相似度过滤" className={filterIconClass}></span>
 						{this.renderChildPanel(1)}
 					</button>
 					<button className='pattern-bar-btn' onClick={ this.showChildPanel.bind(this, 0) } onBlur={ this.hideChildPanel.bind(this) }>
