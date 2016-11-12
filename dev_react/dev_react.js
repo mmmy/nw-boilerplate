@@ -5,7 +5,8 @@ window.$ = require('jquery');
 let tabsArr = [
 	// {title:'waves',component:'./component/waves'},
 	// {title:'kPrediction',component:'./component/kPrediction'},
-	{title:'prediction',component:'./component/prediction'},
+	{title:'lineAreaChart',component:'./component/lineAreaChart'},
+	// {title:'prediction',component:'./component/prediction'},
 	// {title:'ksprediction',component:'./component/ksprediction'},
 	// {title:'searchresult',component:'./component/searchresult'},
 	// {title:'heatmap',component:'./component/heatmap'},
