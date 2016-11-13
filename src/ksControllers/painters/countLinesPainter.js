@@ -17,8 +17,8 @@ let _dataToPointY = (paddingTop, viewYHeight, yMin, yMax, number) => {
 //default options
 let defaultDrawStyle = {
 	lineWidth: 2,
-	strokeStyle: 'rgba(180,100,10,0.7)',
-	fillStyle: 'rgba(180,100,10,0.1)'
+	strokeStyle: 'rgba(0,0,0,0.7)',
+	fillStyle: 'rgba(0,0,0,0.2)'
 };
 /**
   options: {

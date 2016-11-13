@@ -45,9 +45,13 @@ function CountLinesChart(container, config) {
 			bottom: 0,
 		},
 		series: [{
-			data:[4,2,1,6,3,7,2,4]
+			data:[4,2,1,6,3,7,2,4],
+			strokeStyle: 'rgba(200,60,10,0.7)',
+			fillStyle: 'rgba(200,60,10,0.2)'
 		},{
-			data:[0,1,2,3,4,5,6,7]
+			data:[0,1,2,3,4,5,6,7],
+			strokeStyle: 'rgba(10,200,70,0.7)',
+			fillStyle: 'rgba(10,200,70,0.2)'
 		}]
 	};
 
