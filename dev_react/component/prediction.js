@@ -1,3 +1,4 @@
+/*
 import React from 'react';
 // import echarts from 'echarts';
 import {factorCandleOption, factorLineOption} from '../../src/components/utils/echart-options';
@@ -428,28 +429,7 @@ var data = [
 			new KlineEditor(this.refs.kline_editor, data.slice(0, 100));
 		},
 		drawChart(){
-			/*****
-			var data0 = splitData(data.slice(0,30), 4);
-			var lastClosePrice = data0.values[data0.values.length-1][1];
-			var { lineSeries, min, max } = generateSeries([data.slice(0, 3).map(function(e){ return e[3] }),data.slice(0, 3).map(function(e){ return e[2] })], lastClosePrice);
-			// var minPrice = Math.min(min, data0.yMin);
-			// var maxPrice = Math.max(max, data0.yMax);
-			//lastClosePrice 居中
-			// var offset = Math.max(maxPrice - lastClosePrice, lastClosePrice - minPrice);
-			var offset = Math.max(data0.yMax - lastClosePrice, lastClosePrice - data0.yMin);
 
-			option.series = option.series.concat(lineSeries);
-			option.series[0].data = data0.values;
-			option.xAxis.data = data0.categoryData;
-			option.yAxis[0].min = lastClosePrice - offset;
-			option.yAxis[0].max = lastClosePrice + offset;			
-			option.yAxis[1].min = lastClosePrice - offset;
-			option.yAxis[1].max = lastClosePrice + offset;
- 			var chart = echarts.init(this.refs.container);
-			chart.setOption(option);
-			this.chart = chart;
-			window.predictionChart = chart;
-			********/
 		},
 		componentDidMount() {
 			this.initEditor();
@@ -474,3 +454,5 @@ var data = [
 			</div>
 		}
 	});
+
+***/
