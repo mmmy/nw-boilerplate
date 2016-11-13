@@ -110,8 +110,10 @@ class PatternCollection extends React.Component {
 		//return;
 		let {crossFilter} = newProps.patterns;
 		if(this.oldCrossFilter !== crossFilter) {
+			$(".start-btn-container").addClass('hide'); //隐藏预测工具栏
+    	$(".toolbar-item.item1").removeClass('hide');     //显示pattern过滤工具栏
+    	require('../ksControllers/klinePredictionWidget').show(false);   			
 
-			console.info('crossFilter changed!');
 			// updateCanvasVisible(true); //隐藏之前的图片
 			this.oldCrossFilter = crossFilter;
 			this.symbolDim = crossFilter.dimension(e=>{ return e.symbol; });
