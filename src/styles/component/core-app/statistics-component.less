@@ -1,0 +1,187 @@
+/*
+	极值统计, 回撤统计, 振幅统计
+*/
+@gray-statistic: #959595;
+
+//显示百分比的UI, 66.66%
+.percent-info(@color:#000;@font-size:20px) {
+	color: @color;
+	font-weight: bold;
+	span:nth-child(1) {
+		font-size: @font-size;
+	}
+	span:nth-child(2) {
+		font-size: @font-size;
+	}
+	span:nth-child(3) {
+		font-size: @font-size * 0.7;
+	}
+	span:nth-child(4) {
+		margin-left: 5px;
+		font-size: @font-size * 0.5;
+		font-weight: normal;
+	}
+	&.red {
+		color: @brown-red;
+	}
+	&.green {
+		color: @ks-color-green-grass;
+	}
+}
+
+//天数mixin 
+.days-info-wrapper(@font-size: 38px) {
+	position: relative;
+	max-width: 200px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+	padding-left: 10px;
+	color: #333;
+	font-size: @font-size * 0.35;
+	.days-info {
+		line-height: @font-size * 0.5;
+		font-size: @font-size * 0.4;
+		strong {
+			font-size: @font-size;
+			color: #000;
+		}
+	}
+	&.red {
+		&:before {
+			content: ' ';
+			position: absolute;
+			left: 0;
+			height: 100%;
+			width: 5px;
+			background-color: @brown-red;
+		}
+	}
+	&.green {
+		&:before {
+			content: ' ';
+			position: absolute;
+			left: 0;
+			height: 100%;
+			width: 5px;
+			background-color: @ks-color-green-grass;
+		}
+	}
+}
+
+/**
+ * for ks-container
+ */
+.ks-container {
+	.percent-info {
+		.percent-info();
+	}
+	.days-info-wrapper {
+		.days-info-wrapper();
+	}
+	//点
+	.circle {
+		margin-right: 10px;
+		display: inline-block;
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		&.red {
+			background-color: @brown-red;
+		}
+		&.green {
+			background-color: @ks-color-green-grass;
+		}
+	}
+}
+
+
+.statistic-component-container {
+	.chart-wrapper {
+		position: relative;
+		height: 150px;
+	}
+	.ks-container {
+		// margin-left: 40px;
+		// margin-right: 40px;
+		border-bottom: 1px solid #eee;
+		padding-bottom: 20px;
+	}
+	.title {
+		text-align: left;
+		font-size: 16px;
+		padding-left: 60px;
+		margin: 0;
+		color: #222;
+		line-height: 60px;
+	}
+	p {
+		font-size: 10px;
+		color: #222;
+	}
+}
+
+/**
+	* peak 极值统计 
+ */
+.ks-container.peak {
+	text-align: center;
+	.percent-info.rate {
+		.percent-info(@brown-red,36px);
+	}
+	.describe {
+		color: #000;
+	}
+	//上涨, 下跌按钮
+	.btns .flat-btn {
+		width: 40px;
+		height: 40px;
+		border: 1px solid @gray-statistic;
+		.active {
+			color: #fff;
+			background-color: @gray-statistic;
+		}
+		&:not(last-child) {
+			margin-right: 16px;
+		}
+	}
+}
+
+/**
+ *retracement 回撤统计 
+ */
+.ks-container.retracement {
+	>.row {
+		margin-left: 40px;
+	}
+	.data-wrapper {
+		background-color: #f6f6f6;
+	}
+}
+
+/**	
+ * swing 振幅统计
+ */
+.ks-container.swing {
+	text-align: center;
+}
+
+/**
+ * 头部8个指标统计 参考pattern.less
+ */
+.reportdetail-container {
+	.percent-info {
+		.percent-info(@font-size:36px);
+	}
+	p {
+		font-size: 10px;
+	}
+	.row.large {
+		
+	}	
+	.row.small {
+		.percent-info {
+			.percent-info(@font-size: 18px);
+		}
+	}
+}

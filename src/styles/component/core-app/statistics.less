@@ -23,8 +23,11 @@
 		.border-radius-inner();
 	}
 	&.full{
-		width: @statisticsContainerStretch_W;
+		width: calc(~"100% - 300px");//@statisticsContainerStretch_W;
 		height: @statisticsContainerStretch_H;
+		@media (max-width:1799px) {
+			width: 100%;
+		}
 		.statistics-container-inner {
 		 // padding: 12px 3.5% 20px 6%;
 		}
