@@ -248,6 +248,7 @@ function summaryDrawDown(bars, kind) {
     for (var i = 0; i < nSym; i++) {
         var bar = bars[i];
         //var d = calDrawDownExtend(bar);
+        var d;
         var dds = calMost(bar);
         if (kind == 0) d = dds.drawDown;
         else if (kind == 1) d = dds.befPeakDrawDown;
@@ -276,14 +277,18 @@ function summary() {
     this._summary5 = this.summaryDrawDown(this._bars);
     this._summary = Object.assign({}, this._summary1, this._summary2, this._summary3, this._summary4, this._summary5);
     */
-    _summary1 = this.summaryPeakDown(this._bars);
-    _summary2 = this.summaryUpProbility(this._bars, this._aimUpRate, this._aimDownRate);
-    _summary3 = this.summaryUpProbilityFilterRate(this._bars, this._aimUpRate);
-    _summary4 = this.summaryUpProbilityFilterRate(this._bars, this._aimDownRate);
-    _summary5 = {'summaryDrawDown': this.summaryDrawDown(this._bars, 0)};
-    _summary6 = {'summaryBefPeakDrawDown': this.summaryDrawDown(this._bars, 1)};
-    _summary7 = {'summaryBefDownDrawDown': this.summaryDrawDown(this._bars, 2)};
+    var _summary1 = this.summaryPeakDown(this._bars);
+    var _summary2 = this.summaryUpProbility(this._bars, this._aimUpRate, this._aimDownRate);
+    var _summary3 = this.summaryUpProbilityFilterRate(this._bars, this._aimUpRate);
+    var _summary4 = this.summaryUpProbilityFilterRate(this._bars, this._aimDownRate);
+    var _summary5 = {'summaryDrawDown': this.summaryDrawDown(this._bars, 0)};
+    var _summary6 = {'summaryBefPeakDrawDown': this.summaryDrawDown(this._bars, 1)};
+    var _summary7 = {'summaryBefDownDrawDown': this.summaryDrawDown(this._bars, 2)};
     this._summary = Object.assign({}, _summary1, _summary2, _summary3, _summary4, _summary5, _summary6, _summary7);
+    return this._summary;
+}
+
+function getSummary() {
     return this._summary;
 }
 
@@ -329,6 +334,7 @@ AfterAnalysis.prototype.summaryUpProbilityFilterRate = summaryUpProbilityFilterR
 AfterAnalysis.prototype.summaryPeakDown = summaryPeakDown;
 AfterAnalysis.prototype.summaryDrawDown = summaryDrawDown;
 AfterAnalysis.prototype.summary = summary;
+AfterAnalysis.prototype.getSummary = getSummary;
 
 module.exports = AfterAnalysis;
 
