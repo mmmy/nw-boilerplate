@@ -131,6 +131,7 @@ function summaryUpProbility(bars) {
     var nSym = bars.length;
     var nDay = bars[0].length;
     var tUp = new Array(nDay);
+    var tNotUp = new Array(nDay);
 
     for (var i = 0; i < nDay; i++) tUp[i] = 0;
 
