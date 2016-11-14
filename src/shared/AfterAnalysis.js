@@ -51,6 +51,7 @@ function calDrawDownExtend(data, n) {
 }
 
 function calMost(data) {
+    if (!data) return;
     //计算全局极大值，极小值，第一次极大值时间，第一次极小值时间
     //计算最高速度，最低速度，振幅，是否先到达最大值再到达最小值
     //计算全局drawDown, 极大值前的drawDown，极小值前的drawDown
@@ -97,6 +98,7 @@ function calMost(data) {
 
 
 function calFilterWithAimRate(data, rate) {
+    if (!data) return;
     //@data 为一只股票的多日数据
     //@rate > 0 为目标涨幅
     //@rate < 0 为目标跌幅
@@ -124,6 +126,7 @@ function calFilterWithAimRate(data, rate) {
 
 //计算每个时刻，上涨的股票占总股票的比例
 function summaryUpProbility(bars) {
+    if (!bars) return;
     var nSym = bars.length;
     var nDay = bars[0].length;
     var tUp = new Array(nDay);
@@ -139,6 +142,7 @@ function summaryUpProbility(bars) {
 }
 
 function summaryUpProbilityFilterRate(bars, rate) {
+    if (!bars) return;
     //计算达到目标涨幅 或 跌幅的股票中
     //总数nReach
     //达到目标开始到结束上涨的股票个数nUp 涨率r1
@@ -172,6 +176,7 @@ function summaryUpProbilityFilterRate(bars, rate) {
 }
 
 function summaryPeakDown(bars) {
+    if (!bars) return;
     //统计最大值第一次出现的时间分布 tPeak
     //统计最小值第一次出现的时间分布 tDown
     //统计最大值先出现，然后再出现最小值的次数 nPeakFirst
@@ -204,6 +209,7 @@ function summaryPeakDown(bars) {
 
 
 function basicStastic(data) {
+    if (!data) return;
     var n = data.length;
     var max = Math.max.apply(null, data);
     var min = Math.min.apply(null, data);
@@ -219,6 +225,7 @@ function basicStastic(data) {
 }
 
 function freqence(data, nDay) {
+    if (!data) return;
     var n = data.length;
     //console.log(data.length, nDay);
     var freq = new Array(nDay);
@@ -229,6 +236,7 @@ function freqence(data, nDay) {
 
 
 function summaryDrawDown(bars, kind) {
+    if (!bars) return;
     var nSym = bars.length;
     var nDay = bars[0].length;
     var drawDownData = [];
@@ -279,6 +287,20 @@ function summary() {
     return this._summary;
 }
 
+function AfterAnalysis() {
+}
+
+function setBars(bars) {
+    this._bars = bars;
+    this._n = (bars && bars.length) || 0;
+    this._m = (bars && bars[0] && bars[0].length) || 0;
+}
+
+function setRate(r1, r2) {
+    this._aimUpRate = aimUpRate || 0.05;
+    this._aimDownRate = aimDownRate || -0.05;
+}
+
 function AfterAnalysis(bars, aimUpRate, aimDownRate) {
     //bars
     this._bars = bars;
@@ -295,6 +317,8 @@ function AfterAnalysis(bars, aimUpRate, aimDownRate) {
     */
 }
 
+AfterAnalysis.prototype.setBars = setBars;
+AfterAnalysis.prototype.setRate = setRate;
 AfterAnalysis.prototype.calDrawDown = calDrawDown;
 AfterAnalysis.prototype.calDrawDownExtend = calDrawDownExtend;
 AfterAnalysis.prototype.basicStastic = basicStastic;
