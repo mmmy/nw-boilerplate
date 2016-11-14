@@ -135,12 +135,15 @@ function summaryUpProbility(bars) {
     for (var i = 0; i < nDay; i++) tUp[i] = 0;
 
     for (var i = 0; i < nSym; i++) 
-        for (var j = 1; j < nDay; j++) 
+        for (var j = 1; j < nDay; j++) {
             if (bars[i][j] > bars[i][0]) tUp[j]++;
+            if (bars[i][j] < bars[i][0]) tNotUp[j]++;
+        }
 
     //for (var i = 0; i < nDay; i++) tNotUp[i] = nSym - tUp[i];
     for (var i = 0; i < nDay; i++) tUp[i] = tUp[i] / nSym;
-    for (var i = 0; i < nDay; i++) tNotUp[i] = 1 - tUp[i];
+    for (var i = 0; i < nDay; i++) tNotUp[i] = tNotUp[i] / nSym;
+    //for (var i = 0; i < nDay; i++) tNotUp[i] = 1 - tUp[i];
 
     var dayMostUp = basicStastic(tUp).imax;
     var dayMostNotUp = basicStastic(tNotUp).imax;
