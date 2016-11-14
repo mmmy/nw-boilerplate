@@ -19,7 +19,7 @@ function calDrawDown(data, n) {
 }
 
 function calDrawDownExtend(data, n) {
-    //计算drawDown
+    //计算一只股票的最大drawDown
     //data Array of Number 一支股票多日的收盘价
     if (!data || !data.length) return 0;
 
@@ -213,6 +213,7 @@ function summaryPeakDown(bars) {
 
         sRateIncrease.push(r.rateIncrease);
         indexMost.push(r);
+        sAmplitude.push(r.amplitude);
         //if (r.drawDown > drawDown) drawDown = r.drawDown;
         //if (r.befPeakDrawDown > drawDown) befPeakDrawDown = r.befPeakDrawDown;
         //if (r.befDownDrawDown > drawDown) befDownDrawDown = r.befDownDrawDown;
@@ -225,11 +226,13 @@ function summaryPeakDown(bars) {
     var minRateIncrease = bRateIncrease.min;
     var dayMostPeak = basicStastic(tPeak).imax;
     var dayMostDown = basicStastic(tDown).imax;
+    var basicStasticAmplitude = basicStastic(sAmplitude);
               
     var rPeakFirst = nPeakFirst / nSym;
     return { tPeak, tDown, nPeakFirst, rPeakFirst,
         maxRateIncrease, minRateIncrease, 
-        dayMostPeak, dayMostDown/*, drawDown, befPeakDrawDown, befDownDrawDown*/ };
+        dayMostPeak, dayMostDown,
+        basicStasticAmplitude, /*, drawDown, befPeakDrawDown, befDownDrawDown*/ };
 }
 
 
