@@ -91,9 +91,10 @@ function calMost(data) {
 
     //计算振幅
     var amplitude = (peak - down) / data[0];
+    var rateIncrease = (data[nDay-1] - data[0]) / data[0];
 
     //返回 最高，最低，最高时的时间，最低时的时间，最高速度，最低速度，振幅，是否先到达最大值再到达最小值，全局drawDownExtend, 极大值前的drawDownExtend，极小值前的drawDownExtend
-    return { nDay, peak, down, ipeak, idown, vpeak, vdown, amplitude, peakFirst, drawDown, befPeakDrawDown, befDownDrawDown };
+    return { nDay, peak, down, ipeak, idown, vpeak, vdown, amplitude, peakFirst, drawDown, befPeakDrawDown, befDownDrawDown, rateIncrease };
 }
 
 
@@ -137,8 +138,13 @@ function summaryUpProbility(bars) {
         for (var j = 1; j < nDay; j++) 
             if (bars[i][j] > bars[i][0]) tUp[j]++;
 
+    //for (var i = 0; i < nDay; i++) tNotUp[i] = nSym - tUp[i];
     for (var i = 0; i < nDay; i++) tUp[i] = tUp[i] / nSym;
-    return { tUp };
+    for (var i = 0; i < nDay; i++) tNotUp[i] = 1 - tUp[i];
+
+    var dayMostUp = basicStastic(tUp).imax;
+    var dayMostNotUp = basicStastic(tNotUp).imax;
+    return { tUp, dayMostUp, tNotUp, dayMostNotUp };
 }
 
 function summaryUpProbilityFilterRate(bars, rate) {
@@ -187,6 +193,9 @@ function summaryPeakDown(bars) {
     var nPeakFirst = 0;
     var tPeak = new Array(nDay);
     var tDown = new Array(nDay);
+    var indexMost = [];
+    var sRateIncrease = [];
+    var sAmplitude = [];
     var drawDown = 0, befPeakDrawDown = 0, befDownDrawDown = 0;
     for (var i = 0; i < nDay; i++) tPeak[i] = 0;
     for (var i = 0; i < nDay; i++) tDown[i] = 0;
@@ -198,21 +207,39 @@ function summaryPeakDown(bars) {
         if (0 < r.ipeak && r.ipeak < nDay) tPeak[r.ipeak]++;
         if (0 < r.idown && r.idown < nDay) tDown[r.idown]++;
         if (r.peakFirst) nPeakFirst++; 
+
+        sRateIncrease.push(r.rateIncrease);
+        indexMost.push(r);
         //if (r.drawDown > drawDown) drawDown = r.drawDown;
         //if (r.befPeakDrawDown > drawDown) befPeakDrawDown = r.befPeakDrawDown;
         //if (r.befDownDrawDown > drawDown) befDownDrawDown = r.befDownDrawDown;
     }
 
-    var rPeakFirst = nPeakFirst / nSym
-    return { tPeak, tDown, nPeakFirst, rPeakFirst/*, drawDown, befPeakDrawDown, befDownDrawDown*/ };
+
+    var bRateIncrease = basicStastic(sRateIncrease);
+    console.log(bRateIncrease);
+    var maxRateIncrease = bRateIncrease.max;
+    var minRateIncrease = bRateIncrease.min;
+    var dayMostPeak = basicStastic(tPeak).imax;
+    var dayMostDown = basicStastic(tDown).imax;
+              
+    var rPeakFirst = nPeakFirst / nSym;
+    return { tPeak, tDown, nPeakFirst, rPeakFirst,
+        maxRateIncrease, minRateIncrease, 
+        dayMostPeak, dayMostDown/*, drawDown, befPeakDrawDown, befDownDrawDown*/ };
 }
 
 
 function basicStastic(data) {
     if (!data) return;
     var n = data.length;
+
     var max = Math.max.apply(null, data);
+    var imax = data.indexOf(max);
+
     var min = Math.min.apply(null, data);
+    var imin = data.indexOf(min);
+
     var sum = 0;
     for (var i = 0; i < n; i++) sum = sum + data[i];
     var average = sum / n;
@@ -221,7 +248,7 @@ function basicStastic(data) {
     for (var i = 0; i < n; i++) ss = ss + Math.pow(data[i] - average, 2); 
     ss = ss / n;
     var variance = Math.pow(ss, 0.5) || 0;
-    return { sum, average, max, min, ss, variance };
+    return { sum, average, max, min, ss, variance, imax, imin };
 }
 
 function freqence(data, nDay) {
