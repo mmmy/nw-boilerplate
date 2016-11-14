@@ -124,7 +124,6 @@ let drawAxis = (canvas, data, options) => {
 	let ctx = canvas.getContext('2d');
 	let width = canvas.width;
 	let height = canvas.height;
-	console.log('canvas width height', width, height);
 
 	let space = 0;
 	if(isVertical) {
@@ -152,7 +151,6 @@ let drawAxis = (canvas, data, options) => {
 		} else {
 			let x = padding.left + i*space;
 			let y = height / 2;
-			console.log(x, y);
 			ctx.fillText(data[i], x, y);
 		}
 	}

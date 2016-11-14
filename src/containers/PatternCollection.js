@@ -108,7 +108,7 @@ class PatternCollection extends React.Component {
 		 * filter手动刷新
 		 */
 		//return;
-		let {crossFilter} = newProps.patterns;
+		let {crossFilter, closePrice} = newProps.patterns;
 		if(this.oldCrossFilter !== crossFilter) {
 			$(".start-btn-container").addClass('hide'); //隐藏预测工具栏
     	$(".toolbar-item.item1").removeClass('hide');     //显示pattern过滤工具栏
@@ -120,9 +120,7 @@ class PatternCollection extends React.Component {
 			//idDim , 剔除dimentsion
 			this.idDim = crossFilter.dimension(d=>{ return d.id; });
 			_idTrashed = [];
-			$('.trashed-number', '.pattern-statistics-panel').text('');
-			
-
+			$('.trashed-number', '.pattern-statistics-panel').text('');			
 		}
 
 		let hideHelper = () => {
@@ -132,11 +130,14 @@ class PatternCollection extends React.Component {
 			// setTimeout(() => {
 				let filteredData = that.symbolDim.top(Infinity),
 						idArr = _.pluck(filteredData, 'id'),
-						node = that.refs.container;
+						node = that.refs.container,
+						closePriceFiltered = [];
+
 				$('.pattern-view', node).addClass('hide');
 				if(showNotTrashed){ 																				//alway true
 					idArr.forEach((id) => {
 						$(`#pattern_view_${id}`,node).removeClass('hide');
+						closePrice[id] && closePriceFiltered.push(closePrice[id]);
 					});
 				}
 				if(showTrashed) {
@@ -145,7 +146,13 @@ class PatternCollection extends React.Component {
 					});
 				}
 				$(node).toggleClass('empty', $('.pattern-view:visible', node).length == 0);
-
+				
+				//更新统计信息, 极值统计, 回撤统计, 振幅统计
+				try {
+					require('../ksControllers/statisticsComponent').update(closePriceFiltered);
+				} catch (e) {
+					console.error(e);
+				}
 		};
 
 		if( newProps.filter !== this.props.filter ){

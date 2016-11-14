@@ -71,25 +71,46 @@ CountLinesChart.prototype._updateCanvasSize = function() {
 }
 
 CountLinesChart.prototype._init = function() {
-
+	this._resizeHandle = this._resize.bind(this);
+	window.addEventListener('resize',this._resizeHandle);
 }
 
 CountLinesChart.prototype._drawChart = function() {
+	//计算Y轴坐标值, 先获得每个serie 的最大值, 再求最大值
+	let countMaxes = this._linesOption.series.map(function(e){
+		return Math.max.apply(null, e.data);
+	});
+	let countMax = Math.max.apply(null, countMaxes);
+	let yLables = [];
+	if(countMax > 0) {
+		for(var i=0; i<=countMax; i++) {
+			yLables.push(i);
+		}
+	}
 	drawCountLines(this._canvas_main, this._linesOption);
 	drawAxis(this._canvas_x, this._linesOption.x, {padding:{left:this._yAxisW,top:0,right:20,bottom:0}});
-	drawAxis(this._canvas_y, [0,1,2,3,4,5,6,7,8], {isVertical: true, padding:{left:0,top:20,right:0,bottom:this._xAxisH}});
+	drawAxis(this._canvas_y, yLables, {isVertical: true, padding:{left:0,top:20,right:0,bottom:this._xAxisH}});
 }
 
 CountLinesChart.prototype.render = function() {
 	this._drawChart();
 }
 
-CountLinesChart.prototype.setData = function() {
-
+CountLinesChart.prototype.setData = function({dataLen, series}) {
+	series = series || [[]];
+	let len = dataLen || series[0].length;
+	let x = [];
+	let data = [];
+	for(var i=0; i<len; i++) {
+		x.push(i+1);
+	}
+	this._linesOption.x = x;
+	this._linesOption.series = series;
+	this.render();
 }
 
 CountLinesChart.prototype.dispose = function() {
-	
+	window.removeEventListener('resize', this._resizeHandle);
 }
 
 module.exports = CountLinesChart;
