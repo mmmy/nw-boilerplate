@@ -295,7 +295,11 @@ function summaryDrawDown(bars, kind) {
     var freqEnd = freqence(end, nDay);
     var freqLen = freqence(len, nDay);
 
-    return { nSym, nDay, drawDownData, basic, freqStart, freqEnd, freqLen };
+    var dayMostDrawDownStart = basicStastic(freqStart).imax;
+    var dayMostDrawDownEnd = basicStastic(freqEnd).imax;
+    var dayMostDrawDownLast = basicStastic(freqLen).imax;
+
+    return { nSym, nDay, drawDownData, basic, freqStart, freqEnd, freqLen, dayMostDrawDownStart, dayMostDrawDownEnd, dayMostDrawDownLast };
 }
 
 function summary() {
