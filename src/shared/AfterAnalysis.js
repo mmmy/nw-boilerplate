@@ -134,6 +134,7 @@ function summaryUpProbility(bars) {
     var tNotUp = new Array(nDay);
 
     for (var i = 0; i < nDay; i++) tUp[i] = 0;
+    for (var i = 0; i < nDay; i++) tNotUp[i] = 0;
 
     for (var i = 0; i < nSym; i++) 
         for (var j = 1; j < nDay; j++) {
@@ -142,8 +143,8 @@ function summaryUpProbility(bars) {
         }
 
     //for (var i = 0; i < nDay; i++) tNotUp[i] = nSym - tUp[i];
-    for (var i = 0; i < nDay; i++) tUp[i] = tUp[i] / nSym;
-    for (var i = 0; i < nDay; i++) tNotUp[i] = tNotUp[i] / nSym;
+    for (var i = 0; i < nDay; i++) tUp[i] = tUp[i];
+    for (var i = 0; i < nDay; i++) tNotUp[i] = tNotUp[i];
     //for (var i = 0; i < nDay; i++) tNotUp[i] = 1 - tUp[i];
 
     var dayMostUp = basicStastic(tUp).imax;
