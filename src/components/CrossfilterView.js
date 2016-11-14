@@ -371,7 +371,7 @@ resizeChart1() {
 	}
 
 	render() {
-		this.renderDate = new Date();
+		// this.renderDate = new Date();
 		const className = classnames('crossfilter-container', {
 		  'crossfilter-container-stretch': this.props.stretchView,
 		  'crossfilter-container-shrink': !this.props.stretchView

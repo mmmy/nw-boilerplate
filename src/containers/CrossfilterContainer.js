@@ -19,7 +19,16 @@ class CrossfilterContainer extends React.Component {
 	}
 
 	componentDidMount() {
-
+		/**
+		 * add toggl btn
+		 */
+		let that = this;
+		let $toggleBtn = $(`<button class="flat-btn toggle-crossfilter"><img/>可视化统计</button>`)
+											.click(function(event) {
+												/* Act on the event */
+												$(that.refs.root).toggleClass('show');
+											});
+		$(this.refs.root).append($toggleBtn);
 	}
 
 	componentWillReceiveProps(){
@@ -36,8 +45,8 @@ class CrossfilterContainer extends React.Component {
 
 	render(){
 		let { dispatch, fullView, crossFilter } = this.props;
-		let className = classNames('crossfilter-out-container');
-		return (<div className={ className }>
+		let className = classNames('crossfilter-out-container transition-position');
+		return (<div ref='root' className={ className }>
 				<div className='title-container'>
 					<h3 className='title'>可视化统计</h3>
 				</div>

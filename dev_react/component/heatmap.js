@@ -1,5 +1,5 @@
 import React from 'react';
-import echarts from 'echarts';
+// import echarts from 'echarts';
 
 export default React.createClass({
 	
@@ -77,7 +77,7 @@ export default React.createClass({
 			        }
 			    }]
 			};
-			echarts.init(this.refs.root).setOption(option);
+			// echarts.init(this.refs.root).setOption(option);
 	},
 	componentDidMount() {
 		this.drawChart();

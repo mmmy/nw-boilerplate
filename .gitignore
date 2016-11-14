@@ -11,3 +11,4 @@ storage
 *.zip
 *sublime*
 local_test
+backup
