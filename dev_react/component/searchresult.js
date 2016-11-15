@@ -1,3 +1,4 @@
+/*
 import React from 'react';
 import searchResultController from '../../src/ksControllers/searchResultController';
 
@@ -24,3 +25,4 @@ export default React.createClass({
 	},
 
 });
+*/

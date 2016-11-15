@@ -9,10 +9,10 @@ export default React.createClass({
 	},
 	componentDidMount() {
 		statisticsComponent.init(this.refs.container);
-		var closePrices = __data.map(function(prices){
-			return prices.slice(0, 3);
-		});
-		statisticsComponent.update(closePrices);
+		// var closePrices = __data.map(function(prices){
+		// 	return prices.slice(0, 3);
+		// });
+		statisticsComponent.update(__data);
 	},
 	render(){
 
