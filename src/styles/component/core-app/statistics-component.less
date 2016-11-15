@@ -116,10 +116,13 @@
 	.title {
 		text-align: left;
 		font-size: 16px;
-		padding-left: 60px;
+		padding-left: 40px;
 		margin: 0;
 		color: #222;
 		line-height: 60px;
+		img {
+			margin-right: 10px;
+		}
 	}
 	p {
 		font-size: 10px;
@@ -173,7 +176,10 @@
  */
 .ks-container.retracement {
 	>.row {
-		margin-left: 40px;
+		// margin-left: 40px;
+		>.ks-col-50:first-child {
+			padding-left: 40px;
+		}
 	}
 	.data-wrapper {
 		background-color: #ededed;
