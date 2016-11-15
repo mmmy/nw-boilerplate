@@ -66,14 +66,17 @@ let drawCountLines = (canvas, options) => {
 			height = canvas.height,
 			viewWidth = width - padding.left - padding.right,
 			viewHeight = height - padding.top - padding.bottom;
-	window.ctx = ctx;
 
 	//draw data
-	let xSpace = viewWidth / (xData.length - 1);
+	let xSpace = (xData.length === 1) ? viewWidth / 2 : viewWidth / (xData.length - 1);
 
 	ctx.save();
 	//paint
 	ctx.clearRect(0,0,width,height);
+	//如果space 为Infinity , 绘图将会出现bug
+	if(!isFinite(xSpace)) {
+		return;
+	}
 	for(let i=0; i<series.length; i++) {
 		let line = series[i];
 		let data = line.data; //数据数组
@@ -115,6 +118,8 @@ let drawAxis = (canvas, data, options) => {
 	let isVertical = options && options.isVertical || false;
 	let hoverIndex = options && options.hoverIndex;
 	let selectedIndex = options && options.selectedIndex;
+	let textColor = options && options.textColor || '#888';
+	let gridColor = options && options.gridColor || 'rgba(0,0,0,0.08)';
 	let padding = {};
 			padding.left = options.padding && options.padding.left * ratio;
 			padding.top = options.padding && options.padding.top * ratio;
@@ -126,6 +131,7 @@ let drawAxis = (canvas, data, options) => {
 	let height = canvas.height;
 
 	let space = 0;
+	let labelWidth = 30;
 	if(isVertical) {
 		space = (height - padding.top - padding.bottom) / (len-1);
 	} else {
@@ -137,17 +143,26 @@ let drawAxis = (canvas, data, options) => {
 
 	//paint
 	ctx.clearRect(0,0, width, height);
+		//如果space 为Infinity , 绘图将会出现bug
+	if(!isFinite(space)) {
+		return;
+	}
 	// ctx.fillStyle = 'rgba(0,0,0,0.1)';
 	// ctx.fillRect(0, 0, width, height);
 	ctx.font = `${10*ratio}px Arial`;
 	ctx.textAlign = 'center';
 	for(let i=0; i<len; i+=interval) {
-		ctx.strokeStyle = '#000';
-		ctx.fillStyle = '#000';
+		ctx.strokeStyle = gridColor;
+		ctx.fillStyle = textColor;
 		if(isVertical) {
-			let x = width / 2;
+			let x = labelWidth / 2;
 			let y = _dataToPointY(padding.top, height-padding.top-padding.bottom, data[0], data[data.length-1], data[i]);
 			ctx.fillText(data[i], x, y+5*ratio);
+			ctx.beginPath();
+			ctx.lineWidth = 1;
+			ctx.moveTo(labelWidth, _to05(y));
+			ctx.lineTo(width-padding.right, _to05(y));
+			ctx.stroke();
 		} else {
 			let x = padding.left + i*space;
 			let y = height / 2;

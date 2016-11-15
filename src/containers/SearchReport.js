@@ -51,9 +51,8 @@ class SearchReport extends React.Component {
 		if(newProps.patterns !== this.props.patterns) {
 			let patterns = newProps.patterns;
 			searchResultController.updatePrediction(patterns);
-      searchResultController.updateStatistics(patterns);
-      // searchResultController.updatePatterns(patterns.rawData);
-      searchResultController.updateCharts(patterns);
+      // searchResultController.updateStatistics(patterns);
+      // searchResultController.updateCharts(patterns);
 		}
 	}
 

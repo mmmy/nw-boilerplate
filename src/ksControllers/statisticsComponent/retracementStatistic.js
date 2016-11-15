@@ -17,7 +17,7 @@ retracementStatistic.init = (wrapper, model) => {
 
 	_model = model;
 
-	let newDom = $(`<div class='ks-container retracement'><h4 class="title">回撤统计</h4><div class="row"></div></div>`);
+	let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche.png"/>回撤统计</h4><div class="row"></div></div>`);
 	$(wrapper).append(newDom);
 
 	//add other doms
@@ -53,8 +53,7 @@ retracementStatistic.init = (wrapper, model) => {
 	_daysDoms[2] = $(daysInfos[2]);
 	//chart
 	_retracementChart = new CountLinesChart(newDom.find('.chart-wrapper'));
-	_retracementChart.render();
-	window._retracementChart = _retracementChart;
+	// _retracementChart.render();
 };
 
 retracementStatistic._udpateChart = (summaryDrawDown) => {

@@ -17,7 +17,7 @@ let _isUp = true; //上涨
 
 peakStatistic.init = (wrapper, model) => {
 	_model = model;
-	let newDom = $(`<div class='ks-container peak'><h4 class="title">极值统计</h4><div class="row"></div></div>`);
+	let newDom = $(`<div class='ks-container peak'><h4 class="title"><img src="image/jizhi.png" />极值统计</h4><div class="row"></div></div>`);
 	_$container = newDom;
 	$(wrapper).append(newDom);
 
@@ -64,7 +64,7 @@ peakStatistic.init = (wrapper, model) => {
 	});
 	//chart
 	_chart = new CountLinesChart(newDom.find('.chart-wrapper'));
-	_chart.render();
+	// _chart.render();
 };
 //更新描述UI
 peakStatistic._updateDescribeUI = () => {

@@ -89,7 +89,7 @@ CountLinesChart.prototype._drawChart = function() {
 	}
 	drawCountLines(this._canvas_main, this._linesOption);
 	drawAxis(this._canvas_x, this._linesOption.x, {padding:{left:this._yAxisW,top:0,right:20,bottom:0}});
-	drawAxis(this._canvas_y, yLables, {isVertical: true, padding:{left:0,top:20,right:0,bottom:this._xAxisH}});
+	drawAxis(this._canvas_y, yLables, {isVertical: true, padding:{left:0,top:20,right:20,bottom:this._xAxisH}});
 }
 
 CountLinesChart.prototype.render = function() {

@@ -11,7 +11,7 @@ swingStatistic.init = (wrapper, model) => {
 
 	_model = model;
 
-	let newDom = $(`<div class='ks-container swing'><h4 class="title">振幅统计</h4><div class='row'></div></div>`);
+	let newDom = $(`<div class='ks-container swing'><h4 class="title"><img src="image/zhenfu.png"/>振幅统计</h4><div class='row'></div></div>`);
 	$(wrapper).append(newDom);
 
 	//add other doms
