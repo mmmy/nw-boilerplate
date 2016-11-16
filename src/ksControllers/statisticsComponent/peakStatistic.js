@@ -5,7 +5,7 @@ import CountLinesChart from '../CountLinesChart';
 let peakStatistic = {};
 //缓存dom
 let _$container = null,
-		_$maxRate = null,
+		_$rates = null,
 		_$days = null;
 
 let _chart = null;
@@ -25,11 +25,13 @@ peakStatistic.init = (wrapper, model) => {
 	let part1 = $(`<div class="ks-col-25"></div>`)
 							.append(`<p class="rate percent-info red"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
 							.append(`<p class="describe"><span class="circle red"></span><span class="text">最高涨幅百分比</span></p>`)
-							.append(`<p class="btns"><button class="flat-btn up active">上涨</button><button class="flat-btn down">下跌</button></p>`);
+							.append(`<p class="rate percent-info green"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
+							.append(`<p class="describe"><span class="circle green"></span><span class="text">最高跌幅百分比</span></p>`);
+							// .append(`<p class="btns"><button class="flat-btn up active">上涨</button><button class="flat-btn down">下跌</button></p>`);
 
 	let part2 = $(`<div class="ks-col-25"></div>`)
 							.append(`<div class="days-info-wrapper red"><p class="days-info">第<strong>0</strong>天</p><p class="text">最多只匹配结果到达最高点</p></div>`)
-							.append(`<div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong>天</p><p class="text">最多只匹配结果上涨</p></div>`);
+							.append(`<div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong>天</p><p class="text">最多只匹配结果到达最低点</p></div>`);
 
 	let part3 = $(`<div class="ks-col-50"></div>`)
 							.append(`<div class="chart-wrapper"></div>`);
@@ -39,7 +41,7 @@ peakStatistic.init = (wrapper, model) => {
 
 	//cache
 	_$container = newDom;
-	_$maxRate = newDom.find('.percent-info');
+	_$rates = newDom.find('.percent-info');
 	_$days = newDom.find('.days-info-wrapper strong');
 	//initEvent
 	/*
@@ -79,19 +81,20 @@ peakStatistic._updateDescribeUI = () => {
 */
 //更新数据UI
 peakStatistic._udpateDataUI = (dataObj, isUp=true) => {
-	let {maxRateIncrease, minRateIncrease, dayMostPeak, dayMostUp, dayMostDown, dayMostNotUp} = dataObj;
-	let updateRate = (value) => {
+	let {maxRateIncrease, minRateIncrease, dayMostPeak, dayMostDown} = dataObj;
+	let updateRate = (value, index) => {
 		let vauleStr = (value*100).toFixed(2) + '';
 		let values = vauleStr.split('.');
-		$(_$maxRate.find('span')[0]).text(values[0]);
-		$(_$maxRate.find('span')[2]).text(values[1]);
-		_$maxRate.toggleClass('green', !isUp);
-		_$maxRate.toggleClass('red', isUp);
+		$($(_$rates[index]).find('span')[0]).text(values[0]);
+		$($(_$rates[index]).find('span')[2]).text(values[1]);
+		// _$maxRate.toggleClass('green', !isUp);
+		// _$maxRate.toggleClass('red', isUp);
 	};
 	try {
-		updateRate(isUp ? maxRateIncrease : minRateIncrease);
-		$(_$days[0]).text(isUp ? dayMostPeak : dayMostDown);
-		$(_$days[1]).text(isUp ? dayMostUp : dayMostNotUp);
+		updateRate(maxRateIncrease, 0);
+		updateRate(minRateIncrease, 1);
+		$(_$days[0]).text(dayMostPeak);
+		$(_$days[1]).text(dayMostDown);
 	} catch(e) {
 		console.error(e);
 	}

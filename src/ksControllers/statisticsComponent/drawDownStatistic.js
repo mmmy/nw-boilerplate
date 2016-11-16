@@ -2,7 +2,7 @@
 
 import CountLinesChart from '../CountLinesChart';
 
-let retracementStatistic = {};
+let drawDownStatistic = {};
 
 //缓存dom
 let _$container = null,
@@ -13,7 +13,7 @@ let _retracementChart = null;
 
 let _model = null;
 
-retracementStatistic.init = (wrapper, model) => {
+drawDownStatistic.init = (wrapper, model) => {
 
 	_model = model;
 
@@ -56,7 +56,7 @@ retracementStatistic.init = (wrapper, model) => {
 	// _retracementChart.render();
 };
 
-retracementStatistic._udpateChart = (summaryDrawDown) => {
+drawDownStatistic._udpateChart = (summaryDrawDown) => {
 	let { freqStart, freqEnd, freqLen } = summaryDrawDown; 
 	//第一天不在统计范围内, 所以去掉
 	let dataLen = freqStart.length - 1,
@@ -80,7 +80,7 @@ retracementStatistic._udpateChart = (summaryDrawDown) => {
 	});
 }
 
-retracementStatistic.update = () => {
+drawDownStatistic.update = () => {
 	let model = _model;
 	let dataObj = model && model.getSummary();
 	if(dataObj) {
@@ -105,7 +105,7 @@ retracementStatistic.update = () => {
 					$dom.text(day);
 				});
 				//update chart
-				retracementStatistic._udpateChart(summaryDrawDown);
+				drawDownStatistic._udpateChart(summaryDrawDown);
 			}
 		} catch(e) {
 			console.error(e);
@@ -113,4 +113,4 @@ retracementStatistic.update = () => {
 	}
 };
 
-module.exports = retracementStatistic;
+module.exports = drawDownStatistic;

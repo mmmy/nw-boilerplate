@@ -2,7 +2,7 @@
 import AfterAnalysis from '../../../vendor/AfterAnalysis';
 
 import peakStatistic from './peakStatistic';  								//极值统计
-import retracementStatistic from './retracementStatistic';    //回撤统计
+import drawDownStatistic from './drawDownStatistic';    //回撤统计
 import swingStatistic from './swingStatistic'; 								//振幅统计
 
 //第二版的新界面
@@ -16,7 +16,7 @@ statisticComponent.init = (wrapper, closePrices) => {
 	let container = $(`<div class="statistic-component-container"></div>`);
 	$(wrapper).append(container);
 	peakStatistic.init(container, _model);
-	retracementStatistic.init(container, _model);
+	drawDownStatistic.init(container, _model);
 	swingStatistic.init(container, _model);
 	window._model = _model;
 	(closePrices.length > 0) && (window._dataObj = _model.getSummary());
@@ -32,7 +32,7 @@ statisticComponent._updateModel = (closePrices) => {
 statisticComponent.update = (closePrices) => {
 	statisticComponent._updateModel(closePrices);
 	peakStatistic.update();
-	retracementStatistic.update();
+	drawDownStatistic.update();
 	swingStatistic.update();
 }
 
