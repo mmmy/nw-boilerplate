@@ -1,12 +1,14 @@
 /*
 	极值统计, 回撤统计, 振幅统计
 */
-@gray-statistic: #959595;
+@gray-statistic: #b2b2b2;
 
 //显示百分比的UI, 66.66%
 .percent-info(@color:#000;@font-size:20px) {
 	color: @color;
-	font-weight: bold;
+	// font-weight: bold;
+	margin-bottom: 0;
+
 	span:nth-child(1) {
 		font-size: @font-size;
 	}
@@ -40,11 +42,15 @@
 	color: #333;
 	font-size: @font-size * 0.35;
 	.days-info {
-		line-height: @font-size * 0.5;
+		line-height: 0;// @font-size * 0.4;
+		margin-bottom: 15px;
 		font-size: @font-size * 0.4;
 		strong {
 			font-size: @font-size;
+			font-weight: normal;
 			color: #000;
+			margin-left: 10px;
+			margin-right: 10px;
 		}
 	}
 	&.red {
@@ -110,10 +116,13 @@
 	.title {
 		text-align: left;
 		font-size: 16px;
-		padding-left: 60px;
+		padding-left: 40px;
 		margin: 0;
 		color: #222;
 		line-height: 60px;
+		img {
+			margin-right: 10px;
+		}
 	}
 	p {
 		font-size: 10px;
@@ -131,19 +140,34 @@
 	}
 	.describe {
 		color: #000;
+		margin-bottom: 30px;
 	}
 	//上涨, 下跌按钮
 	.btns .flat-btn {
 		width: 40px;
 		height: 40px;
+		padding: 0;
 		border: 1px solid @gray-statistic;
-		.active {
+		border-radius: 2px;
+		&.active {
 			color: #fff;
 			background-color: @gray-statistic;
 		}
-		&:not(last-child) {
+		&:first-child {
 			margin-right: 16px;
 		}
+	}
+	.days-info-wrapper {
+		max-width: 135px;
+		&:nth-child(1) {
+			margin-top: 27px;
+		}
+		&:nth-child(2) {
+			margin-top: 30px;
+		}
+	}
+	.ks-col-25:first-child {
+		border-right: 1px solid #ddd;
 	}
 }
 
@@ -152,10 +176,31 @@
  */
 .ks-container.retracement {
 	>.row {
-		margin-left: 40px;
+		// margin-left: 40px;
+		>.ks-col-50:first-child {
+			padding-left: 40px;
+		}
 	}
 	.data-wrapper {
-		background-color: #f6f6f6;
+		background-color: #ededed;
+		padding-top: 15px;
+		text-align: center;
+		margin-bottom: 40px;
+		p {
+			line-height: 10px;
+			margin-bottom: 15px;
+		}
+		.name {
+			display: inline-block;
+			min-width: 80px;
+			text-align: left;
+		}
+	}
+	.days-info-wrapper {
+		.days-info-wrapper(@font-size:26px);
+		p:last-child {
+			margin-bottom: 0;
+		}
 	}
 }
 
@@ -164,12 +209,17 @@
  */
 .ks-container.swing {
 	text-align: center;
+	.name {
+		color: #333;
+		margin-right: 10px;
+	}
 }
 
 /**
  * 头部8个指标统计 参考pattern.less
  */
 .reportdetail-container {
+	text-align: center;
 	.percent-info {
 		.percent-info(@font-size:36px);
 	}
@@ -177,11 +227,15 @@
 		font-size: 10px;
 	}
 	.row.large {
-		
+		margin-bottom: 15px;
+		color: #222;
 	}	
 	.row.small {
+		margin-top: 9px;
+		color: #333;
 		.percent-info {
-			.percent-info(@font-size: 18px);
+			.percent-info(@font-size: 26px);
+			margin-left: 10px;
 		}
 	}
 }

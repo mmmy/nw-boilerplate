@@ -161,7 +161,6 @@ function calFilterWithAimRate(data, rate) {
 }
 
 
-//计算每个时刻，上涨的股票占总股票的比例
 function summaryUpProbility(bars) {
     if (!bars) return;
     var nSym = bars.length;
@@ -396,12 +395,20 @@ function summary() {
     var _summary3 = this.summaryUpProbilityFilterRate(this._bars, this._aimUpRate);
     var _summary4 = this.summaryUpProbilityFilterRate(this._bars, this._aimDownRate);
     var _summary5 = {'summaryDrawDown': this.summaryDrawDown(this._bars, 0)};
+<<<<<<< HEAD:src/shared/AfterAnalysis.js
     //var _summary6 = {'summaryBefPeakDrawDown': this.summaryDrawDown(this._bars, 1)};
     //var _summary7 = {'summaryBefDownDrawDown': this.summaryDrawDown(this._bars, 2)};
     var _summary8 = {'summaryRDrawDown': this.summaryRDrawDown(this._bars, 0)};
     //var _summary9 = {'summaryBefPeakDrawDown': this.summaryRDrawDown(this._bars, 1)};
     //var _summary10 = {'summaryBefDownDrawDown': this.summaryRDrawDown(this._bars, 2)};
     this._summary = Object.assign({}, _summary1, _summary2, _summary3, _summary4, _summary5, /*_summary6, _summary7, */_summary8);
+=======
+    var _summary6 = {'summaryBefPeakDrawDown': this.summaryDrawDown(this._bars, 1)};
+    var _summary7 = {'summaryBefDownDrawDown': this.summaryDrawDown(this._bars, 2)};
+    //require jquery
+    var extend = $.extend || Object.assign;
+    this._summary = extend({}, _summary1, _summary2, _summary3, _summary4, _summary5, _summary6, _summary7);
+>>>>>>> 31b4df24c3d8087b7701a7ab18330e9acb3abad6:vendor/AfterAnalysis.js
     return this._summary;
 }
 

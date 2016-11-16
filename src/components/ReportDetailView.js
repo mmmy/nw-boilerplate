@@ -138,10 +138,10 @@ class ReportDetailView extends React.Component {
 		let { median, mean, upPercent, up, down } = data;
 		let that = this;
 		let dataArr1 = [
-			{name:'上涨比例', value:upPercent},
-			{name:'下跌比例', value:(1-upPercent)},
-			{name:'涨跌中位数', value:median},
-			{name:'涨跌平均数', value:mean},
+			{name:'上涨比例', value:upPercent, color:'red'},
+			{name:'下跌比例', value:(1-upPercent), color:'green'},
+			{name:'涨跌中位数', value:median, color:(median > 0 ? 'red' : 'green')},
+			{name:'涨跌平均数', value:mean, color:(mean > 0 ? 'red' : 'green')},
 		];
 		let dataArr2 = [
 			{name:'上涨平均值', value:up.mean},
@@ -152,7 +152,7 @@ class ReportDetailView extends React.Component {
 
 		let row1 = (<div className="row large">
 									{dataArr1.map((data) => {
-										return that.getNodeCells(data.name, data.value, decimal, null, 0);
+										return that.getNodeCells(data.name, data.value, decimal, null, 0, data.color);
 									})}
 							</div>);
 
@@ -161,10 +161,10 @@ class ReportDetailView extends React.Component {
 										return that.getNodeCells(data.name, data.value, decimal, null, 1);
 									})}
 							</div>);
-		return [row1, row2];
+		return [row1, <hr />, row2];
 	}
 
-	getNodeCells(name, value, decimal, unit, rowIndex) {
+	getNodeCells(name, value, decimal, unit, rowIndex, color) {
 		value = value * 100;
 		decimal = decimal || 2;
 		if(name=='上涨比例' || name=='下跌比例') {
@@ -178,10 +178,10 @@ class ReportDetailView extends React.Component {
 						<p><span className="name">{name}</span><span className="percent-info"><span>{values[0]}</span><span>.</span><span>{values.length>1 ? values[1] : ''}</span><span>{unit}</span></span></p>
 					</div>;
 		}
-		let color = 'red';
+		color = color || '';
 		return <div className="ks-col-25">
-						<p className="percent-info red"><span>{values[0]}</span><span>.</span><span>{values.length>1 ? values[1] : ''}</span><span>{unit}</span></p>
-						<p><span className="circle red"></span>{name}</p>
+						<p className={`percent-info ${color}`}><span>{values[0]}</span><span>.</span><span>{values.length>1 ? values[1] : ''}</span><span>{unit}</span></p>
+						<p><span className={`circle ${color}`}></span>{name}</p>
 					</div>;
 	}
 	//弃用

@@ -23,7 +23,7 @@ class CrossfilterContainer extends React.Component {
 		 * add toggl btn
 		 */
 		let that = this;
-		let $toggleBtn = $(`<button class="flat-btn toggle-crossfilter"><img/>可视化统计</button>`)
+		let $toggleBtn = $(`<button class="flat-btn toggle-crossfilter"><img src="image/keshihua.png"/>可视化统计</button>`)
 											.click(function(event) {
 												/* Act on the event */
 												$(that.refs.root).toggleClass('show');

@@ -12,6 +12,7 @@ import KlineChart from './KlineChart';
 import DC from 'dc';
 import d3 from 'd3';
 import crossfilter from 'crossfilter';
+// import AfterAnalysis from '../../vendor/AfterAnalysis';
 
 let widerNumber = (num) => {
 	let expNum = num.toExponential(); //'1.3e-2';
@@ -39,10 +40,15 @@ let _$root = null;
 let _$reportContainer = null;
 let _$reportWrapper = null;
 
+let _searchResultInfo = {
+	total:null, 							//xxx条相似结果
+	timespent:null 						//耗时
+};
 let _comparatorDoms = {
-	time:null,
-	total:null,
-	similarity:null
+	upRate:null,
+	downRate:null,
+	median:null,
+	mean:null
 };
 let _statisticDoms = {
 	days: null,
@@ -57,14 +63,14 @@ let _patternDoms = {
 	similarity:null,
 	earn:null
 };
-let _earnchartDom = null;
+// let _earnchartDom = null;
 
 let _yMin = 0;
 let _yMax = 200;
 let _decimal = 2;
 
-let _klineChart = null;
-let _earnChart = null;
+let _klineCharts = [];
+// let _earnChart = null;
 
 let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span><span class='title-zhong'>中</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
 let _$toggle = null;
@@ -76,12 +82,16 @@ let patternHtml = `<div class='pattern-inner'>
 										<span class='info-item earn'><div class='item-title font-simsun'>涨跌</div><div class='item-value font-number small'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 									</div>`;
 let comparatorInner = `<div class='container-ks-sr container-ks-st meta'>
-												<h3 class='title font-msyh'>匹配相似结果</h3>
+												<h3 class='title font-msyh'>关键指标数据统计<span class="search-result-info"><span class="value total"></span>条相似结果, 耗时<span class="value timespent red"></span>秒</span></h3>
 												<span class='split-line l1'></span>
 												<span class='split-line l2'></span>
-												<span class='info-item timespent'><div class='item-title font-simsun'>搜索用时</div><div class='item-value font-number'><span class='value'>0.000</span><span class='unit'>秒</span></div></span>
-												<span class='info-item total'><div class='item-title font-simsun'>搜索结果总数</div><div class='item-value font-number'><span class='value'>0</span><span class='unit'>个</span></div></span>
-												<span class='info-item similarity-top'><div class='item-title font-simsun'>相似度最高</div><div class='item-value font-number red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+												<span class='split-line l3'></span>
+												<span class='split-line l4'></span>
+												<span class='info-item uprate'><div class='item-title font-simsun'>上涨比例</div><div class='item-value font-number'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+												<span class='info-item downrate'><div class='item-title font-simsun'>下跌比例</div><div class='item-value font-number'><span class='value'>0</span><span class='unit'>%</span></div></span>
+												<span class='info-item median'><div class='item-title font-simsun'>涨跌中位数</div><div class='item-value font-number red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+												<span class='info-item mean'><div class='item-title font-simsun'>涨跌平均数</div><div class='item-value font-number red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
+												<span class='pattern-wrapper'>${patternHtml}</span>
 												<span class='pattern-wrapper'>${patternHtml}</span>
 											</div>`;
 
@@ -102,11 +112,9 @@ let searchChartHtml = `<div class='container-ks-sr chart'>
 											</div>`;
 
 let wrappersDomStr = `<div class='transition-all container-searchreport static'>
-												<div class='inner-searchreport white transition-all'>
+												<div class='inner-searchreport gray transition-all'>
 													<div class='search-report-wrapper white ${true ? 'slide-down' : ''} transition-top transition-duration2'>
 														${comparatorInner}
-														${searchStatisticHtml}
-														${searchChartHtml}
 													</div>
 												</div>
 											</div>`;
@@ -115,14 +123,20 @@ let cacheDom = ($wrapper) => {
 	_$reportContainer = $wrapper;
 	_$reportWrapper = $wrapper.find('.search-report-wrapper');
 
-	_comparatorDoms.time = $wrapper.find('.info-item.timespent .value');
-	_comparatorDoms.total = $wrapper.find('.info-item.total .value');
-	_comparatorDoms.similarity = $wrapper.find('.info-item.similarity-top .value');
+	_searchResultInfo.total = $wrapper.find('.search-result-info .value.total');
+	_searchResultInfo.timespent = $wrapper.find('.search-result-info .value.timespent');
 
+	_comparatorDoms.upRate = $wrapper.find('.info-item.uprate .value');
+	_comparatorDoms.downRate = $wrapper.find('.info-item.downrate .value');
+	_comparatorDoms.median = $wrapper.find('.info-item.median .value');
+	_comparatorDoms.mean = $wrapper.find('.info-item.mean .value');
+
+	/*
 	_statisticDoms.days = $wrapper.find('.info-item.bars .value');
 	_statisticDoms.upRate = $wrapper.find('.info-item.uprate .value');
 	_statisticDoms.median = $wrapper.find('.info-item.median .value');
 	_statisticDoms.mean = $wrapper.find('.info-item.mean .value');
+	*/
 
 	_patternDoms.symbol = $wrapper.find('.info-item.symbol .item-value');
 	_patternDoms.name = $wrapper.find('.info-item.symbol .item-title');
@@ -130,19 +144,21 @@ let cacheDom = ($wrapper) => {
 	_patternDoms.similarity = $wrapper.find('.info-item.similarity .value');
 	_patternDoms.earn = $wrapper.find('.info-item.earn .value');
 
-	_earnchartDom = $wrapper.find('.earnchart');
+	// _earnchartDom = $wrapper.find('.earnchart');
 };
 
-let _updateKline = (kline) => {
-	_klineChart = _klineChart || new KlineChart(_patternDoms.canvas[0]);
-	_klineChart.setData(kline);
+let _updateKline = (kline, index) => {
+	_klineCharts[index] = _klineCharts[index] || new KlineChart(_patternDoms.canvas[index]);
+	_klineCharts[index].setData(kline);
 }
 
-let _resizeKline = () => {
-	_klineChart && _klineChart.resize();
+let _resizeAllKline = () => {
+	for(var i=0, len=_klineCharts.length; i<len; i++) {
+		_klineCharts[i] && _klineCharts[i].resize();
+	}
 };
 
-let _updatePatternUI = (symbol, name, similarity, earn, kline, decimal) => {
+let _updatePatternUI = (index, {symbol, name, similarity, earn, kline, decimal}) => {
 	symbol = symbol || '',
 	name = name || '',
 	similarity = similarity || 0,
@@ -154,27 +170,41 @@ let _updatePatternUI = (symbol, name, similarity, earn, kline, decimal) => {
 	similarity = parseFloat(similarity * 100).toFixed(1);
 	earn = parseFloat(earn * 100).toFixed(decimal);
 
-	_patternDoms.symbol.text(symbol);
-	_patternDoms.name.text(name).attr('title', name);
-	_patternDoms.similarity.text(similarity);
-	_patternDoms.earn.text(earn);
+	$(_patternDoms.symbol[index]).text(symbol);
+	$(_patternDoms.name[index]).text(name).attr('title', name);
+	$(_patternDoms.similarity[index]).text(similarity);
+	$(_patternDoms.earn[index]).text(earn);
 
-	_updateKline(kline);
+	_updateKline(kline, index);
 };
 
-let _updatePredictionUI = (timespent, total, similarityTop) => {
-	timespent = timespent || 0,
-	total = total || 0,
-	similarityTop = similarityTop || 0;
-	
-	timespent = parseFloat(timespent/1000).toFixed(2);
-	similarityTop = parseFloat(similarityTop * 100).toFixed(1)
+let _updatePredictionUI = ({timespent, total, model}) => {
+	timespent = timespent || 0;
+	total = total || 0;
+	const decimal = getDecimalForStatistic();
 
-	_comparatorDoms.time.text(timespent);
-	_comparatorDoms.similarity.text(similarityTop);
-	_comparatorDoms.total.text(total);
+	try {
+		let uprateStr = (model.upPercent*100).toFixed(1);
+		let downRateStr = (100 - model.upPercent * 100).toFixed(1);
+		let medianStr = (model.median*100).toFixed(decimal);
+		let meanStr = (model.mean*100).toFixed(decimal);
+		timespent = parseFloat(timespent/1000).toFixed(2);
+		//update doms
+		_searchResultInfo.total.text(total);
+		_searchResultInfo.timespent.text(timespent);
+		//
+		_comparatorDoms.upRate.text(uprateStr);
+		_comparatorDoms.downRate.text(downRateStr);
+		_comparatorDoms.median.text(medianStr);
+		_comparatorDoms.mean.text(meanStr);
+	} catch(e) {
+		console.error(e);
+	}
+
+	// _comparatorDoms.time.text(timespent);
+	// _comparatorDoms.total.text(total);
 };
-
+/*
 let _createEarnDimension = (rawDataArr) => {
 	rawDataArr = rawDataArr || [];
 	let scalize = (arr) => { //arr = [num, num]    =>  1:1 or 1:4 or 2:3
@@ -207,7 +237,8 @@ let _createEarnDimension = (rawDataArr) => {
 		yield100Range,
 	};
 };
-
+*/
+/*
 let _updateEarnChart = (rawDataArr) => {
 	let {earnDimension, rangeInterval, yield100Range} = _createEarnDimension(rawDataArr);
 	let minYield100 = yield100Range[0];
@@ -238,21 +269,22 @@ let _updateEarnChart = (rawDataArr) => {
 	_earnChart.render();
 	_earnChart.redraw();
 };
+*/
 
-let _resizeEarnChart = () => {
-	if(!_earnChart) return;
-	let width = _earnchartDom.width(),
-			height = _earnchartDom.height();
-	setTimeout(() => {
-		_earnChart.width(width).height(height).redraw(); 
-	});
-	setTimeout(()=> {_earnChart.renderYAxis(_earnChart) });
-	setTimeout(() => {_earnChart.renderXAxis(_earnChart) });
-};
+// let _resizeEarnChart = () => {
+// 	if(!_earnChart) return;
+// 	let width = _earnchartDom.width(),
+// 			height = _earnchartDom.height();
+// 	setTimeout(() => {
+// 		_earnChart.width(width).height(height).redraw(); 
+// 	});
+// 	setTimeout(()=> {_earnChart.renderYAxis(_earnChart) });
+// 	setTimeout(() => {_earnChart.renderXAxis(_earnChart) });
+// };
 
 let _handleResize = () => {
-	_resizeKline();
-	_resizeEarnChart();
+	_resizeAllKline();
+	// _resizeEarnChart();
 };
 
 let _initResize = () => {
@@ -347,23 +379,35 @@ searchResultController.updatePrediction = (patterns) => {
 	patterns = patterns || {};
 	let searchMetaData = patterns.searchMetaData || {}
 	let pattern0 = patterns.rawData && patterns.rawData[0] || {};
+	let pattern1 = patterns.rawData && patterns.rawData[1] || {};
 
-	let searchTimeSpent = searchMetaData.searchTimeSpent,
-			kline = pattern0.kLine || [],
+	let timespent = searchMetaData.searchTimeSpent,
+			decimal = getDecimalForStatistic(),
 			total = patterns.rawData && patterns.rawData.length,
-			similarityTop = pattern0.similarity,
+			// similarityTop = pattern0.similarity,
+			kline = pattern0.kLine || [],
+			kline1 = pattern1.kLine || [],
 			symbol = pattern0.symbol,
+			symbol1 = pattern1.symbol,
 			name = pattern0.metaData && pattern0.metaData.name,
+			name1 = pattern1.metaData && pattern1.metaData.name,
 			earn = pattern0.yield,
+			earn1 = pattern1.yield,
 			similarity = pattern0.similarity,
-			decimal = getDecimalForStatistic();
+			similarity1 = pattern1.similarity;
 
 	let baseBars = pattern0.baseBars || Infinity;
+	// //泽贤模块
+	// let model = new AfterAnalysis(patterns.closePrice || []);
+	// model.summary();
+	let model = statisticKline(patterns.rawData);
 
-	_updatePredictionUI(searchTimeSpent, total, similarityTop);
-	_updatePatternUI(symbol, name, similarity, earn, kline.slice(0, baseBars), decimal);
+	_updatePredictionUI({timespent, total, model});
+
+	_updatePatternUI(0, {symbol, name, similarity, earn, kline:kline.slice(0, baseBars), decimal});
+	_updatePatternUI(1, {symbol:symbol1, name:name1, similarity:similarity1, earn:earn1, kline:kline1.slice(0, baseBars), decimal});
 };
-
+/*
 searchResultController.updateStatistics = (patterns) => {
 	if(!_$root) return;
 
@@ -386,6 +430,7 @@ searchResultController.updateStatistics = (patterns) => {
 	_statisticDoms.median.text(medianStr);
 	_statisticDoms.mean.text(meanStr);
 };
+*/
 
 searchResultController.updatePatterns = (patternsArr, firstFiveIds) => {
 	// if(!_$root) return;
@@ -396,12 +441,15 @@ searchResultController.updatePatterns = (patternsArr, firstFiveIds) => {
 	// _decimal = getDecimalForStatistic();
 	// _updatePatternViews(firstFivePatterns, {decimal:_decimal});
 };
-
+/*
+弃用
+--------------------------- */
+/*
 searchResultController.updateCharts = (patterns) => {
 	let rawData = patterns && patterns.rawData || [];
 	_updateEarnChart(rawData);
 };
-
+*/
 searchResultController.reportSlideDown = (slideDown, cb) => { 
 	let $target = _$reportContainer.find('.search-report-wrapper');
 	$target.off('transitionend', '**');
