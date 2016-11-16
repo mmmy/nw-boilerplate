@@ -50,6 +50,38 @@ function calDrawDownExtend(data, n) {
     return { drawDown, start, end };
 }
 
+function calRDrawDownExtend(data, n) {
+    //计算一只股票的最大drawDown
+    //data Array of Number 一支股票多日的收盘价
+    if (!data || !data.length) return 0;
+
+    var drawDown = 0;
+    var start = 0;
+    var end = 0;
+    var nDay = n;
+    if (!nDay || nDay > data.length) nDay = data.length;
+    var cdd = new Array(nDay);
+    var pos = new Array(nDay);
+    for (var i = 0; i < nDay; i++) cdd[i] = data[i];
+    for (var i = 0; i < nDay; i++) pos[i] = i;
+    for (var i = nDay - 2; i >= 0; i--) 
+        if (cdd[i+1] > cdd[i]) {
+            cdd[i] = cdd[i+1];
+            pos[i] = pos[i+1];
+        }
+
+    for (var i = 0; i < nDay; i++) 
+      if (data[i] > 0) {
+        var dd = - (data[i] - cdd[i]) / data[i];
+        if (dd > drawDown) {
+            drawDown = dd;
+            start = i;
+            end = pos[i];
+        }
+      }
+    return { drawDown, start, end };
+}
+
 function calMost(data) {
     if (!data) return;
     //计算全局极大值，极小值，第一次极大值时间，第一次极小值时间
@@ -89,12 +121,16 @@ function calMost(data) {
     var befPeakDrawDown = calDrawDownExtend(data, ipeak + 1);
     var befDownDrawDown = calDrawDownExtend(data, idown + 1);
 
+    var rdrawDown = calRDrawDownExtend(data, data.length);
+    var befPeakRDrawDown = calRDrawDownExtend(data, ipeak + 1);
+    var befDownRDrawDown = calRDrawDownExtend(data, idown + 1);
+
     //计算振幅
     var amplitude = (peak - down) / data[0];
     var rateIncrease = (data[nDay-1] - data[0]) / data[0];
 
     //返回 最高，最低，最高时的时间，最低时的时间，最高速度，最低速度，振幅，是否先到达最大值再到达最小值，全局drawDownExtend, 极大值前的drawDownExtend，极小值前的drawDownExtend
-    return { nDay, peak, down, ipeak, idown, vpeak, vdown, amplitude, peakFirst, drawDown, befPeakDrawDown, befDownDrawDown, rateIncrease };
+    return { nDay, peak, down, ipeak, idown, vpeak, vdown, amplitude, peakFirst, drawDown, rdrawDown, befPeakDrawDown, befDownDrawDown, rateIncrease };
 }
 
 
@@ -307,6 +343,45 @@ function summaryDrawDown(bars, kind) {
     return { nSym, nDay, drawDownData, basic, freqStart, freqEnd, freqLen, dayMostDrawDownStart, dayMostDrawDownEnd, dayMostDrawDownLast };
 }
 
+function summaryRDrawDown(bars, kind) {
+    if (!bars) return;
+    var nSym = bars.length;
+    var nDay = bars[0].length;
+    var drawDownData = [];
+    var drawdown = [];
+    var start = [];
+    var end = [];
+    var len = [];
+    if (!kind) kind =0
+    for (var i = 0; i < nSym; i++) {
+        var bar = bars[i];
+        //var d = calDrawDownExtend(bar);
+        var d;
+        var dds = calMost(bar);
+        if (kind == 0) d = dds.rdrawDown;
+        else if (kind == 1) d = dds.befPeakDrawDown;
+        else if (kind == 2) d = dds.befDownDrawDown;
+        drawdown.push(d.drawDown);
+        start.push(d.start);
+        end.push(d.end);
+        len.push(d.end - d.start);
+        drawDownData.push(d);
+    }
+
+    var basic = basicStastic(drawdown);
+    var freqStart = freqence(start, nDay);
+    var freqEnd = freqence(end, nDay);
+    var freqLen = freqence(len, nDay);
+
+    var dayMostDrawDownStart = basicStastic(freqStart).imax;
+    var dayMostDrawDownEnd = basicStastic(freqEnd).imax;
+    var dayMostDrawDownLast = basicStastic(freqLen).imax;
+
+    return { nSym, nDay, drawDownData, basic, freqStart, freqEnd, freqLen, dayMostDrawDownStart, dayMostDrawDownEnd, dayMostDrawDownLast };
+}
+
+
+
 function summary() {
     /*
     this._summary1 = this.summaryPeakDown(this._bars);
@@ -321,9 +396,12 @@ function summary() {
     var _summary3 = this.summaryUpProbilityFilterRate(this._bars, this._aimUpRate);
     var _summary4 = this.summaryUpProbilityFilterRate(this._bars, this._aimDownRate);
     var _summary5 = {'summaryDrawDown': this.summaryDrawDown(this._bars, 0)};
-    var _summary6 = {'summaryBefPeakDrawDown': this.summaryDrawDown(this._bars, 1)};
-    var _summary7 = {'summaryBefDownDrawDown': this.summaryDrawDown(this._bars, 2)};
-    this._summary = Object.assign({}, _summary1, _summary2, _summary3, _summary4, _summary5, _summary6, _summary7);
+    //var _summary6 = {'summaryBefPeakDrawDown': this.summaryDrawDown(this._bars, 1)};
+    //var _summary7 = {'summaryBefDownDrawDown': this.summaryDrawDown(this._bars, 2)};
+    var _summary8 = {'summaryRDrawDown': this.summaryRDrawDown(this._bars, 0)};
+    //var _summary9 = {'summaryBefPeakDrawDown': this.summaryRDrawDown(this._bars, 1)};
+    //var _summary10 = {'summaryBefDownDrawDown': this.summaryRDrawDown(this._bars, 2)};
+    this._summary = Object.assign({}, _summary1, _summary2, _summary3, _summary4, _summary5, /*_summary6, _summary7, */_summary8);
     return this._summary;
 }
 
@@ -365,6 +443,7 @@ AfterAnalysis.prototype.setBars = setBars;
 AfterAnalysis.prototype.setRate = setRate;
 AfterAnalysis.prototype.calDrawDown = calDrawDown;
 AfterAnalysis.prototype.calDrawDownExtend = calDrawDownExtend;
+AfterAnalysis.prototype.calRDrawDownExtend = calRDrawDownExtend;
 AfterAnalysis.prototype.basicStastic = basicStastic;
 AfterAnalysis.prototype.calMost = calMost;
 AfterAnalysis.prototype.calFilterWithAimRate = calFilterWithAimRate;
@@ -372,9 +451,11 @@ AfterAnalysis.prototype.summaryUpProbility = summaryUpProbility;
 AfterAnalysis.prototype.summaryUpProbilityFilterRate = summaryUpProbilityFilterRate;
 AfterAnalysis.prototype.summaryPeakDown = summaryPeakDown;
 AfterAnalysis.prototype.summaryDrawDown = summaryDrawDown;
+AfterAnalysis.prototype.summaryRDrawDown = summaryRDrawDown;
 AfterAnalysis.prototype.summary = summary;
 AfterAnalysis.prototype.getSummary = getSummary;
 
 module.exports = AfterAnalysis;
 
-
+var a = new AfterAnalysis([[1,2],[2,3]])
+console.log(a.summary())
