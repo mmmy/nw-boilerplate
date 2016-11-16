@@ -42,8 +42,8 @@ peakStatistic.init = (wrapper, model) => {
 	_$maxRate = newDom.find('.percent-info');
 	_$days = newDom.find('.days-info-wrapper strong');
 	//initEvent
+	/*
 	part1.find('.flat-btn.up').click(function(event) {
-		/* Act on the event */
 		if(!_isUp) {
 			_isUp = true;
 			peakStatistic.update();
@@ -53,7 +53,6 @@ peakStatistic.init = (wrapper, model) => {
 		}
 	});
 	part1.find('.flat-btn.down').click(function(event) {
-		/* Act on the event */
 		if(_isUp) {
 			_isUp = false;
 			peakStatistic.update();
@@ -62,11 +61,13 @@ peakStatistic.init = (wrapper, model) => {
 			part1.find('.flat-btn.up').removeClass('active');
 		}
 	});
+	*/
 	//chart
 	_chart = new CountLinesChart(newDom.find('.chart-wrapper'));
 	// _chart.render();
 };
 //更新描述UI
+/*
 peakStatistic._updateDescribeUI = () => {
 	let isUp = _isUp;
 	_$container.find('.circle').toggleClass('red', isUp).toggleClass('green', !isUp);
@@ -75,8 +76,9 @@ peakStatistic._updateDescribeUI = () => {
 	$(daysInfoTextDom[0]).text(isUp ? '最多只匹配结果到达最高点' : '最多只匹配结果到达最低点');
 	$(daysInfoTextDom[1]).text(isUp ? '最多只匹配结果上涨' : '最多只匹配结果下跌');
 }
+*/
 //更新数据UI
-peakStatistic._udpateDataUI = (dataObj, isUp) => {
+peakStatistic._udpateDataUI = (dataObj, isUp=true) => {
 	let {maxRateIncrease, minRateIncrease, dayMostPeak, dayMostUp, dayMostDown, dayMostNotUp} = dataObj;
 	let updateRate = (value) => {
 		let vauleStr = (value*100).toFixed(2) + '';
@@ -95,34 +97,24 @@ peakStatistic._udpateDataUI = (dataObj, isUp) => {
 	}
 }
 
-peakStatistic._redrawChart = (dataObj, isUp) => {
+peakStatistic._redrawChart = (dataObj) => {
 	//注意第一天不需要,因为不在预测范围内
-	let {tPeak, tUp, tDown, tNotUp} = dataObj;
+	let {tPeak, tDown, dayMostPeak, dayMostDown} = dataObj;
 	try {
-		let dataLen = tPeak.length - 1;
-		tPeak = tPeak.slice(-dataLen);
-		tUp = tUp.slice(-dataLen);
-		tDown = tDown.slice(-dataLen);
+		let dataLen = tPeak.length - 1,
+				tPeakS = tPeak.slice(-dataLen),
+				tDownS = tDown.slice(-dataLen);
 		let series = [];
-		if(isUp) {
-			series[0] = {
-				data: tPeak,
-				strokeStyle: 'red',
-			};
-			series[1] = {
-				data: tUp,
-				strokeStyle: 'pink'
-			};
-		} else {
-			series[0] = {
-				data: tDown,
-				strokeStyle: 'green'
-			};
-			series[1] = {
-				data: tNotUp,
-				strokeStyle: 'yellow'
-			};
-		}
+		series[0] = {
+			data: tPeakS,
+			strokeStyle: 'red',
+			activeIndexes: [dayMostPeak-1]
+		};
+		series[1] = {
+			data: tDownS,
+			strokeStyle: 'pink',
+			activeIndexes: [dayMostDown-1]
+		};
 		_chart.setData({dataLen,series});
 	} catch(e) {
 		console.error(e);
@@ -130,13 +122,12 @@ peakStatistic._redrawChart = (dataObj, isUp) => {
 }
 
 peakStatistic.update = () => {
-	let model = _model,
-			isUp = _isUp;
+	let model = _model;
 	let dataObj = model && model.getSummary();
 	if(dataObj) {
-		peakStatistic._udpateDataUI(dataObj, isUp);
+		peakStatistic._udpateDataUI(dataObj);
 		//render chart
-		peakStatistic._redrawChart(dataObj, isUp);
+		peakStatistic._redrawChart(dataObj);
 	}
 };
 

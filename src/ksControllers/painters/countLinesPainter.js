@@ -16,21 +16,28 @@ let _dataToPointY = (paddingTop, viewYHeight, yMin, yMax, number) => {
 
 //default options
 let defaultDrawStyle = {
-	lineWidth: 2,
+	lineWidth: 1,
 	strokeStyle: 'rgba(0,0,0,0.7)',
 	fillStyle: 'rgba(0,0,0,0.2)'
+};
+let defaultHoverStyle = {
+	lineWidth: 2,
+	strokeStyle: 'rgba(0,0,0,1)',
+	fillStyle: 'rgba(0,0,0,0.5)'
 };
 /**
   options: {
   	x:[]
 		series: [{
 			data:[],
+			activeIndexes: [],
 			strokeStyle:"",
 			fillStyle:"",
 			lineWidth:1,
 		},{
 			data:[]
-		}]
+		}],
+		hoverIndex: number
   }
  */
 
@@ -49,6 +56,7 @@ let drawCountLines = (canvas, options) => {
 			xData = options.x,
 			yMin = options.yMin || 0,
 			yMax = options.yMax,
+			hoverIndex = options.hoverIndex,
 			padding = options.padding || {left:0, top:0, right:0, bottom:0};
 	
 	if(yMax === undefined) {
@@ -77,13 +85,7 @@ let drawCountLines = (canvas, options) => {
 	if(!isFinite(xSpace)) {
 		return;
 	}
-	for(let i=0; i<series.length; i++) {
-		let line = series[i];
-		let data = line.data; //数据数组
-		ctx.lineWidth = line.lineWidth || defaultDrawStyle.lineWidth;
-		ctx.strokeStyle = line.strokeStyle || defaultDrawStyle.strokeStyle;
-		ctx.fillStyle = line.fillStyle || defaultDrawStyle.fillStyle;
-		ctx.lineJoin = 'round';
+	let drawLine = function(data) {
 		for(let j=0,len=data.length; j<len; j++) {
 			let x = _toInt(padding.left + j * xSpace),
 					y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[j]);
@@ -103,10 +105,85 @@ let drawCountLines = (canvas, options) => {
 			}
 		}
 	}
+
+	for(let i=0; i<series.length; i++) {
+		//跳过hoverIndex
+		if(i === hoverIndex) {
+			continue;
+		}
+		let line = series[i];
+		let data = line.data; //数据数组
+		ctx.lineWidth = line.lineWidth || defaultDrawStyle.lineWidth;
+		ctx.strokeStyle = line.strokeStyle || defaultDrawStyle.strokeStyle;
+		ctx.fillStyle = line.fillStyle || defaultDrawStyle.fillStyle;
+		ctx.lineJoin = 'round';
+		drawLine(data);
+	}
+	//hoverIndex的画到最上层
+	if(hoverIndex > -1) {
+		let line = series[hoverIndex];
+		let data = line.data;
+		ctx.lineWidth = line.hover && line.hover.lineWidth || defaultHoverStyle.lineWidth;
+		ctx.strokeStyle = line.hover && line.hover.strokeStyle || defaultHoverStyle.strokeStyle;
+		ctx.fillStyle = line.hover && line.hover.fillStyle || defaultHoverStyle.fillStyle;
+		drawLine(data);
+
+		//绘制标线
+		ctx.setLineDash([2,2]);
+
+		let activeIndexes = line.activeIndexes || [];
+		activeIndexes.forEach(function(index){
+			let x = _toInt(padding.left + index * xSpace),
+					y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[index]);
+			ctx.beginPath();  //horizon dash line
+			ctx.moveTo(x, y);
+			ctx.lineTo(padding.left, y);
+			ctx.stroke();
+			ctx.beginPath();   //vertical dash line
+			ctx.moveTo(x, y);
+			ctx.lineTo(x, height - padding.bottom);
+			ctx.stroke();
+		});
+	}
+	ctx.setLineDash([]);
 	ctx.restore();
+	//returns
+	let indexAtPoint = function (x, y){
+		try {
+			x *= ratio;
+			y *= ratio;
+			//现根据x判断 所在x轴区间[xInt0, xInt0+1], 然后判断(x, y)是否在区间的直线上
+			var xInt0 = Math.floor((x - padding.left) / xSpace);
+			if(xInt0 >= 0) {
+				for(var i=0,len=series.length; i<len; i++) {
+					var data = series[i].data;
+					var x0 = padding.left + xInt0 * xSpace;
+					var x1 = x0 + xSpace;
+					var y0 = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[xInt0]);
+					var y1 = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[xInt0+1]);
 
+					var a = (y1 - y0) / (x1 - x0);
+					var yInLine = a * (x - x0) + y0;
+					//如果y和y0 相差3个像素, 那么认为(x, y)在这条直线上
+					if(Math.abs(y - yInLine) <= 3) {
+						return i;
+					}
+				}
+			}
+		} catch(e) {
+			console.error(e);
+			return -1;
+		}
+		//
+		return -1;
+	};
+	return {
+		indexAtPoint
+	}
 };
-
+/*
+绘制x,y轴
+ ----------------------------------------------------------------*/
 let drawAxis = (canvas, data, options) => {
 	let len = data && data.length || 0;
 	if(!len) {
@@ -116,9 +193,10 @@ let drawAxis = (canvas, data, options) => {
 	let ratio = getCanvasPixRatio();
 	//options
 	let isVertical = options && options.isVertical || false;
-	let hoverIndex = options && options.hoverIndex;
+	let activeIndexes = options && options.activeIndexes;
 	let selectedIndex = options && options.selectedIndex;
 	let textColor = options && options.textColor || '#888';
+	let hoverColor = options && options.hoverColor || defaultHoverStyle.strokeStyle;
 	let gridColor = options && options.gridColor || 'rgba(0,0,0,0.08)';
 	let padding = {};
 			padding.left = options.padding && options.padding.left * ratio;
@@ -181,15 +259,24 @@ let drawAxis = (canvas, data, options) => {
 		ctx.fillText(selectedIndex+1+'', center, 15);
 	}
 
-	//hoverIndex
-	if(hoverIndex>=0) {
-		let rectW = 50 * ratio;
-		let center = padding.left + hoverIndex*space + space/2;
-		center = _toInt(center);
-		ctx.fillStyle = '#222';
-		ctx.fillRect(center - rectW/2, 0, rectW, height);
-		ctx.fillStyle = '#fff';
-		ctx.fillText(hoverIndex+1+'', center, 15*ratio);
+	//activeIndexes
+	if(activeIndexes.length > 0) {
+		ctx.fillStyle = hoverColor;
+		let rectW = 20 * ratio;
+		for(var i=0,length=activeIndexes.length; i<length; i++) {
+			let index = activeIndexes[i];
+			if(isVertical) {
+				let x = labelWidth / 2;
+				let y = _dataToPointY(padding.top, height-padding.top-padding.bottom, data[0], data[data.length-1], data[index]);
+				ctx.fillText(data[index], x, y+5*ratio);
+			} else {
+				let center = padding.left + index*space;
+				center = _toInt(center);
+				// ctx.fillStyle = '#222';
+				// ctx.fillRect(center - rectW/2, 0, rectW, height);
+				ctx.fillText(index+1+'', center, 15*ratio);
+			}
+		}
 	}
 
 };
