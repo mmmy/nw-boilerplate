@@ -16,10 +16,11 @@
 		right: -280px;
 		&.show {
 			right: 20px;
+			box-shadow: -10px 0 20px rgba(0, 0, 0, 0.3);
 		}
 	}
 	.mama-box-shadow();
-	.border-radius-inner();
+	// .border-radius-inner();
 	.title-container {
 		position: absolute;
 		height: 50px;
@@ -60,6 +61,9 @@
 		padding-right: 15px;
 		img {
 			margin-bottom: 5px;
+		}
+		@media (min-width: 1800px) {
+			display: none;
 		}
 	}
 }

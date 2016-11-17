@@ -75,7 +75,6 @@
 		width: 8.333%;//14.13%;
 		float: left;
 	}
-
 	.timespent {
 		.item-value {
 			margin-top: 18px;
@@ -103,6 +102,9 @@
 	}
 
 	.pattern-wrapper {
+		&.blank {
+			opacity: 0;
+		}
 		display: inline-block;
 		position: relative;
 		float: left;
@@ -143,6 +145,22 @@
 			width: 35%;
 			height: 60px;
 			margin-top: 10px;
+		}
+	}
+	//超过1520px的 媒体查询
+	@media (min-width: 1520px) {
+		.info-item {
+			width: 6.25%;
+		}
+		.l1 { left: 6.25%; }
+		.l2 { left: 12.5%; }
+		.l3 { left: 18.75%; }
+		.l4 { left: 25%; }
+		.pattern-wrapper {
+			width: calc(~"25% - 20px - 6.67px");	
+		}
+		.search-result-info {
+			left: calc(~"25% + 20px");
 		}
 	}
 }
