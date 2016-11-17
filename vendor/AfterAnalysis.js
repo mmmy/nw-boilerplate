@@ -400,12 +400,9 @@ function summary() {
     var _summary8 = {'summaryRDrawDown': this.summaryRDrawDown(this._bars, 0)};
     //var _summary9 = {'summaryBefPeakDrawDown': this.summaryRDrawDown(this._bars, 1)};
     //var _summary10 = {'summaryBefDownDrawDown': this.summaryRDrawDown(this._bars, 2)};
-    this._summary = Object.assign({}, _summary1, _summary2, _summary3, _summary4, _summary5, /*_summary6, _summary7, */_summary8);
-    var _summary6 = {'summaryBefPeakDrawDown': this.summaryDrawDown(this._bars, 1)};
-    var _summary7 = {'summaryBefDownDrawDown': this.summaryDrawDown(this._bars, 2)};
     //require jquery
     var extend = $.extend || Object.assign;
-    this._summary = extend({}, _summary1, _summary2, _summary3, _summary4, _summary5, _summary6, _summary7, _summary8);
+    this._summary = extend({}, _summary1, _summary2, _summary3, _summary4, _summary5, /*_summary6, _summary7, */_summary8);
     return this._summary;
 }
 
