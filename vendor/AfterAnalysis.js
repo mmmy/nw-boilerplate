@@ -267,8 +267,8 @@ function summaryPeakDown(bars) {
     for (var i = 0; i < nSym; i++) {
         var bar = bars[i];
         var r = calMost(bar);
-        if (0 < r.ipeak && r.ipeak < nDay) tPeak[r.ipeak]++;
-        if (0 < r.idown && r.idown < nDay) tDown[r.idown]++;
+        if (0 <= r.ipeak && r.ipeak < nDay) tPeak[r.ipeak]++;
+        if (0 <= r.idown && r.idown < nDay) tDown[r.idown]++;
         if (r.peakFirst) nPeakFirst++; 
 
         sRateIncrease.push(r.rateIncrease);
