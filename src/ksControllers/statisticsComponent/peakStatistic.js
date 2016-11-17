@@ -23,15 +23,15 @@ peakStatistic.init = (wrapper, model) => {
 
 	//add other doms
 	let part1 = $(`<div class="ks-col-25"></div>`)
+							.append(`<p class="describe"><span class="text">最高涨幅</span></p>`)
 							.append(`<p class="rate percent-info red"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
-							.append(`<p class="describe"><span class="circle red"></span><span class="text">最高涨幅百分比</span></p>`)
+							.append(`<p class="describe"><span class="text">最高跌幅</span></p>`)
 							.append(`<p class="rate percent-info green"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
-							.append(`<p class="describe"><span class="circle green"></span><span class="text">最高跌幅百分比</span></p>`);
 							// .append(`<p class="btns"><button class="flat-btn up active">上涨</button><button class="flat-btn down">下跌</button></p>`);
 
 	let part2 = $(`<div class="ks-col-25"></div>`)
-							.append(`<div class="days-info-wrapper red"><p class="days-info">第<strong>0</strong>天</p><p class="text">最多只匹配结果到达最高点</p></div>`)
-							.append(`<div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong>天</p><p class="text">最多只匹配结果到达最低点</p></div>`);
+							.append(`<div class="days-info-wrapper red"><p class="days-info">第<strong>0</strong>根</p><p class="text">到达最高点位</p></div>`)
+							.append(`<div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong>根</p><p class="text">到达最低点位</p></div>`);
 
 	let part3 = $(`<div class="ks-col-50"></div>`)
 							.append(`<div class="chart-wrapper"></div>`);
@@ -104,19 +104,31 @@ peakStatistic._redrawChart = (dataObj) => {
 	//注意第一天不需要,因为不在预测范围内
 	let {tPeak, tDown, dayMostPeak, dayMostDown} = dataObj;
 	try {
-		let dataLen = tPeak.length - 1,
+		let dataLen = tPeak.length,
 				tPeakS = tPeak.slice(-dataLen),
 				tDownS = tDown.slice(-dataLen);
 		let series = [];
 		series[0] = {
 			data: tPeakS,
-			strokeStyle: 'red',
-			activeIndexes: [dayMostPeak-1]
+			strokeStyle: 'rgba(141,22,27,1)',
+			fillStyle: 'rgba(141,22,27,0.1)',
+			hover: {
+				lineWidth: 2,
+				strokeStyle: 'rgba(141,22,27,1)',
+				fillStyle: 'rgba(141,22,27,0.2)'
+			},
+			activeIndexes: [dayMostPeak]
 		};
 		series[1] = {
 			data: tDownS,
-			strokeStyle: 'pink',
-			activeIndexes: [dayMostDown-1]
+			strokeStyle: 'rgba(16,145,33,1)',
+			fillStyle: 'rgba(16,145,33,0.1)',
+			hover: {
+				lineWidth: 2,
+				strokeStyle: 'rgba(16,145,33,1)',
+				fillStyle: 'rgba(16,145,33,0.2)'
+			},
+			activeIndexes: [dayMostDown]
 		};
 		_chart.setData({dataLen,series});
 	} catch(e) {

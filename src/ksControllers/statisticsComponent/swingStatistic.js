@@ -15,11 +15,11 @@ swingStatistic.init = (wrapper, model) => {
 	$(wrapper).append(newDom);
 
 	//add other doms
-	let part1 = $(`<div></div>`)
-							.append(`<div class='ks-col-25'><p><span class="name">振幅最大值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div>`)
-							.append(`<div class='ks-col-25'><p><span class="name">振幅最小值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div>`)
-							.append(`<div class='ks-col-25'><p><span class="name">平均值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div>`)
-							.append(`<div class='ks-col-25'><p><span class="name">方差</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div>`)
+	let part1 = $(`<div class="data-row"></div>`)
+							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">振幅最大值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
+							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">振幅最小值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
+							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">平均值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
+							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">方差</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
 
 	newDom.find('.row').append(part1);
 

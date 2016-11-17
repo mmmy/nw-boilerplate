@@ -99,6 +99,18 @@ let initJqueryPlugins = () => {
 				}).removeClass('in');
 				clearTimeout(this._delayShowTooltip);
 			});
+			return this;
+		},
+		updatePercentInfo: function(value, decimal) {
+			decimal = decimal || 2;
+			value = value || 0;
+			var $this = $(this);
+			var vauleStr = (value*100).toFixed(2) + '';
+		  var values = vauleStr.split('.');
+		  var $spans = $this.find('span');
+		  $($spans[0]).text(values[0]);
+		  $($spans[2]).text(values.length > 1 ? values[1] : '');
+			return this;
 		}
 	});
 	//load tradingview libs

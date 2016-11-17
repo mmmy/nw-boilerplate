@@ -66,7 +66,7 @@ klinePredictionWidget.init = (root) => {
 	_$root = $(root);
 
 	let headerStr = `<div class="header-container"><span class="title font-simsun">相似图形</span></div>`;
-	let newDoms = $(`<div class="kline-prediction-widget-wrapper transition-position">${headerStr}<div class="body-container"></div></div>`);
+	let newDoms = $(`<div class="kline-prediction-widget-wrapper">${headerStr}<div class="body-container"></div></div>`);
 	_$header = newDoms.find('.header-container');
 	_$body = newDoms.find('.body-container');
 	_$root.append(newDoms);

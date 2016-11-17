@@ -148,7 +148,7 @@ CountLinesChart.prototype.setData = function({dataLen, series}) {
 	let x = [];
 	let data = [];
 	for(var i=0; i<len; i++) {
-		x.push(i+1);
+		x.push(i);
 	}
 	this._linesOption.x = x;
 	this._linesOption.series = series;

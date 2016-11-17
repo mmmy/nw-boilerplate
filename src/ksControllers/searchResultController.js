@@ -93,6 +93,7 @@ let comparatorInner = `<div class='container-ks-sr container-ks-st meta'>
 												<span class='info-item mean'><div class='item-title font-simsun'>涨跌平均数</div><div class='item-value font-number red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 												<span class='pattern-wrapper'>${patternHtml}</span>
 												<span class='pattern-wrapper'>${patternHtml}</span>
+												<span class='pattern-wrapper'>${patternHtml}</span>
 											</div>`;
 
 let searchStatisticHtml = `<div class='container-ks-sr statistic'>
@@ -176,6 +177,8 @@ let _updatePatternUI = (index, {symbol, name, similarity, earn, kline, decimal})
 	$(_patternDoms.earn[index]).text(earn);
 
 	_updateKline(kline, index);
+	//if kline length is 0, 隐藏整个
+	$(_patternDoms.symbol[index]).closest('.pattern-wrapper').toggleClass('blank', kline.length==0);
 };
 
 let _updatePredictionUI = ({timespent, total, model}) => {
@@ -380,21 +383,12 @@ searchResultController.updatePrediction = (patterns) => {
 	let searchMetaData = patterns.searchMetaData || {}
 	let pattern0 = patterns.rawData && patterns.rawData[0] || {};
 	let pattern1 = patterns.rawData && patterns.rawData[1] || {};
+	let pattern2 = patterns.rawData && patterns.rawData[2] || {};
 
 	let timespent = searchMetaData.searchTimeSpent,
 			decimal = getDecimalForStatistic(),
-			total = patterns.rawData && patterns.rawData.length,
+			total = patterns.rawData && patterns.rawData.length;
 			// similarityTop = pattern0.similarity,
-			kline = pattern0.kLine || [],
-			kline1 = pattern1.kLine || [],
-			symbol = pattern0.symbol,
-			symbol1 = pattern1.symbol,
-			name = pattern0.metaData && pattern0.metaData.name,
-			name1 = pattern1.metaData && pattern1.metaData.name,
-			earn = pattern0.yield,
-			earn1 = pattern1.yield,
-			similarity = pattern0.similarity,
-			similarity1 = pattern1.similarity;
 
 	let baseBars = pattern0.baseBars || Infinity;
 	// //泽贤模块
@@ -404,8 +398,16 @@ searchResultController.updatePrediction = (patterns) => {
 
 	_updatePredictionUI({timespent, total, model});
 
-	_updatePatternUI(0, {symbol, name, similarity, earn, kline:kline.slice(0, baseBars), decimal});
-	_updatePatternUI(1, {symbol:symbol1, name:name1, similarity:similarity1, earn:earn1, kline:kline1.slice(0, baseBars), decimal});
+	[pattern0, pattern1, pattern2].forEach(function(pattern, i) {
+		let kline = pattern.kLine || [],
+		symbol = pattern.symbol,
+		name = pattern.metaData && pattern.metaData.name,
+		earn = pattern.yield,
+		similarity = pattern.similarity;
+
+		_updatePatternUI(i, {symbol, name, similarity, earn, kline:kline.slice(0, baseBars), decimal});
+		// _updatePatternUI(1, {symbol:symbol1, name:name1, similarity:similarity1, earn:earn1, kline:kline1.slice(0, baseBars), decimal});
+	});
 };
 /*
 searchResultController.updateStatistics = (patterns) => {

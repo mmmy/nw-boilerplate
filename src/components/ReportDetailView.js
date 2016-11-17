@@ -8,6 +8,17 @@ let stopPropagationHelper =(e) => {
 		e.stopPropagation();
 	}
 };
+let _isClick = false;
+let _handleDataPaneClick = (e) => {
+	_isClick = true;
+}
+let _handleDataPaneToggle = (e) => {
+	let $target = $(e.currentTarget);
+	if(!_isClick && ($target.height() > 100)) {
+		$target.toggleClass('half');
+	}
+	_isClick = false;
+}
 
 const propTypes = {
 	crossFilter: PropTypes.object.isRequired,
@@ -48,6 +59,23 @@ class ReportDetailView extends React.Component {
 
 		if (fullView) {
 			$('.__fadeIn').animateCss('fadeIn');
+		}
+		//update statictics data
+		var staticticsComponent = require('../ksControllers/statisticsComponent');
+		var model = staticticsComponent.getModel();
+		try {
+			var dataObj = model.getSummary();
+			var n = model.getN();
+			var {dayMostUp, dayMostNotUp, tUp, tNotUp} = dataObj;
+			var mostUpRate = tUp[dayMostUp] / n;
+			var mostNotUpRate = tNotUp[dayMostNotUp] / n;
+
+			$(this.refs.day1).text(dayMostUp);
+			$(this.refs.day2).text(dayMostNotUp);
+			$(this.refs.day1.parentNode.parentNode).siblings('.percent-info').updatePercentInfo(mostUpRate);
+			$(this.refs.day2.parentNode.parentNode).siblings('.percent-info').updatePercentInfo(mostNotUpRate);
+		} catch(e) {
+			console.error(e);
 		}
 	}
 
@@ -138,50 +166,56 @@ class ReportDetailView extends React.Component {
 		let { median, mean, upPercent, up, down } = data;
 		let that = this;
 		let dataArr1 = [
-			{name:'上涨比例', value:upPercent, color:'red'},
-			{name:'下跌比例', value:(1-upPercent), color:'green'},
-			{name:'涨跌中位数', value:median, color:(median > 0 ? 'red' : 'green')},
-			{name:'涨跌平均数', value:mean, color:(mean > 0 ? 'red' : 'green')},
+			{names:['上涨比例', <span>第<span ref="day1" className="day">-</span>天<br/>上涨比例达到最大</span>], values:[upPercent, 0], color:'red'},
+			{names:['下跌比例', <span>第<span ref="day2" className="day">-</span>天<br/>下跌比例达到最大</span>], values:[(1-upPercent), 0], color:'green'},
+			{names:['涨跌中位数'], values:[median], color:(median > 0 ? 'red' : 'green')},
+			{names:['涨跌平均数'], values:[mean], color:(mean > 0 ? 'red' : 'green')},
 		];
-		let dataArr2 = [
-			{name:'上涨平均值', value:up.mean},
-			{name:'上涨中位数', value:up.median},
-			{name:'下跌平均值', value:down.mean},
-			{name:'下跌中位数', value:down.median},
-		];
+		// let dataArr2 = [
+		// 	{name:'上涨平均值', value:up.mean},
+		// 	{name:'上涨中位数', value:up.median},
+		// 	{name:'下跌平均值', value:down.mean},
+		// 	{name:'下跌中位数', value:down.median},
+		// ];
 
 		let row1 = (<div className="row large">
 									{dataArr1.map((data) => {
-										return that.getNodeCells(data.name, data.value, decimal, null, 0, data.color);
+										return that.getNodeCells(data.names, data.values, decimal, null, 0, data.color);
 									})}
 							</div>);
 
-		let row2 = (<div className="row small">
-									{dataArr2.map((data) => {
-										return that.getNodeCells(data.name, data.value, decimal, null, 1);
-									})}
-							</div>);
-		return [row1, <hr />, row2];
+		// let row2 = (<div className="row small">
+		// 							{dataArr2.map((data) => {
+		// 								return that.getNodeCells(data.name, data.value, decimal, null, 1);
+		// 							})}
+		// 					</div>);
+		return [row1];
 	}
 
-	getNodeCells(name, value, decimal, unit, rowIndex, color) {
-		value = value * 100;
+	getNodeCells(names, values, decimal, unit, rowIndex, color) {
 		decimal = decimal || 2;
-		if(name=='上涨比例' || name=='下跌比例') {
+		if(names[0]=='上涨比例' || names[0]=='下跌比例') {
 			decimal = 1;
 		}
 		unit = unit || '%';
-		let valueString = value.toFixed(decimal) + '';
-		let values = valueString.split('.');
-		if(rowIndex === 1) {
-			return <div className="ks-col-25">
-						<p><span className="name">{name}</span><span className="percent-info"><span>{values[0]}</span><span>.</span><span>{values.length>1 ? values[1] : ''}</span><span>{unit}</span></span></p>
-					</div>;
-		}
+		// if(rowIndex === 1) {
+		// 	return <div className="ks-col-25">
+		// 				<p><span className="name">{name}</span><span className="percent-info"><span>{values[0]}</span><span>.</span><span>{values.length>1 ? values[1] : ''}</span><span>{unit}</span></span></p>
+		// 			</div>;
+		// }
 		color = color || '';
 		return <div className="ks-col-25">
-						<p className={`percent-info ${color}`}><span>{values[0]}</span><span>.</span><span>{values.length>1 ? values[1] : ''}</span><span>{unit}</span></p>
-						<p><span className={`circle ${color}`}></span>{name}</p>
+						<div className="ks-data-pane-wrapper transition-position" onClick={_handleDataPaneClick} onMouseEnter={_handleDataPaneToggle} onMouseLeave={_handleDataPaneToggle}>
+							{names.map((name,i)=>{
+								let value = values[i] * 100;
+								let valueString = value.toFixed(decimal) + '';
+								let valueStrArr = valueString.split('.');
+								return (<div className="ks-data-pane">
+									<p>{/*<span className={`circle ${color}`}></span>*/}{name}</p>
+									<p className={`percent-info ${color}`}><span>{valueStrArr[0]}</span><span>.</span><span>{valueStrArr.length>1 ? valueStrArr[1] : ''}</span><span>{unit}</span></p>
+								</div>);
+							})}
+						</div>
 					</div>;
 	}
 	//弃用

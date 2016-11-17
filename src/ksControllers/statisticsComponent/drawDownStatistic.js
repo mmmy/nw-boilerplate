@@ -12,33 +12,54 @@ let _$container = null,
 let _retracementChart = null;
 
 let _model = null;
+let _isLong = true; //默认做多
 
 drawDownStatistic.init = (wrapper, model) => {
 
 	_model = model;
 
-	let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche.png"/>回撤统计</h4><div class="row"></div></div>`);
+	let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche.png"/>回撤统计<span class="btn-wrapper"><button class="flat-btn long active">做多</button><button class="flat-btn short">放空</button></span></h4><div class="row"></div></div>`);
 	$(wrapper).append(newDom);
 
 	//add other doms
 	let dataRow = $(`<div class="row data-wrapper"></div>`)
-								.append(`<div class="ks-col-50 min"><p><span class="name">回撤最小值</span><span class="percent-info"><span>0</span><span>.</span><span>00</span><span>%</span></span></p></div`)
-								.append(`<div class="ks-col-50 max"><p><span class="name">回撤最大值</span><span class="percent-info"><span>0</span><span>.</span><span>00</span><span>%</span></span></p></div`)
-								.append(`<div class="ks-col-50 ss"><p><span class="name">方差</span><span class="percent-info"><span>0</span><span>.</span><span>00</span><span>%</span></span></p></div`)
-								.append(`<div class="ks-col-50 average"><p><span class="name">平均值</span><span class="percent-info"><span>0</span><span>.</span><span>00</span><span>%</span></span></p></div`);
+								.append(`<div class="ks-col-25 min"><p><span class="name">回撤最小值</span><span class="percent-info"><span>0</span><span>.</span><span>00</span><span>%</span></span></p></div`)
+								.append(`<div class="ks-col-25 max"><p><span class="name">回撤最大值</span><span class="percent-info"><span>0</span><span>.</span><span>00</span><span>%</span></span></p></div`)
+								.append(`<div class="ks-col-25 average"><p><span class="name">平均值</span><span class="percent-info"><span>0</span><span>.</span><span>00</span><span>%</span></span></p></div`)
+								.append(`<div class="ks-col-25 ss"><p><span class="name">方差</span><span class="percent-info"><span>0</span><span>.</span><span>00</span><span>%</span></span></p></div`)
 	let daysRow = $(`<div class="row"></div>`)
-								.append(`<div class="ks-col-33 days-info-wrapper red"><p class="days-info">第<strong>0</strong>天</p><p>最多只匹配结果开始最大回撤</p></div>`)
-								.append(`<div class="ks-col-33 days-info-wrapper red"><p class="days-info">第<strong>0</strong>天</p><p>最多只匹配结果结束最大回撤</p></div>`)
-								.append(`<div class="ks-col-33 days-info-wrapper red"><p class="days-info"><strong>0</strong>天</p><p>最多只匹配结果的最大回撤持续</p></div>`);
+								.append(`<div class="ks-col-33 days-info-wrapper red"><p class="days-info">共<strong>0</strong>根</p><p>最大回撤持续</p></div>`)
+								.append(`<div class="ks-col-33 days-info-wrapper red"><p class="days-info">第<strong>0</strong>根</p><p>开始最大回撤</p></div>`)
+								.append(`<div class="ks-col-33 days-info-wrapper red"><p class="days-info">第<strong>0</strong>根</p><p>结束最大回撤</p></div>`)
 
 	let part1 = $(`<div class="ks-col-50"></div>`)
-							.append(dataRow)
-							.append(daysRow);
+							.append(daysRow)
+							.append(`<p class="describe">*统计结果均为最多支统计结果</p>`)
 
 	let part2 = $(`<div class="ks-col-50"></div>`)
 							.append(`<div class="chart-wrapper"></div>`);
 
-	newDom.find('.row').append(part1).append(part2);
+	newDom.find('.row').append(part1).append(part2).before(dataRow);;
+
+	//init event
+	newDom.find('.btn-wrapper .short').click(function(event) {  //做空
+		/* Act on the event */
+		if(_isLong) {
+			_isLong = false;
+			newDom.find('.btn-wrapper .short').addClass('active');
+			newDom.find('.btn-wrapper .long').removeClass('active');
+			drawDownStatistic.update();
+		}
+	});
+	newDom.find('.btn-wrapper .long').click(function(event) {  //做多
+		/* Act on the event */
+		if(!_isLong) {
+			_isLong = true;
+			newDom.find('.btn-wrapper .long').addClass('active');
+			newDom.find('.btn-wrapper .short').removeClass('active');
+			drawDownStatistic.update();
+		}
+	});
 
 	//cache
 	_$container = newDom;
@@ -57,21 +78,39 @@ drawDownStatistic.init = (wrapper, model) => {
 };
 
 drawDownStatistic._udpateChart = (summaryDrawDown) => {
-	let { freqStart, freqEnd, freqLen } = summaryDrawDown; 
+	let { dayMostDrawDownStart, dayMostDrawDownLast, dayMostDrawDownEnd, freqStart, freqEnd, freqLen } = summaryDrawDown; 
 	//第一天不在统计范围内, 所以去掉
-	let dataLen = freqStart.length - 1,
+	let dataLen = freqStart.length,
 			series = [{
 				data:freqStart.slice(-dataLen),
-				strokeStyle:'rgba(183, 57, 69, 0.7)',
-				fillStyle:'rgba(183, 57, 69, 0.1)',
+				activeIndexes: [dayMostDrawDownStart],
+				strokeStyle:'rgba(141,22,27,1)',
+				fillStyle:'rgba(141,22,27,0.1)',
+				hover: {
+					lineWidth: 2,
+					strokeStyle:'rgba(141,22,27,1)',
+					fillStyle:'rgba(141,22,27,0.2)',
+				}
 			}, {
 				data:freqEnd.slice(-dataLen),
-				strokeStyle:'rgba(183, 57, 69, 0.7)',
-				fillStyle:'rgba(183, 57, 69, 0.1)',
+				activeIndexes: [dayMostDrawDownEnd],
+				strokeStyle:'rgba(141,22,27,1)',
+				fillStyle:'rgba(141,22,27,0.1)',
+				hover: {
+					lineWidth: 2,
+					strokeStyle:'rgba(141,22,27,1)',
+					fillStyle:'rgba(141,22,27,0.2)',
+				}
 			}, {
-				data:freqEnd.slice(-dataLen),
-				strokeStyle:'rgba(183, 57, 69, 0.7)',
-				fillStyle:'rgba(183, 57, 69, 0.1)',
+				data:freqLen.slice(-dataLen),
+				activeIndexes: [dayMostDrawDownLast],
+				strokeStyle:'rgba(141,22,27,1)',
+				fillStyle:'rgba(141,22,27,0.1)',
+				hover: {
+					lineWidth: 2,
+					strokeStyle:'rgba(141,22,27,1)',
+					fillStyle:'rgba(141,22,27,0.2)',
+				}
 			}];
 
 	_retracementChart.setData({
@@ -85,12 +124,16 @@ drawDownStatistic.update = () => {
 	let dataObj = model && model.getSummary();
 	if(dataObj) {
 		try {
-			let { summaryDrawDown } = dataObj;
-			if(summaryDrawDown) {
-				let { dayMostDrawDownStart, dayMostDrawDownLast, dayMostDrawDownEnd, freqStart, freqEnd, freqLen } = summaryDrawDown; 
-				let { min, max, ss, average } = summaryDrawDown.basic; //回撤最小值, 最大值, 方差, 平均值
-				let daysArr = [dayMostDrawDownStart, dayMostDrawDownEnd, dayMostDrawDownLast];
+			let { summaryDrawDown, summaryRDrawDown } = dataObj;
+			let drawDown = _isLong ? summaryDrawDown : summaryRDrawDown;
+			if(drawDown) {
+				let { dayMostDrawDownStart, dayMostDrawDownLast, dayMostDrawDownEnd, freqStart, freqEnd, freqLen } = drawDown; 
+				let { min, max, ss, average } = drawDown.basic; //回撤最小值, 最大值, 方差, 平均值
+				let daysArr = [dayMostDrawDownLast, dayMostDrawDownStart, dayMostDrawDownEnd];
 				let dataArr = [min, max, ss, average];
+				/*
+					根据_isLong(做多) 来判读 选择显示那个数据
+				------------------------------------*/
 				//update UI 1
 				_dataDoms.forEach(function($dom, i){
 					let data = dataArr[i] * 100,
@@ -105,7 +148,7 @@ drawDownStatistic.update = () => {
 					$dom.text(day);
 				});
 				//update chart
-				drawDownStatistic._udpateChart(summaryDrawDown);
+				drawDownStatistic._udpateChart(drawDown);
 			}
 		} catch(e) {
 			console.error(e);

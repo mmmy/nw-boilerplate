@@ -36,4 +36,8 @@ statisticComponent.update = (closePrices) => {
 	swingStatistic.update();
 }
 
+statisticComponent.getModel = () => {
+	return _model;
+}
+
 module.exports = statisticComponent;

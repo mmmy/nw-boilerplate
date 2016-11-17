@@ -129,8 +129,8 @@ let drawCountLines = (canvas, options) => {
 		drawLine(data);
 
 		//绘制标线
-		ctx.setLineDash([2,2]);
-
+		ctx.setLineDash([5,2]);
+		ctx.lineWidth = 1;
 		let activeIndexes = line.activeIndexes || [];
 		activeIndexes.forEach(function(index){
 			let x = _toInt(padding.left + index * xSpace),
@@ -162,10 +162,155 @@ let drawCountLines = (canvas, options) => {
 					var y0 = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[xInt0]);
 					var y1 = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[xInt0+1]);
 
-					var a = (y1 - y0) / (x1 - x0);
-					var yInLine = a * (x - x0) + y0;
-					//如果y和y0 相差3个像素, 那么认为(x, y)在这条直线上
-					if(Math.abs(y - yInLine) <= 3) {
+					var k = (y1 - y0) / (x1 - x0),
+							b = y0 - k * x0;
+					var distance = Math.abs(k * x + b - y) / Math.pow((1 + k * k), 0.5);  //点到直线的距离
+					//距离 相差3个像素, 那么认为(x, y)在这条直线上
+					if(distance <= 4) {
+						return i;
+					}
+				}
+			}
+		} catch(e) {
+			console.error(e);
+			return -1;
+		}
+		//
+		return -1;
+	};
+	return {
+		indexAtPoint
+	}
+};
+/*
+ 绘制bar
+------------------------------------------*/
+let drawCountBars = (canvas, options) => {
+	//判断canvas
+	if(!canvas || !canvas.getContext) {
+		console.warn('drawBlockHeadMap, canvas is not canvas !');
+		return;
+	}
+	if(!options || !options.series) {
+		console.warn('options.series is required!!');
+		return;
+	}
+	//raw data & options
+	let	series = options.series,
+			xData = options.x,
+			yMin = options.yMin || 0,
+			yMax = options.yMax,
+			hoverIndex = options.hoverIndex,
+			padding = options.padding || {left:0, top:0, right:0, bottom:0};
+	
+	if(yMax === undefined) {
+		let maxArr = series.map(function(e){
+			return Math.max.apply(null, e.data);
+		});
+		yMax = Math.max.apply(null, maxArr);
+	}
+
+	//canvas
+	betterCanvasSize(canvas);
+	let ratio = getCanvasPixRatio();
+	let ctx = canvas.getContext('2d'),
+			width = canvas.width,
+			height = canvas.height,
+			viewWidth = width - padding.left - padding.right,
+			viewHeight = height - padding.top - padding.bottom;
+
+	//draw data
+	let xSpace = (xData.length === 1) ? viewWidth / 2 : viewWidth / (xData.length - 1);
+
+	ctx.save();
+	//paint
+	ctx.clearRect(0,0,width,height);
+	//如果space 为Infinity , 绘图将会出现bug
+	if(!isFinite(xSpace)) {
+		return;
+	}
+	let drawLine = function(data) {
+		for(let j=0,len=data.length; j<len; j++) {
+			let x = _toInt(padding.left + j * xSpace),
+					y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[j]);
+			//draw line
+			if(j===0) {   					//start
+				ctx.beginPath();
+				ctx.moveTo(x,y);
+			} else if(j===len-1) {  //end
+				ctx.lineTo(x,y);
+				ctx.stroke();        //绘制曲线
+				ctx.lineTo(x, height-padding.bottom);
+				ctx.lineTo(padding.left, height-padding.bottom);
+				ctx.closePath();
+				ctx.fill();           //填充区域
+			} else { 								//line
+				ctx.lineTo(x,y);
+			}
+		}
+	}
+
+	for(let i=0; i<series.length; i++) {
+		//跳过hoverIndex
+		if(i === hoverIndex) {
+			continue;
+		}
+		let line = series[i];
+		let data = line.data; //数据数组
+		ctx.lineWidth = line.lineWidth || defaultDrawStyle.lineWidth;
+		ctx.strokeStyle = line.strokeStyle || defaultDrawStyle.strokeStyle;
+		ctx.fillStyle = line.fillStyle || defaultDrawStyle.fillStyle;
+		ctx.lineJoin = 'round';
+		drawLine(data);
+	}
+	//hoverIndex的画到最上层
+	if(hoverIndex > -1) {
+		let line = series[hoverIndex];
+		let data = line.data;
+		ctx.lineWidth = line.hover && line.hover.lineWidth || defaultHoverStyle.lineWidth;
+		ctx.strokeStyle = line.hover && line.hover.strokeStyle || defaultHoverStyle.strokeStyle;
+		ctx.fillStyle = line.hover && line.hover.fillStyle || defaultHoverStyle.fillStyle;
+		drawLine(data);
+
+		//绘制标线
+		ctx.setLineDash([5,2]);
+		ctx.lineWidth = 1;
+		let activeIndexes = line.activeIndexes || [];
+		activeIndexes.forEach(function(index){
+			let x = _toInt(padding.left + index * xSpace),
+					y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[index]);
+			ctx.beginPath();  //horizon dash line
+			ctx.moveTo(x, y);
+			ctx.lineTo(padding.left, y);
+			ctx.stroke();
+			ctx.beginPath();   //vertical dash line
+			ctx.moveTo(x, y);
+			ctx.lineTo(x, height - padding.bottom);
+			ctx.stroke();
+		});
+	}
+	ctx.setLineDash([]);
+	ctx.restore();
+	//returns
+	let indexAtPoint = function (x, y){
+		try {
+			x *= ratio;
+			y *= ratio;
+			//现根据x判断 所在x轴区间[xInt0, xInt0+1], 然后判断(x, y)是否在区间的直线上
+			var xInt0 = Math.floor((x - padding.left) / xSpace);
+			if(xInt0 >= 0) {
+				for(var i=0,len=series.length; i<len; i++) {
+					var data = series[i].data;
+					var x0 = padding.left + xInt0 * xSpace;
+					var x1 = x0 + xSpace;
+					var y0 = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[xInt0]);
+					var y1 = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[xInt0+1]);
+
+					var k = (y1 - y0) / (x1 - x0),
+							b = y0 - k * x0;
+					var distance = Math.abs(k * x + b - y) / Math.pow((1 + k * k), 0.5);  //点到直线的距离
+					//距离 相差3个像素, 那么认为(x, y)在这条直线上
+					if(distance <= 4) {
 						return i;
 					}
 				}
@@ -249,6 +394,7 @@ let drawAxis = (canvas, data, options) => {
 	}
 
 	//selectedIndex
+	/*
 	if(selectedIndex >=0) {
 		let rectW = 50;
 		let center = padding.left + selectedIndex*space + space/2;
@@ -258,6 +404,7 @@ let drawAxis = (canvas, data, options) => {
 		ctx.fillStyle = '#fff';
 		ctx.fillText(selectedIndex+1+'', center, 15);
 	}
+	*/
 
 	//activeIndexes
 	if(activeIndexes.length > 0) {
@@ -274,7 +421,7 @@ let drawAxis = (canvas, data, options) => {
 				center = _toInt(center);
 				// ctx.fillStyle = '#222';
 				// ctx.fillRect(center - rectW/2, 0, rectW, height);
-				ctx.fillText(index+1+'', center, 15*ratio);
+				ctx.fillText(index+'', center, 15*ratio);
 			}
 		}
 	}
@@ -283,5 +430,6 @@ let drawAxis = (canvas, data, options) => {
 
 module.exports = {
 	drawCountLines,
+	drawCountBars,
 	drawAxis
 }

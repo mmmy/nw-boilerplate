@@ -8,7 +8,7 @@ import store from '../store';
 
 const SORT_BTN_DATE = { type:'SORT_BTN_DATE', label:'按日期' };
 const SORT_BTN_SIMILARITY = { type:'SORT_BTN_SIMILARITY', label:'按相似度' };
-const SORT_BTN_YIELD= { type:'SORT_BTN_YIELD', label:'按收益率' };
+const SORT_BTN_YIELD= { type:'SORT_BTN_YIELD', label:'按涨跌' };
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
