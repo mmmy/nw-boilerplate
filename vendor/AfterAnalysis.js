@@ -205,8 +205,8 @@ function summaryUpProbility(bars) {
     //for (var i = 0; i < nDay; i++) tNotUp[i] = tNotUp[i];
     //for (var i = 0; i < nDay; i++) tNotUp[i] = 1 - tUp[i];
 
-    upRate = tUp[nDay-1] / nSym;
-    notUpRate = tNotUp[nDay-1] / nSym;
+    var upRate = tUp[nDay-1] / nSym;
+    var notUpRate = tNotUp[nDay-1] / nSym;
 
     var dayMostUp = basicStastic(tUp).imax;
     var dayMostNotUp = basicStastic(tNotUp).imax;
@@ -299,10 +299,10 @@ function summaryPeakDown(bars) {
         if (sRateIncrease[i] > 0) RI.push(sRateIncrease[i]);
         else if (sRateIncrease[i] < 0) RD.push(sRateIncrease[i]);
 
-    averageIncrease = averageStastic(RI);
-    averageDecrease = averageStastic(RD);
-    mediumIncrease = mediumStastic(RI); 
-    mediumDecrease = mediumStastic(RD); 
+    var averageIncrease = averageStastic(RI);
+    var averageDecrease = averageStastic(RD);
+    var mediumIncrease = mediumStastic(RI); 
+    var mediumDecrease = mediumStastic(RD); 
               
     var rPeakFirst = nPeakFirst / nSym;
     return { tPeak, tDown, nPeakFirst, rPeakFirst,
@@ -471,6 +471,14 @@ function getSummary() {
     return this._summary;
 }
 
+function getN() {
+    return this._n;
+}
+
+function getM() {
+    return this._m;
+}
+
 function AfterAnalysis() {
 }
 
@@ -516,6 +524,8 @@ AfterAnalysis.prototype.summaryDrawDown = summaryDrawDown;
 AfterAnalysis.prototype.summaryRDrawDown = summaryRDrawDown;
 AfterAnalysis.prototype.summary = summary;
 AfterAnalysis.prototype.getSummary = getSummary;
+AfterAnalysis.prototype.getN = getN;
+AfterAnalysis.prototype.getM = getM;
 
 module.exports = AfterAnalysis;
 
