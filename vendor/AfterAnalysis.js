@@ -26,6 +26,11 @@ function calDrawDownExtend(data, n) {
     var drawDown = 0;
     var start = 0;
     var end = 0;
+
+    drawDown = (data[0]-data[1])/data[0];
+    start = 0;
+    end = 1;
+
     var nDay = n;
     if (!nDay || nDay > data.length) nDay = data.length;
     var cdd = new Array(nDay);
@@ -47,6 +52,19 @@ function calDrawDownExtend(data, n) {
             end = pos[i];
         }
       }
+
+    /*
+    drawDown = 0;
+    start = 0;
+    end = 1;
+    for (var i = 0; i < nDay; i++)
+        for (var j = i+1; j < nDay; j++) 
+        if ((data[i]-data[j])/data[i] > drawDown){
+            drawDown = (data[i]-data[j])/data[i];
+            start = i;
+            end = j;
+        }
+        */
     return { drawDown, start, end };
 }
 
@@ -58,6 +76,11 @@ function calRDrawDownExtend(data, n) {
     var drawDown = 0;
     var start = 0;
     var end = 0;
+    
+    drawDown = -(data[0]-data[1])/data[0];
+    start = 0;
+    end = 1;
+
     var nDay = n;
     if (!nDay || nDay > data.length) nDay = data.length;
     var cdd = new Array(nDay);
@@ -276,12 +299,14 @@ function summaryPeakDown(bars) {
 function basicStastic(data) {
     if (!data) return;
     var n = data.length;
+    
+    var imax = 0;
+    for (var i = 1; i < n; i++) if (data[i] > data[imax])  imax = i;
+    var max = data[imax];
 
-    var max = Math.max.apply(null, data);
-    var imax = data.indexOf(max);
-
-    var min = Math.min.apply(null, data);
-    var imin = data.indexOf(min);
+    var imin = 0;
+    for (var i = 1; i < n; i++) if (data[i] < data[imin]) imin = i;
+    var min = data[imin];
 
     var sum = 0;
     for (var i = 0; i < n; i++) sum = sum + data[i];
@@ -458,5 +483,5 @@ AfterAnalysis.prototype.getSummary = getSummary;
 
 module.exports = AfterAnalysis;
 
-var a = new AfterAnalysis([[1,2],[2,3]])
-console.log(a.summary())
+//var a = new AfterAnalysis([[1,2],[2,3]])
+//console.log(a.summary())
