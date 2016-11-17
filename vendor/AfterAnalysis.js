@@ -201,13 +201,16 @@ function summaryUpProbility(bars) {
         }
 
     //for (var i = 0; i < nDay; i++) tNotUp[i] = nSym - tUp[i];
-    for (var i = 0; i < nDay; i++) tUp[i] = tUp[i];
-    for (var i = 0; i < nDay; i++) tNotUp[i] = tNotUp[i];
+    //for (var i = 0; i < nDay; i++) tUp[i] = tUp[i];
+    //for (var i = 0; i < nDay; i++) tNotUp[i] = tNotUp[i];
     //for (var i = 0; i < nDay; i++) tNotUp[i] = 1 - tUp[i];
+
+    upRate = tUp[nDay-1] / nSym;
+    notUpRate = tNotUp[nDay-1] / nSym;
 
     var dayMostUp = basicStastic(tUp).imax;
     var dayMostNotUp = basicStastic(tNotUp).imax;
-    return { tUp, dayMostUp, tNotUp, dayMostNotUp };
+    return { tUp, dayMostUp, tNotUp, dayMostNotUp, upRate, notUpRate };
 }
 
 function summaryUpProbilityFilterRate(bars, rate) {
@@ -284,17 +287,50 @@ function summaryPeakDown(bars) {
     console.log(bRateIncrease);
     var maxRateIncrease = bRateIncrease.max;
     var minRateIncrease = bRateIncrease.min;
+    var averageRateIncrease = bRateIncrease.average;
     var dayMostPeak = basicStastic(tPeak).imax;
     var dayMostDown = basicStastic(tDown).imax;
     var basicStasticAmplitude = basicStastic(sAmplitude);
+    var mediumRateIncrease = mediumStastic(sRateIncrease);
+    
+    var RI = [];
+    var RD = [];
+    for (var i = 0; i < sRateIncrease.length; i++) 
+        if (sRateIncrease[i] > 0) RI.push(sRateIncrease[i]);
+        else if (sRateIncrease[i] < 0) RD.push(sRateIncrease[i]);
+
+    averageIncrease = averageStastic(RI);
+    averageDecrease = averageStastic(RD);
+    mediumIncrease = mediumStastic(RI); 
+    mediumDecrease = mediumStastic(RD); 
               
     var rPeakFirst = nPeakFirst / nSym;
     return { tPeak, tDown, nPeakFirst, rPeakFirst,
         maxRateIncrease, minRateIncrease, 
+        mediumRateIncrease,
+        averageRateIncrease,
         dayMostPeak, dayMostDown,
+        averageIncrease, averageDecrease,
+        mediumIncrease, mediumDecrease,
         basicStasticAmplitude, /*, drawDown, befPeakDrawDown, befDownDrawDown*/ };
 }
 
+function averageStastic(data) {
+    var s = 0;
+    for (var i = 0; i < data.length; i++) s += data[i];
+    if (data.length <= 0) return 0;
+    return s / data.length;
+}
+
+function mediumStastic(data) {
+    var datacopy = new Array(data.length);
+    for (var i = 0; i < data.length; i++) datacopy[i] = data[i];
+    datacopy.sort(function(a,b) {if (a<b) return 1; else return -1;});
+    i = data.length / 2;
+    if (i == 0) return datacopy[i];
+    if (data.length % 2 == 0) return (datacopy[i-1]+datacopy[i])/2;
+    else return datacopy[i];
+}
 
 function basicStastic(data) {
     if (!data) return;
