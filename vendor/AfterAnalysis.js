@@ -196,7 +196,7 @@ function summaryUpProbility(bars) {
     for (var i = 0; i < nDay; i++) tNotUp[i] = 0;
 
     for (var i = 0; i < nSym; i++) 
-        for (var j = 1; j < nDay; j++) {
+        for (var j = 1; j < bars[i].length; j++) {
             if (bars[i][j] > bars[i][0]) tUp[j]++;
             if (bars[i][j] < bars[i][0]) tNotUp[j]++;
         }
@@ -520,7 +520,7 @@ function freqPeakRate(bars, n, unit) {
     for (var i = 0; i < nSym; i++) {
         var imax = 0;
         var imin = 0;
-        for (var j = 0; j < nDay; j++) {
+        for (var j = 0; j < bars[i].length; j++) {
             if (bars[i][j] > bars[i][imax]) imax = j;
             if (bars[i][j] < bars[i][imin]) imin = j;
         }
