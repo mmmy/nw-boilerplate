@@ -114,18 +114,16 @@ CountBarsChart.prototype._mainMouseLeave = function(e) {
 
 CountBarsChart.prototype._drawChart = function() {
 	//计算Y轴坐标值, 先获得每个serie 的最大值, 再求最大值
-	let countMaxes = this._linesOption.series.map(function(e){
-		let max = 0;
-		for(var i=0,len=e.data.length; i<len; i++) {
-			let value = e.data[i].value;
-			max = max > value ? max : value;
-		}
-		return max;
+	this.countMax = 0;
+	let that = this;
+	this._linesOption.series.forEach(function(bar){
+		bar.data.forEach(function(e){
+			that.countMax = that.countMax > e.value ? that.countMax : e.value;
+		});
 	});
-	let countMax = Math.max.apply(null, countMaxes);
 	let yLables = [];
-	if(countMax > 0) {
-		for(var i=0; i<=countMax; i++) {
+	if(that.countMax > 0) {
+		for(var i=0; i<=that.countMax; i++) {
 			yLables.push(i);
 		}
 	}

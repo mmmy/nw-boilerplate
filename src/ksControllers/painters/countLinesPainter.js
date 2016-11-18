@@ -314,20 +314,19 @@ let drawCountBars = (canvas, options) => {
 			x *= ratio;
 			y *= ratio;
 			//计算x
-			var index = Math.floor((x - padding.left) / xSpace),
-					xAtIndex = padding.left + index * xSpace + xSpace / 2,
-					isXInBar = Math.abs(x - xAtIndex) <= barWidth / 2;          //判断x是否在bar区间内
-					console.log('x - xAtIndex', x - xAtIndex, isXInBar);
-			if(isXInBar) {
-				for(var i=0,len=options.series.length; i<len; i++) {
-					var data = options.series[i].data;
-					var	y0 = _to05(_dataToPointY(padding.top, viewHeight, yMin, yMax, data[index].value));
-					var y1 = height - padding.bottom;;
-					if(y>(y0-10) && y<y1) {
-						return index;
-					}
-				}
-			}
+			// var index = Math.floor((x - padding.left) / xSpace),
+			// 		xAtIndex = padding.left + index * xSpace + xSpace / 2,
+			// 		isXInBar = Math.abs(x - xAtIndex) <= barWidth / 2;          //判断x是否在bar区间内
+			// if(isXInBar) {
+			// 	for(var i=0,len=options.series.length; i<len; i++) {
+			// 		var data = options.series[i].data;
+			// 		var	y0 = _to05(_dataToPointY(padding.top, viewHeight, yMin, yMax, data[index].value));
+			// 		var y1 = height - padding.bottom;;
+			// 		if(y>(y0-10) && y<y1) {
+			// 			return index;
+			// 		}
+			// 	}
+			// }
 		} catch(e) {
 			console.error(e);
 			return -1;
@@ -335,9 +334,10 @@ let drawCountBars = (canvas, options) => {
 		//
 		return -1;
 	};
-	return {
-		indexAtPoint
-	}
+	return;
+	// return {
+	// 	// indexAtPoint
+	// }
 };
 /*
 绘制x,y轴
