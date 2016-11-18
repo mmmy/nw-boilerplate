@@ -538,7 +538,12 @@ function freqPeakRate(bars, n, unit) {
 }
 
 function summaryFreqPeakRate(n, unit) {
-    return freqPeakRate(this._bars, n, unit);
+    this._freqPeakRate = freqPeakRate(this._bars, n, unit);
+    return this._freqPeakRate;
+}
+
+function getFreqPeakRate() {
+    return this._freqPeakRate;
 }
 
 function freqLeftRight(arrayMax, arrayMin, n, unit) {
@@ -601,6 +606,7 @@ AfterAnalysis.prototype.getN = getN;
 AfterAnalysis.prototype.getM = getM;
 AfterAnalysis.prototype.freqPeakRate = freqPeakRate;
 AfterAnalysis.prototype.summaryFreqPeakRate = summaryFreqPeakRate;
+AfterAnalysis.prototype.getFreqPeakRate = getFreqPeakRate;
 
 module.exports = AfterAnalysis;
 
