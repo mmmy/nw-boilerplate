@@ -19,13 +19,13 @@ statisticComponent.init = (wrapper, closePrices) => {
 	drawDownStatistic.init(container, _model);
 	swingStatistic.init(container, _model);
 	window._model = _model;
-	(closePrices.length > 0) && (window._dataObj = _model.getSummary());
 };
 
 statisticComponent._updateModel = (closePrices) => {
 	if(closePrices) {
 		_model.setBars(closePrices);
 		_model.summary();
+		_model.summaryFreqPeakRate();
 	}
 }
 
