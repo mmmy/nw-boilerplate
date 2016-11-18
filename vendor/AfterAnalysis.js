@@ -1,3 +1,4 @@
+'use strict';
 function calDrawDown(data, n) {
     //计算drawDown
     //data Array of Number 一支股票多日的收盘价
@@ -21,11 +22,11 @@ function calDrawDown(data, n) {
 function calDrawDownExtend(data, n) {
     //计算一只股票的最大drawDown
     //data Array of Number 一支股票多日的收盘价
-    if (!data || !data.length) return 0;
 
     var drawDown = 0;
     var start = 0;
     var end = 0;
+    if (!data || data.length <= 1 || n <= 1) return {drawDown, start, end};
 
     drawDown = (data[0]-data[1])/data[0];
     start = 0;
@@ -54,7 +55,7 @@ function calDrawDownExtend(data, n) {
       }
 
     /*
-    drawDown = 0;
+    drawDown = (data[0]-data[1])/data[0];
     start = 0;
     end = 1;
     for (var i = 0; i < nDay; i++)
@@ -71,15 +72,15 @@ function calDrawDownExtend(data, n) {
 function calRDrawDownExtend(data, n) {
     //计算一只股票的最大drawDown
     //data Array of Number 一支股票多日的收盘价
-    if (!data || !data.length) return 0;
-
+    
     var drawDown = 0;
     var start = 0;
     var end = 0;
-    
-    drawDown = -(data[0]-data[1])/data[0];
-    start = 0;
-    end = 1;
+    if (!data || data.length <= 1 || n <= 1) return {drawDown, start, end};
+
+    var drawDown = -(data[0]-data[1])/data[0];
+    var start = 0;
+    var end = 1;
 
     var nDay = n;
     if (!nDay || nDay > data.length) nDay = data.length;
@@ -356,11 +357,11 @@ function basicStastic(data) {
 }
 
 function freqence(data, nDay) {
-    if (!data) return;
-    var n = data.length;
     //console.log(data.length, nDay);
     var freq = new Array(nDay);
     for (var i = 0; i < nDay; i++) freq[i] = 0;
+
+    var n = data.length || 0;
     for (var i = 0; i < n; i++) freq[ data[i] ] ++;
     return freq;
 }
@@ -509,6 +510,78 @@ function AfterAnalysis(bars, aimUpRate, aimDownRate) {
     */
 }
 
+function freqPeakRate(bars, n, unit) {
+    if (!n) n = 10;
+    var nSym = bars.length;
+    var nDay = bars[0].length;
+
+    var arrayMax = new Array(nSym);
+    var arrayMin = new Array(nSym);
+    for (var i = 0; i < nSym; i++) {
+        var imax = 0;
+        var imin = 0;
+        for (var j = 0; j < nDay; j++) {
+            if (bars[i][j] > bars[i][imax]) imax = j;
+            if (bars[i][j] < bars[i][imin]) imin = j;
+        }
+        if (bars[i][0] > 0) {
+            var maxRate = bars[i][imax] / bars[i][0] - 1.0; 
+            var minRate = bars[i][imin] / bars[i][0] - 1.0; 
+            arrayMax[i] = maxRate;
+            arrayMin[i] = minRate;
+        } else {
+            arrayMax[i] = 0.0;
+            arrayMin[i] = 0.0;
+        }
+    }   
+    return freqLeftRight(arrayMax, arrayMin, n, unit);
+}
+
+function summaryFreqPeakRate(n, unit) {
+    return freqPeakRate(this._bars, n, unit);
+}
+
+function freqLeftRight(arrayMax, arrayMin, n, unit) {
+    if (!arrayMax) arrayMax = [];
+    if (!arrayMin) arrayMin = [];
+    var right = Math.max.apply(null, arrayMax);
+    var left = Math.min.apply(null, arrayMin);
+    if (!unit) {
+        if (!n) n = 10;
+        unit = (right - left) / (n + 2);
+        unit = Math.ceil(unit * 2000);
+        unit = unit + (10 - unit) % 10;
+        unit = unit / 2000.0;
+    }
+    var nRight = Math.floor(right / unit) + 1;
+    var nLeft = Math.floor(-left / unit) + 1;
+
+    var freqRight = new Array(nRight);
+    var freqLeft = new Array(nLeft);
+    for (var i = 0; i < nRight; i++) freqRight[i] = 0;
+    for (var i = 0; i < nLeft; i++) freqLeft[i] = 0;
+
+    for (var i = 0; i < arrayMax.length; i++) {
+        freqRight[Math.floor(arrayMax[i] / unit)]++;
+    }
+    for (var i = 0; i < arrayMin.length; i++) {
+        freqLeft[Math.floor(-arrayMin[i] / unit)]++;
+    }
+        //if (arrayMin[i] < 0) 
+        //    freqLeft[Math.floor(-arrayMin[i] / unit)]++;
+        //else
+        //    freqLeft[Math.floor(arrayMin[i] / unit)]++;
+
+    return {freqRight, freqLeft, unit};
+}
+
+//var cp = require('./res')['closePrices']
+//console.log(freqPeakRate(cp, 20));
+
+module.exports = {
+    freqPeakRate,
+    freqLeftRight,
+}
 AfterAnalysis.prototype.setBars = setBars;
 AfterAnalysis.prototype.setRate = setRate;
 AfterAnalysis.prototype.calDrawDown = calDrawDown;
@@ -526,8 +599,13 @@ AfterAnalysis.prototype.summary = summary;
 AfterAnalysis.prototype.getSummary = getSummary;
 AfterAnalysis.prototype.getN = getN;
 AfterAnalysis.prototype.getM = getM;
+AfterAnalysis.prototype.freqPeakRate = freqPeakRate;
+AfterAnalysis.prototype.summaryFreqPeakRate = summaryFreqPeakRate;
 
 module.exports = AfterAnalysis;
 
 //var a = new AfterAnalysis([[1,2],[2,3]])
+//var a = new AfterAnalysis(require('./res')['closePrices'])
+//console.log(a.summaryFreqPeakRate(15)); //15fen
+//console.log(a.summaryFreqPeakRate(15, 0.05)); //1fen 0.05
 //console.log(a.summary())
