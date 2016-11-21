@@ -157,7 +157,6 @@ function calMost(data) {
     return { nDay, peak, down, ipeak, idown, vpeak, vdown, amplitude, peakFirst, drawDown, rdrawDown, befPeakDrawDown, befDownDrawDown, rateIncrease };
 }
 
-
 function calFilterWithAimRate(data, rate) {
     if (!data) return;
     //@data 为一只股票的多日数据
@@ -183,7 +182,6 @@ function calFilterWithAimRate(data, rate) {
     }
     return { reachTime, isUp, isUpWhole };
 }
-
 
 function summaryUpProbility(bars) {
     if (!bars) return;
@@ -283,9 +281,8 @@ function summaryPeakDown(bars) {
         //if (r.befDownDrawDown > drawDown) befDownDrawDown = r.befDownDrawDown;
     }
 
-
     var bRateIncrease = basicStastic(sRateIncrease);
-    console.log(bRateIncrease);
+    //console.log(bRateIncrease);
     var maxRateIncrease = bRateIncrease.max;
     var minRateIncrease = bRateIncrease.min;
     var averageRateIncrease = bRateIncrease.average;
@@ -366,7 +363,6 @@ function freqence(data, nDay) {
     return freq;
 }
 
-
 function summaryDrawDown(bars, kind) {
     if (!bars) return;
     var nSym = bars.length;
@@ -441,8 +437,6 @@ function summaryRDrawDown(bars, kind) {
     return { nSym, nDay, drawDownData, basic, freqStart, freqEnd, freqLen, dayMostDrawDownStart, dayMostDrawDownEnd, dayMostDrawDownLast };
 }
 
-
-
 function summary() {
     /*
     this._summary1 = this.summaryPeakDown(this._bars);
@@ -464,6 +458,7 @@ function summary() {
     //var _summary10 = {'summaryBefDownDrawDown': this.summaryRDrawDown(this._bars, 2)};
     //require jquery
     var extend = $.extend || Object.assign;
+    //var extend = Object.assign;
     this._summary = extend({}, _summary1, _summary2, _summary3, _summary4, _summary5, /*_summary6, _summary7, */_summary8);
     return this._summary;
 }
@@ -487,6 +482,7 @@ function setBars(bars) {
     this._bars = bars;
     this._n = (bars && bars.length) || 0;
     this._m = (bars && bars[0] && bars[0].length) || 0;
+    this._summary = {};
 }
 
 function setRate(r1, r2) {
@@ -546,6 +542,8 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     if (!arrayMin) arrayMin = [];
     var right = Math.max.apply(null, arrayMax);
     var left = Math.min.apply(null, arrayMin);
+    if (arrayMin.length == 0) left = 0;
+    if (arrayMax.length == 0) right = 0;
     if (!unit) {
         if (!n) n = 10;
         unit = (right - left) / (n + 2);
@@ -567,21 +565,39 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     for (var i = 0; i < arrayMin.length; i++) {
         freqLeft[Math.floor(-arrayMin[i] / unit)]++;
     }
-        //if (arrayMin[i] < 0) 
-        //    freqLeft[Math.floor(-arrayMin[i] / unit)]++;
-        //else
-        //    freqLeft[Math.floor(arrayMin[i] / unit)]++;
 
     return {freqRight, freqLeft, unit};
+}
+
+function summaryFreqDrawDown(n, unit) {
+    try {
+      var sDD = this.getSummary().summaryDrawDown.drawDownData;
+      var dds = [];
+      sDD.forEach(function(x){dds.push(x.drawDown);});
+      var result = freqLeftRight(dds,[], n, unit);
+      return result;
+    } catch(e) {
+        console.log(e);
+        return {freqRight:[],freqLeft:[],unit:0.01};
+    }
+}
+
+function summaryFreqRDrawDown(n, unit) {
+    try {
+      var sDD = this.getSummary().summaryRDrawDown.drawDownData;
+      var dds = [];
+      sDD.forEach(function(x){dds.push(x.drawDown);});
+      var result = freqLeftRight(dds,[], n, unit);
+      return result;
+    } catch(e) {
+        console.log(e);
+        return {freqRight:[],freqLeft:[],unit:0.01};
+    }
 }
 
 //var cp = require('./res')['closePrices']
 //console.log(freqPeakRate(cp, 20));
 
-module.exports = {
-    freqPeakRate,
-    freqLeftRight,
-}
 AfterAnalysis.prototype.setBars = setBars;
 AfterAnalysis.prototype.setRate = setRate;
 AfterAnalysis.prototype.calDrawDown = calDrawDown;
@@ -601,11 +617,18 @@ AfterAnalysis.prototype.getN = getN;
 AfterAnalysis.prototype.getM = getM;
 AfterAnalysis.prototype.freqPeakRate = freqPeakRate;
 AfterAnalysis.prototype.summaryFreqPeakRate = summaryFreqPeakRate;
+AfterAnalysis.prototype.summaryFreqDrawDown = summaryFreqDrawDown;
+AfterAnalysis.prototype.summaryFreqRDrawDown = summaryFreqRDrawDown;
 
 module.exports = AfterAnalysis;
 
 //var a = new AfterAnalysis([[1,2],[2,3]])
-//var a = new AfterAnalysis(require('./res')['closePrices'])
+var a = new AfterAnalysis(require('./b')['closePrices'])
 //console.log(a.summaryFreqPeakRate(15)); //15fen
+
+a.summary();
+console.log(a.summaryFreqDrawDown());
+console.log(a.summaryFreqRDrawDown());
+
 //console.log(a.summaryFreqPeakRate(15, 0.05)); //1fen 0.05
 //console.log(a.summary())
