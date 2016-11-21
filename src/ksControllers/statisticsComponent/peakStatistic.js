@@ -1,6 +1,7 @@
 //极值统计
 
 import CountLinesChart from '../CountLinesChart';
+import CountBarsChart from '../CountBarsChart';
 
 let peakStatistic = {};
 //缓存dom
@@ -8,7 +9,8 @@ let _$container = null,
 		_$rates = null,
 		_$days = null;
 
-let _chart = null;
+let _barChart = null;
+let _peakChart = null;
 
 let _model = null;
 
@@ -22,22 +24,28 @@ peakStatistic.init = (wrapper, model) => {
 	$(wrapper).append(newDom);
 
 	//add other doms
-	let part1 = $(`<div class="ks-col-25"></div>`)
-							.append(`<p class="describe"><span class="text">最高涨幅</span></p>`)
-							.append(`<p class="rate percent-info red"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
-							.append(`<p class="describe"><span class="text">最高跌幅</span></p>`)
-							.append(`<p class="rate percent-info green"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
-							// .append(`<p class="btns"><button class="flat-btn up active">上涨</button><button class="flat-btn down">下跌</button></p>`);
+	let percentInfo1 = $(`<div class="ks-col-50"></div>`)
+												.append(`<p class="describe"><span class="text">最高涨幅</span></p>`)
+												.append(`<p class="rate percent-info red"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
+	let percentInfo2 = $(`<div class="ks-col-50"></div>`)
+												.append(`<p class="describe"><span class="text">最高跌幅</span></p>`)
+												.append(`<p class="rate percent-info green"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
+												
+	let part1 = $(`<div class="ks-col-50"></div>`)
+							.append(`<div class="chart-wrapper bar"></div>`)
+							.append($(`<div class="row"></div>`).append(percentInfo1).append(percentInfo2))// .append(`<p class="btns"><button class="flat-btn up active">上涨</button><button class="flat-btn down">下跌</button></p>`);
 
-	let part2 = $(`<div class="ks-col-25"></div>`)
-							.append(`<div class="days-info-wrapper red"><p class="days-info">第<strong>0</strong>根</p><p class="text">到达最高点位</p></div>`)
-							.append(`<div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong>根</p><p class="text">到达最低点位</p></div>`);
+	let daysNode = $(`<div class="row"></div>`)
+							.append(`<div class="ks-col-50"><div class="days-info-wrapper red"><p class="days-info">第<strong>0</strong>根</p><p class="text">到达最高点位</p></div></div>`)
+							.append(`<div class="ks-col-50"><div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong>根</p><p class="text">到达最低点位</p></div></div>`)
 
-	let part3 = $(`<div class="ks-col-50"></div>`)
-							.append(`<div class="chart-wrapper"></div>`);
+	let part2 = $(`<div class="ks-col-50"></div>`)
+							.append(`<div class="chart-wrapper line"></div>`)
+							.append(daysNode)
 
 
-	newDom.find('.row').append(part1).append(part2).append(part3);
+
+	newDom.find('.row').append(part1).append(part2);
 
 	//cache
 	_$container = newDom;
@@ -65,8 +73,9 @@ peakStatistic.init = (wrapper, model) => {
 	});
 	*/
 	//chart
-	_chart = new CountLinesChart(newDom.find('.chart-wrapper'));
-	// _chart.render();
+	_barChart = new CountBarsChart(newDom.find('.chart-wrapper')[0]);
+	_peakChart = new CountLinesChart(newDom.find('.chart-wrapper')[1]);
+	// _peakChart.render();
 };
 //更新描述UI
 /*
@@ -100,37 +109,75 @@ peakStatistic._udpateDataUI = (dataObj, isUp=true) => {
 	}
 }
 
-peakStatistic._redrawChart = (dataObj) => {
+peakStatistic._redrawBarChart = (model) => {
+	let {freqLeft, freqRight, unit} = model.getFreqPeakRate();            //for bar chart
+	try {
+		let leftLen = freqLeft.length,
+				rightLen = freqRight.length;
+		let leftRight = freqLeft.concat([]).reverse().concat(freqRight);
+		let data = [];
+		let xLabes = [],
+				series = [];
+		for(var i=leftLen-1; i>=0; i--) {   //绿色
+			xLabes.push((- unit * (i+1) * 100).toFixed(2) + '%'); 
+			data.push({
+				value: freqLeft[i], 
+				fillStyle:'#119122', 
+				strokeStyle: '#119122',
+				hover: {fillStyle: '#16b12b', strokeStyle: '#16b12b'}
+			});
+		}
+		for(var i=0; i<rightLen; i++) {
+			xLabes.push((unit * (i+1) * 100).toFixed(2) + '%');
+			data.push({
+				value: freqLeft[i], 
+				fillStyle:'#8d151b', 
+				strokeStyle: '#8d151b',
+				hover: {fillStyle: '#d2151c', strokeStyle: '#d2151c'}
+			});
+		}
+		series[0] = {
+			data: data,
+		};
+
+		_barChart.setData({xLabes:xLabes, series: series});
+	} catch (e) {
+		console.error(e);
+	}
+}
+
+peakStatistic._redrawLineChart = (model) => {
 	//注意第一天不需要,因为不在预测范围内
-	let {tPeak, tDown, dayMostPeak, dayMostDown} = dataObj;
+	let {tPeak, tDown, dayMostPeak, dayMostDown} = model.getSummary();
 	try {
 		let dataLen = tPeak.length,
 				tPeakS = tPeak.slice(-dataLen),
 				tDownS = tDown.slice(-dataLen);
-		let series = [];
-		series[0] = {
+		let peakSeries = [];
+	
+		peakSeries[0] = {
 			data: tPeakS,
 			strokeStyle: 'rgba(141,22,27,1)',
 			fillStyle: 'rgba(141,22,27,0.1)',
 			hover: {
-				lineWidth: 2,
+				lineWidth: 1,
 				strokeStyle: 'rgba(141,22,27,1)',
-				fillStyle: 'rgba(141,22,27,0.2)'
+				fillStyle: 'rgba(141,22,27,0.1)'
 			},
 			activeIndexes: [dayMostPeak]
 		};
-		series[1] = {
+		peakSeries[1] = {
 			data: tDownS,
 			strokeStyle: 'rgba(16,145,33,1)',
 			fillStyle: 'rgba(16,145,33,0.1)',
 			hover: {
-				lineWidth: 2,
+				lineWidth: 1,
 				strokeStyle: 'rgba(16,145,33,1)',
-				fillStyle: 'rgba(16,145,33,0.2)'
+				fillStyle: 'rgba(16,145,33,0.1)'
 			},
 			activeIndexes: [dayMostDown]
 		};
-		_chart.setData({dataLen,series});
+		_peakChart.setData({dataLen,series:peakSeries});
 	} catch(e) {
 		console.error(e);
 	}
@@ -142,7 +189,8 @@ peakStatistic.update = () => {
 	if(dataObj) {
 		peakStatistic._udpateDataUI(dataObj);
 		//render chart
-		peakStatistic._redrawChart(dataObj);
+		peakStatistic._redrawLineChart(model);
+		peakStatistic._redrawBarChart(model);
 	}
 };
 
