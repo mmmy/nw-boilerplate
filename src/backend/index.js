@@ -48,11 +48,11 @@ let searchPattern = (args, cb, errorCb) => {
 
 	const { symbol, kline, bars, dateRange, searchConfig, dataCategory, interval} = args;
 
-	let { additionDate, searchLenMax } = searchConfig;
+	let { additionDate, searchLenMax, isLatestDate } = searchConfig;
 
 	let dr = searchConfig.dateRange;
 
-	let searchArgs = { symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory, dr};
+	let searchArgs = { symbol, kline, dateRange, bars, additionDate, searchLenMax, isLatestDate, dataCategory, dr};
 
 	let searchCb = (resObj) => {
 		
