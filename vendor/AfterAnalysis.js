@@ -26,25 +26,24 @@ function calDrawDownExtend(data, n) {
     var drawDown = 0;
     var start = 0;
     var end = 0;
-    if (!data || data.length <= 1 || n <= 1) return {drawDown, start, end};
+    if (!data || data.length <= 1 || n <= 2) return {drawDown, start, end};
 
-    drawDown = (data[0]-data[1])/data[0];
-    start = 0;
+    start = 1;
     end = 1;
 
     var nDay = n;
     if (!nDay || nDay > data.length) nDay = data.length;
     var cdd = new Array(nDay);
     var pos = new Array(nDay);
-    for (var i = 0; i < nDay; i++) cdd[i] = data[i];
-    for (var i = 0; i < nDay; i++) pos[i] = i;
-    for (var i = nDay - 2; i >= 0; i--) 
+    for (var i = 1; i < nDay; i++) cdd[i] = data[i];
+    for (var i = 1; i < nDay; i++) pos[i] = i;
+    for (var i = nDay - 2; i >= 1; i--) 
         if (cdd[i+1] < cdd[i]) {
             cdd[i] = cdd[i+1];
             pos[i] = pos[i+1];
         }
 
-    for (var i = 0; i < nDay; i++) 
+    for (var i = 1; i < nDay; i++) 
       if (data[i] > 0) {
         var dd = (data[i] - cdd[i]) / data[i];
         if (dd > drawDown) {
@@ -78,23 +77,23 @@ function calRDrawDownExtend(data, n) {
     var end = 0;
     if (!data || data.length <= 1 || n <= 1) return {drawDown, start, end};
 
-    var drawDown = -(data[0]-data[1])/data[0];
-    var start = 0;
+    var drawDown = 0; 
+    var start = 1;
     var end = 1;
 
     var nDay = n;
     if (!nDay || nDay > data.length) nDay = data.length;
     var cdd = new Array(nDay);
     var pos = new Array(nDay);
-    for (var i = 0; i < nDay; i++) cdd[i] = data[i];
-    for (var i = 0; i < nDay; i++) pos[i] = i;
-    for (var i = nDay - 2; i >= 0; i--) 
+    for (var i = 1; i < nDay; i++) cdd[i] = data[i];
+    for (var i = 1; i < nDay; i++) pos[i] = i;
+    for (var i = nDay - 2; i >= 1; i--) 
         if (cdd[i+1] > cdd[i]) {
             cdd[i] = cdd[i+1];
             pos[i] = pos[i+1];
         }
 
-    for (var i = 0; i < nDay; i++) 
+    for (var i = 1; i < nDay; i++) 
       if (data[i] > 0) {
         var dd = - (data[i] - cdd[i]) / data[i];
         if (dd > drawDown) {
@@ -186,7 +185,7 @@ function calFilterWithAimRate(data, rate) {
 function summaryUpProbility(bars) {
     if (!bars) return;
     var nSym = bars.length;
-    var nDay = bars[0].length;
+    var nDay = (bars && bars[0] && bars[0].length) || 0;
     var tUp = new Array(nDay);
     var tNotUp = new Array(nDay);
 
@@ -219,7 +218,7 @@ function summaryUpProbilityFilterRate(bars, rate) {
     //达到目标开始到结束上涨的股票个数nUp 涨率r1
     //全局涨的股票个数nUpWhole, 全局涨率 r2
     var nSym = bars.length;
-    var nDay = bars[0].length;
+    var nDay = (bars && bars[0] && bars[0].length) || 0;
     var nReach = 0;
     var nUp = 0;
     var nUpWhole = 0;
@@ -254,7 +253,7 @@ function summaryPeakDown(bars) {
     
     //init    
     var nSym = bars.length;
-    var nDay = bars[0].length;
+    var nDay = (bars[0] && bars[0].length) || 0;
     var nPeakFirst = 0;
     var tPeak = new Array(nDay);
     var tDown = new Array(nDay);
@@ -353,6 +352,7 @@ function basicStastic(data) {
     return { sum, average, max, min, ss, variance, imax, imin };
 }
 
+//frequence
 function freqence(data, nDay) {
     //console.log(data.length, nDay);
     var freq = new Array(nDay);
@@ -364,7 +364,7 @@ function freqence(data, nDay) {
 }
 
 function summaryDrawDown(bars, kind) {
-    if (!bars) return;
+    if (!bars || !bars.length) return;
     var nSym = bars.length;
     var nDay = bars[0].length;
     var drawDownData = [];
@@ -401,7 +401,7 @@ function summaryDrawDown(bars, kind) {
 }
 
 function summaryRDrawDown(bars, kind) {
-    if (!bars) return;
+    if (!bars || !bars.length) return;
     var nSym = bars.length;
     var nDay = bars[0].length;
     var drawDownData = [];
@@ -642,10 +642,11 @@ AfterAnalysis.prototype.getFreqRDrawDown = getFreqRDrawDown;
 module.exports = AfterAnalysis;
 
 //var a = new AfterAnalysis([[1,2],[2,3]])
-//var a = new AfterAnalysis(require('./b')['closePrices'])
+var a = new AfterAnalysis(require('./b')['closePrices'])
+var a = new AfterAnalysis([])
 //console.log(a.summaryFreqPeakRate(15)); //15fen
+console.log(a.summary());
 /*
-a.summary();
 console.log(a.summaryFreqDrawDown());
 console.log(a.summaryFreqRDrawDown());
 console.log(a.getFreqDrawDown());
