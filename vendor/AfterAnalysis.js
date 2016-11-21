@@ -106,7 +106,7 @@ function calRDrawDownExtend(data, n) {
 }
 
 function calMost(data) {
-    if (!data) return;
+    if (!data || data.length <= 0) return;
     //计算全局极大值，极小值，第一次极大值时间，第一次极小值时间
     //计算最高速度，最低速度，振幅，是否先到达最大值再到达最小值
     //计算全局drawDown, 极大值前的drawDown，极小值前的drawDown
@@ -149,8 +149,8 @@ function calMost(data) {
     var befDownRDrawDown = calRDrawDownExtend(data, idown + 1);
 
     //计算振幅
-    var amplitude = (peak - down) / data[0];
-    var rateIncrease = (data[nDay-1] - data[0]) / data[0];
+    var amplitude = data[0] ? (peak - down) / data[0] : 0;
+    var rateIncrease = data[0] ? (data[nDay-1] - data[0]) / data[0] : 0;
 
     //返回 最高，最低，最高时的时间，最低时的时间，最高速度，最低速度，振幅，是否先到达最大值再到达最小值，全局drawDownExtend, 极大值前的drawDownExtend，极小值前的drawDownExtend
     return { nDay, peak, down, ipeak, idown, vpeak, vdown, amplitude, peakFirst, drawDown, rdrawDown, befPeakDrawDown, befDownDrawDown, rateIncrease };
@@ -203,8 +203,8 @@ function summaryUpProbility(bars) {
     //for (var i = 0; i < nDay; i++) tNotUp[i] = tNotUp[i];
     //for (var i = 0; i < nDay; i++) tNotUp[i] = 1 - tUp[i];
 
-    var upRate = tUp[nDay-1] / nSym;
-    var notUpRate = tNotUp[nDay-1] / nSym;
+    var upRate = nSym ? tUp[nDay-1] / nSym : 0;
+    var notUpRate = nSym ? tNotUp[nDay-1] / nSym : 0;
 
     var dayMostUp = basicStastic(tUp).imax;
     var dayMostNotUp = basicStastic(tNotUp).imax;
@@ -234,12 +234,12 @@ function summaryUpProbilityFilterRate(bars, rate) {
     var r1 = nReach == 0 ? 0 : nUp / nReach;
     var r2 = nReach == 0 ? 0 : nUpWhole / nReach;
     if (rate >= 0) 
-        return { rReachUp: nReach / nSym, 
+        return { rReachUp: nSym ? nReach / nSym : 0, 
                  nReachUp: nReach, 
                  nUp: nUp, nUpWhole: nUpWhole, 
                  rUp: r1, rUpWhole: r2 };
     else 
-        return { rReachDown: nReach / nSym, 
+        return { rReachDown: nSym ? nReach / nSym : 0, 
                  nReachDown: nReach, 
                  nDown: nUp, nDownWhole: nUpWhole, 
                  rDown: r1, rDownWhole: r2 };
@@ -301,7 +301,7 @@ function summaryPeakDown(bars) {
     var mediumIncrease = mediumStastic(RI); 
     var mediumDecrease = mediumStastic(RD); 
               
-    var rPeakFirst = nPeakFirst / nSym;
+    var rPeakFirst = nSym == 0 ? 0 : nPeakFirst / nSym;
     return { tPeak, tDown, nPeakFirst, rPeakFirst,
         maxRateIncrease, minRateIncrease, 
         mediumRateIncrease,
@@ -316,7 +316,7 @@ function averageStastic(data) {
     var s = 0;
     for (var i = 0; i < data.length; i++) s += data[i];
     if (data.length <= 0) return 0;
-    return s / data.length;
+    return data.length == 0 ? 0 : s / data.length;
 }
 
 function mediumStastic(data) {
@@ -331,7 +331,7 @@ function mediumStastic(data) {
 
 function basicStastic(data) {
     if (!data) return;
-    var n = data.length;
+    var n = data.length || 0;
     
     var imax = 0;
     for (var i = 1; i < n; i++) if (data[i] > data[imax])  imax = i;
@@ -343,11 +343,11 @@ function basicStastic(data) {
 
     var sum = 0;
     for (var i = 0; i < n; i++) sum = sum + data[i];
-    var average = sum / n;
+    var average = n ? sum / n : 0;
 
     var ss = 0;
     for (var i = 0; i < n; i++) ss = ss + Math.pow(data[i] - average, 2); 
-    ss = ss / n;
+    ss = n ? ss / n : 0;
     var variance = Math.pow(ss, 0.5) || 0;
     return { sum, average, max, min, ss, variance, imax, imin };
 }
@@ -643,7 +643,7 @@ module.exports = AfterAnalysis;
 
 //var a = new AfterAnalysis([[1,2],[2,3]])
 var a = new AfterAnalysis(require('./b')['closePrices'])
-var a = new AfterAnalysis([])
+//var a = new AfterAnalysis([]);
 //console.log(a.summaryFreqPeakRate(15)); //15fen
 console.log(a.summary());
 /*
