@@ -642,10 +642,10 @@ AfterAnalysis.prototype.getFreqRDrawDown = getFreqRDrawDown;
 module.exports = AfterAnalysis;
 
 //var a = new AfterAnalysis([[1,2],[2,3]])
-var a = new AfterAnalysis(require('./b')['closePrices'])
+//var a = new AfterAnalysis(require('./b')['closePrices'])
 //var a = new AfterAnalysis([]);
 //console.log(a.summaryFreqPeakRate(15)); //15fen
-console.log(a.summary());
+//console.log(a.summary());
 /*
 console.log(a.summaryFreqDrawDown());
 console.log(a.summaryFreqRDrawDown());
