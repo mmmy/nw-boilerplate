@@ -26,6 +26,7 @@ let getGroupCode = (callback) => {
     result = dealGroupCode(result);
     if (JSON.parse(result)) {
         //result != "[]"
+        if (result.length >= 5)
         Cache.setToFile(result, 'groupCode');
         callback && callback(result);
     } else if (Cache.isExist('groupCode')) {
@@ -92,6 +93,7 @@ let getAllSymbolsList = (callback) => {
         arr = arr.concat(JSON.parse(r));
       });
       arr = JSON.stringify(arr);
+      if (arr.length >= 100)
       Cache.setToFile(arr, 'allSymbolsList');
       callback && callback(arr);
     });
@@ -118,6 +120,7 @@ let getAllSymbolsList = (callback) => {
         arr = arr.concat(JSON.parse(r));
       });
       arr = JSON.stringify(arr);
+      if (arr.length >= 100)
       Cache.setToFile(arr, 'allSymbolsList');
     });
 
@@ -144,6 +147,7 @@ let getOneSymbolList = (data, callback) => {
 
   const requestCb = (result) => {
     result = dealSymbolList(result);
+    if (result.length >=100)
     Cache.setToFile(result, fileName);
     callback && callback(result);
   };
