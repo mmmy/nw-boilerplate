@@ -160,7 +160,7 @@ function summaryUpProbility(bars, nDay) {
     for (var i = 0; i < nDay; i++) tNotUp[i] = 0;
 
     for (var i = 0; i < nSym; i++) 
-        for (var j = 1; j < (bars[i] && bars[i].length || 0); j++) {
+        for (var j = 1; j < Math.min(nDay, (bars[i] && bars[i].length || 0)); j++) {
             if (bars[i][j] > bars[i][0]) tUp[j]++;
             if (bars[i][j] < bars[i][0]) tNotUp[j]++;
         }
@@ -676,7 +676,6 @@ console.log(a.summaryFreqDrawDown());
 console.log(a.summaryFreqRDrawDown());
 console.log(a.getFreqDrawDown());
 console.log(a.getFreqRDrawDown());
-/*
 */
 
 //console.log(a.summaryFreqPeakRate(15, 0.05)); //1fen 0.05
