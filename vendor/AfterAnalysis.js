@@ -245,8 +245,10 @@ function summaryPeakDown(bars, nDay) {
     var maxRateIncrease = bRateIncrease.max;
     var minRateIncrease = bRateIncrease.min;
     var averageRateIncrease = bRateIncrease.average;
-    var dayMostPeak = basicStastic(tPeak).imax;
-    var dayMostDown = basicStastic(tDown).imax;
+    var dayMostPeak = basicStastic(tPeak.slice(1)).imax+1;
+    if (tPeak.length <= 1) dayMostPeak = 0;
+    var dayMostDown = basicStastic(tDown.slice(1)).imax+1;
+    if (tDown.length <= 1) dayMostDown = 0;
     var basicStasticAmplitude = basicStastic(sAmplitude);
     var mediumRateIncrease = mediumStastic(sRateIncrease);
     
@@ -663,10 +665,11 @@ module.exports = AfterAnalysis;
 
 //var a = new AfterAnalysis([[1,2],[2,3]])
 //var a = new AfterAnalysis([]);
-var a = new AfterAnalysis(require('./b')['closePrices'])
+//var a = new AfterAnalysis(require('./b')['closePrices'])
 //var a = new AfterAnalysis([]);
 //console.log(a.summaryFreqPeakRate(15)); //15fen
 //console.log(a._m);
+/*
 console.log(a.summary());
 console.log(a.summaryFreqPeakRate(15)); //15fen
 console.log(a.summaryFreqDrawDown());
