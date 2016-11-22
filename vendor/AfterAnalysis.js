@@ -468,10 +468,9 @@ function AfterAnalysis(bars, aimUpRate, aimDownRate) {
 function freqPeakRate(bars, n, unit) {
     if (!n) n = 10;
     var nSym = bars.length;
-    var nDay = bars[0].length;
 
-    var arrayMax = new Array(nSym);
-    var arrayMin = new Array(nSym);
+    var arrayMax = [];
+    var arrayMin = [];
     for (var i = 0; i < nSym; i++) {
         var imax = 0;
         var imin = 0;
@@ -521,14 +520,15 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
         unit = unit + (10 - unit) % 10;
         unit = unit / 2000.0;
     }
+    if (unit < 1e-4) unit = 1e-4;
+
     var nRight, nLeft;
-    if (unit < 1e-4) {
-        unit = 1e-4;
-        nRight = Math.floor(right / unit) + 1;
-        nLeft = Math.floor(-left / unit) + 1;
-    }
-    if (nRight > 100) nRight = 100;
-    if (nLeft > 100) nLeft = 100;
+    nRight = Math.floor(right / unit) + 1;
+    nLeft = Math.floor(-left / unit) + 1;
+    if (nRight > 10) nRight = 10;
+    if (nLeft > 10) nLeft = 10;
+    if (nRight < 1) nRight = 1;
+    if (nLeft < 1) nLeft = 1;
 
     var freqRight = [];
     var freqLeft = [];
@@ -537,15 +537,13 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
 
     for (var i = 0; i < arrayMax.length; i++) {
         var p = Math.floor(arrayMax[i] / unit);
-        if (p > nRight) p = nRight;
-        if (p == nRight && nRight >= 1) p = nRight - 1;
+        if (p > nRight - 1) p = nRight - 1;
         if (p < 0) p = 0;
         freqRight[p]++;
     }
     for (var i = 0; i < arrayMin.length; i++) {
         var p = Math.floor(-arrayMin[i] / unit);
-        if (p > nLeft) p = nLeft;
-        if (p == nLeft && nLeft >= 1) p = nLeft - 1;
+        if (p > nLeft - 1) p = nLeft - 1;
         if (p < 0) p = 0;
         freqLeft[p]++;
     }
@@ -612,8 +610,9 @@ module.exports = AfterAnalysis;
 //var a = new AfterAnalysis([]);
 //console.log(a.summaryFreqPeakRate(15)); //15fen
 //console.log(a._m);
-//console.log(a.summary());
 /*
+console.log(a.summary());
+console.log(a.summaryFreqPeakRate(15)); //15fen
 console.log(a.summaryFreqDrawDown());
 console.log(a.summaryFreqRDrawDown());
 console.log(a.getFreqDrawDown());
