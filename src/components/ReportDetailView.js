@@ -13,9 +13,11 @@ let _handleDataPaneClick = (e) => {
 	_isClick = true;
 }
 let _handleDataPaneToggle = (e) => {
-	let $target = $(e.currentTarget);
+	let $current = $(e.currentTarget);
+	let $target = $(e.currentTarget).siblings();
 	if(!_isClick && ($target.height() > 100)) {
 		$target.toggleClass('half');
+		$current.toggleClass('up');
 	}
 	_isClick = false;
 }
@@ -61,8 +63,9 @@ class ReportDetailView extends React.Component {
 			$('.__fadeIn').animateCss('fadeIn');
 		}
 		//update statictics data
-		var staticticsComponent = require('../ksControllers/statisticsComponent');
-		var model = staticticsComponent.getModel();
+		var statisticsComponent = require('../ksControllers/statisticsComponent');
+		var model = statisticsComponent.getModel();
+		var intervalObj = statisticsComponent.getInterval();
 		try {
 			var dataObj = model.getSummary();
 			var n = model.getN();
@@ -70,10 +73,12 @@ class ReportDetailView extends React.Component {
 			var mostUpRate = tUp[dayMostUp] / n;
 			var mostNotUpRate = tNotUp[dayMostNotUp] / n;
 
-			$(this.refs.day1).text(dayMostUp);
-			$(this.refs.day2).text(dayMostNotUp);
+			$(this.refs.day1).text(dayMostUp * intervalObj.value);
+			$(this.refs.day2).text(dayMostNotUp * intervalObj.value);
 			$(this.refs.day1.parentNode.parentNode).siblings('.percent-info').updatePercentInfo(mostUpRate);
 			$(this.refs.day2.parentNode.parentNode).siblings('.percent-info').updatePercentInfo(mostNotUpRate);
+			
+			$(this.refs.container).find('.interval-unit').text(intervalObj.describe);
 		} catch(e) {
 			console.error(e);
 		}
@@ -146,7 +151,7 @@ class ReportDetailView extends React.Component {
 			'ks-show': fullView
 		});
 
-		return (<div className={className}>
+		return (<div ref='container' className={className}>
 			<div className='header-container' tabIndex='0' ref='header_container'>
 				<span className={titleClassName}>历史指标统计</span>
 			</div>
@@ -166,8 +171,8 @@ class ReportDetailView extends React.Component {
 		let { median, mean, upPercent, up, down } = data;
 		let that = this;
 		let dataArr1 = [
-			{names:['上涨比例', <span>第<span ref="day1" className="day">-</span>天<br/>上涨比例达到最大</span>], values:[upPercent, 0], color:'red'},
-			{names:['下跌比例', <span>第<span ref="day2" className="day">-</span>天<br/>下跌比例达到最大</span>], values:[(1-upPercent), 0], color:'green'},
+			{names:['上涨比例', <span>第<span ref="day1" className="day">-</span><span className="interval-unit">天</span><br/>上涨比例达到最大</span>], values:[upPercent, 0], color:'red'},
+			{names:['下跌比例', <span>第<span ref="day2" className="day">-</span><span className="interval-unit">天</span><br/>下跌比例达到最大</span>], values:[(1-upPercent), 0], color:'green'},
 			{names:['涨跌中位数'], values:[median], color:(median > 0 ? 'red' : 'green')},
 			{names:['涨跌平均数'], values:[mean], color:(mean > 0 ? 'red' : 'green')},
 		];
@@ -205,7 +210,7 @@ class ReportDetailView extends React.Component {
 		// }
 		color = color || '';
 		return <div className="ks-col-25">
-						<div className="ks-data-pane-wrapper transition-position" onClick={_handleDataPaneClick} onMouseEnter={_handleDataPaneToggle} onMouseLeave={_handleDataPaneToggle}>
+						<div className="ks-data-pane-wrapper transition-position">
 							{names.map((name,i)=>{
 								let value = values[i] * 100;
 								let valueString = value.toFixed(decimal) + '';
@@ -216,6 +221,7 @@ class ReportDetailView extends React.Component {
 								</div>);
 							})}
 						</div>
+						{names.length > 1 ? <span className="toggle-btn transition-all" onClick={_handleDataPaneClick} onMouseEnter={_handleDataPaneToggle} onMouseLeave={_handleDataPaneToggle}><img src="./image/arrow.png"/></span> : ''}
 					</div>;
 	}
 	//弃用

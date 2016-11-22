@@ -108,7 +108,7 @@ class PatternCollection extends React.Component {
 		 * filter手动刷新
 		 */
 		//return;
-		let {crossFilter, closePrice} = newProps.patterns;
+		let {crossFilter, closePrice, searchMetaData, searchConfig} = newProps.patterns;
 		if(this.oldCrossFilter !== crossFilter) {
 			$(".start-btn-container").addClass('hide'); //隐藏预测工具栏
     	$(".toolbar-item.item1").removeClass('hide');     //显示pattern过滤工具栏
@@ -149,7 +149,9 @@ class PatternCollection extends React.Component {
 				
 				//更新统计信息, 极值统计, 回撤统计, 振幅统计
 				try {
-					require('../ksControllers/statisticsComponent').update(closePriceFiltered);
+					let interval = searchMetaData && searchMetaData.interval;
+					let predictionBars = searchConfig && searchConfig.additionDate.value;
+					require('../ksControllers/statisticsComponent').update(closePriceFiltered, {interval: interval, predictionBars:predictionBars});
 				} catch (e) {
 					console.error(e);
 				}

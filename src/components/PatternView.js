@@ -133,6 +133,9 @@ class PatternView extends React.Component {
 			// this.setState({showSymbol});
 		let {id, industry} = this.props.pattern;
 		let yieldRate = this.props.pattern.yield;
+
+		setPredictionChartHighlight(id);
+
 		//#3
 		let matchYieldBar = getCountBar(yieldRate, false);
 		this._countBarCache = matchYieldBar;

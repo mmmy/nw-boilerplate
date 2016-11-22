@@ -14,8 +14,21 @@ function CountBarsChart(container, config) {
 		console.error('not a container dom!');
 		return;
 	}
+	config = config || {};
+	var yMinSpace = config.yMinSpace || 30;
+	var hideVerticalGrid = config.hideVerticalGrid;
+
+	this._hideXAxis = config.hideXAxis || false;
+
+	this._isHorizon = config.isHorizon || false;
+	this._showValue = config.showValue || false;
 	this._yAxisW = 30;
-	this._xAxisH = 30;
+	this._xAxisH = this._hideXAxis ? 20 : 30;
+
+	this._events = {
+		'hoverBar': null,
+		'leaveBar': null
+	};
 
 	let $wrapper = $(`<div class="countlines-chart-wrapper"></div>`)
 									.append(`<div class="main-wrapper"><canvas class='main-canvas'/></div>`)
@@ -41,7 +54,7 @@ function CountBarsChart(container, config) {
 		padding: {
 			left: 0,
 			top: 20,
-			right: 20,
+			right: 30,
 			bottom: 0,
 		},
 		series: [{
@@ -53,18 +66,22 @@ function CountBarsChart(container, config) {
 			strokeStyle: 'rgba(10,200,70,0.7)',
 			fillStyle: 'rgba(10,200,70,0.2)'
 		}],
+		isHorizon: this._isHorizon,
+		showValue: this._showValue,
 		hoverIndex: -1
 	};
 	this._xAxisOptions = {
-		padding: {left:this._yAxisW,top:0,right:20,bottom:0},
+		padding: {left:this._yAxisW,top:0,right:30,bottom:0},
 		activeIndexes: [],
-		minSpace: 50,
-		centerLabel: true
+		minSpace: 30,
+		centerLabel: false
 	};
 	this._yAxisOptions = {
+		minSpace: yMinSpace,
 		isVertical: true, 
 		padding:{left:0,top:20,right:20,bottom:this._xAxisH},
-		activeIndexes: []
+		activeIndexes: [],
+		hideVerticalGrid: hideVerticalGrid
 	};
 
 	//drawCountLines 返回的对象, 包含获取绘图所需要的信息, 参考countLinesPainter.js的返回值
@@ -86,6 +103,9 @@ CountBarsChart.prototype._updateCanvasSize = function() {
 }
 
 CountBarsChart.prototype._init = function() {
+	if(this._isHorizon) {
+		$(this._canvas_x).hide();
+	}
 	this._resizeHandle = this._resize.bind(this);
 	window.addEventListener('resize',this._resizeHandle);
 
@@ -98,11 +118,13 @@ CountBarsChart.prototype._mainMouseMove = function(e) {
 			y= e.offsetY;
 	if(this._drawLinesInfo) {
 		let { indexAtPoint } = this._drawLinesInfo;
-		let hoverIndex = indexAtPoint(x, y);
+		let hoverIndex = indexAtPoint(x,y);
 		if(this._linesOption.hoverIndex !== hoverIndex) {
 			//高亮 鼠标所在位置的曲线
 			this._linesOption.hoverIndex = hoverIndex;
 			this.render();
+			//trigger event
+			this.trigger(hoverIndex > -1 ? 'hoverBar' : 'leaveBar', {index: hoverIndex});
 		}
 	}
 }
@@ -114,35 +136,47 @@ CountBarsChart.prototype._mainMouseLeave = function(e) {
 
 CountBarsChart.prototype._drawChart = function() {
 	//计算Y轴坐标值, 先获得每个serie 的最大值, 再求最大值
-	this.countMax = 0;
+	let countMax = 0;
 	let that = this;
-	this._linesOption.series.forEach(function(bar){
-		bar.data.forEach(function(e){
-			that.countMax = that.countMax > e.value ? that.countMax : e.value;
-		});
-	});
+	for(var i=0; i < this._linesOption.series.length; i++) {
+		let data = this._linesOption.series[i].data;
+		for(var j=0,len=data.length; j<len; j++) {
+			countMax = Math.max(countMax, data[i].value);
+		}
+	}
 	let yLables = [];
-	if(that.countMax > 0) {
-		for(var i=0; i<=that.countMax; i++) {
+	if(countMax > 0) {
+		for(var i=0; i<=countMax; i++) {
 			yLables.push(i);
 		}
 	}
 
 	this._drawLinesInfo = drawCountBars(this._canvas_main, this._linesOption);
-	drawAxis(this._canvas_x, this._linesOption.x, this._xAxisOptions);
-	drawAxis(this._canvas_y, yLables, this._yAxisOptions);
+	drawAxis(this._canvas_x, (this._isHorizon ? yLables : this._linesOption.x), this._xAxisOptions);
+	drawAxis(this._canvas_y, (this._isHorizon ? this._linesOption.x : yLables), this._yAxisOptions);
 }
 
 CountBarsChart.prototype.render = function() {
 	this._drawChart();
 }
 
-CountBarsChart.prototype.setData = function({xLabes, series}) {
+CountBarsChart.prototype.setData = function({xLables, series}) {
 	series = series || [];
-	xLabes = xLabes || [];
-	this._linesOption.x = xLabes;
+	xLables = xLables || [];
+	this._linesOption.x = xLables;
 	this._linesOption.series = series;
 	this.render();
+}
+
+CountBarsChart.prototype.on = function(name, handle) {
+	this._events[name] = handle;
+}
+
+CountBarsChart.prototype.trigger = function(name, param) {
+	var handle = this._events[name];
+	if(handle) {
+		handle(param);
+	}
 }
 
 CountBarsChart.prototype.dispose = function() {

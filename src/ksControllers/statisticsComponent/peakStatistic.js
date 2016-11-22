@@ -12,10 +12,13 @@ let _$container = null,
 let _barChart = null;
 let _peakChart = null;
 
+let _peakChartTitleUnit = null;
+
 let _model = null;
 
 //states
 let _isUp = true; //上涨
+let _intervalObj = {value:1, unit:'D', describe:'天'};
 
 peakStatistic.init = (wrapper, model) => {
 	_model = model;
@@ -24,22 +27,24 @@ peakStatistic.init = (wrapper, model) => {
 	$(wrapper).append(newDom);
 
 	//add other doms
-	let percentInfo1 = $(`<div class="ks-col-50"></div>`)
-												.append(`<p class="describe"><span class="text">最高涨幅</span></p>`)
+	let percentInfo1 = $(`<div class="percent-item"></div>`)
+												.append(`<p class="describe"><span class="text">最高涨幅<img src="./image/up.png" heigh="12"/></span></p>`)
 												.append(`<p class="rate percent-info red"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
-	let percentInfo2 = $(`<div class="ks-col-50"></div>`)
-												.append(`<p class="describe"><span class="text">最高跌幅</span></p>`)
+	let percentInfo2 = $(`<div class="percent-item"></div>`)
+												.append(`<p class="describe"><span class="text">最大跌幅<img src="./image/down.png" heigh="12"/></span></p>`)
 												.append(`<p class="rate percent-info green"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
 												
 	let part1 = $(`<div class="ks-col-50"></div>`)
+							.append(`<div class="chart-title bar">1.按极值大小分布图<span class="axis pull-right">横坐标:<span class="black">百分比</span>纵坐标:<span class="black">个数</span></span></div>`)
 							.append(`<div class="chart-wrapper bar"></div>`)
-							.append($(`<div class="row"></div>`).append(percentInfo1).append(percentInfo2))// .append(`<p class="btns"><button class="flat-btn up active">上涨</button><button class="flat-btn down">下跌</button></p>`);
+							.append($(`<div class="row percent-info-container"></div>`).append(percentInfo1).append(percentInfo2))// .append(`<p class="btns"><button class="flat-btn up active">上涨</button><button class="flat-btn down">下跌</button></p>`);
 
 	let daysNode = $(`<div class="row"></div>`)
-							.append(`<div class="ks-col-50"><div class="days-info-wrapper red"><p class="days-info">第<strong>0</strong>根</p><p class="text">到达最高点位</p></div></div>`)
-							.append(`<div class="ks-col-50"><div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong>根</p><p class="text">到达最低点位</p></div></div>`)
+							.append(`<div class="ks-col-50"><div class="days-info-wrapper red"><p class="days-info">第<strong>0</strong><span class="interval-unit">天</span></p><p class="text">到达最高点位</p></div></div>`)
+							.append(`<div class="ks-col-50"><div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong><span class="interval-unit">天</span></p><p class="text">到达最低点位</p></div></div>`)
 
 	let part2 = $(`<div class="ks-col-50"></div>`)
+							.append(`<div class="chart-title line">2.按时间分布统计图<span class="axis pull-right">横坐标:<span class="black interval-unit">天</span>纵坐标:<span class="black">个数</span></span></div>`)
 							.append(`<div class="chart-wrapper line"></div>`)
 							.append(daysNode)
 
@@ -51,6 +56,7 @@ peakStatistic.init = (wrapper, model) => {
 	_$container = newDom;
 	_$rates = newDom.find('.percent-info');
 	_$days = newDom.find('.days-info-wrapper strong');
+	_peakChartTitleUnit = newDom.find('.interval-unit');
 	//initEvent
 	/*
 	part1.find('.flat-btn.up').click(function(event) {
@@ -73,7 +79,7 @@ peakStatistic.init = (wrapper, model) => {
 	});
 	*/
 	//chart
-	_barChart = new CountBarsChart(newDom.find('.chart-wrapper')[0]);
+	_barChart = new CountBarsChart(newDom.find('.chart-wrapper')[0], {showValue:true, isHorizon: true, yMinSpace:5, hideXAxis: true, hideVerticalGrid: true});
 	_peakChart = new CountLinesChart(newDom.find('.chart-wrapper')[1]);
 	// _peakChart.render();
 };
@@ -100,13 +106,18 @@ peakStatistic._udpateDataUI = (dataObj, isUp=true) => {
 		// _$maxRate.toggleClass('red', isUp);
 	};
 	try {
+		let unit = _intervalObj.value;
 		updateRate(maxRateIncrease, 0);
 		updateRate(minRateIncrease, 1);
-		$(_$days[0]).text(dayMostPeak);
-		$(_$days[1]).text(dayMostDown);
+		$(_$days[0]).text(dayMostPeak * unit);
+		$(_$days[1]).text(dayMostDown * unit);
 	} catch(e) {
 		console.error(e);
 	}
+}
+
+peakStatistic._updateStuffs = () => {
+	_peakChartTitleUnit.text(_intervalObj.describe);
 }
 
 peakStatistic._redrawBarChart = (model) => {
@@ -116,33 +127,35 @@ peakStatistic._redrawBarChart = (model) => {
 				rightLen = freqRight.length;
 		let leftRight = freqLeft.concat([]).reverse().concat(freqRight);
 		let data = [];
-		let xLabes = [],
+		let xLables = [],
 				series = [];
 		for(var i=leftLen-1; i>=0; i--) {   //绿色
-			xLabes.push((- unit * (i+1) * 100).toFixed(2) + '%'); 
+			xLables.push((- unit * (i+1) * 100).toFixed(1)); 
 			data.push({
 				value: freqLeft[i], 
-				fillStyle:'#119122', 
-				strokeStyle: '#119122',
-				hover: {fillStyle: '#16b12b', strokeStyle: '#16b12b'}
+				fillStyle:'rgba(16,145,33,0.2)', 
+				strokeStyle: 'rgba(16,145,33,0.2)',
+				textColor: 'rgba(16,145,33,1)',
+				hover: {fillStyle: 'rgba(16,145,33,1)', strokeStyle: 'rgba(16,145,33,1)'}
 			});
 		}
+		xLables.push('0');
 		for(var i=0; i<rightLen; i++) {
-			xLabes.push((unit * (i+1) * 100).toFixed(2) + '%');
+			xLables.push((unit * (i+1) * 100).toFixed(1));
 			data.push({
-				value: freqLeft[i], 
-				fillStyle:'#8d151b', 
-				strokeStyle: '#8d151b',
-				hover: {fillStyle: '#d2151c', strokeStyle: '#d2151c'}
+				value: freqRight[i], 
+				fillStyle:'rgba(141,22,27,0.2)', 
+				strokeStyle: 'rgba(141,22,27,0.2)',
+				textColor: 'rgba(141,22,27,1)',
+				hover: {fillStyle: 'rgba(141,22,27,1)', strokeStyle: 'rgba(141,22,27,1)'}
 			});
 		}
 		series[0] = {
 			data: data,
 		};
-
-		_barChart.setData({xLabes:xLabes, series: series});
+		_barChart.setData({xLables:xLables, series: series});
 	} catch (e) {
-		console.error(e);
+		console.error('peakStatistic._redrawBarChart error',e);
 	}
 }
 
@@ -150,7 +163,7 @@ peakStatistic._redrawLineChart = (model) => {
 	//注意第一天不需要,因为不在预测范围内
 	let {tPeak, tDown, dayMostPeak, dayMostDown} = model.getSummary();
 	try {
-		let dataLen = tPeak.length,
+		let dataLen = tPeak.length - 1,
 				tPeakS = tPeak.slice(-dataLen),
 				tDownS = tDown.slice(-dataLen);
 		let peakSeries = [];
@@ -160,33 +173,36 @@ peakStatistic._redrawLineChart = (model) => {
 			strokeStyle: 'rgba(141,22,27,1)',
 			fillStyle: 'rgba(141,22,27,0.1)',
 			hover: {
-				lineWidth: 1,
+				lineWidth: 2,
 				strokeStyle: 'rgba(141,22,27,1)',
 				fillStyle: 'rgba(141,22,27,0.1)'
 			},
-			activeIndexes: [dayMostPeak]
+			activeIndexes: [dayMostPeak-1]
 		};
 		peakSeries[1] = {
 			data: tDownS,
 			strokeStyle: 'rgba(16,145,33,1)',
 			fillStyle: 'rgba(16,145,33,0.1)',
 			hover: {
-				lineWidth: 1,
+				lineWidth: 2,
 				strokeStyle: 'rgba(16,145,33,1)',
 				fillStyle: 'rgba(16,145,33,0.1)'
 			},
-			activeIndexes: [dayMostDown]
+			activeIndexes: [dayMostDown-1]
 		};
-		_peakChart.setData({dataLen,series:peakSeries});
+		_peakChart.setData({dataLen,series:peakSeries,unit:_intervalObj.value});
 	} catch(e) {
 		console.error(e);
+		_peakChart.setData({dataLen:0,series:[]});
 	}
 }
 
-peakStatistic.update = () => {
+peakStatistic.update = (param) => {
+	_intervalObj = param && param.intervalObj || _intervalObj;
 	let model = _model;
 	let dataObj = model && model.getSummary();
 	if(dataObj) {
+		peakStatistic._updateStuffs();
 		peakStatistic._udpateDataUI(dataObj);
 		//render chart
 		peakStatistic._redrawLineChart(model);

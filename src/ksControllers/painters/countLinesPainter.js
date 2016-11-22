@@ -13,6 +13,11 @@ let _dataToPointY = (paddingTop, viewYHeight, yMin, yMax, number) => {
 	let y = (number - yMax) * rate + paddingTop;
 	return _toInt(y);
 };
+let _dataToPointX = (paddingLeft, viewXWidth, yMin, yMax, number) => {
+	let rate = viewXWidth / (yMax - yMin);
+	let x = (number - yMin) * rate + paddingLeft;
+	return _toInt(x);
+};
 
 //default options
 let defaultDrawStyle = {
@@ -185,9 +190,24 @@ let drawCountLines = (canvas, options) => {
 		//
 		return -1;
 	};
+
+	let indexToCoordinate = function(lineIndex, dataIndex) {
+		var x ,y;
+		try {
+			var data = series[lineIndex].data;
+			x = padding.left + dataIndex * xSpace;
+			y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[dataIndex]);
+			return {x,y};
+		} catch(e) {
+			console.error(e);
+			return {x,y};
+		}
+	};
+
 	return {
-		indexAtPoint
-	}
+		indexAtPoint,
+		indexToCoordinate,
+	};
 };
 /*
  绘制bar
@@ -205,6 +225,7 @@ let drawCountBars = (canvas, options) => {
 	//raw data & options
 	let	series = options.series,
 			isHorizon = options.isHorizon || false,
+			showValue = options.isHorizon || false,
 			xData = options.x,
 			yMin = options.yMin || 0,
 			yMax = options.yMax,
@@ -231,46 +252,66 @@ let drawCountBars = (canvas, options) => {
 			viewHeight = height - padding.top - padding.bottom;
 
 	//draw data
-	let xSpace = viewWidth / (xData.length);
-	let barWidth = Math.round(xSpace * 0.5);
+	let space = (isHorizon ? viewHeight : viewWidth) / (xData.length - 1);
+	let barWidth = Math.floor(space - 2);
 
 	ctx.save();
 	//paint
 	ctx.clearRect(0,0,width,height);
 	//如果space 为Infinity , 绘图将会出现bug
-	if(!isFinite(xSpace)) {
+	if(!isFinite(space)) {
 		return;
 	}
 	let drawBar = function(bars) {
 		var data = bars.data;
 		for(let j=0,len=data.length; j<len; j++) {
-			let x = _toInt(padding.left + j * xSpace + xSpace / 2) - barWidth / 2,
-					y = _to05(_dataToPointY(padding.top, viewHeight, yMin, yMax, data[j].value)),
-					barHeight = height - y - padding.bottom;
-			
+			let x,y,barHeight;
+			if(isHorizon) {
+				x = padding.left;
+				y = _toInt(padding.top + (len - j - 1) * space);
+				var xRight = _to05(_dataToPointX(padding.left, viewWidth, yMin, yMax, data[j].value));
+				barHeight = xRight - padding.left;
+			} else {
+				x = _toInt(padding.left + j * space + space / 2) - barWidth / 2,
+				y = _to05(_dataToPointY(padding.top, viewHeight, yMin, yMax, data[j].value)),
+				barHeight = height - y - padding.bottom;
+			}
+
 			if(j === hoverIndex) {
 				ctx.lineWidth = data[j].hover && data[j].hover.lineWidth || defaultHoverStyle.lineWidth;
 				ctx.strokeStyle = data[j].hover && data[j].hover.strokeStyle || defaultHoverStyle.strokeStyle;
 				ctx.fillStyle = data[j].hover && data[j].hover.fillStyle || defaultHoverStyle.fillStyle;
-				var fontSize = barWidth > 20 ? 20 : barWidth * 0.7;
-				fontSize = fontSize < 10 ? 10 : fontSize;
-				ctx.font = `${fontSize}px Arial`;
-				ctx.textAlign = 'center';
-				ctx.fillText(data[j].value, x+barWidth/2, y - 8);
+				if(!showValue) {
+					var fontSize = barWidth > 15 ? 15 : barWidth * 0.7;
+					fontSize = fontSize < 8 ? 8 : fontSize;
+					ctx.font = `${fontSize}px Arial`;
+					ctx.textAlign = 'center';
+					ctx.fillText(data[j].value, x+barWidth/2, y - 8);
+				}
 			} else {
 				ctx.lineWidth = data[j].lineWidth || defaultDrawStyle.lineWidth;
 				ctx.strokeStyle = data[j].strokeStyle || defaultDrawStyle.strokeStyle;
 				ctx.fillStyle = data[j].fillStyle || defaultDrawStyle.fillStyle;
 			}
 			//draw bar
-			ctx.fillRect(x, y, barWidth, barHeight);
+			var drawBarWidth = isHorizon ? barHeight : barWidth,
+					drawBarHeight = isHorizon ? barWidth : barHeight;
+			ctx.fillRect(x, y, drawBarWidth, drawBarHeight);
 			//
 			ctx.beginPath();
-			ctx.moveTo(x, y+barHeight);
+			ctx.moveTo(x, y+drawBarHeight);
 			ctx.lineTo(x, y);
-			ctx.lineTo(x+barWidth, y);
-			ctx.lineTo(x+barWidth, y+barHeight);
+			ctx.lineTo(x+drawBarWidth, y);
+			ctx.lineTo(x+drawBarWidth, y+drawBarHeight);
 			ctx.stroke();
+			if(showValue) {
+				ctx.fillStyle = data[j].textColor || '#333';
+				var fontSize = barWidth > 15 ? 15 : barWidth * 0.7;
+				fontSize = fontSize < 8 ? 8 : fontSize;
+				ctx.font = `${fontSize}px Arial`;
+				ctx.textAlign = 'left';
+				ctx.fillText(data[j].value, x + barHeight + 3 ,y + barWidth);
+			}
 		}
 	}
 
@@ -293,7 +334,7 @@ let drawCountBars = (canvas, options) => {
 		ctx.lineWidth = 1;
 		let activeIndexes = line.activeIndexes || [];
 		activeIndexes.forEach(function(index){
-			let x = _toInt(padding.left + index * xSpace),
+			let x = _toInt(padding.left + index * space),
 					y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[index]);
 			ctx.beginPath();  //horizon dash line
 			ctx.moveTo(x, y);
@@ -314,19 +355,28 @@ let drawCountBars = (canvas, options) => {
 			x *= ratio;
 			y *= ratio;
 			//计算x
-			// var index = Math.floor((x - padding.left) / xSpace),
-			// 		xAtIndex = padding.left + index * xSpace + xSpace / 2,
-			// 		isXInBar = Math.abs(x - xAtIndex) <= barWidth / 2;          //判断x是否在bar区间内
-			// if(isXInBar) {
-			// 	for(var i=0,len=options.series.length; i<len; i++) {
-			// 		var data = options.series[i].data;
-			// 		var	y0 = _to05(_dataToPointY(padding.top, viewHeight, yMin, yMax, data[index].value));
-			// 		var y1 = height - padding.bottom;;
-			// 		if(y>(y0-10) && y<y1) {
-			// 			return index;
-			// 		}
-			// 	}
-			// }
+			var index = -1, atIndex = -1, isInBar = false;
+			if(isHorizon) {
+				index = Math.floor((y - padding.top) / space);
+				atIndex = padding.top + index * space + space / 2;
+				isInBar = Math.abs(y - atIndex) <= barWidth / 2;
+			} else {
+			 	index = Math.floor((x - padding.left) / space);
+				atIndex = padding.left + index * space + space / 2;
+				isInBar = Math.abs(x - atIndex) <= barWidth / 2;          //判断x是否在bar区间内
+			}
+			if(isInBar) {
+				return isHorizon ? (options.x.length - 1 - index - 1) : index;
+				/*
+				for(var i=0,len=options.series.length; i<len; i++) {
+					var data = options.series[i].data;
+					var	y0 = _to05(_dataToPointY(padding.top, viewHeight, yMin, yMax, data[index].value));
+					var y1 = height - padding.bottom;;
+					if(y>(y0-10) && y<y1) {
+						return index;
+					}
+				}*/
+			}
 		} catch(e) {
 			console.error(e);
 			return -1;
@@ -334,10 +384,10 @@ let drawCountBars = (canvas, options) => {
 		//
 		return -1;
 	};
-	return;
-	// return {
-	// 	// indexAtPoint
-	// }
+
+	return {
+		indexAtPoint
+	}
 };
 /*
 绘制x,y轴
@@ -345,13 +395,14 @@ let drawCountBars = (canvas, options) => {
 let drawAxis = (canvas, data, options) => {
 	let len = data && data.length || 0;
 	if(!len) {
-		throw 'drawAxisX len is 0';
+		console.warn('drawAxisX len is 0');
 	}
 	betterCanvasSize(canvas);
 	let ratio = getCanvasPixRatio();
 	//options
 	let centerLabel = options && options.centerLabel || false;  //绘制bar的时候要 true
 	let isVertical = options && options.isVertical || false;
+	let hideVerticalGrid = options &&  options.hideVerticalGrid || false;
 	let activeIndexes = options && options.activeIndexes;
 	let selectedIndex = options && options.selectedIndex;
 	let minSpace = options && options.minSpace || 20;
@@ -388,19 +439,21 @@ let drawAxis = (canvas, data, options) => {
 	// ctx.fillStyle = 'rgba(0,0,0,0.1)';
 	// ctx.fillRect(0, 0, width, height);
 	ctx.font = `${10*ratio}px Arial`;
-	ctx.textAlign = 'center';
+	ctx.textAlign = hideVerticalGrid ? 'right' : 'center';
 	for(let i=0; i<len; i+=interval) {
 		ctx.strokeStyle = gridColor;
 		ctx.fillStyle = textColor;
 		if(isVertical) {
 			let x = labelWidth / 2;
 			let y = _dataToPointY(padding.top, height-padding.top-padding.bottom, data[0], data[data.length-1], data[i]);
-			ctx.fillText(data[i], x, y+5*ratio);
-			ctx.beginPath();
-			ctx.lineWidth = 1;
-			ctx.moveTo(labelWidth, _to05(y));            //绘制horizon grid line
-			ctx.lineTo(width-padding.right, _to05(y));
-			ctx.stroke();
+			ctx.fillText(data[i], hideVerticalGrid ? x*1.8 : x, y+5*ratio);
+			if(!hideVerticalGrid) {
+				ctx.beginPath();
+				ctx.lineWidth = 1;
+				ctx.moveTo(labelWidth, _to05(y));            //绘制horizon grid line
+				ctx.lineTo(width-padding.right, _to05(y));
+				ctx.stroke();
+			}
 		} else {
 			let x = padding.left + i*space + (centerLabel ? space/2 : 0);
 			let y = height / 2;
@@ -436,7 +489,7 @@ let drawAxis = (canvas, data, options) => {
 				center = _toInt(center);
 				// ctx.fillStyle = '#222';
 				// ctx.fillRect(center - rectW/2, 0, rectW, height);
-				ctx.fillText(index+'', center, 15*ratio);
+				ctx.fillText(index+1+'', center, 15*ratio);
 			}
 		}
 	}

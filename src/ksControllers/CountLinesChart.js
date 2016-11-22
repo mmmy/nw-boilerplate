@@ -16,6 +16,10 @@ function CountLinesChart(container, config) {
 	}
 	this._yAxisW = 30;
 	this._xAxisH = 30;
+	this._events = {
+		'hoverLine':null,
+		'leaveLine':null,
+	};
 
 	let $wrapper = $(`<div class="countlines-chart-wrapper"></div>`)
 									.append(`<div class="main-wrapper"><canvas class='main-canvas'/></div>`)
@@ -103,13 +107,46 @@ CountLinesChart.prototype._mainMouseMove = function(e) {
 			//高亮 鼠标所在位置的曲线
 			this._linesOption.hoverIndex = hoverIndex;
 			this.render();
+			//trigger event
+			this.trigger(hoverIndex > -1 ? 'hoverLine' : 'leaveLine', {index: hoverIndex});
+			//show tool tip
+			this._showToolTip(hoverIndex > -1);
 		}
+	}
+}
+
+CountLinesChart.prototype._showToolTip = function(show) {
+	if(show) {
+		$(this._wrapper).find('.countlineschart-tooltip').remove();
+
+		var intervalObj = require('./statisticsComponent').getInterval();
+
+		let hoverIndex = this._linesOption.hoverIndex;
+		let activeIndex = this._linesOption.series[hoverIndex].activeIndexes[0];
+		let { indexToCoordinate } = this._drawLinesInfo;
+		let {x,y} = indexToCoordinate(hoverIndex, activeIndex);
+		let value = this._linesOption.series[hoverIndex].data[activeIndex];
+		let indexStr = (activeIndex + 1) * intervalObj.value + intervalObj.describe;
+		let toolTip = $(`<span class="countlineschart-tooltip"><span class="value">${value}</span>个结果<br>在第${indexStr}到达高点</span>`);
+
+		toolTip.css({top:y});
+		let containerW = $(this._canvas_main).width();
+		if(x > containerW - 100) {
+			toolTip.css('right', containerW - x);
+		} else {
+			toolTip.css('left', x + 5);
+		}
+		$(this._canvas_main.parentNode).append(toolTip);
+	} else {
+		$(this._wrapper).find('.countlineschart-tooltip').remove();
 	}
 }
 
 CountLinesChart.prototype._mainMouseLeave = function(e) {
 	this._linesOption.hoverIndex = -1;
 	this.render();
+	this.trigger('leaveLine', {index:-1});
+	this._showToolTip(false);
 }
 
 CountLinesChart.prototype._drawChart = function() {
@@ -130,8 +167,8 @@ CountLinesChart.prototype._drawChart = function() {
 	let yActiveIndexes = xActiveIndexes.map(function(index){
 		return series[hoverIndex].data[index];
 	});
-	this._xAxisOptions.activeIndexes = xActiveIndexes;
-	this._yAxisOptions.activeIndexes = yActiveIndexes;
+	// this._xAxisOptions.activeIndexes = xActiveIndexes;
+	// this._yAxisOptions.activeIndexes = yActiveIndexes;
 
 	this._drawLinesInfo = drawCountLines(this._canvas_main, this._linesOption);
 	drawAxis(this._canvas_x, this._linesOption.x, this._xAxisOptions);
@@ -142,16 +179,33 @@ CountLinesChart.prototype.render = function() {
 	this._drawChart();
 }
 
-CountLinesChart.prototype.setData = function({dataLen, series}) {
+CountLinesChart.prototype.setData = function({dataLen, series, unit}) {
 	series = series || [[]];
+	unit = unit || 1;
 	let len = dataLen || series[0].length;
 	let x = [];
 	let data = [];
 	for(var i=0; i<len; i++) {
-		x.push(i);
+		x.push((i + 1) * unit);
 	}
 	this._linesOption.x = x;
 	this._linesOption.series = series;
+	this.render();
+}
+
+CountLinesChart.prototype.on = function(name, handle) {
+	this._events[name] = handle;
+}
+
+CountLinesChart.prototype.trigger = function(name, param) {
+	let handle = this._events[name];
+	if(handle) {
+		handle(param);
+	}
+}
+
+CountLinesChart.prototype.highlightLine = function(index) {
+	this._linesOption.hoverIndex = index;
 	this.render();
 }
 

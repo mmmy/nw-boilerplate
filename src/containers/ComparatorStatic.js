@@ -306,7 +306,7 @@ class ComparatorStatic extends React.Component {
 
         <div className='start-btn-container hide'>
           <button data-kstooltip="切换到主K线视图" className='flat-btn go-stockview' onClick={ this.goToSearchPage.bind(this) }></button>
-          <button data-kstooltip="隐藏" className='flat-btn go-hidden' onClick={ this.hidePredictionWidget.bind(this) }></button>
+          <button data-kstooltip="返回" className='flat-btn go-hidden' onClick={ this.hidePredictionWidget.bind(this) }></button>
         </div>
         {/*</div>*/}
         {/*<div className={'prediction-transparent-overlay top-left'}>
