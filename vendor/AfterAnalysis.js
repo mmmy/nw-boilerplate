@@ -89,7 +89,8 @@ function calMost(data) {
     var vdown = -vpeak;    //最低速度
     var v = 0;             //速度
 
-    for (var i = 0; i < nDay; i++) {
+    if (nDay) { ipeak = 1; idown = 1; }
+    for (var i = 1; i < nDay; i++) {
         if (data[i] > peak) {
             peak = data[i];
             ipeak = i;
@@ -160,7 +161,7 @@ function summaryUpProbility(bars, nDay) {
     for (var i = 0; i < nDay; i++) tNotUp[i] = 0;
 
     for (var i = 0; i < nSym; i++) 
-        for (var j = 1; j < (bars[i] && bars[i].length || 0); j++) {
+        for (var j = 1; j < Math.min(nDay, (bars[i] && bars[i].length || 0)); j++) {
             if (bars[i][j] > bars[i][0]) tUp[j]++;
             if (bars[i][j] < bars[i][0]) tNotUp[j]++;
         }
@@ -245,8 +246,10 @@ function summaryPeakDown(bars, nDay) {
     var maxRateIncrease = bRateIncrease.max;
     var minRateIncrease = bRateIncrease.min;
     var averageRateIncrease = bRateIncrease.average;
-    var dayMostPeak = basicStastic(tPeak).imax;
-    var dayMostDown = basicStastic(tDown).imax;
+    var dayMostPeak = basicStastic(tPeak.slice(1)).imax+1;
+    if (tPeak.length <= 1) dayMostPeak = 0;
+    var dayMostDown = basicStastic(tDown.slice(1)).imax+1;
+    if (tDown.length <= 1) dayMostDown = 0;
     var basicStasticAmplitude = basicStastic(sAmplitude);
     var mediumRateIncrease = mediumStastic(sRateIncrease);
     
@@ -520,13 +523,16 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     copyMax.sort(function(a,b) {if (a>b) return 1; else return -1;});
     copyMin.sort(function(a,b) {if (a<b) return 1; else return -1;});
 
-    var pleft = Math.ceil(0.96*arrayMin.length || 0);
-    var pright = Math.ceil(0.96*arrayMax.length || 0);
+    var pleft = Math.ceil(0.90*arrayMin.length || 0);  //isNaN(0.96*undefined)
+    var pright = Math.ceil(0.90*arrayMax.length || 0);
     var newleft = copyMin[pleft] || 0;
     var newright = copyMax[pright] || 0;
     if (!unit) {
         if (!n) n = 8;
         unit = (newright - newleft) / (n+2);
+        if (newleft != 0) {
+            unit = Math.max(newright / 6, newleft / 6);
+        }
         unit = Math.ceil(unit * 2000);
         unit = unit + (10 - unit) % 10;
         unit = unit / 2000.0;
@@ -535,8 +541,8 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     //console.log('Max',right, 'Min',left,'newright',newright, 'newleft',newleft);
 
     var nRight, nLeft;
-    nRight = Math.floor(newright / unit) + 3;
-    nLeft = Math.floor(-newleft / unit) + 3;
+    nRight = Math.floor(newright / unit) + 2;
+    nLeft = Math.floor(-newleft / unit) + 2;
     if (nRight > 12) nRight = 12;
     if (nLeft > 12) nLeft = 12;
     if (nRight < 1) nRight = 1;
@@ -551,13 +557,13 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
         var p = Math.floor(arrayMax[i] / unit);
         if (p > nRight - 1) p = nRight - 1;
         if (p < 0) p = 0;
-        freqRight[p]++;
+        if (p < nRight) freqRight[p]++;
     }
     for (var i = 0; i < arrayMin.length; i++) {
         var p = Math.floor(-arrayMin[i] / unit);
         if (p > nLeft - 1) p = nLeft - 1;
         if (p < 0) p = 0;
-        freqLeft[p]++;
+        if (p < nLeft) freqLeft[p]++;
     }
 
     return {freqRight, freqLeft, unit};
@@ -663,17 +669,17 @@ module.exports = AfterAnalysis;
 
 //var a = new AfterAnalysis([[1,2],[2,3]])
 //var a = new AfterAnalysis([]);
-// var a = new AfterAnalysis(require('./b')['closePrices'])
+//var a = new AfterAnalysis(require('./b')['closePrices'])
 //var a = new AfterAnalysis([]);
 //console.log(a.summaryFreqPeakRate(15)); //15fen
 //console.log(a._m);
-// console.log(a.summary());
-// console.log(a.summaryFreqPeakRate(15)); //15fen
-// console.log(a.summaryFreqDrawDown());
-// console.log(a.summaryFreqRDrawDown());
-// console.log(a.getFreqDrawDown());
-// console.log(a.getFreqRDrawDown());
 /*
+console.log(a.summary());
+console.log(a.summaryFreqPeakRate(15)); //15fen
+console.log(a.summaryFreqDrawDown());
+console.log(a.summaryFreqRDrawDown());
+console.log(a.getFreqDrawDown());
+console.log(a.getFreqRDrawDown());
 */
 
 //console.log(a.summaryFreqPeakRate(15, 0.05)); //1fen 0.05

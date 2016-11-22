@@ -3,6 +3,14 @@
 */
 @gray-statistic: #b2b2b2;
 
+@gray-line-light: #b2b2b2;
+@gray-line-middle: #787878;
+@gray-line-dark: rgb(76, 76, 76);
+
+@blue-line-light: #23abf7;
+@blue-line-middle: #0068af;
+@blue-line-dark: #004587;
+
 //显示百分比的UI, 66.66%
 .percent-info(@color:#333;@font-size:20px) {
 	color: @color;
@@ -22,6 +30,9 @@
 		margin-left: 5px;
 		font-size: @font-size * 0.7;
 		font-weight: normal;
+	}
+	img {
+		margin-left: 5px;
 	}
 	&.red {
 		color: @brown-red;
@@ -53,30 +64,87 @@
 			margin-right: 10px;
 		}
 	}
-	&.red {
+	&:before {
+		content: ' ';
+		position: absolute;
+		left: 0;
+		height: 100%;
+		width: 4px;
+	}
+	&.red:before {
+		background-color: @brown-red;
+	}
+	&.green:before {
+		background-color: @ks-color-green-grass;
+	}
+	&.gray-light{
 		&:before {
-			content: ' ';
-			position: absolute;
-			left: 0;
-			height: 100%;
-			width: 4px;
-			background-color: @brown-red;
+			background-color: @gray-line-light;
+		}
+		&:hover {
+			strong {
+				color: @blue-line-light;
+			}
+			&:before {
+				background-color: @blue-line-light;
+			}
 		}
 	}
-	&.green {
+	&.gray-middle{
 		&:before {
-			content: ' ';
-			position: absolute;
-			left: 0;
-			height: 100%;
-			width: 4px;
-			background-color: @ks-color-green-grass;
+			background-color: @gray-line-middle;
+		}
+		&:hover {
+			strong {
+				color: @blue-line-middle;
+			}
+			&:before {
+				background-color: @blue-line-middle;
+			}
 		}
 	}
+	&.gray-dark{
+		&:before {
+			background-color: @gray-line-dark;
+		}
+		&:hover {
+			strong {
+				color: @blue-line-dark;
+			}
+			&:before {
+				background-color: @blue-line-dark;
+			}
+		}
+	}
+	&.blue-light {
+	 	strong {
+	 		color: @blue-line-light;
+	 	}
+	 	&:before {
+			background-color: @blue-line-light;
+		}
+	}
+	&.blue-middle {
+	 	strong {
+	 		color: @blue-line-middle;
+	 	}
+	 	&:before {
+			background-color: @blue-line-middle;
+		}
+	}
+	&.blue-dark {
+	 	strong {
+	 		color: @blue-line-dark;
+	 	}
+	 	&:before {
+			background-color: @blue-line-dark;
+		}
+	}
+	
 }
 
 .ks-data-pane {
-	background-color: #eee;
+	background-color: rgba(150, 150, 150, 0.08);
 	margin-left: 2.5px;
 	margin-right: 2.5px;
 	padding: 20px;
@@ -117,15 +185,36 @@
 
 
 .statistic-component-container {
+	.chart-title {
+		text-align: left;
+		font-size: 12px;
+		color: #999;
+		padding-left: 20px;
+		.axis {
+			color: #b5b5b5;
+			padding-right: 30px;
+			.black {
+				padding-left: 3px;
+				color: #666;
+				padding-right: 10px;
+			}
+		}
+		&.bar {
+			// padding-left: 60px;
+			.axis {
+				padding-right: 10px;
+			}
+		}
+	}
 	.chart-wrapper {
 		position: relative;
 		height: 175px;
 		margin-right: 20px;
 		&.bar {
 			margin-right: 0;
-			margin-left: 40px;
+			// margin-left: 40px;
 			&+.row {
-				margin-left: 40px;
+				// margin-left: 40px;
 				margin-right: 20px;
 			}
 		}
@@ -143,7 +232,7 @@
 	}
 	.title {
 		text-align: left;
-		font-size: 20px;
+		font-size: 16px;
 		padding-left: 40px;
 		margin: 0;
 		margin-bottom: 8px;
@@ -164,6 +253,13 @@
  */
 .ks-container.peak {
 	text-align: center;
+	>.row {
+		// margin-left: 40px;
+		>.ks-col-50:first-child {
+			padding-left: 40px;
+			border-right: 1px solid #eee;
+		}
+	}
 	.percent-info.rate {
 		.percent-info(@brown-red,32px);
 	}
@@ -201,6 +297,35 @@
 	.ks-col-25:first-child {
 		border-right: 1px solid #ddd;
 	}
+	.chart-wrapper.bar {
+		display: inline-block;
+		width: calc(~"100% - 150px - 20px");
+		height: 256px;
+		.main-wrapper {
+			height: calc(~"100% - 20px");
+		}
+		vertical-align: middle;
+		@media (max-width: 1599px) {
+			width: calc(~"100% - 120px");
+		}
+	}
+	.row.percent-info-container {
+		display: inline-block;
+		vertical-align: middle;
+		width: 150px;
+		@media (max-width: 1599px) {
+			width: 110px;
+			margin-right: 10px;
+		}
+	}
+	.percent-item {
+		&:nth-child(1) {
+			margin-bottom: 60px;
+		}
+		&:nth-child(2) {
+			margin-top: 60px;
+		}
+	}
 }
 
 /**
@@ -211,6 +336,7 @@
 		// margin-left: 40px;
 		>.ks-col-50:first-child {
 			padding-left: 40px;
+			border-right: 1px solid #eee;
 		}
 	}
 	.title .btn-wrapper {
@@ -246,37 +372,42 @@
 	}
 	.data-wrapper {
 		// background-color: #ededed;
-		border: 1px solid #ddd;
+		// border: 1px solid #ddd;
 		border-radius: 3px;
-		padding-top: 10px;
-		text-align: center;
+		// padding-top: 10px;
 		margin-bottom: 0;
-		margin-left: 40px;
-		margin-right: 40px;
+		text-align: center;
+		// margin-left: 40px;
+		// margin-right: 40px;
 		p {
-			margin-bottom: 10px;
-			max-width: 80px;
+			// margin-bottom: 10px;
+			max-width: 150px;
 			margin-left: auto;
 			margin-right: auto;
 			text-align: left;
+			white-space: nowrap;
 		}
 		.name {
-			display: block;
-			min-width: 80px;
-			text-align: left;
-			margin-bottom: 5px;
+			display: inline-block;
+			// min-width: 50px;
+			margin-right: 20px;
+			// text-align: left;
+			// margin-bottom: 5px;
 		}
 	}
 	.describe {
-		font-size: 14px;
+		// font-size: 14px;
+		padding-left: calc(~"16.65% - 60px");
 	}
 	.percent-info {
-		.percent-info(@font-size:28px);
+		.percent-info(@font-size:26px);
 	}
 	.days-info-wrapper {
 		.days-info-wrapper(@font-size:26px);
-		margin-top: 60px;
+		margin-top: 10px;
 		margin-bottom: 10px;
+		max-width: 120px;
+		white-space: nowrap;
 		p:last-child {
 			margin-bottom: 0;
 		}
@@ -342,6 +473,7 @@
 		.ks-col-25 {
 			height: 100px;
 			overflow: hidden;
+			position: relative;
 		}
 	}	
 	.row.small {
@@ -351,6 +483,16 @@
 		.percent-info {
 			.percent-info(@font-size: 26px);
 			margin-left: 10px;
+		}
+	}
+	.toggle-btn {
+		position: absolute;
+		top: 10px;
+		right: 15px;
+		cursor: pointer;
+		transform: rotate(0deg);
+		&.up {
+			transform: rotate(180deg);
 		}
 	}
 }
