@@ -13,7 +13,7 @@ function calDrawDownExtend(data, n) {
     end = 1;
 
     var nDay = n;
-    if (!nDay || nDay > data.length) nDay = data.length;
+    if (!nDay || nDay > data.length) nDay = data.length || 0;
     var cdd = [];
     var pos = [];
     for (var i = 0; i < nDay; i++) cdd[i] = data[i];
@@ -51,9 +51,9 @@ function calRDrawDownExtend(data, n) {
     var end = 1;
 
     var nDay = n;
-    if (!nDay || nDay > data.length) nDay = data.length;
-    var cdd = new Array(nDay);
-    var pos = new Array(nDay);
+    if (!nDay || nDay > (data.length || 0)) nDay = (data.length || 0);
+    var cdd = [];
+    var pos = [];
     for (var i = 0; i < nDay; i++) cdd[i] = data[i];
     for (var i = 0; i < nDay; i++) pos[i] = i;
     for (var i = nDay - 2; i >= 1; i--) 
@@ -75,7 +75,7 @@ function calRDrawDownExtend(data, n) {
 }
 
 function calMost(data) {
-    if (!data || data.length <= 0) return {};
+    //if (!data || data.length <= 0) return {};
     //计算全局极大值，极小值，第一次极大值时间，第一次极小值时间
     //计算最高速度，最低速度，振幅，是否先到达最大值再到达最小值
     //计算全局drawDown, 极大值前的drawDown，极小值前的drawDown
@@ -160,7 +160,7 @@ function summaryUpProbility(bars, nDay) {
     for (var i = 0; i < nDay; i++) tNotUp[i] = 0;
 
     for (var i = 0; i < nSym; i++) 
-        for (var j = 1; j < bars[i].length; j++) {
+        for (var j = 1; j < (bars[i] && bars[i].length || 0); j++) {
             if (bars[i][j] > bars[i][0]) tUp[j]++;
             if (bars[i][j] < bars[i][0]) tNotUp[j]++;
         }
@@ -273,10 +273,10 @@ function summaryPeakDown(bars, nDay) {
 }
 
 function averageStastic(data) {
-    if (!data || !data.length) return 0;
+    if (!data || !data.length) return 0.0;
     var s = 0;
     for (var i = 0; i < data.length; i++) s += data[i];
-    return (s && data.length) ?  s / data.length : 0;
+    return (s && data.length) ?  s / data.length : 0.0;
 }
 
 function mediumStastic(data) {
@@ -284,7 +284,7 @@ function mediumStastic(data) {
     for (var i = 0; i < data.length; i++) datacopy[i] = data[i];
     datacopy.sort(function(a,b) {if (a<b) return 1; else return -1;});
     var i = data.length / 2;
-    if (i == 0) return datacopy[i];
+    if (i == 0) return datacopy[i] || 0.0;
     if (data.length % 2 == 0) 
         return (datacopy[i-1]+datacopy[i])/2;
     else 
@@ -320,14 +320,14 @@ function freqence(data, nDay) {
     for (var i = 0; i < nDay; i++) freq[i] = 0;
 
     var n = data.length || 0;
-    for (var i = 0; i < n; i++) freq[ data[i] ] ++;
+    for (var i = 0; i < n; i++) if (data[i] < nDay) freq[ data[i] ] ++;
     return freq;
 }
 
 function summaryDrawDown(bars, kind, nDay) {
     //if (!bars || !bars.length) return;
     var nSym = bars.length;
-    if (!nDay) nDay = bars[0].length;
+    if (!nDay) nDay = bars && bars[0] && bars[0].length || 0;
     if (!kind) kind = 0;
     var drawDownData = [];
     var drawdown = [];
@@ -364,7 +364,7 @@ function summaryDrawDown(bars, kind, nDay) {
 function summaryRDrawDown(bars, kind, nDay) {
     //if (!bars || !bars.length) return;
     var nSym = bars.length;
-    if (!nDay) nDay = bars[0].length;
+    if (!nDay) nDay = (bars && bars[0] && bars[0].length) || 0;
     var drawDownData = [];
     var drawdown = [];
     var start = [];
@@ -411,7 +411,7 @@ function summary(n, unit) {
     //var _summary9 = {'summaryBefPeakDrawDown': this.summaryRDrawDown(this._bars, 1, this._m)};
     //var _summary10 = {'summaryBefDownDrawDown': this.summaryRDrawDown(this._bars, 2, this._m)};
     //require jquery
-    var extend = $ && $.extend || Object.assign;
+    var extend = global.$ && global.$.extend || Object.assign;
     this._summary = extend({}, _summary1, _summary2, _summary3, _summary4, _summary5, /*_summary6, _summary7, */_summary8);
     this._freqDrawDown = this.summaryFreqDrawDown(n, unit);
     this._freqRDrawDown= this.summaryFreqRDrawDown(n, unit);
@@ -433,6 +433,7 @@ function getM() {
 function AfterAnalysis() {
 }
 
+//options.m
 function setBars(bars, options) {
     this._bars = bars;
     this._n = (bars && bars.length) || 0;
@@ -510,8 +511,8 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     if (!arrayMin) arrayMin = [];
     var right = Math.max.apply(null, arrayMax);
     var left = Math.min.apply(null, arrayMin);
-    if (arrayMin.length == 0) left = 0;
-    if (arrayMax.length == 0) right = 0;
+    if (!arrayMin || arrayMin.length == 0) left = 0;
+    if (!arrayMax || arrayMax.length == 0) right = 0;
     if (!unit) {
         if (!n) n = 10;
         unit = (right - left) / (n + 2);
@@ -522,8 +523,8 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     var nRight = Math.floor(right / unit) + 1;
     var nLeft = Math.floor(-left / unit) + 1;
 
-    var freqRight = new Array(nRight);
-    var freqLeft = new Array(nLeft);
+    var freqRight = [];
+    var freqLeft = [];
     for (var i = 0; i < nRight; i++) freqRight[i] = 0;
     for (var i = 0; i < nLeft; i++) freqLeft[i] = 0;
 
@@ -546,8 +547,8 @@ function summaryFreqDrawDown(n, unit) {
       return result;
     } catch(e) {
         console.log(e);
-        return {freqRight:[],freqLeft:[],unit:0.01};
     }
+    return {freqRight:[],freqLeft:[],unit:0.01};
 }
 
 function summaryFreqRDrawDown(n, unit) {
@@ -559,8 +560,8 @@ function summaryFreqRDrawDown(n, unit) {
       return result;
     } catch(e) {
         console.log(e);
-        return {freqRight:[],freqLeft:[],unit:0.01};
     }
+    return {freqRight:[],freqLeft:[],unit:0.01};
 }
 
 //var cp = require('./res')['closePrices']
@@ -593,10 +594,12 @@ AfterAnalysis.prototype.getFreqRDrawDown = getFreqRDrawDown;
 module.exports = AfterAnalysis;
 
 //var a = new AfterAnalysis([[1,2],[2,3]])
+var a = new AfterAnalysis([])
 //var a = new AfterAnalysis(require('./b')['closePrices'])
 //var a = new AfterAnalysis([]);
 //console.log(a.summaryFreqPeakRate(15)); //15fen
-//console.log(a.summary());
+console.log(a._m);
+console.log(a.summary());
 /*
 console.log(a.summaryFreqDrawDown());
 console.log(a.summaryFreqRDrawDown());
