@@ -89,7 +89,8 @@ function calMost(data) {
     var vdown = -vpeak;    //最低速度
     var v = 0;             //速度
 
-    for (var i = 0; i < nDay; i++) {
+    if (nDay) { ipeak = 1; idown = 1; }
+    for (var i = 1; i < nDay; i++) {
         if (data[i] > peak) {
             peak = data[i];
             ipeak = i;
