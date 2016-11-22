@@ -414,6 +414,7 @@ function summary(n, unit) {
     var extend = global.$ && global.$.extend || Object.assign;
     this._summary = extend({}, _summary1, _summary2, _summary3, _summary4, _summary5, /*_summary6, _summary7, */_summary8);
     this._freqDrawDown = this.summaryFreqDrawDown(n, unit);
+    this._freqPeakRate = this.summaryFreqPeakRate(n, unit);
     this._freqRDrawDown= this.summaryFreqRDrawDown(n, unit);
     return this._summary;
 }
@@ -520,8 +521,14 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
         unit = unit + (10 - unit) % 10;
         unit = unit / 2000.0;
     }
-    var nRight = Math.floor(right / unit) + 1;
-    var nLeft = Math.floor(-left / unit) + 1;
+    var nRight, nLeft;
+    if (unit < 1e-4) {
+        unit = 1e-4;
+        nRight = Math.floor(right / unit) + 1;
+        nLeft = Math.floor(-left / unit) + 1;
+    }
+    if (nRight > 100) nRight = 100;
+    if (nLeft > 100) nLeft = 100;
 
     var freqRight = [];
     var freqLeft = [];
@@ -529,39 +536,45 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     for (var i = 0; i < nLeft; i++) freqLeft[i] = 0;
 
     for (var i = 0; i < arrayMax.length; i++) {
-        freqRight[Math.floor(arrayMax[i] / unit)]++;
+        var p = Math.floor(arrayMax[i] / unit);
+        if (p > nRight) p = nRight;
+        if (p == nRight && nRight >= 1) p = nRight - 1;
+        if (p < 0) p = 0;
+        freqRight[p]++;
     }
     for (var i = 0; i < arrayMin.length; i++) {
-        freqLeft[Math.floor(-arrayMin[i] / unit)]++;
+        var p = Math.floor(-arrayMin[i] / unit);
+        if (p > nLeft) p = nLeft;
+        if (p == nLeft && nLeft >= 1) p = nLeft - 1;
+        if (p < 0) p = 0;
+        freqLeft[p]++;
     }
 
     return {freqRight, freqLeft, unit};
 }
 
 function summaryFreqDrawDown(n, unit) {
-    try {
-      var sDD = this.getSummary().summaryDrawDown.drawDownData;
-      var dds = [];
-      sDD.forEach(function(x){dds.push(x.drawDown);});
-      var result = freqLeftRight(dds,[], n, unit);
-      return result;
-    } catch(e) {
-        console.log(e);
-    }
-    return {freqRight:[],freqLeft:[],unit:0.01};
+    var tmp = this.getSummary();
+    if (!tmp || !tmp.summaryDrawDown || !tmp.summaryDrawDown.drawDownData)
+        return {freqRight:[],freqLeft:[],unit:0.01};
+
+    var sDD = this.getSummary().summaryDrawDown.drawDownData;
+    var dds = [];
+    sDD.forEach(function(x){dds.push(x.drawDown);});
+    var result = freqLeftRight(dds,[], n, unit);
+    return result;
 }
 
 function summaryFreqRDrawDown(n, unit) {
-    try {
-      var sDD = this.getSummary().summaryRDrawDown.drawDownData;
-      var dds = [];
-      sDD.forEach(function(x){dds.push(x.drawDown);});
-      var result = freqLeftRight(dds,[], n, unit);
-      return result;
-    } catch(e) {
-        console.log(e);
-    }
-    return {freqRight:[],freqLeft:[],unit:0.01};
+    var tmp = this.getSummary();
+    if (!tmp || !tmp.summaryDrawDown || !tmp.summaryRDrawDown.drawDownData)
+        return {freqRight:[],freqLeft:[],unit:0.01};
+
+    var sDD = this.getSummary().summaryRDrawDown.drawDownData;
+    var dds = [];
+    sDD.forEach(function(x){dds.push(x.drawDown);});
+    var result = freqLeftRight(dds,[], n, unit);
+    return result;
 }
 
 //var cp = require('./res')['closePrices']
