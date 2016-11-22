@@ -457,8 +457,7 @@ function summary(n, unit) {
     //var _summary9 = {'summaryBefPeakDrawDown': this.summaryRDrawDown(this._bars, 1)};
     //var _summary10 = {'summaryBefDownDrawDown': this.summaryRDrawDown(this._bars, 2)};
     //require jquery
-    //var extend = $.extend || Object.assign;
-    var extend = Object.assign;
+    var extend = $ && $.extend || Object.assign;
     this._summary = extend({}, _summary1, _summary2, _summary3, _summary4, _summary5, /*_summary6, _summary7, */_summary8);
     this._freqDrawDown = this.summaryFreqDrawDown(n, unit);
     this._freqRDrawDown= this.summaryFreqRDrawDown(n, unit);
