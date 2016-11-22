@@ -1,23 +1,4 @@
 'use strict';
-function calDrawDown(data, n) {
-    //计算drawDown
-    //data Array of Number 一支股票多日的收盘价
-    //n 天数
-    if (!data || !data.length) return 0;
-
-    var drawDown = 0;
-    var nDay = n;
-    if (!nDay || nDay > data.length) nDay = data.length;
-    var cdd = new Array(nDay);
-    for (var i = 0; i < nDay; i++) cdd[i] = data[i];
-    for (var i = nDay - 2; i >= 0; i--) if (cdd[i+1] < cdd[i]) cdd[i] = cdd[i+1];
-    for (var i = 0; i < nDay; i++) 
-      if (data[i] > 0) {
-        var dd = (data[i] - cdd[i]) / data[i];
-        if (dd > drawDown) drawDown = dd;
-      }
-    return drawDown;
-}
 
 function calDrawDownExtend(data, n) {
     //计算一只股票的最大drawDown
@@ -26,17 +7,17 @@ function calDrawDownExtend(data, n) {
     var drawDown = 0;
     var start = 0;
     var end = 0;
-    if (!data || data.length <= 1 || n <= 2) return {drawDown, start, end};
+    if (!data || data.length <= 1 || n <= 1) return {drawDown, start, end};
 
     start = 1;
     end = 1;
 
     var nDay = n;
     if (!nDay || nDay > data.length) nDay = data.length;
-    var cdd = new Array(nDay);
-    var pos = new Array(nDay);
-    for (var i = 1; i < nDay; i++) cdd[i] = data[i];
-    for (var i = 1; i < nDay; i++) pos[i] = i;
+    var cdd = [];
+    var pos = [];
+    for (var i = 0; i < nDay; i++) cdd[i] = data[i];
+    for (var i = 0; i < nDay; i++) pos[i] = i;
     for (var i = nDay - 2; i >= 1; i--) 
         if (cdd[i+1] < cdd[i]) {
             cdd[i] = cdd[i+1];
@@ -53,18 +34,6 @@ function calDrawDownExtend(data, n) {
         }
       }
 
-    /*
-    drawDown = (data[0]-data[1])/data[0];
-    start = 0;
-    end = 1;
-    for (var i = 0; i < nDay; i++)
-        for (var j = i+1; j < nDay; j++) 
-        if ((data[i]-data[j])/data[i] > drawDown){
-            drawDown = (data[i]-data[j])/data[i];
-            start = i;
-            end = j;
-        }
-        */
     return { drawDown, start, end };
 }
 
@@ -85,8 +54,8 @@ function calRDrawDownExtend(data, n) {
     if (!nDay || nDay > data.length) nDay = data.length;
     var cdd = new Array(nDay);
     var pos = new Array(nDay);
-    for (var i = 1; i < nDay; i++) cdd[i] = data[i];
-    for (var i = 1; i < nDay; i++) pos[i] = i;
+    for (var i = 0; i < nDay; i++) cdd[i] = data[i];
+    for (var i = 0; i < nDay; i++) pos[i] = i;
     for (var i = nDay - 2; i >= 1; i--) 
         if (cdd[i+1] > cdd[i]) {
             cdd[i] = cdd[i+1];
@@ -106,14 +75,14 @@ function calRDrawDownExtend(data, n) {
 }
 
 function calMost(data) {
-    if (!data || data.length <= 0) return;
+    if (!data || data.length <= 0) return {};
     //计算全局极大值，极小值，第一次极大值时间，第一次极小值时间
     //计算最高速度，最低速度，振幅，是否先到达最大值再到达最小值
     //计算全局drawDown, 极大值前的drawDown，极小值前的drawDown
     //data Array of Number 一支股票多日的收盘价
-    var nDay = data.length;
-    var peak = data[0];    //最高价格
-    var down = data[0];    //最低价格
+    var nDay = data.length || 0;
+    var peak = data[0] || 0.0;    //最高价格
+    var down = data[0] || 0.0;    //最低价格
     var ipeak = 0;         //第一次最高价格的位置
     var idown = 0;         //第一次最低价格的位置
     var vpeak = -10000000; //最高速度
@@ -150,14 +119,13 @@ function calMost(data) {
 
     //计算振幅
     var amplitude = data[0] ? (peak - down) / data[0] : 0;
-    var rateIncrease = data[0] ? (data[nDay-1] - data[0]) / data[0] : 0;
+    var rateIncrease = (data[0] && data[nDay-1]) ? (data[nDay-1] - data[0]) / data[0] : 0;
 
     //返回 最高，最低，最高时的时间，最低时的时间，最高速度，最低速度，振幅，是否先到达最大值再到达最小值，全局drawDownExtend, 极大值前的drawDownExtend，极小值前的drawDownExtend
     return { nDay, peak, down, ipeak, idown, vpeak, vdown, amplitude, peakFirst, drawDown, rdrawDown, befPeakDrawDown, befDownDrawDown, rateIncrease };
 }
 
 function calFilterWithAimRate(data, rate) {
-    if (!data) return;
     //@data 为一只股票的多日数据
     //@rate > 0 为目标涨幅
     //@rate < 0 为目标跌幅
@@ -169,7 +137,7 @@ function calFilterWithAimRate(data, rate) {
     var reachTime = -1; 
     var isUp = 0;
     var isUpWhole = 0;
-    var m = data.length;
+    var m = data.length || 0;
     var aim = data[0] * (1 + rate);
     for (var i = 0; i < m; i++) {
         if ((aim - data[i]) * rate <= 0) {
@@ -182,12 +150,11 @@ function calFilterWithAimRate(data, rate) {
     return { reachTime, isUp, isUpWhole };
 }
 
-function summaryUpProbility(bars) {
-    if (!bars) return;
-    var nSym = bars.length;
-    var nDay = (bars && bars[0] && bars[0].length) || 0;
-    var tUp = new Array(nDay);
-    var tNotUp = new Array(nDay);
+function summaryUpProbility(bars, nDay) {
+    var nSym = bars.length || 0;
+    if (!nDay) nDay = (bars && bars[0] && bars[0].length) || 0;
+    var tUp = [];//new Array(nDay);
+    var tNotUp = [];//new Array(nDay);
 
     for (var i = 0; i < nDay; i++) tUp[i] = 0;
     for (var i = 0; i < nDay; i++) tNotUp[i] = 0;
@@ -198,27 +165,21 @@ function summaryUpProbility(bars) {
             if (bars[i][j] < bars[i][0]) tNotUp[j]++;
         }
 
-    //for (var i = 0; i < nDay; i++) tNotUp[i] = nSym - tUp[i];
-    //for (var i = 0; i < nDay; i++) tUp[i] = tUp[i];
-    //for (var i = 0; i < nDay; i++) tNotUp[i] = tNotUp[i];
-    //for (var i = 0; i < nDay; i++) tNotUp[i] = 1 - tUp[i];
-
-    var upRate = nSym ? tUp[nDay-1] / nSym : 0;
-    var notUpRate = nSym ? tNotUp[nDay-1] / nSym : 0;
+    var upRate = (nSym && tUp[nDay-1]) ? tUp[nDay-1] / nSym : 0;
+    var notUpRate = (nSym && tNotUp[nDay-1]) ? tNotUp[nDay-1] / nSym : 0;
 
     var dayMostUp = basicStastic(tUp).imax;
     var dayMostNotUp = basicStastic(tNotUp).imax;
     return { tUp, dayMostUp, tNotUp, dayMostNotUp, upRate, notUpRate };
 }
 
-function summaryUpProbilityFilterRate(bars, rate) {
-    if (!bars) return;
+function summaryUpProbilityFilterRate(bars, rate, nDay) {
     //计算达到目标涨幅 或 跌幅的股票中
     //总数nReach
     //达到目标开始到结束上涨的股票个数nUp 涨率r1
     //全局涨的股票个数nUpWhole, 全局涨率 r2
-    var nSym = bars.length;
-    var nDay = (bars && bars[0] && bars[0].length) || 0;
+    var nSym = bars.length || 0;
+    if (!nDay) nDay = (bars && bars[0] && bars[0].length) || 0;
     var nReach = 0;
     var nUp = 0;
     var nUpWhole = 0;
@@ -231,32 +192,31 @@ function summaryUpProbilityFilterRate(bars, rate) {
             if (filt.isUpWhole) nUpWhole++;
         }
     }
-    var r1 = nReach == 0 ? 0 : nUp / nReach;
-    var r2 = nReach == 0 ? 0 : nUpWhole / nReach;
+    var r1 = (nUp && nReach) ? nUp / nReach : 0;
+    var r2 = (nUpWhole && nReach) ? nUpWhole / nReach : 0;
     if (rate >= 0) 
-        return { rReachUp: nSym ? nReach / nSym : 0, 
+        return { rReachUp: (nSym && nReach) ? nReach / nSym : 0, 
                  nReachUp: nReach, 
                  nUp: nUp, nUpWhole: nUpWhole, 
                  rUp: r1, rUpWhole: r2 };
     else 
-        return { rReachDown: nSym ? nReach / nSym : 0, 
+        return { rReachDown: (nReach && nSym) ? nReach / nSym : 0, 
                  nReachDown: nReach, 
                  nDown: nUp, nDownWhole: nUpWhole, 
                  rDown: r1, rDownWhole: r2 };
 }
 
-function summaryPeakDown(bars) {
-    if (!bars) return;
+function summaryPeakDown(bars, nDay) {
     //统计最大值第一次出现的时间分布 tPeak
     //统计最小值第一次出现的时间分布 tDown
     //统计最大值先出现，然后再出现最小值的次数 nPeakFirst
     
     //init    
-    var nSym = bars.length;
-    var nDay = (bars[0] && bars[0].length) || 0;
+    var nSym = bars.length || 0;
+    if (!nDay) nDay = (bars[0] && bars[0].length) || 0;
     var nPeakFirst = 0;
-    var tPeak = new Array(nDay);
-    var tDown = new Array(nDay);
+    var tPeak = [];//new Array(nDay);
+    var tDown = [];//new Array(nDay);
     var indexMost = [];
     var sRateIncrease = [];
     var sAmplitude = [];
@@ -301,7 +261,7 @@ function summaryPeakDown(bars) {
     var mediumIncrease = mediumStastic(RI); 
     var mediumDecrease = mediumStastic(RD); 
               
-    var rPeakFirst = nSym == 0 ? 0 : nPeakFirst / nSym;
+    var rPeakFirst = (nPeakFirst && nSym) ?  nPeakFirst / nSym : 0;
     return { tPeak, tDown, nPeakFirst, rPeakFirst,
         maxRateIncrease, minRateIncrease, 
         mediumRateIncrease,
@@ -313,33 +273,34 @@ function summaryPeakDown(bars) {
 }
 
 function averageStastic(data) {
+    if (!data || !data.length) return 0;
     var s = 0;
     for (var i = 0; i < data.length; i++) s += data[i];
-    if (data.length <= 0) return 0;
-    return data.length == 0 ? 0 : s / data.length;
+    return (s && data.length) ?  s / data.length : 0;
 }
 
 function mediumStastic(data) {
-    var datacopy = new Array(data.length);
+    var datacopy = [];
     for (var i = 0; i < data.length; i++) datacopy[i] = data[i];
     datacopy.sort(function(a,b) {if (a<b) return 1; else return -1;});
-    i = data.length / 2;
+    var i = data.length / 2;
     if (i == 0) return datacopy[i];
-    if (data.length % 2 == 0) return (datacopy[i-1]+datacopy[i])/2;
-    else return datacopy[i];
+    if (data.length % 2 == 0) 
+        return (datacopy[i-1]+datacopy[i])/2;
+    else 
+        return datacopy[i];
 }
 
 function basicStastic(data) {
-    if (!data) return;
     var n = data.length || 0;
     
     var imax = 0;
     for (var i = 1; i < n; i++) if (data[i] > data[imax])  imax = i;
-    var max = data[imax];
+    var max = data[imax] || 0.0;
 
     var imin = 0;
     for (var i = 1; i < n; i++) if (data[i] < data[imin]) imin = i;
-    var min = data[imin];
+    var min = data[imin] || 0.0;
 
     var sum = 0;
     for (var i = 0; i < n; i++) sum = sum + data[i];
@@ -355,7 +316,7 @@ function basicStastic(data) {
 //frequence
 function freqence(data, nDay) {
     //console.log(data.length, nDay);
-    var freq = new Array(nDay);
+    var freq = [];
     for (var i = 0; i < nDay; i++) freq[i] = 0;
 
     var n = data.length || 0;
@@ -363,16 +324,16 @@ function freqence(data, nDay) {
     return freq;
 }
 
-function summaryDrawDown(bars, kind) {
-    if (!bars || !bars.length) return;
+function summaryDrawDown(bars, kind, nDay) {
+    //if (!bars || !bars.length) return;
     var nSym = bars.length;
-    var nDay = bars[0].length;
+    if (!nDay) nDay = bars[0].length;
+    if (!kind) kind = 0;
     var drawDownData = [];
     var drawdown = [];
     var start = [];
     var end = [];
     var len = [];
-    if (!kind) kind =0
     for (var i = 0; i < nSym; i++) {
         var bar = bars[i];
         //var d = calDrawDownExtend(bar);
@@ -400,10 +361,10 @@ function summaryDrawDown(bars, kind) {
     return { nSym, nDay, drawDownData, basic, freqStart, freqEnd, freqLen, dayMostDrawDownStart, dayMostDrawDownEnd, dayMostDrawDownLast };
 }
 
-function summaryRDrawDown(bars, kind) {
-    if (!bars || !bars.length) return;
+function summaryRDrawDown(bars, kind, nDay) {
+    //if (!bars || !bars.length) return;
     var nSym = bars.length;
-    var nDay = bars[0].length;
+    if (!nDay) nDay = bars[0].length;
     var drawDownData = [];
     var drawdown = [];
     var start = [];
@@ -438,24 +399,17 @@ function summaryRDrawDown(bars, kind) {
 }
 
 function summary(n, unit) {
-    /*
-    this._summary1 = this.summaryPeakDown(this._bars);
-    this._summary2 = this.summaryUpProbility(this._bars, this._aimUpRate, this._aimDownRate);
-    this._summary3 = this.summaryUpProbilityFilterRate(this._bars, this._aimUpRate);
-    this._summary4 = this.summaryUpProbilityFilterRate(this._bars, this._aimDownRate);
-    this._summary5 = this.summaryDrawDown(this._bars);
-    this._summary = Object.assign({}, this._summary1, this._summary2, this._summary3, this._summary4, this._summary5);
-    */
-    var _summary1 = this.summaryPeakDown(this._bars);
-    var _summary2 = this.summaryUpProbility(this._bars, this._aimUpRate, this._aimDownRate);
-    var _summary3 = this.summaryUpProbilityFilterRate(this._bars, this._aimUpRate);
-    var _summary4 = this.summaryUpProbilityFilterRate(this._bars, this._aimDownRate);
-    var _summary5 = {'summaryDrawDown': this.summaryDrawDown(this._bars, 0)};
-    //var _summary6 = {'summaryBefPeakDrawDown': this.summaryDrawDown(this._bars, 1)};
-    //var _summary7 = {'summaryBefDownDrawDown': this.summaryDrawDown(this._bars, 2)};
-    var _summary8 = {'summaryRDrawDown': this.summaryRDrawDown(this._bars, 0)};
-    //var _summary9 = {'summaryBefPeakDrawDown': this.summaryRDrawDown(this._bars, 1)};
-    //var _summary10 = {'summaryBefDownDrawDown': this.summaryRDrawDown(this._bars, 2)};
+    var _summary1 = this.summaryPeakDown(this._bars, this._m);
+    //var _summary2 = this.summaryUpProbility(this._bars, this._aimUpRate, this._aimDownRate);
+    var _summary2 = this.summaryUpProbility(this._bars, this._m);
+    var _summary3 = this.summaryUpProbilityFilterRate(this._bars, this._aimUpRate, this._m);
+    var _summary4 = this.summaryUpProbilityFilterRate(this._bars, this._aimDownRate, this._m);
+    var _summary5 = {'summaryDrawDown': this.summaryDrawDown(this._bars, 0, this._m)};
+    //var _summary6 = {'summaryBefPeakDrawDown': this.summaryDrawDown(this._bars, 1, this._m)};
+    //var _summary7 = {'summaryBefDownDrawDown': this.summaryDrawDown(this._bars, 2, this._m)};
+    var _summary8 = {'summaryRDrawDown': this.summaryRDrawDown(this._bars, 0, this._m)};
+    //var _summary9 = {'summaryBefPeakDrawDown': this.summaryRDrawDown(this._bars, 1, this._m)};
+    //var _summary10 = {'summaryBefDownDrawDown': this.summaryRDrawDown(this._bars, 2, this._m)};
     //require jquery
     var extend = $ && $.extend || Object.assign;
     this._summary = extend({}, _summary1, _summary2, _summary3, _summary4, _summary5, /*_summary6, _summary7, */_summary8);
@@ -479,10 +433,10 @@ function getM() {
 function AfterAnalysis() {
 }
 
-function setBars(bars) {
+function setBars(bars, options) {
     this._bars = bars;
     this._n = (bars && bars.length) || 0;
-    this._m = (bars && bars[0] && bars[0].length) || 0;
+    this._m = (options && options.m) || (bars && bars[0] && bars[0].length) || 0;
     this._summary = {};
     this._freqDrawDown = {};
     this._freqRDrawDown = {};
@@ -551,7 +505,6 @@ function getFreqRDrawDown() {
     return this._freqRDrawDown;
 }
 
-
 function freqLeftRight(arrayMax, arrayMin, n, unit) {
     if (!arrayMax) arrayMax = [];
     if (!arrayMin) arrayMin = [];
@@ -615,7 +568,6 @@ function summaryFreqRDrawDown(n, unit) {
 
 AfterAnalysis.prototype.setBars = setBars;
 AfterAnalysis.prototype.setRate = setRate;
-AfterAnalysis.prototype.calDrawDown = calDrawDown;
 AfterAnalysis.prototype.calDrawDownExtend = calDrawDownExtend;
 AfterAnalysis.prototype.calRDrawDownExtend = calRDrawDownExtend;
 AfterAnalysis.prototype.basicStastic = basicStastic;
