@@ -43,7 +43,7 @@ module.exports = (klines) => {
 			allArr = [];
 
 		klines.forEach((kline) => {
-			if (kline.yield >= 0) {
+			if (kline.yield > 0) {
 				upYieldArr.push(kline.yield);
 			} else if (kline.yield < 0) {
 				downYieldArr.push(kline.yield);
