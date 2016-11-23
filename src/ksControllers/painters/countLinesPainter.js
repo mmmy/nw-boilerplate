@@ -178,7 +178,7 @@ let drawCountLines = (canvas, options) => {
 							b = y0 - k * x0;
 					var distance = Math.abs(k * x + b - y) / Math.pow((1 + k * k), 0.5);  //点到直线的距离
 					//距离 相差3个像素, 那么认为(x, y)在这条直线上
-					if(distance <= 4) {
+					if(distance <= 8) {
 						return i;
 					}
 				}

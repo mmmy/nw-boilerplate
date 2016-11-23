@@ -94,7 +94,8 @@ CountLinesChart.prototype._init = function() {
 	window.addEventListener('resize',this._resizeHandle);
 
 	this._canvas_main.addEventListener('mousemove', this._mainMouseMove.bind(this));
-	this._canvas_main.addEventListener('mouseleave', this._mainMouseLeave.bind(this));
+	this._canvas_main.addEventListener('mouseleave', this._mainCanvasMouseLeave.bind(this));
+	this._canvas_main.parentNode.addEventListener('mouseleave', this._mainMouseLeave.bind(this));
 }
 
 CountLinesChart.prototype._mainMouseMove = function(e) {
@@ -104,6 +105,7 @@ CountLinesChart.prototype._mainMouseMove = function(e) {
 		let { indexAtPoint } = this._drawLinesInfo;
 		let hoverIndex = indexAtPoint(x, y);
 		if(this._linesOption.hoverIndex !== hoverIndex) {
+			console.log('hoverIndex changed', hoverIndex);
 			//高亮 鼠标所在位置的曲线
 			this._linesOption.hoverIndex = hoverIndex;
 			this.render();
@@ -131,10 +133,10 @@ CountLinesChart.prototype._showToolTip = function(show) {
 
 		toolTip.css({top:y});
 		let containerW = $(this._canvas_main).width();
-		if(x > containerW - 100) {
-			toolTip.css('right', containerW - x);
+		if(x > containerW - 115) {
+			toolTip.css('right', containerW - x + 24);
 		} else {
-			toolTip.css('left', x + 5);
+			toolTip.css('left', x + 24);
 		}
 		$(this._canvas_main.parentNode).append(toolTip);
 	} else {
@@ -147,6 +149,10 @@ CountLinesChart.prototype._mainMouseLeave = function(e) {
 	this.render();
 	this.trigger('leaveLine', {index:-1});
 	this._showToolTip(false);
+}
+
+CountLinesChart.prototype._mainCanvasMouseLeave = function() {
+
 }
 
 CountLinesChart.prototype._drawChart = function() {
@@ -207,6 +213,7 @@ CountLinesChart.prototype.trigger = function(name, param) {
 CountLinesChart.prototype.highlightLine = function(index) {
 	this._linesOption.hoverIndex = index;
 	this.render();
+	this._showToolTip(true);
 }
 
 CountLinesChart.prototype.dispose = function() {
