@@ -20,6 +20,10 @@ let _model = null;
 let _isUp = true; //上涨
 let _intervalObj = {value:1, unit:'D', describe:'天'};
 
+let _highlightLine = function(index) {
+	_peakChart.highlightLine(index);
+}
+
 peakStatistic.init = (wrapper, model) => {
 	_model = model;
 	let newDom = $(`<div class='ks-container peak'><h4 class="title"><img src="image/jizhi.png" />极值统计</h4><div class="row"></div></div>`);
@@ -58,6 +62,8 @@ peakStatistic.init = (wrapper, model) => {
 	_$days = newDom.find('.days-info-wrapper strong');
 	_peakChartTitleUnit = newDom.find('.interval-unit');
 	//initEvent
+	daysNode.find('.days-info-wrapper.red').on('mouseenter',_highlightLine.bind(null,0)).on('mouseleave',_highlightLine.bind(null,-1));
+	daysNode.find('.days-info-wrapper.green').on('mouseenter',_highlightLine.bind(null,1)).on('mouseleave',_highlightLine.bind(null,-1));
 	/*
 	part1.find('.flat-btn.up').click(function(event) {
 		if(!_isUp) {
@@ -82,6 +88,13 @@ peakStatistic.init = (wrapper, model) => {
 	_barChart = new CountBarsChart(newDom.find('.chart-wrapper')[0], {showValue:true, isHorizon: true, yMinSpace:5, hideXAxis: true, hideVerticalGrid: true});
 	_peakChart = new CountLinesChart(newDom.find('.chart-wrapper')[1]);
 	// _peakChart.render();
+	_peakChart.on('hoverLine', function(param) {
+		let index = param.index;
+		$(daysNode.find('.days-info-wrapper')[index]).addClass('active');
+	});
+	_peakChart.on('leaveLine', function(param) {
+		daysNode.find('.days-info-wrapper').removeClass('active');
+	});
 };
 //更新描述UI
 /*
