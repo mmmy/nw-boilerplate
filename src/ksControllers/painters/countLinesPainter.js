@@ -178,7 +178,7 @@ let drawCountLines = (canvas, options) => {
 							b = y0 - k * x0;
 					var distance = Math.abs(k * x + b - y) / Math.pow((1 + k * k), 0.5);  //点到直线的距离
 					//距离 相差3个像素, 那么认为(x, y)在这条直线上
-					if(distance <= 8) {
+					if(distance <= 5) {
 						return i;
 					}
 				}
@@ -225,7 +225,7 @@ let drawCountBars = (canvas, options) => {
 	//raw data & options
 	let	series = options.series,
 			isHorizon = options.isHorizon || false,
-			showValue = options.isHorizon || false,
+			showValue = options.showValue || false,
 			xData = options.x,
 			yMin = options.yMin || 0,
 			yMax = options.yMax,
@@ -282,11 +282,16 @@ let drawCountBars = (canvas, options) => {
 				ctx.strokeStyle = data[j].hover && data[j].hover.strokeStyle || defaultHoverStyle.strokeStyle;
 				ctx.fillStyle = data[j].hover && data[j].hover.fillStyle || defaultHoverStyle.fillStyle;
 				if(!showValue) {
-					var fontSize = barWidth > 15 ? 15 : barWidth * 0.7;
-					fontSize = fontSize < 8 ? 8 : fontSize;
+					var fontSize = barWidth > 15 ? 15 : barWidth * (isHorizon ? 0.7 : 0.7);
+					fontSize = fontSize < 10 ? 10 : fontSize;
 					ctx.font = `${fontSize}px Arial`;
 					ctx.textAlign = 'center';
-					ctx.fillText(data[j].value, x+barWidth/2, y - 8);
+					if(isHorizon) {
+						ctx.textAlign = 'left';
+						ctx.fillText(data[j].value + '个', x + barHeight + 5 ,y + barWidth/2*1.5);
+					} else {
+						ctx.fillText(data[j].value + '个', x+barWidth/2, y - 8);
+					}
 				}
 			} else {
 				ctx.lineWidth = data[j].lineWidth || defaultDrawStyle.lineWidth;
@@ -307,10 +312,10 @@ let drawCountBars = (canvas, options) => {
 			if(showValue) {
 				ctx.fillStyle = data[j].textColor || '#333';
 				var fontSize = barWidth > 15 ? 15 : barWidth * 0.7;
-				fontSize = fontSize < 8 ? 8 : fontSize;
+				fontSize = fontSize < 10 ? 10 : fontSize;
 				ctx.font = `${fontSize}px Arial`;
 				ctx.textAlign = 'left';
-				ctx.fillText(data[j].value, x + barHeight + 3 ,y + barWidth);
+				ctx.fillText(data[j].value, x + barHeight + 3 ,y + barWidth/2);
 			}
 		}
 	}
@@ -405,6 +410,7 @@ let drawAxis = (canvas, data, options) => {
 	let hideVerticalGrid = options &&  options.hideVerticalGrid || false;
 	let activeIndexes = options && options.activeIndexes;
 	let selectedIndex = options && options.selectedIndex;
+	let labelWidth = options && options.labelWidth || (isVertical ? 40 : 30);
 	let minSpace = options && options.minSpace || 20;
 	let textColor = options && options.textColor || '#888';
 	let hoverColor = options && options.hoverColor || defaultHoverStyle.strokeStyle;
@@ -420,7 +426,6 @@ let drawAxis = (canvas, data, options) => {
 	let height = canvas.height;
 
 	let space = 0;
-	let labelWidth = 30;
 	if(isVertical) {
 		space = (height - padding.top - padding.bottom) / (centerLabel ? len : (len-1));
 	} else {
@@ -439,14 +444,17 @@ let drawAxis = (canvas, data, options) => {
 	// ctx.fillStyle = 'rgba(0,0,0,0.1)';
 	// ctx.fillRect(0, 0, width, height);
 	ctx.font = `${10*ratio}px Arial`;
-	ctx.textAlign = hideVerticalGrid ? 'right' : 'center';
+	ctx.textAlign = isVertical ? 'right' : 'center';
 	for(let i=0; i<len; i+=interval) {
 		ctx.strokeStyle = gridColor;
 		ctx.fillStyle = textColor;
 		if(isVertical) {
+			if(hideVerticalGrid && (i===0 || i===len-1)) {
+				ctx.fillStyle = 'rgba(0,0,0,0)';
+			}
 			let x = labelWidth / 2;
 			let y = _dataToPointY(padding.top, height-padding.top-padding.bottom, data[0], data[data.length-1], data[i]);
-			ctx.fillText(data[i], hideVerticalGrid ? x*1.8 : x, y+5*ratio);
+			ctx.fillText(data[i]+ (hideVerticalGrid ? '%' : ''), hideVerticalGrid ? x*1.8 : x*1.8, y+5*ratio);
 			if(!hideVerticalGrid) {
 				ctx.beginPath();
 				ctx.lineWidth = 1;
@@ -460,7 +468,14 @@ let drawAxis = (canvas, data, options) => {
 			ctx.fillText(data[i], x, y);
 		}
 	}
-
+	if(hideVerticalGrid) {
+		ctx.beginPath();
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = '#aaa';
+		ctx.moveTo(_to05(labelWidth-2), padding.top - 2);
+		ctx.lineTo(_to05(labelWidth-2), height-padding.bottom-1);
+		ctx.stroke();
+	}
 	//selectedIndex
 	/*
 	if(selectedIndex >=0) {

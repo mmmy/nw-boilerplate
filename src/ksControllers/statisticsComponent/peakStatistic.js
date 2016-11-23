@@ -31,15 +31,19 @@ peakStatistic.init = (wrapper, model) => {
 	$(wrapper).append(newDom);
 
 	//add other doms
-	let percentInfo1 = $(`<div class="percent-item"></div>`)
-												.append(`<p class="describe"><span class="text">最高涨幅<img src="./image/up.png" heigh="12"/></span></p>`)
-												.append(`<p class="rate percent-info red"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
-	let percentInfo2 = $(`<div class="percent-item"></div>`)
-												.append(`<p class="describe"><span class="text">最大跌幅<img src="./image/down.png" heigh="12"/></span></p>`)
-												.append(`<p class="rate percent-info green"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
-												
+	let percentInfo1 = $(`<div class="ks-col-50"></div>`)
+												.append($(`<div class="percent-item red"></div>`)
+													.append(`<p class="rate percent-info red"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
+													.append(`<p class="describe"><span class="text">最高涨幅</span></p>`)
+												)
+	let percentInfo2 = $(`<div class="ks-col-50"></div>`)
+												.append($(`<div class="percent-item green"></div>`)
+													.append(`<p class="rate percent-info green"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
+													.append(`<p class="describe"><span class="text">最大跌幅</span></p>`)
+												)
 	let part1 = $(`<div class="ks-col-50"></div>`)
-							.append(`<div class="chart-title bar">1.按极值大小分布图<span class="axis pull-right">横坐标:<span class="black">百分比</span>纵坐标:<span class="black">个数</span></span></div>`)
+							// .append(`<div class="chart-title bar">1.按极值大小分布图<span class="axis pull-right">横坐标:<span class="black">百分比</span>纵坐标:<span class="black">个数</span></span></div>`)
+							.append(`<div class="chart-title bar">按极值大小分布图</div>`)
 							.append(`<div class="chart-wrapper bar"></div>`)
 							.append($(`<div class="row percent-info-container"></div>`).append(percentInfo1).append(percentInfo2))// .append(`<p class="btns"><button class="flat-btn up active">上涨</button><button class="flat-btn down">下跌</button></p>`);
 
@@ -48,7 +52,8 @@ peakStatistic.init = (wrapper, model) => {
 							.append(`<div class="ks-col-50"><div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong><span class="interval-unit">天</span></p><p class="text">到达最低点位</p></div></div>`)
 
 	let part2 = $(`<div class="ks-col-50"></div>`)
-							.append(`<div class="chart-title line">2.按时间分布统计图<span class="axis pull-right">横坐标:<span class="black interval-unit">天</span>纵坐标:<span class="black">个数</span></span></div>`)
+							// .append(`<div class="chart-title line">2.按时间分布统计图<span class="axis pull-right">横坐标:<span class="black interval-unit">天</span>纵坐标:<span class="black">个数</span></span></div>`)
+							.append(`<div class="chart-title line" style="padding-left: 16px">按时间分布统计图</div>`)
 							.append(`<div class="chart-wrapper line"></div>`)
 							.append(daysNode)
 
@@ -85,7 +90,7 @@ peakStatistic.init = (wrapper, model) => {
 	});
 	*/
 	//chart
-	_barChart = new CountBarsChart(newDom.find('.chart-wrapper')[0], {showValue:true, isHorizon: true, yMinSpace:5, hideXAxis: true, hideVerticalGrid: true});
+	_barChart = new CountBarsChart(newDom.find('.chart-wrapper')[0], {showValue:false, isHorizon: true, yMinSpace:10, hideXAxis: true, hideVerticalGrid: true});
 	_peakChart = new CountLinesChart(newDom.find('.chart-wrapper')[1]);
 	// _peakChart.render();
 	_peakChart.on('hoverLine', function(param) {

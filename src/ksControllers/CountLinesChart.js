@@ -14,7 +14,7 @@ function CountLinesChart(container, config) {
 		console.error('not a container dom!');
 		return;
 	}
-	this._yAxisW = 30;
+	this._yAxisW = 40;
 	this._xAxisH = 30;
 	this._events = {
 		'hoverLine':null,
@@ -105,7 +105,6 @@ CountLinesChart.prototype._mainMouseMove = function(e) {
 		let { indexAtPoint } = this._drawLinesInfo;
 		let hoverIndex = indexAtPoint(x, y);
 		if(this._linesOption.hoverIndex !== hoverIndex) {
-			console.log('hoverIndex changed', hoverIndex);
 			//高亮 鼠标所在位置的曲线
 			this._linesOption.hoverIndex = hoverIndex;
 			this.render();

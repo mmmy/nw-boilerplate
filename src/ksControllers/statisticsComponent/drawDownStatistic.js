@@ -44,12 +44,12 @@ drawDownStatistic.init = (wrapper, model) => {
 								.append(`<div class="ks-col-33"><div class="days-info-wrapper gray-dark"><p class="days-info">第<strong>0</strong><span class="interval-unit">天</span></p><p>结束最大回撤</p></div></div>`)
 
 	let part1 = $(`<div class="ks-col-50"></div>`)
-							.append(`<div class="chart-title bar">1.按回撤大小分布图<span class="axis pull-right">横坐标:<span class="black">百分比</span>纵坐标:<span class="black">个数</span></span></div>`)
+							.append(`<div class="chart-title bar">按回撤大小分布图</div>`)
 							.append(`<div class="chart-wrapper bar"></div>`)
 							.append(dataRow)
 
 	let part2 = $(`<div class="ks-col-50"></div>`)
-							.append(`<div class="chart-title line">2.按时间分布统计图<span class="axis pull-right">横坐标:<span class="black interval-unit">天</span>纵坐标:<span class="black">个数</span></span></div>`)
+							.append(`<div class="chart-title line" style="padding-left:16px">按时间分布统计图</div>`)
 							.append(`<div class="chart-wrapper"></div>`)
 							.append(daysRow)
 							.append(`<p class="describe">*统计结果均为最多支统计结果</p>`)

@@ -22,8 +22,8 @@ function CountBarsChart(container, config) {
 
 	this._isHorizon = config.isHorizon || false;
 	this._showValue = config.showValue || false;
-	this._yAxisW = 30;
-	this._xAxisH = this._hideXAxis ? 20 : 30;
+	this._yAxisW = this._isHorizon ? 45 : 40;
+	this._xAxisH = this._hideXAxis ? 10 : 30;
 
 	this._events = {
 		'hoverBar': null,
@@ -54,7 +54,7 @@ function CountBarsChart(container, config) {
 		padding: {
 			left: 0,
 			top: 20,
-			right: 30,
+			right: this._isHorizon ? 50 : 20,
 			bottom: 0,
 		},
 		series: [{
@@ -71,14 +71,15 @@ function CountBarsChart(container, config) {
 		hoverIndex: -1
 	};
 	this._xAxisOptions = {
-		padding: {left:this._yAxisW,top:0,right:30,bottom:0},
+		padding: {left:this._yAxisW,top:0,right:40,bottom:0},
 		activeIndexes: [],
 		minSpace: 30,
 		centerLabel: false
 	};
 	this._yAxisOptions = {
 		minSpace: yMinSpace,
-		isVertical: true, 
+		isVertical: true,
+		labelWidth : this._yAxisW, 
 		padding:{left:0,top:20,right:20,bottom:this._xAxisH},
 		activeIndexes: [],
 		hideVerticalGrid: hideVerticalGrid
@@ -141,7 +142,7 @@ CountBarsChart.prototype._drawChart = function() {
 	for(var i=0; i < this._linesOption.series.length; i++) {
 		let data = this._linesOption.series[i].data;
 		for(var j=0,len=data.length; j<len; j++) {
-			countMax = Math.max(countMax, data[i].value);
+			countMax = Math.max(countMax, data[j].value);
 		}
 	}
 	let yLables = [];
