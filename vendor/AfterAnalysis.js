@@ -528,10 +528,10 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     var newleft = copyMin[pleft] || 0;
     var newright = copyMax[pright] || 0;
     if (!unit) {
-        if (!n) n = 8;
-        unit = (newright - newleft) / (n+2);
+        if (!n) n = 10;
+        unit = (newright - newleft) / n;
         if (newleft != 0) {
-            unit = Math.max(newright / 6, newleft / 6);
+            unit = Math.max(newright / 4, -newleft / 4);
         }
         unit = Math.ceil(unit * 20000);
         unit = unit + (10 - unit) % 10;
@@ -541,12 +541,16 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     //console.log('Max',right, 'Min',left,'newright',newright, 'newleft',newleft);
 
     var nRight, nLeft;
-    nRight = Math.floor(newright / unit) + 2;
-    nLeft = Math.floor(-newleft / unit) + 2;
-    if (nRight > 12) nRight = 12;
-    if (nLeft > 12) nLeft = 12;
-    if (nRight < 1) nRight = 1;
+    nRight = Math.floor(newright / unit) + 1;
+    nLeft = Math.floor(-newleft / unit) + 1;
+    if (nRight < 5) nRight = 5;
+    if (nRight == 5) nLeft = 5;
+    if (nLeft > 5) nLeft = 5;
     if (nLeft < 1) nLeft = 1;
+    if (nRight < 1) nRight = 1;
+    if (nLeft > 2) {
+        if (nRight > 5) nRight = 5;
+    } else if (nRight > 10) nRight = 10;
 
     var freqRight = [];
     var freqLeft = [];
