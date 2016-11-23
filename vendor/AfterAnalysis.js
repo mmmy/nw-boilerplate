@@ -533,11 +533,11 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
         if (newleft != 0) {
             unit = Math.max(newright / 6, newleft / 6);
         }
-        unit = Math.ceil(unit * 2000);
+        unit = Math.ceil(unit * 20000);
         unit = unit + (10 - unit) % 10;
-        unit = unit / 2000.0;
+        unit = unit / 20000.0;
     }
-    if (unit < 1e-3) unit = 1e-3;
+    if (unit < 1e-4) unit = 1e-4;
     //console.log('Max',right, 'Min',left,'newright',newright, 'newleft',newleft);
 
     var nRight, nLeft;
