@@ -168,8 +168,8 @@ function summaryUpProbility(bars, nDay) {
             if (bars[i][j] < bars[i][0]) { tmp = -1; tNotUp[j]++; }
         }
         for (var j = rbound; j < nDay; j++) {
-            if (tmp > 1) tUp[j]++;
-            if (tmp < 1) tNotUp[j]++;
+            if (tmp > 0) tUp[j]++;
+            if (tmp < 0) tNotUp[j]++;
         }
     }
 
@@ -680,12 +680,12 @@ module.exports = AfterAnalysis;
 
 //var a = new AfterAnalysis([[1,2],[2,3]])
 //var a = new AfterAnalysis([]);
-//var a = new AfterAnalysis(require('./b')['closePrices'])
+//var a = new AfterAnalysis(require('./data'));
 //var a = new AfterAnalysis([]);
 //console.log(a.summaryFreqPeakRate(15)); //15fen
 //console.log(a._m);
 /*
-console.log(a.summary());
+console.log(a.summary().upRate);
 console.log(a.summaryFreqPeakRate(15)); //15fen
 console.log(a.summaryFreqDrawDown());
 console.log(a.summaryFreqRDrawDown());
