@@ -530,8 +530,8 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     copyMax.sort(function(a,b) {if (a>b) return 1; else return -1;});
     copyMin.sort(function(a,b) {if (a<b) return 1; else return -1;});
 
-    var pleft = Math.ceil(0.90*arrayMin.length || 0);  //isNaN(0.96*undefined)
-    var pright = Math.ceil(0.90*arrayMax.length || 0);
+    var pleft = Math.floor(0.90*arrayMin.length || 0);  //isNaN(0.96*undefined)
+    var pright = Math.floor(0.90*arrayMax.length || 0);
     var newleft = copyMin[pleft] || 0;
     var newright = copyMax[pright] || 0;
     if (!unit) {
