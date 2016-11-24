@@ -160,11 +160,18 @@ function summaryUpProbility(bars, nDay) {
     for (var i = 0; i < nDay; i++) tUp[i] = 0;
     for (var i = 0; i < nDay; i++) tNotUp[i] = 0;
 
-    for (var i = 0; i < nSym; i++) 
-        for (var j = 1; j < Math.min(nDay, (bars[i] && bars[i].length || 0)); j++) {
-            if (bars[i][j] > bars[i][0]) tUp[j]++;
-            if (bars[i][j] < bars[i][0]) tNotUp[j]++;
+    for (var i = 0; i < nSym; i++) {
+        var tmp = 0;
+        var rbound = (bars[i] && bars[i].length) || 0; 
+        for (var j = 1; j < Math.min(nDay, rbound); j++) {
+            if (bars[i][j] > bars[i][0]) { tmp = 1; tUp[j]++; }
+            if (bars[i][j] < bars[i][0]) { tmp = -1; tNotUp[j]++; }
         }
+        for (var j = rbound; j < nDay; j++) {
+            if (tmp > 1) tUp[j]++;
+            if (tmp < 1) tNotUp[j]++;
+        }
+    }
 
     var upRate = (nSym && tUp[nDay-1]) ? tUp[nDay-1] / nSym : 0;
     var notUpRate = (nSym && tNotUp[nDay-1]) ? tNotUp[nDay-1] / nSym : 0;
@@ -330,7 +337,7 @@ function freqence(data, nDay) {
 function summaryDrawDown(bars, kind, nDay) {
     //if (!bars || !bars.length) return;
     var nSym = bars.length;
-    if (!nDay) nDay = bars && bars[0] && bars[0].length || 0;
+    if (!nDay) nDay = (bars && bars[0] && bars[0].length) || 0;
     if (!kind) kind = 0;
     var drawDownData = [];
     var drawdown = [];
@@ -414,7 +421,7 @@ function summary(n, unit) {
     //var _summary9 = {'summaryBefPeakDrawDown': this.summaryRDrawDown(this._bars, 1, this._m)};
     //var _summary10 = {'summaryBefDownDrawDown': this.summaryRDrawDown(this._bars, 2, this._m)};
     //require jquery
-    var extend = global.$ && global.$.extend || Object.assign;
+    var extend = (global.$ && global.$.extend) || Object.assign;
     this._summary = extend({}, _summary1, _summary2, _summary3, _summary4, _summary5, /*_summary6, _summary7, */_summary8);
     this._freqDrawDown = this.summaryFreqDrawDown(n, unit);
     this._freqPeakRate = this.summaryFreqPeakRate(n, unit);
