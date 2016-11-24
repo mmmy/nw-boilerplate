@@ -81,15 +81,15 @@ function calMost(data) {
     //计算全局drawDown, 极大值前的drawDown，极小值前的drawDown
     //data Array of Number 一支股票多日的收盘价
     var nDay = data.length || 0;
-    var peak = data[0] || 0.0;    //最高价格
-    var down = data[0] || 0.0;    //最低价格
+    var peak = data[1] || 0.0;    //最高价格
+    var down = data[1] || 0.0;    //最低价格
     var ipeak = 0;         //第一次最高价格的位置
     var idown = 0;         //第一次最低价格的位置
     var vpeak = -10000000; //最高速度
     var vdown = -vpeak;    //最低速度
     var v = 0;             //速度
 
-    if (nDay) { ipeak = 1; idown = 1; }
+    if (nDay >= 2) { ipeak = 1; idown = 1; }
     for (var i = 1; i < nDay; i++) {
         if (data[i] > peak) {
             peak = data[i];
