@@ -254,9 +254,9 @@ function summaryPeakDown(bars, nDay) {
     var minRateIncrease = bRateIncrease.min;
     var averageRateIncrease = bRateIncrease.average;
     var dayMostPeak = basicStastic(tPeak.slice(1)).imax+1;
-    if (tPeak.length <= 1) dayMostPeak = 0;
+    if (tPeak.length <= 1 || !bars.length) dayMostPeak = 0;
     var dayMostDown = basicStastic(tDown.slice(1)).imax+1;
-    if (tDown.length <= 1) dayMostDown = 0;
+    if (tDown.length <= 1 || !bars.length) dayMostDown = 0;
     var basicStasticAmplitude = basicStastic(sAmplitude);
     var mediumRateIncrease = mediumStastic(sRateIncrease);
     
