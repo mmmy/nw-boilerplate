@@ -62,6 +62,7 @@ let drawCountLines = (canvas, options) => {
 			yMin = options.yMin || 0,
 			yMax = options.yMax,
 			hoverIndex = options.hoverIndex,
+			activeIndex = options.activeIndex,
 			padding = options.padding || {left:0, top:0, right:0, bottom:0};
 	
 	if(yMax === undefined) {
@@ -136,14 +137,14 @@ let drawCountLines = (canvas, options) => {
 		//绘制标线
 		ctx.setLineDash([5,2]);
 		ctx.lineWidth = 1;
-		let activeIndexes = line.activeIndexes || [];
+		let activeIndexes = (activeIndex > -1) ? [activeIndex] : [];
 		activeIndexes.forEach(function(index){
 			let x = _toInt(padding.left + index * xSpace),
 					y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[index]);
-			ctx.beginPath();  //horizon dash line
-			ctx.moveTo(x, y);
-			ctx.lineTo(padding.left, y);
-			ctx.stroke();
+			// ctx.beginPath();  //horizon dash line
+			// ctx.moveTo(x, y);
+			// ctx.lineTo(padding.left, y);
+			// ctx.stroke();
 			ctx.beginPath();   //vertical dash line
 			ctx.moveTo(x, y);
 			ctx.lineTo(x, height - padding.bottom);
@@ -161,13 +162,18 @@ let drawCountLines = (canvas, options) => {
 	ctx.restore();
 	//returns
 	let indexAtPoint = function (x, y){
+		var hoverIndex = -1,
+				activeIndex = -1;
 		try {
 			x *= ratio;
 			y *= ratio;
-			//现根据x判断 所在x轴区间[xInt0, xInt0+1], 然后判断(x, y)是否在区间的直线上
-			var xInt0 = Math.floor((x - padding.left) / xSpace);
+			//弃用 : 现根据x判断 所在x轴区间[xInt0, xInt0+1], 然后判断(x, y)是否在区间的直线上
+			//新: 根据点距离
+			var xInt0 = Math.round((x - padding.left) / xSpace);
 			if(xInt0 >= 0) {
+				var distanceArr = [];
 				for(var i=0,len=series.length; i<len; i++) {
+					/* 根据点到线的距离
 					var data = series[i].data;
 					var x0 = padding.left + xInt0 * xSpace;
 					var x1 = x0 + xSpace;
@@ -179,16 +185,63 @@ let drawCountLines = (canvas, options) => {
 					var distance = Math.abs(k * x + b - y) / Math.pow((1 + k * k), 0.5);  //点到直线的距离
 					//距离 相差3个像素, 那么认为(x, y)在这条直线上
 					if(distance <= 5) {
-						return i;
+						return {hoverIndex:i, activeIndex:xInt0};
+					}
+					*/
+					var data = series[i].data;
+					var x0 = padding.left + xInt0 * xSpace;
+					var y0 = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[xInt0]);
+					var distance = Math.sqrt((x - x0)*(x - x0) + (y - y0) * (y - y0));
+					distanceArr.push(distance);
+					// if(distance < 10) {
+					// 	if(distance < distanceMin[0]) {
+					// 		distanceMin = distance;
+					// 		hoverIndex = i;
+					// 	} else if(distance == distanceMin) { //有两个点以上重合
+
+					// 	}
+					// }
+				}
+				var distanceMin = Math.min.apply(null, distanceArr);
+				var minIndexArr = [];   //记录最小点的个数 , 现在最多支持3个
+				if(distanceMin < 10) {
+					for(var j=0; j<distanceArr.length; j++) {
+						if(Math.abs(distanceMin - distanceArr[j]) < 1e-6)
+							minIndexArr.push(j);
 					}
 				}
+				if(minIndexArr.length === 0)
+					hoverIndex = -1;
+				else if(minIndexArr.length === 1)
+					hoverIndex = minIndexArr[0];
+				else if(minIndexArr.length === 2) {
+					var index0 = minIndexArr[0];
+					var y0 = _dataToPointY(padding.top, viewHeight, yMin, yMax, series[index0].data[xInt0]);
+					if(y < y0) {
+						hoverIndex = index0
+					} else {
+						hoverIndex = minIndexArr[1];
+					}
+				} else if(minIndexArr.length === 3) {
+					var index0 = minIndexArr[0];
+					var index1 = minIndexArr[1];
+					var y0 = _dataToPointY(padding.top, viewHeight, yMin, yMax, series[index0].data[xInt0]);
+					if(y + 4 < y0) {
+						hoverIndex = index0;
+					} else if(y < y0 + 4) {
+						hoverIndex = index1;
+					} else {
+						hoverIndex = minIndexArr[2];
+					}
+				}
+				return {hoverIndex, activeIndex: xInt0};
 			}
 		} catch(e) {
 			console.error(e);
-			return -1;
+			return {hoverIndex, activeIndex};
 		}
 		//
-		return -1;
+		return {hoverIndex, activeIndex};
 	};
 
 	let indexToCoordinate = function(lineIndex, dataIndex) {

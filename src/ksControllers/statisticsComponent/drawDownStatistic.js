@@ -116,6 +116,24 @@ drawDownStatistic.init = (wrapper, model) => {
 	_retracementChart.on('leaveLine', function(param) {
 		daysRow.find('.days-info-wrapper').removeClass('blue-light blue-middle blue-dark');
 	});
+	_retracementChart.customTooltip(function(lineIndex, param){
+		var index = param.index,
+				value = param.value;
+		switch(lineIndex) {
+			case 0:
+				return `<span class="value">${value}</span>个结果<br>最大回撤持续${index}`;
+				break;
+			case 1:
+				return `<span class="value">${value}</span>个结果<br>在第${index}开始最大回撤`;
+				break;
+			case 2:
+				return `<span class="value">${value}</span>个结果<br>在第${index}结束最大回撤`;
+				break;
+			default:
+				return `<span class="value">${value}</span>个结果<br>在第${index}到达最高点`;
+				break;
+		}
+	});
 };
 
 drawDownStatistic._resetCharts = () => {
@@ -131,8 +149,21 @@ drawDownStatistic._updateBarChart = (model) => {
 			data = [],
 			xLables = ['0'],
 			series = [];
+
+	let decimal = 1;
+	if(unit >= 0.01)
+		decimal = 0;
+	else if(unit >= 0.001)
+		decimal = 1;
+	else if(unit >= 0.0001)
+		decimal = 2;
+	else if(unit >= 0.00001)
+		decimal = 3;
+	else if(unit >= 0.000001)
+		decimal = 4;
+
 	for(var i=0; i<rightLen; i++) {
-		xLables.push((unit * (i+1) * 100).toFixed(1));
+		xLables.push((unit * (i+1) * 100).toFixed(decimal) + '%');
 			data.push({
 				value: freqRight[i], 
 				fillStyle:'rgba(0, 69, 135, 0.5)', 

@@ -100,6 +100,11 @@ peakStatistic.init = (wrapper, model) => {
 	_peakChart.on('leaveLine', function(param) {
 		daysNode.find('.days-info-wrapper').removeClass('active');
 	});
+	_peakChart.customTooltip(function(lineIndex, param){
+		var index = param.index,
+				value = param.value;
+		return `<span class="value">${value}</span>个结果<br>在第${index}到达${lineIndex===0 ? '最高点' : '最低点'}`;
+	});
 };
 //更新描述UI
 /*
@@ -147,8 +152,20 @@ peakStatistic._redrawBarChart = (model) => {
 		let data = [];
 		let xLables = [],
 				series = [];
+
+		let decimal = 1;
+		if(unit >= 0.01)
+			decimal = 0;
+		else if(unit >= 0.001)
+			decimal = 1;
+		else if(unit >= 0.0001)
+			decimal = 2;
+		else if(unit >= 0.00001)
+			decimal = 3;
+		else if(unit >= 0.000001)
+			decimal = 4;
 		for(var i=leftLen-1; i>=0; i--) {   //绿色
-			xLables.push((- unit * (i+1) * 100).toFixed(1)); 
+			xLables.push((- unit * (i+1) * 100).toFixed(decimal)); 
 			data.push({
 				value: freqLeft[i], 
 				fillStyle:'rgba(16,145,33,0.2)', 
@@ -159,7 +176,7 @@ peakStatistic._redrawBarChart = (model) => {
 		}
 		xLables.push('0');
 		for(var i=0; i<rightLen; i++) {
-			xLables.push((unit * (i+1) * 100).toFixed(1));
+			xLables.push((unit * (i+1) * 100).toFixed(decimal));
 			data.push({
 				value: freqRight[i], 
 				fillStyle:'rgba(141,22,27,0.2)', 

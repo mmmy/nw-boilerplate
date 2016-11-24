@@ -71,7 +71,7 @@ function CountBarsChart(container, config) {
 		hoverIndex: -1
 	};
 	this._xAxisOptions = {
-		padding: {left:this._yAxisW,top:0,right:40,bottom:0},
+		padding: {left:this._yAxisW,top:0,right:this._isHorizon ? 50 : 20,bottom:0},
 		activeIndexes: [],
 		minSpace: 30,
 		centerLabel: false

@@ -9,10 +9,11 @@ let stopPropagationHelper =(e) => {
 	}
 };
 let _isClick = false;
-let _handleDataPaneClick = (e) => {
+let _handleArrowClick = (e) => {
 	_isClick = true;
+	e.stopPropagation();
 }
-let _handleDataPaneToggle = (e) => {
+let _handleArrowToggle = (e) => {
 	let $current = $(e.currentTarget);
 	let $target = $(e.currentTarget).siblings();
 	if(!_isClick && ($target.height() > 100)) {
@@ -21,6 +22,12 @@ let _handleDataPaneToggle = (e) => {
 	}
 	_isClick = false;
 }
+
+let _handleDataPaneToggle = (e) => {
+	let $target = $(e.currentTarget);
+	$target.toggleClass('half');
+	$target.siblings('.toggle-btn').toggleClass('up');
+};
 
 const propTypes = {
 	crossFilter: PropTypes.object.isRequired,
@@ -69,14 +76,18 @@ class ReportDetailView extends React.Component {
 		try {
 			var dataObj = model.getSummary();
 			var n = model.getN();
-			var {dayMostUp, dayMostNotUp, tUp, tNotUp} = dataObj;
+			var {dayMostUp, dayMostNotUp, tUp, tNotUp, upRate, notUpRate} = dataObj;
 			var mostUpRate = tUp[dayMostUp] / n;
 			var mostNotUpRate = tNotUp[dayMostNotUp] / n;
 
 			$(this.refs.day1).text(dayMostUp * intervalObj.value);
 			$(this.refs.day2).text(dayMostNotUp * intervalObj.value);
-			$(this.refs.day1.parentNode.parentNode).siblings('.percent-info').updatePercentInfo(mostUpRate);
-			$(this.refs.day2.parentNode.parentNode).siblings('.percent-info').updatePercentInfo(mostNotUpRate);
+			$(this.refs.day1.parentNode.parentNode).siblings('.percent-info').updatePercentInfo(mostUpRate,1);
+			$(this.refs.day2.parentNode.parentNode).siblings('.percent-info').updatePercentInfo(mostNotUpRate,1);
+			
+			//将上涨比例 和 下跌比例 设置成 upRate 和notUpRate
+			$(this.refs.day1.parentNode.parentNode.parentNode).siblings().find('.percent-info').updatePercentInfo(upRate,1);
+			$(this.refs.day2.parentNode.parentNode.parentNode).siblings().find('.percent-info').updatePercentInfo(notUpRate,1);
 			
 			$(this.refs.container).find('.interval-unit').text(intervalObj.describe);
 		} catch(e) {
@@ -168,11 +179,11 @@ class ReportDetailView extends React.Component {
 	getDataNodes() {
 		const decimal = getDecimalForStatistic();
 		let data = this.getStatisticsData();
-		let { median, mean, upPercent, up, down } = data;
+		let { median, mean, upPercent, downPercent, up, down } = data;
 		let that = this;
 		let dataArr1 = [
 			{names:['上涨比例', <span>第<span ref="day1" className="day">-</span><span className="interval-unit">天</span><br/>上涨比例达到最大</span>], values:[upPercent, 0], color:'red'},
-			{names:['下跌比例', <span>第<span ref="day2" className="day">-</span><span className="interval-unit">天</span><br/>下跌比例达到最大</span>], values:[(1-upPercent), 0], color:'green'},
+			{names:['下跌比例', <span>第<span ref="day2" className="day">-</span><span className="interval-unit">天</span><br/>下跌比例达到最大</span>], values:[downPercent, 0], color:'green'},
 			{names:['涨跌中位数'], values:[median], color:(median > 0 ? 'red' : 'green')},
 			{names:['涨跌平均数'], values:[mean], color:(mean > 0 ? 'red' : 'green')},
 		];
@@ -202,6 +213,7 @@ class ReportDetailView extends React.Component {
 		if(names[0]=='上涨比例' || names[0]=='下跌比例') {
 			decimal = 1;
 		}
+		let togglable = names.length > 1;
 		unit = unit || '%';
 		// if(rowIndex === 1) {
 		// 	return <div className="ks-col-25">
@@ -209,8 +221,9 @@ class ReportDetailView extends React.Component {
 		// 			</div>;
 		// }
 		color = color || '';
+		let className = classNames("ks-data-pane-wrapper transition-position", {"togglable":togglable});
 		return <div className="ks-col-25">
-						<div className="ks-data-pane-wrapper transition-position">
+						<div className={className} onClick={_handleDataPaneToggle}>
 							{names.map((name,i)=>{
 								let value = values[i] * 100;
 								let valueString = value.toFixed(decimal) + '';
@@ -221,7 +234,7 @@ class ReportDetailView extends React.Component {
 								</div>);
 							})}
 						</div>
-						{names.length > 1 ? <span className="toggle-btn transition-all" onClick={_handleDataPaneClick} onMouseEnter={_handleDataPaneToggle} onMouseLeave={_handleDataPaneToggle}><img src="./image/arrow.png"/></span> : ''}
+						{names.length > 1 ? <span className="toggle-btn transition-all" onClick={_handleArrowClick} onMouseEnter={_handleArrowToggle} onMouseLeave={_handleArrowToggle}><img src="./image/arrow.png"/></span> : ''}
 					</div>;
 	}
 	//弃用

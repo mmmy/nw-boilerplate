@@ -105,7 +105,7 @@ let initJqueryPlugins = () => {
 			decimal = decimal || 2;
 			value = value || 0;
 			var $this = $(this);
-			var vauleStr = (value*100).toFixed(2) + '';
+			var vauleStr = (value*100).toFixed(decimal) + '';
 		  var values = vauleStr.split('.');
 		  var $spans = $this.find('span');
 		  $($spans[0]).text(values[0]);

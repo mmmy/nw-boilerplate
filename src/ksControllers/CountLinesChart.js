@@ -73,6 +73,11 @@ function CountLinesChart(container, config) {
 
 	//drawCountLines 返回的对象, 包含获取绘图所需要的信息, 参考countLinesPainter.js的返回值
 	this._drawLinesInfo = null;
+	this._toolTipCustom = function(lineIndex,param) {
+		let value = param.value,
+				index = param.index;
+		return `<span class="value">${value}</span>个结果<br>在第${index}到达高点`;
+	};
 
 	this._constructor = "CountLinesChart";
 	this._init();
@@ -103,36 +108,42 @@ CountLinesChart.prototype._mainMouseMove = function(e) {
 			y= e.offsetY;
 	if(this._drawLinesInfo) {
 		let { indexAtPoint } = this._drawLinesInfo;
-		let hoverIndex = indexAtPoint(x, y);
-		if(this._linesOption.hoverIndex !== hoverIndex) {
+		let { hoverIndex, activeIndex } = indexAtPoint(x, y);
+		if(this._linesOption.hoverIndex !== hoverIndex || this._linesOption.activeIndex !== activeIndex) {
 			//高亮 鼠标所在位置的曲线
 			this._linesOption.hoverIndex = hoverIndex;
+			this._linesOption.activeIndex = activeIndex;
 			this.render();
 			//trigger event
+			this.trigger('leaveLine',{index: -1});
 			this.trigger(hoverIndex > -1 ? 'hoverLine' : 'leaveLine', {index: hoverIndex});
 			//show tool tip
-			this._showToolTip(hoverIndex > -1);
+			this._showToolTip(hoverIndex > -1, activeIndex);
 		}
 	}
 }
 
-CountLinesChart.prototype._showToolTip = function(show) {
+CountLinesChart.prototype._showToolTip = function(show, activeIndex) {
 	if(show) {
 		$(this._wrapper).find('.countlineschart-tooltip').remove();
 
 		var intervalObj = require('./statisticsComponent').getInterval();
 
 		let hoverIndex = this._linesOption.hoverIndex;
-		let activeIndex = this._linesOption.series[hoverIndex].activeIndexes[0];
+		if(activeIndex === undefined) {																				//默认触发高点tooltip
+			activeIndex = this._linesOption.series[hoverIndex].activeIndexes[0];
+			this._linesOption.activeIndex = activeIndex;
+		}
 		let { indexToCoordinate } = this._drawLinesInfo;
 		let {x,y} = indexToCoordinate(hoverIndex, activeIndex);
 		let value = this._linesOption.series[hoverIndex].data[activeIndex];
 		let indexStr = (activeIndex + 1) * intervalObj.value + intervalObj.describe;
-		let toolTip = $(`<span class="countlineschart-tooltip"><span class="value">${value}</span>个结果<br>在第${indexStr}到达高点</span>`);
+		let content = this._toolTipCustom(hoverIndex, {value:value, index:indexStr});
+		let toolTip = $(`<span class="countlineschart-tooltip">${content}</span>`);
 
 		toolTip.css({top:y});
 		let containerW = $(this._canvas_main).width();
-		if(x > containerW - 115) {
+		if(x > containerW - 165) {
 			toolTip.css('right', containerW - x + 24);
 		} else {
 			toolTip.css('left', x + 24);
@@ -210,9 +221,18 @@ CountLinesChart.prototype.trigger = function(name, param) {
 }
 
 CountLinesChart.prototype.highlightLine = function(index) {
+	let show = index > -1;
 	this._linesOption.hoverIndex = index;
+	if(show) {
+		var activeIndex = this._linesOption.series[index].activeIndexes[0];
+		this._linesOption.activeIndex = activeIndex;
+	}
+	this._showToolTip(show);
 	this.render();
-	this._showToolTip(true);
+}
+
+CountLinesChart.prototype.customTooltip = function(handle) {
+	this._toolTipCustom = handle;
 }
 
 CountLinesChart.prototype.dispose = function() {

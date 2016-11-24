@@ -11,15 +11,15 @@ swingStatistic.init = (wrapper, model) => {
 
 	_model = model;
 
-	let newDom = $(`<div class='ks-container swing'><h4 class="title"><img src="image/zhenfu.png"/>振幅统计</h4><div class='row'></div></div>`);
+	let newDom = $(`<div class='ks-container swing'><h4 class="title"><img src="image/zhenfu.png"/>波动统计</h4><div class='row'></div></div>`);
 	$(wrapper).append(newDom);
 
 	//add other doms
 	let part1 = $(`<div class="data-row"></div>`)
 							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">振幅最大值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
 							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">振幅最小值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
-							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">平均值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
-							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">方差</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
+							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">振幅平均值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
+							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">平均波动率</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
 
 	newDom.find('.row').append(part1);
 
@@ -37,7 +37,7 @@ swingStatistic.update = () => {
 	try {
 		let dataObj = model.getSummary();
 		let { max, min, average, ss } = dataObj.basicStasticAmplitude;
-		let dataArr = [max, min, average, ss];
+		let dataArr = [max, min, average, dataObj.fluctuation];
 		_dataDoms.forEach(($dom, i) => {
 			let data = dataArr[i],
 					dataStr = (data * 100).toFixed(2) + '',
