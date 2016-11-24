@@ -464,6 +464,7 @@ let drawAxis = (canvas, data, options) => {
 	let activeIndexes = options && options.activeIndexes;
 	let selectedIndex = options && options.selectedIndex;
 	let labelWidth = options && options.labelWidth || (isVertical ? 40 : 30);
+	labelWidth *= ratio;
 	let minSpace = options && options.minSpace || 20;
 	let textColor = options && options.textColor || '#888';
 	let hoverColor = options && options.hoverColor || defaultHoverStyle.strokeStyle;
