@@ -655,7 +655,10 @@ function summaryFreqRDrawDown(n, unit) {
 function averageBoDongLv(bars) {
     var s = 0;
     for (var i = 0; i < bars.length; i++) {
-        s += basicStastic(bars[i]).ss;
+        var b = [];
+        for (var j = 0; j < bars[i].length; j++) 
+            b.push( bars[i][j]/bars[i][0]-1.0 );
+        s += basicStastic(b).ss;
     }
     if (bars.length > 0) s = s / bars.length;
     return s; 
