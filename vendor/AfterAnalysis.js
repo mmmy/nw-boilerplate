@@ -272,6 +272,8 @@ function summaryPeakDown(bars, nDay) {
     var mediumDecrease = mediumStastic(RD); 
               
     var rPeakFirst = (nPeakFirst && nSym) ?  nPeakFirst / nSym : 0;
+
+    var fluctuation = averageBoDongLv(bars);
     return { tPeak, tDown, nPeakFirst, rPeakFirst,
         maxRateIncrease, minRateIncrease, 
         mediumRateIncrease,
@@ -279,7 +281,8 @@ function summaryPeakDown(bars, nDay) {
         dayMostPeak, dayMostDown,
         averageIncrease, averageDecrease,
         mediumIncrease, mediumDecrease,
-        basicStasticAmplitude, /*, drawDown, befPeakDrawDown, befDownDrawDown*/ };
+        basicStasticAmplitude,
+        fluctuation,/*, drawDown, befPeakDrawDown, befDownDrawDown*/ };
 }
 
 function averageStastic(data) {
@@ -647,6 +650,15 @@ function summaryFreqRDrawDown(n, unit) {
     sDD.forEach(function(x){dds.push(x.drawDown);});
     var result = freqLeftRight(dds,[], n, unit);
     return result;
+}
+
+function averageBoDongLv(bars) {
+    var s = 0;
+    for (var i = 0; i < bars.length; i++) {
+        s += basicStastic(bars[i]).ss;
+    }
+    if (bars.length > 0) s = s / bars.length;
+    return s; 
 }
 
 //var cp = require('./res')['closePrices']
