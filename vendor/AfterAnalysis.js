@@ -656,8 +656,8 @@ function averageBoDongLv(bars) {
     var s = 0;
     for (var i = 0; i < bars.length; i++) {
         var b = [];
-        for (var j = 0; j < bars[i].length; j++) 
-            b.push( bars[i][j]/bars[i][0]-1.0 );
+        for (var j = 1; j < bars[i].length; j++) 
+            b.push( bars[i][j]/bars[i][j-1]-1.0 );
         s += basicStastic(b).ss;
     }
     if (bars.length > 0) s = s / bars.length;
