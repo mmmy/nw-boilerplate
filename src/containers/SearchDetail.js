@@ -59,7 +59,7 @@ class SearchDetail extends React.Component {
 		return (<div className={ className } ref='container'>
 			<StatisticsContainer />
 			{/*<PatternContainer />*/}
-			<div ref="statistics_component" className="statistics-component-container"></div>
+			<div ref="statistics_component" className="statistics-component-wrapper"></div>
 			<CrossfilterContainer />
 		</div>);
 	}

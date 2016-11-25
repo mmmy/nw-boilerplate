@@ -13,7 +13,7 @@
 /**
  * 指标统计container
  */
-.statistics-component-container {
+.statistics-component-wrapper {
 	position: absolute;
 	left: 20px;
 	bottom: 10px;
@@ -30,6 +30,19 @@
 	.scrollbar(@width:6px);
 	.scrollbar-track(@background-color:transparent);
 	.scrollbar-thumb(@background-color: @ks-color-gray-1);
+	
+	.no-data-wrapper {
+		display: none;
+		text-align: center;
+		color: #999;
+		font-style: italic;
+	}
+	&.no-data {
+		overflow: hidden;
+		.no-data-wrapper {
+			display: block;
+		}
+	}
 }
 
 .pattern-container{

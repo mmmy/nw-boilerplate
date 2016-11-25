@@ -6,7 +6,7 @@ let canvasSizeHelper = function(canvas) {
 	let $canvas = $(canvas);
 	let height = $canvas.parent().height(),
 			width = $canvas.parent().width();
-	$canvas.attr({height, width}).css({height, width});
+	// $canvas.attr({height, width}).css({height, width});
 };
 
 function CountLinesChart(container, config) {
