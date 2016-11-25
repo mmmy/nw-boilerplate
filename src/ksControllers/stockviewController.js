@@ -191,17 +191,17 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 	let name = `<h2 class='name font-msyh'>${pattern.name||'未命名'}</h2>`;
 	// let info = `<p class='header-info'>${pattern.symbol}     ${pattern.kline.length}根K线</p>`;
 	let info = `<p class='header-info'><span class='strong'>${pattern.kline.length}</span>根K线</p>`;
-	let addButton = (type==2) ? '' : `<button class='add-btn flat-btn ${type==1?"right":""}'>add</button>`;
-	let deleteButton = (type == 0 || type == 2) ? `<button class='delete-btn flat-btn'>delete</button>` : '';
+	let addButton = (type==2) ? '' : `<button class='add-btn flat-btn ${type==1?"right":""}' data-kstooltip='收藏'>add</button>`;
+	let deleteButton = (type == 0 || type == 2) ? `<button class='delete-btn flat-btn' data-kstooltip='删除'>delete</button>` : '';
 	let hoverBtns = (type == 0) ? 
-									`<span class='btn-overlay flex-around'><button class='flat-btn re-search'>重新搜索</button><button class='flat-btn go-detail'>查看详情</button></span>`
+									`<span class='btn-overlay flex-around'><button class='flat-btn re-search' data-kstooltip='再次搜索'>再次搜索</button><button class='flat-btn go-detail' data-kstooltip='编辑K线'>编辑K线</button></span>`
 									:
-									(type == 1 ? `<span class='btn-overlay flex-around'><button class='flat-btn re-search'>重新搜索</button></span>` 
-															: `<span class='btn-overlay flex-around'><button class='flat-btn recover'>恢复</button></span>`);
+									(type == 1 ? `<span class='btn-overlay flex-around'><button class='flat-btn re-search' data-kstooltip='再次搜索'>再次搜索</button></span>` 
+															: `<span class='btn-overlay flex-around'><button class='flat-btn recover' data-kstooltip='恢复'>恢复</button></span>`);
 
 	let canvasDiv = `<div class='canvas-wrapper'><canvas class='kline' width='150' height='120' style='width:150px;height:120px'/>${hoverBtns}</div>`;
 	// let range = `<span class='daterange-info font-number'>${startDateStr} ~ ${endDateStr}</span>`;
-	// let footer = `<div class='btn-wrapper'><button class='re-search'>重新搜索</button><button class='go-detail'>查看详情</button></div>`;
+	// let footer = `<div class='btn-wrapper'><button class='re-search'>再次搜索</button><button class='go-detail'>查看详情</button></div>`;
 
 	//favorites 和 history 不一样
 	let fromInfoContent = (type === 0 || type === 2) ? pattern.symbol : (pattern.favoriteFolder ? `收藏夹/${pattern.favoriteFolder}` : `${pattern.symbol}<br/>${startDateStr}<br/>${endDateStr}<br/>${getIntervalString(pattern.interval)}`); 
@@ -217,11 +217,13 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 	let shoucangType = (type == 0) ? 2 : 1;
 			$node.find('.add-btn').focus(handleShouCangFocus.bind(null, favoritesManager, favoritesController, pattern, {type:shoucangType})).blur(handleShouCangBlur); //添加到收藏夹
 			$node.find('.delete-btn').click(_handleDeleteOne);
-			$node.find('.re-search').click(_handleReSearch.bind(null,{favoriteFolder}));  //重新搜索
-			$node.find('.go-detail').click(_handleDetail);  //重新搜索
+			$node.find('.re-search').click(_handleReSearch.bind(null,{favoriteFolder}));  //再次搜索
+			$node.find('.go-detail').click(_handleDetail);  //再次搜索
 			$node.find('.recover').click(_handleRecoverPattern);
 			drawKline($node.find('canvas.kline')[0], pattern.kline);
 
+	//init tooltip
+	$node.find('[data-kstooltip]').ksTooltip();
 	return $node;
 };
 

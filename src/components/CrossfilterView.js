@@ -124,6 +124,17 @@ class CrossfilterView extends React.Component {
 		if(!this.props.stretchView) { return }
 
 		let {position_bubble_chart, industry_quarter_chart, yield_count_chart} = this.refs;
+		//resize pie chart
+		// let pieParent = industry_quarter_chart.parentNode;
+		// let pieH = 0;
+		// if(industry_quarter_chart.clientHeight + 50 > pieParent.clientHeight) {
+		// 	pieH = pieParent.clientHeight - 50;
+		// 	industry_quarter_chart.style.width = pieH + 'px';
+		// 	industry_quarter_chart.style.height = pieH + 'px';
+		// } else {
+		// 	industry_quarter_chart.style.width = '';
+		// 	industry_quarter_chart.style.height = '';
+		// }
 
 		let bubbleChartW = position_bubble_chart.clientWidth,
 			bubbleChartH = position_bubble_chart.clientHeight,
@@ -371,7 +382,7 @@ resizeChart1() {
 	}
 
 	render() {
-		this.renderDate = new Date();
+		// this.renderDate = new Date();
 		const className = classnames('crossfilter-container', {
 		  'crossfilter-container-stretch': this.props.stretchView,
 		  'crossfilter-container-shrink': !this.props.stretchView

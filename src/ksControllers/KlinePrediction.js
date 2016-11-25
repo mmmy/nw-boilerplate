@@ -320,6 +320,8 @@ KlinePrediction.prototype.setData = function(kline, baseBars, interval, symbol, 
 	this._symbolName = symbol || '';
 	this._symbolDescribe = symbolDescribe || '';
 
+	this._hoverIndex = -1;   //fix bug
+
 	this._initKlineMaxMin();
 	this._initPredictionMaxMin();
 	this._initTimeArray();

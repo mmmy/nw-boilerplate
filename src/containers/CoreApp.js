@@ -23,6 +23,9 @@ class MainChart extends React.Component {
         searchResultController.init(this.refs.container_coreapp);
         wavesController.init(this.refs.container_coreapp);
         wavesController.start(true);
+        //dev
+        // searchResultController.reportSlideDown(false);
+        // searchResultController.updatePrediction(require('../store').getState().patterns);
     }
 
   componentDidUpdate() {

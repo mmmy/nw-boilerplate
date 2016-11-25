@@ -1,22 +1,65 @@
 @patternToolbar_H: 60px;//80px;
 @patternStatisticsPanel_H: 50px;//8%;
 //@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 10px;
-@patternView_W: calc(~"100% / 2 - 5px");//287px;//275px;//130px; // @patternContainerStretch_W * 0.393;
+@patternView_W: calc(~"100% / 3 - 2px");//287px;//275px;//130px; // @patternContainerStretch_W * 0.393;
 @patternView_H: 200px;
 
 @patternView_flat_W: @patternView_W; //130px
-@patternVIew_flat_W2: calc(~"100% / 3 - 5px");
+@patternVIew_flat_W2: calc(~"100% / 4 - 2px");
 
 @larger: 1;//1.08;
 @smaller: 0.52;
+
+/**
+ * 指标统计container
+ */
+.statistics-component-wrapper {
+	position: absolute;
+	left: 20px;
+	bottom: 10px;
+	width: calc(~"100% - 40px - 300px");
+	height: @patternContainerStretch_H;
+	background-color: #fff;
+	
+	@media (max-width: 1799px) {
+		width: calc(~"100% - 40px");
+	}
+
+	overflow: scroll;
+	overflow-x: hidden;
+	.scrollbar(@width:6px);
+	.scrollbar-track(@background-color:transparent);
+	.scrollbar-thumb(@background-color: @ks-color-gray-1);
+	
+	.no-data-wrapper {
+		display: none;
+		text-align: center;
+		color: #999;
+		font-style: italic;
+		.fa {
+			color: @brown-red;
+			opacity: 0.5;
+		}
+		p {
+			font-size: 12px;
+			margin-top: 20px;
+		}
+	}
+	&.no-data {
+		overflow: hidden;
+		.no-data-wrapper {
+			display: block;
+		}
+	}
+}
 
 .pattern-container{
 	// float: left;
 	position: absolute;
 	overflow: hidden;
 	// right: 0;
-	left: 20px;
-	bottom: 10px;
+	left: 0;//20px;
+	bottom: 0;//10px;
 	width: calc(~"100% * 7 / 13 + 47.7px");//@patternContainer_W;
 	height: @patternContainer_H;
 	background-color: #fff;
@@ -29,8 +72,8 @@
 	//background-color: lighten(@ks-color-gray-8, 18%);
 
 	&.full{
-		width: @patternContainerStretch_W;
-		height: @patternContainerStretch_H;
+		width: 100%;//@patternContainerStretch_W;
+		height: 100%;//@patternContainerStretch_H;
 		//padding-right: 5px;
 	}
 
@@ -98,7 +141,8 @@
 
 		h5 {
 			color: @lulu-black;
-			font-size: 14px;//1.3rem;
+			font-size: 16px;//1.3rem;
+			font-weight: bold;
 			// margin-top: 1.6rem;
 			margin: 0;
 			line-height: @patternToolbar_H;
@@ -391,7 +435,7 @@
 	overflow: scroll;
 	// padding: 10px 0 10px 10px;//2.8%;
 	margin-left: 30px;
-	margin-right: 5px;
+	margin-right: 30px;
 	.scrollbar(@width:6px);
 	.scrollbar-track(@background-color:transparent);
 	.scrollbar-thumb(@background-color: @ks-color-gray-1);
@@ -589,7 +633,7 @@
 
 }
 
-@media (min-width: 1600px) {
+@media (min-width: 1650px) {
 	.pattern-view {
 		width: @patternVIew_flat_W2;
 	}
@@ -865,8 +909,8 @@
 	.statistics-slide-widget {
 		position: absolute;
 		//margin-left: 6.8%;
-		width: 100%;//86%;
-		left: 0;//8%;
+		width: calc(~"100% - 60px");//100%;//86%;
+		left: 30px;//8%;
 		height: 30px;//3.5rem; 
 		top: 0;
 		font-size: 1.2rem;

@@ -41,7 +41,7 @@ function ConfigEditor(dom, searchConfig, info) {
 }
 
 ConfigEditor.prototype._init = function() {
-	let { dateRange, additionDate, spaceDefinition } = this._config;
+	let { dateRange, additionDate, spaceDefinition, isLatestDate } = this._config;
 	let d0 = dateRange[0],
 			d1 = dateRange[1];
 	this._inputs.startDate = $(`<input />`).val(d0.date);
@@ -83,7 +83,7 @@ ConfigEditor.prototype._init = function() {
 	let endDateDoms = $('<div>').addClass('inputs-groups').append($('<div>').addClass('inputs-wrapper').append(this._inputs.endDate).append(`<span class='date-icon fa fa-calendar-o'></span>`))
 																													.append($(`<div class="times">`).append(hour1).append(`<span>:</span>`).append(minute1).append(`<span>:</span>`).append(second1));
 
-	this._$wrapper.append(`<div class='item-title font-simsun'>搜索时间范围</div>`);
+	this._$wrapper.append(`<div class='item-title font-simsun'>搜索时间范围<span class="check-box-wrapper"><input type="checkbox" ${isLatestDate ? 'checked' : ''} />当前时间</span></div>`);
 	let $date = $(`<div class='item-body-container date'></div>`)
 							.append(startDateDoms)
 							.append(`<span class='zhi'>至</span>`)
@@ -136,6 +136,17 @@ ConfigEditor.prototype._initActions = function() {
 	this._inputs.endTime.hour.on('input', this._changeTime.bind(this, 1, 'hour'));
 	this._inputs.endTime.minute.on('input', this._changeTime.bind(this, 1, 'minute'));
 	this._inputs.endTime.second.on('input', this._changeTime.bind(this, 1, 'second'));
+	this._$wrapper.find('input[type="checkbox"]').on('change', this._toggleLatestTimeAuto.bind(this));
+}
+
+ConfigEditor.prototype._toggleLatestTimeAuto = function(e) {
+	this._config.isLatestDate = !this._config.isLatestDate;
+	var isLatestDate = this._config.isLatestDate;
+	this._inputs.endDate.attr('disabled', isLatestDate);
+	this._inputs.endTime.hour.attr('disabled', isLatestDate);
+	this._inputs.endTime.minute.attr('disabled', isLatestDate);
+	this._inputs.endTime.second.attr('disabled', isLatestDate);
+	this.onEdit()
 }
 
 ConfigEditor.prototype._changeTime = function(index, name, e) {

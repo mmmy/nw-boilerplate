@@ -16,6 +16,7 @@ const defaultProps = {
 let datePickerOptions = {
 	format: "yyyy/mm/dd",
 	language: "zh-CN",
+	todayBtn: "linked",
 	keyboardNavigation: false,
 	autoclose: true,
 };
@@ -62,7 +63,7 @@ class SearchConfigModal extends React.Component {
 
 	renderContent() {
 
-		let { dateRange, additionDate, spaceDefinition } = this.state.searchConfig;
+		let { dateRange, additionDate, spaceDefinition, isLatestDate } = this.state.searchConfig;
 		let d0 = dateRange[0],
 				d1 = dateRange[1];
 		const stockSelected = spaceDefinition.stock;
@@ -87,7 +88,7 @@ class SearchConfigModal extends React.Component {
 			<div className='item-body-container days'>
 				<div className='inputs-wrapper'><button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button></div><span className='font-simsun'>根</span>
 			</div>
-			<div className='item-title font-simsun'>搜索时间范围</div>
+			<div className='item-title font-simsun'>搜索时间范围<span className="check-box-wrapper"><input type="checkbox" checked={ isLatestDate } onChange={this.toggleLastTimeAuto.bind(this)}/>当前时间</span></div>
 			<div className='item-body-container date'>
 				<div className="inputs-groups">
 					<div className="inputs-wrapper date"><input ref='startDate' value={dateRange[0].date} onChange={this.changeStartDate.bind(this)}/><span className='date-icon fa fa-calendar-o'></span></div>
@@ -101,13 +102,13 @@ class SearchConfigModal extends React.Component {
 				</div>
 				<span className='zhi'>至</span>
 				<div className="inputs-groups">
-					<div className="inputs-wrapper date"><input ref='endDate' value={dateRange[1].date} onChange={this.changeEndDate.bind(this)}/><span className='date-icon fa fa-calendar-o'></span></div>
+					<div className="inputs-wrapper date"><input disabled={isLatestDate} ref='endDate' value={dateRange[1].date} onChange={this.changeEndDate.bind(this)}/><span className='date-icon fa fa-calendar-o'></span></div>
 					<div className="times">
-						<input type="number" min='0' max='24' value={d1.hour} onChange={this.changeTime.bind(this, 1,'hour')}/>
+						<input disabled={isLatestDate} type="number" min='0' max='24' value={d1.hour} onChange={this.changeTime.bind(this, 1,'hour')}/>
 						<span>:</span>
-						<input type="number" min='0' max='59' value={d1.minute} onChange={this.changeTime.bind(this, 1,'minute')}/>
+						<input disabled={isLatestDate} type="number" min='0' max='59' value={d1.minute} onChange={this.changeTime.bind(this, 1,'minute')}/>
 						<span>:</span>
-						<input type="number" min='0' max='59' value={d1.second} onChange={this.changeTime.bind(this, 1,'second')}/>
+						<input disabled={isLatestDate} type="number" min='0' max='59' value={d1.second} onChange={this.changeTime.bind(this, 1,'second')}/>
 					</div>
 				</div>
 			</div>
@@ -190,6 +191,12 @@ class SearchConfigModal extends React.Component {
 	addDays() {
 		let { searchConfig } = this.state;
 		searchConfig.additionDate.value = parseInt(searchConfig.additionDate.value) + 1;
+		this.setState({searchConfig});
+	}
+
+	toggleLastTimeAuto() {
+		let { searchConfig } = this.state;
+		searchConfig.isLatestDate = !searchConfig.isLatestDate;
 		this.setState({searchConfig});
 	}
 

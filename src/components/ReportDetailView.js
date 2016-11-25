@@ -8,6 +8,28 @@ let stopPropagationHelper =(e) => {
 		e.stopPropagation();
 	}
 };
+let _isClick = false;
+let _handleArrowClick = (e) => {
+	_isClick = true;
+	e.stopPropagation();
+}
+let _handleArrowToggle = (e) => {
+	let $current = $(e.currentTarget);
+	let $target = $(e.currentTarget).siblings();
+	if(!_isClick && ($target.height() > 100)) {
+		$target.toggleClass('half');
+		$current.toggleClass('up');
+	}
+	_isClick = false;
+}
+
+let _handleDataPaneToggle = (e) => {
+	let $target = $(e.currentTarget);
+	if($target.hasClass('togglable')) {
+		$target.toggleClass('half');
+		$target.siblings('.toggle-btn').toggleClass('up');
+	}
+};
 
 const propTypes = {
 	crossFilter: PropTypes.object.isRequired,
@@ -25,7 +47,6 @@ class ReportDetailView extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {showSelect: false, type:TYPES[0]};
 	}
 
 	componentDidMount() {
@@ -49,6 +70,30 @@ class ReportDetailView extends React.Component {
 
 		if (fullView) {
 			$('.__fadeIn').animateCss('fadeIn');
+		}
+		//update statictics data
+		var statisticsComponent = require('../ksControllers/statisticsComponent');
+		var model = statisticsComponent.getModel();
+		var intervalObj = statisticsComponent.getInterval();
+		try {
+			var dataObj = model.getSummary();
+			var n = model.getN();
+			var {dayMostUp, dayMostNotUp, tUp, tNotUp, upRate, notUpRate} = dataObj;
+			var mostUpRate = tUp[dayMostUp] / n;
+			var mostNotUpRate = tNotUp[dayMostNotUp] / n;
+
+			$(this.refs.day1).text(dayMostUp * intervalObj.value);
+			$(this.refs.day2).text(dayMostNotUp * intervalObj.value);
+			$(this.refs.day1.parentNode.parentNode).siblings('.percent-info').updatePercentInfo(mostUpRate,1);
+			$(this.refs.day2.parentNode.parentNode).siblings('.percent-info').updatePercentInfo(mostNotUpRate,1);
+			
+			//将上涨比例 和 下跌比例 设置成 upRate 和notUpRate
+			$(this.refs.day1.parentNode.parentNode.parentNode).siblings().find('.percent-info').updatePercentInfo(upRate,1);
+			$(this.refs.day2.parentNode.parentNode.parentNode).siblings().find('.percent-info').updatePercentInfo(notUpRate,1);
+			
+			$(this.refs.container).find('.interval-unit').text(intervalObj.describe);
+		} catch(e) {
+			console.error(e);
 		}
 	}
 
@@ -119,105 +164,88 @@ class ReportDetailView extends React.Component {
 			'ks-show': fullView
 		});
 
-		let iconClassName = classNames('icon', {up: this.state.showSelect});
-
-		return (<div className={className}>
-
-			{/*<div className='report-item result-item-1'>
-
-				{this.generateItem({
-										title:'统计天数', 
-										items:[
-												{name:'样本数',content:sampleSize}, 
-												{name:'上涨概率', content:(riseProbability*100).toFixed(1)+'%', redColor:riseProbability > 0.5}, 
-											]
-									})
-				}
-
-			</div>*/}
-
-			{/*<div className='report-item result-item0'>
-
-				{this.generateItem({
-										title:'搜索结果', 
-										items:[
-												{name:'样本数',content:sampleSize}, 
-												{name:'上涨概率', content:(riseProbability*100).toFixed(1)+'%', redColor:riseProbability > 0.5}, 
-											]
-									})
-				}
-
-			</div>*/}
-
-			{/*<div className='report-item result-item1'>
-
-				{this.generateItem({
-									title:'收益率', 
-									items:[
-										{name:'平均数',content:earningAverage}, 
-										{name:'中位数',content:median}] 
-									})
-				}
-
-			</div>*/}
+		return (<div ref='container' className={className}>
 			<div className='header-container' tabIndex='0' ref='header_container'>
 				<span className={titleClassName}>历史指标统计</span>
-				<span className='select-container'>
-					<button ref='select_btn' className='statistic-type-select font-simsun' onMouseDown={this.handleTypeMouseDown.bind(this)} onFocus={this.handleTypeButtonFocus.bind(this)} onBlur={this.handleTypeButtonBlur.bind(this)}>
-						<span className='label-value'>{this.state.type}</span>
-						<span className={iconClassName}></span>
-						{this.state.showSelect ? 
-							<div className='select-dropdown'>
-								{TYPES.map((type,i)=>{
-									return <div className='option' onMouseDown={stopPropagationHelper} onClick={this.handleTypeChange.bind(this)}>{type}</div>
-								})}
-							</div> 
-							: 
-							''
-						}
-					</button>
-				</span>
 			</div>
 			{fullView ? '' : [<span className='split-line l1'></span>, <span className='split-line l2'></span>, <span className='split-line l3'></span>]}
 			<div className='statistic-data-container'>
-				<div className='statistic-data-container-inner'>
-					{this.generateCells()}
+				<div className='statistic-data-container-inner ks-container'>
+					{/*this.generateCells()*/}
+					{this.getDataNodes()}
 				</div>
 			</div>
 		</div>);
 	}
 
-	handleTypeChange(e) {
-		e.stopPropagation();
-		let type = e.target.innerHTML;
-		this.setState({type:type});
-		this.refs.header_container.focus();
+	getDataNodes() {
+		const decimal = getDecimalForStatistic();
+		let data = this.getStatisticsData();
+		let { median, mean, upPercent, downPercent, up, down } = data;
+		let that = this;
+		let dataArr1 = [
+			{names:['上涨比例', <span>第<span ref="day1" className="day">-</span><span className="interval-unit">天</span><br/>上涨比例达到最大</span>], values:[upPercent, 0], color:'red'},
+			{names:['下跌比例', <span>第<span ref="day2" className="day">-</span><span className="interval-unit">天</span><br/>下跌比例达到最大</span>], values:[downPercent, 0], color:'green'},
+			{names:['涨跌中位数'], values:[median], color:(median > 0 ? 'red' : 'green')},
+			{names:['涨跌平均数'], values:[mean], color:(mean > 0 ? 'red' : 'green')},
+		];
+		// let dataArr2 = [
+		// 	{name:'上涨平均值', value:up.mean},
+		// 	{name:'上涨中位数', value:up.median},
+		// 	{name:'下跌平均值', value:down.mean},
+		// 	{name:'下跌中位数', value:down.median},
+		// ];
+
+		let row1 = (<div className="row large">
+									{dataArr1.map((data) => {
+										return that.getNodeCells(data.names, data.values, decimal, null, 0, data.color);
+									})}
+							</div>);
+
+		// let row2 = (<div className="row small">
+		// 							{dataArr2.map((data) => {
+		// 								return that.getNodeCells(data.name, data.value, decimal, null, 1);
+		// 							})}
+		// 					</div>);
+		return [row1];
 	}
 
-	handleTypeMouseDown(e) {
-		if(this.state.showSelect){
-			e.preventDefault();
-			e.stopPropagation();
-			this.refs.select_btn.blur();
-			// this.setState({showSelect:false});
+	getNodeCells(names, values, decimal, unit, rowIndex, color) {
+		decimal = decimal || 2;
+		if(names[0]=='上涨比例' || names[0]=='下跌比例') {
+			decimal = 1;
 		}
+		let togglable = names.length > 1;
+		unit = unit || '%';
+		// if(rowIndex === 1) {
+		// 	return <div className="ks-col-25">
+		// 				<p><span className="name">{name}</span><span className="percent-info"><span>{values[0]}</span><span>.</span><span>{values.length>1 ? values[1] : ''}</span><span>{unit}</span></span></p>
+		// 			</div>;
+		// }
+		color = color || '';
+		let className = classNames("ks-data-pane-wrapper transition-position", {"togglable":togglable});
+		return <div className="ks-col-25">
+						<div className={className} onClick={_handleDataPaneToggle}>
+							{names.map((name,i)=>{
+								let value = values[i] * 100;
+								let valueString = value.toFixed(decimal) + '';
+								let valueStrArr = valueString.split('.');
+								return (<div className="ks-data-pane">
+									<p>{/*<span className={`circle ${color}`}></span>*/}{name}</p>
+									<p className={`percent-info ${color}`}><span>{valueStrArr[0]}</span><span>.</span><span>{valueStrArr.length>1 ? valueStrArr[1] : ''}</span><span>{unit}</span></p>
+								</div>);
+							})}
+						</div>
+						{names.length > 1 ? <span className="toggle-btn transition-all" onClick={_handleArrowClick} onMouseEnter={_handleArrowToggle} onMouseLeave={_handleArrowToggle}><img src="./image/arrow.png"/></span> : ''}
+					</div>;
 	}
-
-	handleTypeButtonFocus() {
-		this.setState({showSelect:true});
-	}
-
-	handleTypeButtonBlur() {
-		this.setState({showSelect:false});
-	}
-
+	//弃用
 	generateCells() {
 		const decimal = getDecimalForStatistic();
 		let data = this.getStatisticsData();
 		let { median, mean, upPercent, up, down } = data;
 		let that = this;
 		let dataArr = [];
-		if(this.state.type == TYPES[0]) {
 			dataArr = [
 									{name:'上涨比例', value:upPercent},
 									{name:'下跌比例', value:(1-upPercent)},
@@ -226,25 +254,12 @@ class ReportDetailView extends React.Component {
 									// {name:'上涨收益平均数', value:up.mean},
 									// {name:'下跌收益平均数', value:down.mean},
 								];
-		} else if(this.state.type == TYPES[1]) {
-			dataArr = [
-									{name:'上涨极值', value:up.max},
-									{name:'上涨中位数', value:up.median},
-									{name:'上涨平均数', value:up.mean}
-								];
-		} else if(this.state.type == TYPES[2]) {
-			dataArr = [
-									{name:'下跌极值', value:down.min},
-									{name:'下跌中位数', value:down.median},
-									{name:'下跌平均数', value:down.mean}
-								];
-		}
 		let nodes = dataArr.map(({name, value}) => {
 									return that.generateDataCell(name, value*100, decimal);
 								});
 		return nodes;
 	}
-
+	//弃用
 	generateDataCell(title, data, decimal, unit) {
 		decimal = decimal || 2;
 		if(title=='上涨比例' || title=='下跌比例') {
@@ -257,41 +272,6 @@ class ReportDetailView extends React.Component {
 		</span>;
 	}
 
-	renderStuffs(data) {
-		const decaimal = getDecimalForStatistic();
-		const { fullView, searchConfig } = this.props;
-		let daysStr = searchConfig && searchConfig.additionDate && searchConfig.additionDate.value || '0';
-		//统计天数
-		const daysClass = classNames('position-ab', 'text-center', 'transition-all', 'days', {'mama': !fullView});
-		//统计天数值
-		const daysValueClass = classNames('position-ab', 'text-center', 'transition-all', 'days-value', 'font-number', {'mama': !fullView});
-		//收益
-		const shouyiClass = classNames('position-ab', 'text-center', 'title-bala', 'shouyi', { 'ks-hidden': !fullView, 'ks-fade-in': fullView, 'ks-show': fullView });
-		//上涨比例
-		const upRateClass = classNames('position-ab', 'text-center', 'transition-all', 'up-rate', {'mama': !fullView});
-		//上涨比例值
-		const upRateValueClass = classNames('__fadeIn', 'position-ab', 'text-center', 'transition-all', 'up-rate-value', 'font-number', {'mama': !fullView});
-		//中位数
-		const medianClass = classNames('position-ab', 'text-center', 'transition-all', 'median', {'mama': !fullView});
-		//中位数值
-		const medianValueClass = classNames('__fadeIn', 'position-ab', 'text-center', 'transition-all', 'median-value', 'font-number', {'mama': !fullView});
-		//平均数
-		const meanClass = classNames('position-ab', 'text-center', 'transition-all', 'mean', {'mama': !fullView});
-		//平均数值
-		const meanValueClass = classNames('__fadeIn', 'position-ab', 'text-center', 'transition-all', 'mean-value', 'font-number', {'mama': !fullView });
-
-		return [
-			<div className={daysClass}>统计K线数</div>,
-			<div className={daysValueClass}>{daysStr}</div>,
-			<div className={shouyiClass}>收益</div>,
-			<div className={upRateClass}>上涨比例</div>, //xiaolu
-			<div className={upRateValueClass} >{ (data.upPercent*100).toFixed(1) }{'%'}</div>,
-			<div className={medianClass}>{fullView?'':'收益'}中位数</div>,
-			<div className={medianValueClass}>{ (data.median*100).toFixed(decaimal)}{'%'}</div>,
-			<div className={meanClass}>{fullView?'':'收益'}平均值</div>,
-			<div className={meanValueClass}>{ (data.mean*100).toFixed(decaimal)}{'%'}</div>,
-		];
-	}
 }
 
 ReportDetailView.propTypes = propTypes;

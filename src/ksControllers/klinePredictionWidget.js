@@ -117,4 +117,8 @@ klinePredictionWidget.setOriginHoverHandle = (handle) => {
 	_triggerHoverOrigin = handle;
 };
 
+klinePredictionWidget.show = (show) => {
+	_$root.find('.kline-prediction-widget-wrapper').toggleClass('show', show);
+};
+
 module.exports = klinePredictionWidget;

@@ -6,15 +6,25 @@
 .container-ks-sr {
 	position: relative;
 	height: 100%;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	// box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 	float: left;
-	border-radius: 5px;
+	// border-radius: 5px;
 	.title {
-		font-size: 14px;
+		font-size: 13px;
 		color: #000;
-		margin-left: 10px;
-		margin-top: 10px;
+		margin-left: 30px;
+		margin-top: 15px;
 		margin-bottom: 0;
+	}
+	.search-result-info {
+		position: absolute;
+		font-size:  10px;
+		left: calc(~"33.33% + 20px");
+		top: 15px;
+		.value {
+			padding-left: 5px;
+			padding-right: 5px;
+		}
 	}
 	.split-line {
 		display: inline-block;
@@ -22,7 +32,7 @@
 		bottom: 23px;
 		width: 1px;
 		height: 55px;
-		border-left: 1px dashed #eee;
+		border-left: 1px dashed #aaa;
 	}
 	.info-item {
 		display: inline-block;
@@ -30,7 +40,7 @@
 		margin-top: 16px;
 		.item-title {
 			font-size: 12px;
-			color: #aaa;
+			color: #666;
 		}
 		.item-value {
 			color: #000;
@@ -58,13 +68,13 @@
 }
 
 .container-ks-sr.meta {
+	background-color: #fff;
 	margin-left: 20px;
-	width: calc(~'(100% - 60px)*'@metaW/(@metaW + @statisticW + @chartW));
-	.timespent, .total, .similarity-top {
-		width: 14.13%;
+	width: calc(~"100% - 40px");//calc(~'(100% - 60px)*'@metaW/(@metaW + @statisticW + @chartW));
+	.info-item {
+		width: 8.333%;//14.13%;
 		float: left;
 	}
-
 	.timespent {
 		.item-value {
 			margin-top: 18px;
@@ -79,21 +89,32 @@
 	}
 
 	.l1 {
-		left: 14.13%;
+		left: 8.33%;
 	}
 	.l2 {
-		left: 28.16%;
+		left: 16.66%;
+	}
+	.l3 {
+		left: 25%;
+	}
+	.l4 {
+		left: 33.33%;
 	}
 
 	.pattern-wrapper {
+		&.blank {
+			opacity: 0;
+		}
 		display: inline-block;
 		position: relative;
 		float: left;
-		width: 55.33%;
+		width: calc(~"33.33% - 30px");//55.33%;
+		margin-left: 20px;
 		height: 80px;
 		margin-top: 5px;
 		border-radius: 2px;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		border: 1px solid #ddd;
+		// box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 		.pattern-inner {
 			position: relative;
 			width: 100%;
@@ -124,6 +145,22 @@
 			width: 35%;
 			height: 60px;
 			margin-top: 10px;
+		}
+	}
+	//超过1520px的 媒体查询
+	@media (min-width: 1520px) {
+		.info-item {
+			width: 6.25%;
+		}
+		.l1 { left: 6.25%; }
+		.l2 { left: 12.5%; }
+		.l3 { left: 18.75%; }
+		.l4 { left: 25%; }
+		.pattern-wrapper {
+			width: calc(~"25% - 20px - 6.67px");	
+		}
+		.search-result-info {
+			left: calc(~"25% + 20px");
 		}
 	}
 }

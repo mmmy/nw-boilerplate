@@ -13,6 +13,8 @@ import klinePredictionWidget from '../ksControllers/klinePredictionWidget';
 import searchResultController from '../ksControllers/searchResultController';
 import { setStockViewVisibleRange } from '../shared/actionTradingview';
 
+import PatternContainer from './PatternContainer';
+
 let _showRemainder = true;
 
 let setActiveSymol = () => {
@@ -100,6 +102,12 @@ class ComparatorStatic extends React.Component {
 	}
   componentDidUpdate() {
     // console.info('ComparatorStatic did update in millsec: ', new Date() - this.d1);
+  }
+
+  hidePredictionWidget() {
+    klinePredictionWidget.show(false);
+    $(".start-btn-container").addClass('hide'); //隐藏预测工具栏
+    $(".toolbar-item.item1").removeClass('hide');     //显示pattern过滤工具栏   
   }
 
   goToSearchPage() {
@@ -293,11 +301,12 @@ class ComparatorStatic extends React.Component {
             init={ logined }
             options={ options } />*/}
         <div className='kline-prediction-widget-container' ref='kline_prediction_widget'>
-
+          <PatternContainer />
         </div>
 
-        <div className='start-btn-container'>
-          <button data-kstooltip="切换到主K线视图" className='flat-btn' onClick={ this.goToSearchPage.bind(this) }></button>
+        <div className='start-btn-container hide'>
+          <button data-kstooltip="切换到主K线视图" className='flat-btn go-stockview' onClick={ this.goToSearchPage.bind(this) }></button>
+          <button data-kstooltip="返回" className='flat-btn go-hidden' onClick={ this.hidePredictionWidget.bind(this) }></button>
         </div>
         {/*</div>*/}
         {/*<div className={'prediction-transparent-overlay top-left'}>

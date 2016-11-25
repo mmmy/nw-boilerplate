@@ -8,7 +8,7 @@ import store from '../store';
 
 const SORT_BTN_DATE = { type:'SORT_BTN_DATE', label:'按日期' };
 const SORT_BTN_SIMILARITY = { type:'SORT_BTN_SIMILARITY', label:'按相似度' };
-const SORT_BTN_YIELD= { type:'SORT_BTN_YIELD', label:'按收益率' };
+const SORT_BTN_YIELD= { type:'SORT_BTN_YIELD', label:'按涨跌' };
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
@@ -211,7 +211,7 @@ class SortBar extends React.Component {
 						{this.renderChildPanel(2)}
 					</button>*/}
 					<button className='pattern-bar-btn' onClick={ this.showChildPanel.bind(this, 1) } onBlur={ this.hideChildPanel.bind(this) }>
-						<span data-kstooltip="涨跌幅度过滤" className={filterIconClass}></span>
+						<span data-kstooltip="相似度过滤" className={filterIconClass}></span>
 						{this.renderChildPanel(1)}
 					</button>
 					<button className='pattern-bar-btn' onClick={ this.showChildPanel.bind(this, 0) } onBlur={ this.hideChildPanel.bind(this) }>
