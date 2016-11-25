@@ -56,16 +56,16 @@ statisticComponent._updateModel = (closePrices, predictionBars) => {
 
 statisticComponent.update = (closePrices, options) => {
 	let predictionBars = options && options.predictionBars;
-	if(predictionBars < 2) {   //当预测小于两个bar
-		_$parent.addClass('no-data');
-		return;
-	}
-	_$parent.removeClass('no-data');
 
 	_intervalObj = options && options.interval && _convertToObj(options.interval) || _intervalObj;
 	let param = {intervalObj: _intervalObj};
 
 	statisticComponent._updateModel(closePrices, predictionBars);
+	if(predictionBars < 2) {   //当预测小于两个bar
+		_$parent.addClass('no-data');
+		return;
+	}
+	_$parent.removeClass('no-data');
 
 	peakStatistic.update(param);
 	drawDownStatistic.update(param);

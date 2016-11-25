@@ -25,8 +25,10 @@ let _handleArrowToggle = (e) => {
 
 let _handleDataPaneToggle = (e) => {
 	let $target = $(e.currentTarget);
-	$target.toggleClass('half');
-	$target.siblings('.toggle-btn').toggleClass('up');
+	if($target.hasClass('togglable')) {
+		$target.toggleClass('half');
+		$target.siblings('.toggle-btn').toggleClass('up');
+	}
 };
 
 const propTypes = {
