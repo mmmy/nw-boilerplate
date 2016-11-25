@@ -16,7 +16,7 @@ export default React.createClass({
 	},
 	render(){
 
-		return (<div ref="container" style={{position:'relative',height:'500px',border:'1px solid rgba(0,0,0,0.2)'}}>
+		return (<div ref="container" className="statistics-component-wrapper" style={{position:'relative',height:'500px',border:'1px solid rgba(0,0,0,0.2)'}}>
 		</div>);
 	}
 
