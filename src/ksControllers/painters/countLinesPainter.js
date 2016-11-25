@@ -250,6 +250,8 @@ let drawCountLines = (canvas, options) => {
 			var data = series[lineIndex].data;
 			x = padding.left + dataIndex * xSpace;
 			y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[dataIndex]);
+			x = x / ratio;
+			y = y / ratio;
 			return {x,y};
 		} catch(e) {
 			console.error(e);

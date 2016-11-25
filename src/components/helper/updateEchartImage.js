@@ -72,6 +72,40 @@ let updateCanvasVisible = (hide) => {
 		func && func.call && func(hide);
 	});
 };
+//需要根据对应的css规则确定计算方式
+let _$patternCollection = null;
+let patternViewSizeHelper = () => {
+	_$patternCollection = _$patternCollection || $('.pattern-collection');
+	let patternCollectionW = _$patternCollection.width() - 6;
+	let $body = $(document.body);
+	let bodyWidth = $body.width();
+
+	let patternViewW = 0;
+
+	if(bodyWidth > 1650) {
+		patternViewW = patternCollectionW / 4 - 2;
+	} else {
+		patternViewW = patternCollectionW / 3 - 2;
+	}
+ 	return {width: Math.floor(patternViewW), height: Math.floor(patternViewW * 210 / 160)};
+};
+
+let getZPatternViewCanvasSize = () => {
+	_$patternCollection = _$patternCollection || $('.pattern-collection');
+	let $patternViews = _$patternCollection.find('.pattern-view:visible');
+	let width = 0,
+			height = 0;
+	if($patternViews.length > 0) {
+		let $canvas = $($patternViews[0]).find('canvas');
+		width = $canvas.width();
+		height = $canvas.height();
+	} else {
+		let patternViewSize = patternViewSizeHelper();
+		width = patternViewSize.width - 60;
+		height = patternViewSize.height - 120;
+	}
+	return {width: width , height: height };
+};
 
 module.exports = {
 	setFunc,
@@ -80,4 +114,6 @@ module.exports = {
 	updateImgAll,
 	setCanvasVisibleFunc,
 	updateCanvasVisible,
+	patternViewSizeHelper,
+	getZPatternViewCanvasSize,
 };
