@@ -8,7 +8,7 @@ import swingStatistic from './swingStatistic'; 								//振幅统计
 //第二版的新界面
 let _$parent = null;
 let _$container = null;
-let _$noDataPane = $('<div class="full-width-height no-data-wrapper"><div class="center-vw"><h1><i class="fa fa-info-circle"></i></h1><p>后向统计时间范围过小<br/>请尝试两根K线以上的后向统计</p></div></div>');
+let _$noDataPane = $('<div class="full-width-height no-data-wrapper"><div class="center-vw"><h1><i class="fa fa-exclamation-circle"></i></h1><p>后向统计时间范围过小<br/>请尝试两根K线以上的后向统计</p></div></div>');
 let statisticComponent = {};
 let _model = null;
 
