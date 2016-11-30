@@ -175,7 +175,7 @@
 	}
 }
 // thumb
-.scrollbar-thumb(@background-color:#000;@box-shadow:none;@border-radius:3px; @border:none){
+.scrollbar-thumb(@background-color:#666;@box-shadow:none;@border-radius:3px; @border:none){
 	&::-webkit-scrollbar-thumb {
 		border: @border;
 	    border-radius: @border-radius;
@@ -185,6 +185,14 @@
 	    -webkit-box-shadow: @box-shadow;
 	    cursor: pointer;
 	}
+	// body[theme="dark"] &::-webkit-scrollbar-thumb {
+	//     -webkit-box-shadow: @box-shadow;
+	//     cursor: pointer;
+	//     border-radius: @border-radius;
+	//   background-size: contain;
+	//   background-position: center;
+	//   background: #000 url('./image/scroll-bg.png') no-repeat !important;
+	// }
 }
 
 
@@ -261,7 +269,7 @@
 .flat-btn {
 	outline: none;
 	border: none;
-	background-color: #fff;
+	background-color: transparent;
 }
 
 .modal-wrapper {
