@@ -1,0 +1,142 @@
+
+@dark-bg-wrapper: #15181A;
+@dark-bg-inner: rgb(37, 42, 45);
+@dark-bg-inner-lighter: #222528;
+
+
+@dark-subtitle: #eee;
+@dark-graytitle: #999;
+
+@dark-brown-red: rgb(170,65,66);
+@dark-green: rgb(115,176,20);
+
+@icons_dark_url: "./image/icons_dark.png";
+
+body[theme="dark"] {
+	background-color: @dark-bg-wrapper;
+
+	.container-stockview,
+	.comparator-heatmap, .comparator-prediction-chart,
+	.search-report-wrapper {
+		background-color: transparent;
+	}
+	//深灰色
+	.pattern-tv-split-line,
+	.inner-searchreport {
+		background-color: @dark-bg-wrapper;
+	}
+	.statistics-component-wrapper {
+		background-color: #1D1F23;
+	}
+	//浅灰色
+	.container-header {
+		background-color: @dark-bg-inner !important;
+	}
+	//浅灰色突出
+	.kline-prediction-widget-container, #comparator-chart,
+	.statistics-container-inner,
+	.pattern-container,
+	.pattern-tv-box-shadow-bottom,
+	.pattern-bar-btn .search,
+	.pattern-statistics-panel,
+	.pattern-statistics-container button,
+	.btn-toggle {
+		background-color: @dark-bg-inner-lighter !important;
+	}
+	
+	.pattern-view {
+		background-color: #282B2F;
+	}
+
+	//text
+	.btn-container {
+		color: #78878f;
+	}
+	.pattern-info-container p,
+	.symbol-container {
+		color: #fff;
+	}
+	//gray text
+	.left-title,
+	.statistic-component-container .chart-title,
+	.comparator-info-container {
+		color: @dark-graytitle;
+	}
+	//eee白色
+	// .statistic-component-container .chart-title {
+	// 	color: @dark-subtitle;
+	// }
+	//白色
+	.statistic-component-container .title,
+	.reportdetail-container .title,
+	.pattern-statistics-panel .black,
+	.days-info-wrapper .days-info strong, .statistic-component-container .ks-container.retracement .percent-info,
+	.statistic-component-container .ks-container.swing .percent-info,
+	.prediction-name {
+		color: #fff !important;
+	}
+
+	.ks-data-pane {
+		color: #eee !important;
+		background-color: transparent;
+	}
+	.ks-container.peak .days-info-wrapper.red.active strong,
+	.percent-info.red , .ks-container.peak .days-info-wrapper.red:hover strong {
+		color: @dark-brown-red !important;
+	}
+	.ks-container.peak .days-info-wrapper.green.active strong,
+	.percent-info.green, .ks-container.peak .days-info-wrapper.green:hover strong {
+		color: @dark-green !important;
+	}
+	.percent-item.red:before, .days-info-wrapper.red:before {
+		background-color: @dark-brown-red !important;
+	}
+	.percent-item.green:before, .days-info-wrapper.green:before {
+		background-color: @dark-green !important;
+	}
+
+	//icons
+	.comparator-info-container .add-btn,
+	.pattern-bar-btn .icon, input[nwsaveas]::before, input.nwsaveas::before,
+	.btn-toggle .arrow-icon {
+		background-image: url(@icons_dark_url) !important;
+	}
+
+	.flat-btn {
+		// background-color: transparent;
+	}
+
+	//
+	.red {
+		color: @dark-brown-red;
+	}
+	.pattern-toolbar-container:after,
+	.pattern-statistics-panel:before,
+	.pattern-view,
+	.statistic-component-container .ks-container {
+		border-color: #333;
+	}
+	
+	.ks-container > .row > .ks-col-50:first-child {
+		border-color: #333;
+	}
+
+	.statistics-component-wrapper::-webkit-scrollbar-thumb {
+		// background: #555 url('image/scroll-bg.png') no-repeat;
+	}
+
+	.countlineschart-tooltip {
+		background-color: rgba(255, 255, 255, 0.4);
+	}
+
+	.ks-container.retracement .title .btn-wrapper > button {
+		border-color: #333;
+		&.active {
+			color: @dark-brown-red;
+			background-color: @dark-bg-inner-lighter;
+		}
+		&:hover:not(.active) {
+			color: #aaa;
+		}
+	}
+}
