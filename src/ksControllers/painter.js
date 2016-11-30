@@ -157,7 +157,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		 	downBorderColor = options && options.downBorderColor || '#444',//'#050505',
 		 	downColor = options && options.downColor || '#555';//'rgba(0,0,0,0)';
 
-	let backgroundColor = options && options.backgroundColor || '#fff';
+	let backgroundColor = options && options.backgroundColor || 'rgba(0,0,0,0)';
 
 	ctx.clearRect(0, 0, width, height);
 	ctx.fillStyle = backgroundColor;

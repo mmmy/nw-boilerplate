@@ -20,6 +20,8 @@ let _model = null;
 let _isUp = true; //上涨
 let _intervalObj = {value:1, unit:'D', describe:'天'};
 
+let _isLight = false;
+
 let _highlightLine = function(index) {
 	_peakChart.highlightLine(index);
 }
@@ -168,10 +170,10 @@ peakStatistic._redrawBarChart = (model) => {
 			xLables.push((- unit * (i+1) * 100).toFixed(decimal)); 
 			data.push({
 				value: freqLeft[i], 
-				fillStyle:'rgba(16,145,33,0.2)', 
-				strokeStyle: 'rgba(16,145,33,0.2)',
-				textColor: 'rgba(16,145,33,1)',
-				hover: {fillStyle: 'rgba(16,145,33,1)', strokeStyle: 'rgba(16,145,33,1)'}
+				fillStyle: _isLight ? 'rgba(16,145,33,0.2)' : 'rgba(115,176,20,0.2)', 
+				strokeStyle: _isLight ? 'rgba(16,145,33,0.2)' : 'rgba(115,176,20,0.2)',
+				textColor: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)',
+				hover: {fillStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)', strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)'}
 			});
 		}
 		xLables.push('0');
@@ -179,10 +181,10 @@ peakStatistic._redrawBarChart = (model) => {
 			xLables.push((unit * (i+1) * 100).toFixed(decimal));
 			data.push({
 				value: freqRight[i], 
-				fillStyle:'rgba(141,22,27,0.2)', 
-				strokeStyle: 'rgba(141,22,27,0.2)',
-				textColor: 'rgba(141,22,27,1)',
-				hover: {fillStyle: 'rgba(141,22,27,1)', strokeStyle: 'rgba(141,22,27,1)'}
+				fillStyle: _isLight ? 'rgba(141,22,27,0.2)' : 'rgba(170,65,66,0.2)', 
+				strokeStyle: _isLight ? 'rgba(141,22,27,0.2)' : 'rgba(170,65,66,0.2)',
+				textColor: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)',
+				hover: {fillStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)', strokeStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)'}
 			});
 		}
 		series[0] = {
@@ -205,27 +207,30 @@ peakStatistic._redrawLineChart = (model) => {
 	
 		peakSeries[0] = {
 			data: tPeakS,
-			strokeStyle: 'rgba(141,22,27,1)',
-			fillStyle: 'rgba(141,22,27,0.1)',
+			strokeStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)',
+			fillStyle: _isLight ? 'rgba(141,22,27,0.1)' : 'rgba(170,65,66,0)',
 			hover: {
 				lineWidth: 2,
-				strokeStyle: 'rgba(141,22,27,1)',
-				fillStyle: 'rgba(141,22,27,0.1)'
+				strokeStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)',
+				fillStyle: _isLight ? 'rgba(141,22,27,0.1)' : 'rgba(170,65,66,0)'
 			},
 			activeIndexes: [dayMostPeak-1]
 		};
 		peakSeries[1] = {
 			data: tDownS,
-			strokeStyle: 'rgba(16,145,33,1)',
-			fillStyle: 'rgba(16,145,33,0.1)',
+			strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)',
+			fillStyle: _isLight ? 'rgba(16,145,33,0.1)' : 'rgba(115,176,20,0)',
 			hover: {
 				lineWidth: 2,
-				strokeStyle: 'rgba(16,145,33,1)',
-				fillStyle: 'rgba(16,145,33,0.1)'
+				strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)',
+				fillStyle: _isLight ? 'rgba(16,145,33,0.1)' : 'rgba(115,176,20,0)'
 			},
 			activeIndexes: [dayMostDown-1]
 		};
-		_peakChart.setData({dataLen,series:peakSeries,unit:_intervalObj.value});
+		let options = {
+			gridColor: _isLight ? '' : '#151515'
+		};
+		_peakChart.setData({dataLen,series:peakSeries,unit:_intervalObj.value, options:options});
 	} catch(e) {
 		console.error(e);
 		_peakChart.setData({dataLen:0,series:[]});
@@ -233,6 +238,7 @@ peakStatistic._redrawLineChart = (model) => {
 }
 
 peakStatistic.update = (param) => {
+	_isLight = $.keyStone && ($.keyStone.theme == 'light');
 	_intervalObj = param && param.intervalObj || _intervalObj;
 	let model = _model;
 	let dataObj = model && model.getSummary();

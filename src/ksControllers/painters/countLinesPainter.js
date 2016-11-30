@@ -527,7 +527,7 @@ let drawAxis = (canvas, data, options) => {
 	if(hideVerticalGrid) {
 		ctx.beginPath();
 		ctx.lineWidth = 1;
-		ctx.strokeStyle = '#aaa';
+		ctx.strokeStyle = 'rgba(0,0,0,0)';
 		ctx.moveTo(_to05(labelWidth-2), padding.top - 2);
 		ctx.lineTo(_to05(labelWidth-2), height-padding.bottom-1);
 		ctx.stroke();

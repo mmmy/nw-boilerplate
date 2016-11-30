@@ -128,7 +128,7 @@ class Login extends React.Component {
       <div className='login-panelsmall-container' ref='login_panel_container'>
       	{/*<div className='fix-drag-bug'></div>*/}
       	<div ref='drag_panel' className='login-titlebar-container'  onMouseDown={this.fixDragableBug.bind(this)}>
-      		<button style={{display:'none'}} className='flat-btn button app-close' onClick={this.fixDragableBug.bind(this)}></button>
+      		<button style={{}} className='flat-btn button app-close' onClick={this.closeApp.bind(this)}></button>
       	</div>
       	<div className='body-container'>
       		<div className='logo'></div>
@@ -152,6 +152,10 @@ class Login extends React.Component {
 	fixDragableBug(e) {
 		nwApp.updateAppDragable();
 		console.log(e)
+	}
+
+	closeApp(e) {
+		nwApp.appClose();
 	}
 
 	moveLeft(index=0, left=false) { //0:用户名, 1:密码
