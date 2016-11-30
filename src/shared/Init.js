@@ -32,7 +32,7 @@ let initJqueryPlugins = () => {
 		keyStone: {
 			configDefault:{
 				brownRedDark: '#750905',
-				brownRed: '#8D151B',
+				brownRed: theme == 'dark' ? 'rgb(170,65,66)' : '#8D151B',
 				brownRedLight: '#AC1822'
 			},
 			theme: theme,              //or dark
