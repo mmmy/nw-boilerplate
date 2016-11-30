@@ -14,7 +14,7 @@
     "resizable": true,
     "standard-window": false,
     "fullscreen": false,
-    "frame": true,
+    "frame": false,
     "toolbar": false,
     "icon": "./build/image/logo_title.png"
   },
