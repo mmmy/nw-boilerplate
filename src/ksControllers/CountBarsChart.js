@@ -93,8 +93,11 @@ function CountBarsChart(container, config) {
 }
 
 CountBarsChart.prototype._resize = function() {
-	this._updateCanvasSize();
-	this.render();
+	// this._updateCanvasSize();
+	let {width, height} = require('../shared/nwApp').appGetSize();
+	if(width > 1000) {
+		this.render();
+	}
 }
 
 CountBarsChart.prototype._updateCanvasSize = function() {

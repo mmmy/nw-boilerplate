@@ -27,13 +27,15 @@ let initJqueryPlugins = () => {
 			});
 	}
 	//ksDefaultConfig
+	var theme = $(document.body).attr('theme');
 	$.extend({
 		keyStone: {
 			configDefault:{
 				brownRedDark: '#750905',
 				brownRed: '#8D151B',
 				brownRedLight: '#AC1822'
-			}
+			},
+			theme: theme,              //or dark
 		}
 	});
 

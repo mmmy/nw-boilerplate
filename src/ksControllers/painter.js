@@ -509,7 +509,8 @@ let drawAxisY = (canvas, priceRange, options) => {
 let drawAxisX = (canvas, len, options) => {
 	len = parseInt(len) || 0;
 	if(!len) {
-		throw 'drawAxisX len is 0';
+		console.error('drawAxisX len is 0');
+		return;
 	}
 	betterCanvasSize(canvas);
 	//options

@@ -84,8 +84,11 @@ function CountLinesChart(container, config) {
 }
 
 CountLinesChart.prototype._resize = function() {
-	this._updateCanvasSize();
-	this.render();
+	// this._updateCanvasSize();
+	let {width, height} = require('../shared/nwApp').appGetSize();
+	if(width > 1000) {
+		this.render();
+	}
 }
 
 CountLinesChart.prototype._updateCanvasSize = function() {
