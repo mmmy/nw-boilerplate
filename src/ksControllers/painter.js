@@ -473,12 +473,15 @@ let drawAxisY = (canvas, priceRange, options) => {
 	
 	//options
 	let hoverY = options && options.hoverY;
+	let textColor = options && options.textColor || '#000';
+	let hoverColor = options && options.hoverColor || '#fff';
+	let hoverBackground = options && options.hoverBackground || '#222';
 
 	//paint
 	ctx.clearRect(0,0, width, height);
-	ctx.fillStyle = '#000';//'rgba(0, 0, 0, 0.1)';
+	// ctx.fillStyle = '#000';//'rgba(0, 0, 0, 0.1)';
 	// ctx.fillRect(0, 0, width, height);
-	ctx.fillStyle = '#000';
+	ctx.fillStyle = textColor;
 	ctx.textAlign = 'center';
 	ctx.font = `${10*ratio}px Arial`;
 	
@@ -492,10 +495,10 @@ let drawAxisY = (canvas, priceRange, options) => {
 		// let ratio = getCanvasPixRatio();
 		hoverY *= ratio;
 		let rectH = 20 * ratio;
-		ctx.fillStyle = '#222';
+		ctx.fillStyle = hoverBackground;
 		let priceAtHover = hoverY /rate + priceMax;
 		ctx.fillRect(0, hoverY - rectH / 2, width, rectH);
-		ctx.fillStyle = '#fff';
+		ctx.fillStyle = hoverColor;
 		ctx.fillText(priceAtHover.toFixed(2), width/2, hoverY+5);
 	}
 };
@@ -517,7 +520,10 @@ let drawAxisX = (canvas, len, options) => {
 	let hoverIndex = options && options.hoverIndex;
 	let selectedIndex = options && options.selectedIndex;
 	let padding = options && options.padding || {left:0, right:0, top:0, bottom:0};
-	
+	let textColor = options && options.textColor || '#000';
+	let hoverColor = options && options.hoverColor || '#fff';
+	let hoverBackground = options && options.hoverBackground || '#222';
+
 	let ctx = canvas.getContext('2d');
 	let width = canvas.width;
 	let height = canvas.height;
@@ -535,8 +541,8 @@ let drawAxisX = (canvas, len, options) => {
 	ctx.font = `${10*ratio}px Arial`;
 	ctx.textAlign = 'center';
 	for(let i=0; i<len; i+=interval) {
-		ctx.strokeStyle = '#000';
-		ctx.fillStyle = '#000';
+		ctx.strokeStyle = textColor;
+		ctx.fillStyle = textColor;
 		let center = padding.left + i*spaceX + spaceX/2;
 		ctx.fillText(i+1+'', center, 15);
 	}
@@ -557,9 +563,9 @@ let drawAxisX = (canvas, len, options) => {
 		let rectW = 50 * ratio;
 		let center = padding.left + hoverIndex*spaceX + spaceX/2;
 		center = _toInt(center);
-		ctx.fillStyle = '#222';
+		ctx.fillStyle = hoverBackground;
 		ctx.fillRect(center - rectW/2, 0, rectW, height);
-		ctx.fillStyle = '#fff';
+		ctx.fillStyle = hoverColor;
 		ctx.fillText(hoverIndex+1+'', center, 15*ratio);
 	}
 
@@ -587,6 +593,9 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	let hoverIndex = options && options.hoverIndex;
 	let selectedIndex = options && options.selectedIndex;
 	let showTime = options && options.showTime || false; //是否显示时分秒
+	let textColor = options && options.textColor || '#000';
+	let hoverColor = options && options.hoverColor || '#fff';
+	let hoverBackground = options && options.hoverBackground || '#222';
 
 	if(showTime) {
 		minSpaceX = 55 * ratio;
@@ -602,8 +611,8 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	ctx.font = `${10*ratio}px Arial`;
 	ctx.textAlign = 'center';
 	for(let i=interval-1; i<len; i+=interval) {
-		ctx.strokeStyle = '#000';
-		ctx.fillStyle = '#000';
+		ctx.strokeStyle = textColor;
+		ctx.fillStyle = textColor;
 		let center = i*spaceX + spaceX/2;
 		let timeText = timeArr[i];
 		let text = showTime ? timeText.slice(-8) : timeText.slice(8, 10);
@@ -630,9 +639,9 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 		let text = showTime ? timeText : timeText.slice(0, 10);
 		let center = hoverIndex*spaceX + spaceX/2;
 		center = _toInt(center);
-		ctx.fillStyle = '#222';
+		ctx.fillStyle = hoverBackground;
 		ctx.fillRect(center - rectW/2, 0, rectW, height);
-		ctx.fillStyle = '#fff';
+		ctx.fillStyle = hoverColor;
 		ctx.fillText(text, center, 15*ratio);
 	}
 

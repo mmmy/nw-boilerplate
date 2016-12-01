@@ -39,9 +39,9 @@ function KlineEditor(container, kline) {  //container dom is div dom
 	$(container).append($wrapper);
 
 	let canvases = $wrapper.find('canvas');
+	this._isLight = $ && $.keyStone && ($.keyStone.theme == 'light');
 
 	this._wrapper = $wrapper[0];
-
 	this._canvas = canvases[0];
 	this._canvas_axis_y = canvases[1];
 	this._canvas_axis_x = canvases[2];
@@ -67,9 +67,16 @@ function KlineEditor(container, kline) {  //container dom is div dom
 	//move kline states
 	this._moveKlineStates = {isMouseDown: false, x:-1, y:-1};
 	//yAxis states
-	this._yAxisStates = {isMouseDown: false, y:-1};
+	this._yAxisStates = {
+		isMouseDown: false, y:-1,
+	};
 	//xAxis states
-	this._xAxisStates = {isMouseDown: false, x:-1, paddingLeft:0, paddingRight:0};
+	this._xAxisStates = {
+		isMouseDown: false, 
+		x:-1, 
+		paddingLeft:0, 
+		paddingRight:0,
+	};
 
 	this._updateOHLC = null; //func
 	this._onMoveIndex = null; //func
@@ -391,9 +398,15 @@ KlineEditor.prototype.updateCanvas = function(){
 																padding
 															}, {
 																hoverY: this._hoverY,
+																textColor: this._isLight ? '' : '#999',
+																hoverColor: this._isLight ? '' : '#333',
+																hoverBackground: this._isLight ? '' : '#aaa',
 															}, {
 																hoverIndex: this._hoverIndex,
 																selectedIndex: this._selectedIndex,
+																textColor: this._isLight ? '' : '#999',
+																hoverColor: this._isLight ? '' : '#333',
+																hoverBackground: this._isLight ? '' : '#aaa',
 																padding
 															});
 	// this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);

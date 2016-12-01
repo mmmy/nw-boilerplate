@@ -29,7 +29,7 @@ function KlinePrediction(container, config) {
 	let canvases = $wrapper.find('canvas');
 
 	this._wrapper = $wrapper[0];
-
+	this._isLight = $ && $.keyStone && ($.keyStone.theme == 'light');
 	this._canvas = canvases[0];
 	this._canvas_axis_y = canvases[1];
 	this._canvas_axis_x = canvases[2];
@@ -74,12 +74,18 @@ function KlinePrediction(container, config) {
 		overflowPaneBottom: false, //超出上界面的内阴影
 	};
 	this._yDrawOption = {
-		hoverY: -1
+		hoverY: -1,
+		textColor: this._isLight ? '' : '#999',
+		hoverColor: this._isLight ? '' : '#222',
+		hoverBackground: this._isLight ? '' : '#aaa',
 	};
 	this._xDrawOption = {
 		drawLen: null,       //保证与K线区域对其
 		hoverIndex: -1,
 		showTime: false, //是否精确显示到 时分秒
+		textColor: this._isLight ? '' : '#999',
+		hoverColor: this._isLight ? '' : '#222',
+		hoverBackground: this._isLight ? '' : '#aaa',
 	};
 
 	this._clickHitTest = NONE;

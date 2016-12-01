@@ -510,6 +510,7 @@ searchResultController.showErrorPanel = (searchKline, error) => {
 
 searchResultController.removeErrorPanel = () => {
 	_$reportWrapper.find('.error-panel').remove();
+	_$toggle.removeClass('disabled'); 
 };
 
 searchResultController.triggerToggle = () => {

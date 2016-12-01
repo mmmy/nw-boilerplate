@@ -168,9 +168,9 @@ drawDownStatistic._updateBarChart = (model) => {
 		xLables.push((unit * (i+1) * 100).toFixed(decimal) + '%');
 			data.push({
 				value: freqRight[i], 
-				fillStyle:'rgba(0, 69, 135, 0.5)', 
-				strokeStyle: 'rgba(0, 69, 135, 0.5)',
-				hover: {fillStyle: 'rgba(0,69,135,1)', strokeStyle: 'rgba(0,69,135,1)'}
+				fillStyle: _isLight ? 'rgba(0, 69, 135, 0.5)' : '#1e2f40', 
+				strokeStyle: _isLight ? 'rgba(0, 69, 135, 0.5)' : '#1e2f40',
+				hover: {fillStyle: _isLight ? 'rgba(0,69,135,1)' : '#173552', strokeStyle: _isLight ? 'rgba(0,69,135,1)' : '#173552'}
 			});
 	}
 	series[0] = {
@@ -193,32 +193,32 @@ drawDownStatistic._udpateLineChart = (summaryDrawDown) => {
 			series = [{
 				data:freqLen.concat([]).slice(-dataLen),
 				activeIndexes: [dayMostDrawDownLast],
-				strokeStyle:'rgba(178,178,178,1)',
-				fillStyle:'rgba(35,171,247,0.2)',
+				strokeStyle: _isLight ? 'rgba(178,178,178,1)' : '#004587',
+				fillStyle: _isLight ? 'rgba(35,171,247,0.2)' : 'rgba(0,0,0,0)',
 				hover: {
 					lineWidth: 2,
-					strokeStyle:'rgba(35,171,247,1)',
-					fillStyle:'rgba(35,171,247,0.4)',
+					strokeStyle: _isLight ? 'rgba(35,171,247,1)' : '#0054a4',
+					fillStyle: _isLight ? 'rgba(35,171,247,0.4)' : 'rgba(0,0,0,0)',
 				}
 			}, {
 				data:freqStart.concat([]).slice(-dataLen),
 				activeIndexes: [dayMostDrawDownStart],
-				strokeStyle:'rgba(120,120,120,1)',
-				fillStyle:'rgba(0,104,175,0.2)',
+				strokeStyle: _isLight ? 'rgba(120,120,120,1)' : '#0068af',
+				fillStyle: _isLight ? 'rgba(0,104,175,0.2)' : 'rgba(0,0,0,0)',
 				hover: {
 					lineWidth: 2,
-					strokeStyle:'rgba(0,104,175,1)',
-					fillStyle:'rgba(0,104,175,0.4)',
+					strokeStyle: _isLight ? 'rgba(0,104,175,1)' : '#007dd2',
+					fillStyle: _isLight ? 'rgba(0,104,175,0.4)' : 'rgba(0,0,0,0)',
 				}
 			}, {
 				data:freqEnd.concat([]).slice(-dataLen),
 				activeIndexes: [dayMostDrawDownEnd],
-				strokeStyle:'rgba(76,76,76,1)',
-				fillStyle:'rgba(00,69,136,0.2)',
+				strokeStyle: _isLight ? 'rgba(76,76,76,1)' : '#0d95b5',
+				fillStyle: _isLight ? 'rgba(00,69,136,0.2)' : 'rgba(0,0,0,0)',
 				hover: {
 					lineWidth: 2,
-					strokeStyle:'rgba(00,69,136,1)',
-					fillStyle:'rgba(00,69,136,0.4)',
+					strokeStyle: _isLight ? 'rgba(00,69,136,1)' : '#10b0d6',
+					fillStyle: _isLight ? 'rgba(00,69,136,0.4)' : 'rgba(0,0,0,0)',
 				}
 			}];
 	let options = {
