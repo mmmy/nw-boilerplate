@@ -114,6 +114,9 @@
 		margin-top: 5px;
 		border-radius: 2px;
 		border: 1px solid #ddd;
+		&:nth-child(3) {
+			opacity: 0;
+		}
 		// box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 		.pattern-inner {
 			position: relative;
@@ -149,6 +152,9 @@
 	}
 	//超过1520px的 媒体查询
 	@media (min-width: 1520px) {
+		.pattern-wrapper:nth-child(3) {
+			opacity: 1;
+		}
 		.info-item {
 			width: 6.25%;
 		}

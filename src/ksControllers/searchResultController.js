@@ -72,7 +72,7 @@ let _decimal = 2;
 let _klineCharts = [];
 // let _earnChart = null;
 
-let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span><span class='title-zhong'>中</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
+let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title"><span class='title-jieguo'>搜索结果</span><span class='title-zhong'>搜索中</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
 let _$toggle = null;
 
 let patternHtml = `<div class='pattern-inner'>
@@ -91,9 +91,11 @@ let comparatorInner = `<div class='container-ks-sr container-ks-st meta'>
 												<span class='info-item downrate'><div class='item-title font-simsun'>下跌比例</div><div class='item-value font-number'><span class='value'>0</span><span class='unit'>%</span></div></span>
 												<span class='info-item median'><div class='item-title font-simsun'>涨跌中位数</div><div class='item-value font-number red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 												<span class='info-item mean'><div class='item-title font-simsun'>涨跌平均数</div><div class='item-value font-number red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
-												<span class='pattern-wrapper'>${patternHtml}</span>
-												<span class='pattern-wrapper'>${patternHtml}</span>
-												<span class='pattern-wrapper'>${patternHtml}</span>
+												<span class='patterns-container'>
+													<span class='pattern-wrapper'>${patternHtml}</span>
+													<span class='pattern-wrapper'>${patternHtml}</span>
+													<span class='pattern-wrapper'>${patternHtml}</span>
+												</span>
 											</div>`;
 
 let searchStatisticHtml = `<div class='container-ks-sr statistic'>
@@ -304,7 +306,7 @@ let updateDetailPane = () => {
 };
 
 let _triggerToggle = () => { //作为外部接口
-	if(_$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
+	if(_$toggle.hasClass('disabled') || _$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
 		if ((process.env.NODE_ENV !== 'development') && (process.env.NODE_ENV !== 'beta')) {
 			return;
 		}
@@ -452,7 +454,8 @@ searchResultController.updateCharts = (patterns) => {
 	_updateEarnChart(rawData);
 };
 */
-searchResultController.reportSlideDown = (slideDown, cb) => { 
+searchResultController.reportSlideDown = (slideDown, cb) => {
+	_$toggle.removeClass('disabled'); 
 	let $target = _$reportContainer.find('.search-report-wrapper');
 	$target.off('transitionend', '**');
 	$target.one('transitionend', () => {
@@ -489,6 +492,9 @@ searchResultController.showErrorPanel = (searchKline, error) => {
 	_$toggle.find('.btn-toggle').hide();
 
 	$errorPanel.find('img').attr('src', getKlineImgSrc(searchKline));
+
+	//直接全部隐藏
+	_$toggle.addClass('disabled');
 	//重新搜索
 	$errorPanel.find('.research').click(function(event) {
 		/* Act on the event */

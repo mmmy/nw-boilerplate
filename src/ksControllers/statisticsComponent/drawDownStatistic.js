@@ -21,6 +21,8 @@ let _model = null;
 let _isLong = true; //默认做多
 let _intervalObj = {value:1, unit:'D', describe:'天'};
 
+let _isLight = false;
+
 let _highlightLine = function(index) {
 	_retracementChart.highlightLine(index);
 }
@@ -174,7 +176,10 @@ drawDownStatistic._updateBarChart = (model) => {
 	series[0] = {
 		data: data
 	};
-	_barChart.setData({xLables:xLables, series: series});
+	let options = {
+		gridColor: _isLight ? '' : '#151515'
+	};
+	_barChart.setData({xLables:xLables, series: series, options:options});
 }
 
 drawDownStatistic._updateStuffs = () => {
@@ -216,15 +221,19 @@ drawDownStatistic._udpateLineChart = (summaryDrawDown) => {
 					fillStyle:'rgba(00,69,136,0.4)',
 				}
 			}];
-
+	let options = {
+		gridColor: _isLight ? '' : '#151515'
+	};
 	_retracementChart.setData({
 		dataLen,
 		series,
-		unit: _intervalObj.value
+		unit: _intervalObj.value,
+		options
 	});
 }
 
 drawDownStatistic.update = (param) => {
+	_isLight = $.keyStone && ($.keyStone.theme == 'light');
 	_intervalObj = param && param.intervalObj || _intervalObj;
 	let model = _model;
 	let dataObj = model && model.getSummary();
