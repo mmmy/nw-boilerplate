@@ -1,0 +1,51 @@
+/*
+  dc
+ ---------------------------------------------------------------*/
+
+body[theme='dark'] {
+	.crossfilter-out-container {
+		background-color: @dark-bg-inner-lighter;
+		&.show {
+			// box-shadow: -10px 0 20px rgba(100, 100, 100, 0.3);
+		}
+		.crossfilter-container {
+			background-color: @dark-bg-inner-lighter;
+		}
+		.toggle-crossfilter {
+			background-color: #444;
+			color: #eee;
+		}
+		.dc-chart-row strong,
+		.title-container .title {
+			color: #fff;
+		}
+		.dc-chart-row {
+			border-color: #555;
+		}
+		
+		.industry-quarter-chart svg {
+			background-color: @dark-bg-inner-lighter;
+		}
+		.madan-white-circle {
+			background-color: #222;
+		}
+		.industry-info-container {
+			background-color: #222;
+			p {
+				color: #aaa;
+			}
+		}
+
+		//dc
+		.dc-chart .axis text {
+			fill: #fff;
+		}
+		.dc-chart .grid-line line, .dc-chart .axis .grid-line line {
+			stroke: #aaa;
+		}
+		.dc-chart .brush rect.extent {
+			fill: #fff;
+			fill-opacity: 0.1;
+		}
+	}
+}

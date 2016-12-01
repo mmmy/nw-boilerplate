@@ -1,0 +1,104 @@
+
+body[theme="dark"] {
+
+	.modal-content-contianer .item-body-container .date-icon {
+		background-color: @dark-input-bg !important;
+		color: #aaa;
+	}
+
+	.modal-content-contianer .item-body-container.days button {
+		background-color: @dark-input-bg;
+	}
+
+	.modal-content-contianer input, .modal-content-contianer .inputs-wrapper {
+		background-color: @dark-input-bg !important;
+		border-color: transparent !important;
+		color: #fff !important;
+		&[disabled] {
+			color: #666 !important;
+		}
+	}
+
+	.dropdown-menu {
+		background-color: @dark-input-bg;
+	}
+	.datepicker table tr td.day:hover, .datepicker table tr td.focused {
+		background-color: #aaa;
+		color: #333;
+	}
+	.datepicker .datepicker-switch:hover, .datepicker .next:hover, .datepicker .prev:hover, .datepicker tfoot tr th:hover {
+		background-color: #aaa;
+		color: #333;
+	}
+
+	//login
+	.login-panelsmall-container {
+		color: #333;
+		.error-text {
+			color: #999;
+		}
+	}
+
+	.header-toolbar-container .account-button .user-panel-container {
+		background-color: @dark-bg-inner-lighter;
+		color: @dark-graytitle;
+		.logout-btn {
+			color: white;
+			background-color: @brown-red;
+			&:hover {
+				background-color: @brown-red-light;
+			}
+		}
+	}
+
+	.modal-overlay {
+		background-color: rgba(0, 0, 0, 0.6)
+	}
+	.modal-confirm-container {
+		background-color: @dark-bg-inner-lighter;
+		.btn-no {
+			color: #fff;
+			background-color: @dark-input-bg;
+			&:hover {
+				background-color: lighten(@dark-input-bg, 10%);
+			}
+		}
+	}
+	
+	.rename-input-container {
+		background-color: #444 !important;
+	}
+
+	.container-stockview .nav-container .favorites-input-wrapper {
+		background-color: #555;
+		border-color: #888;
+		input {
+			background-color: transparent;
+		}
+	}
+	.container-stockview .nav-container .trash-panel-btn.active .clear {
+		color: #444;
+		&:hover {
+			background-color: transparent;
+			color: #222;
+		}
+	}
+	.ks-input-wrapper {
+		input {
+			background-color: transparent;
+		}
+		.ks-check, .ks-delete {
+			background-image: url(@icons_dark_url);
+		}
+		&.border {
+			border-color: #666;
+		}
+	}
+
+	.search-report-wrapper .error-panel {
+		background-color: @dark-bg-inner-lighter;
+		p {
+			color: #aaa;
+		}
+	}
+}

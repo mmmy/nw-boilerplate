@@ -50,11 +50,16 @@
 		cursor: pointer;
 		.fa-close {
 			color: transparent;
-			background: url(./image/close.png) no-repeat;
+			display: inline-block;
+			width: 20px;
+			height: 20px;
+			background: url(@icons_url) no-repeat;
+			.icon_position(1,7,0,5px,5px);
 		}
 		&:hover {
 			.fa-close {
 				background-position: 0 100%;
+				.icon_position(3,7,0,5px,5px);
 			}
 		}
 	}
@@ -218,7 +223,7 @@
 			color: #fff;
 			&:hover {
 				.ks-button-hover();
-				box-shadow: 0 3px 10px 0 #eee;
+				// box-shadow: 0 3px 10px 0 #eee;
 			}
 		}
 		span{
