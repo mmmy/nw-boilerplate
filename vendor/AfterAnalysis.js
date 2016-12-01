@@ -533,12 +533,12 @@ function freqLeftRight(arrayMax, arrayMin, n, unit) {
     copyMax.sort(function(a,b) {if (a>b) return 1; else return -1;});
     copyMin.sort(function(a,b) {if (a<b) return 1; else return -1;});
 
-    var pleft = Math.floor(0.90*arrayMin.length || 0);  //isNaN(0.96*undefined)
-    var pright = Math.floor(0.90*arrayMax.length || 0);
+    var pleft = Math.floor(0.95*arrayMin.length || 0);  //isNaN(0.96*undefined)
+    var pright = Math.floor(0.95*arrayMax.length || 0);
     var newleft = copyMin[pleft] || 0;
     var newright = copyMax[pright] || 0;
     if (!unit) {
-        if (!n) n = 10;
+        if (!n) n = 9;
         unit = (newright - newleft) / n;
         if (newleft != 0) {
             unit = Math.max(newright / 4, -newleft / 4);
@@ -658,7 +658,7 @@ function averageBoDongLv(bars) {
         var b = [];
         for (var j = 1; j < bars[i].length; j++) 
             b.push( bars[i][j]/bars[i][j-1]-1.0 );
-        s += basicStastic(b).ss;
+        s += basicStastic(b).variance;
     }
     if (bars.length > 0) s = s / bars.length;
     return s; 
