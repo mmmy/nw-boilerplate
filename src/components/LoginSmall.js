@@ -39,7 +39,7 @@ class Login extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {isLogining: false, username: '', password:'', autoLogin: false, usernameError: false, passwordError: false};
+		this.state = {errorText:'', isLogining: false, username: '', password:'', autoLogin: false, usernameError: false, passwordError: false};
 		let that = this;
 		// this.handleRiseze = (e) => {
 		// 	if(store.getState().account.username) return;
@@ -132,6 +132,7 @@ class Login extends React.Component {
       	</div>
       	<div className='body-container'>
       		<div className='logo'></div>
+      		<div className='error-text'>{this.state.errorText}</div>
       		<div>
       			<div className='user-name font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_username'>用户名</span>*/}<input ref='input_user' onChange={this.changeUsernamne.bind(this)} type='text' value={username} placeholder='用户名'/>{this.state.usernameError ? <span className='error-icon'></span> : ''}</div>
       			<div className='password font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_password'>密码</span>*/}<input ref='password_user' onChange={this.changePassword.bind(this)} onFocus={this.handleFocus.bind(this, 1)} onBlur={this.handleBlur.bind(this, 1)} type='password' value={password} placeholder='密码'/>{this.state.passwordError ? <span className='error-icon'></span> : ''}</div>
@@ -225,8 +226,11 @@ class Login extends React.Component {
 	}
 
 	handleLogin() {
-
-		this.setState({isLogining: true, usernameError: false, passwordError: false});
+		if(!window.navigator.onLine) {
+			this.setState({errorText: '未连接互联网 !'});
+			return;
+		}
+		this.setState({errorText: '', isLogining: true, usernameError: false, passwordError: false});
 		let { onLogined } = this.props;
 		let that = this;
 		let username = this.state.username;
@@ -241,7 +245,7 @@ class Login extends React.Component {
 			if (data) loginstate = data;
 			if (!loginstate.session) {
 				//console.log('login fail');
-				that.setState({isLogining: false, passwordError:true});
+				that.setState({isLogining: false, passwordError:false, errorText:'用户名或者密码错误 !'});
 				return; 
 			} // else console.log("login success");
 			try {
