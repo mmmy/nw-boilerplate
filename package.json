@@ -5,7 +5,7 @@
   "manifestUrl": "http://112.74.17.175/updateInfo.json",
   "main": "./build/index.html",
   "window": {
-    "title": " ",
+    "title": "拱石",
     "show": true,
     "width": 400,
     "height": 470,
