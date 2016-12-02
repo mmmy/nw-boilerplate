@@ -162,9 +162,9 @@
 	    width: @width;
 	    height: @height;
 	    background: transparent;
-	    *{
-	    	background: transparent;
-	    }
+	    // *{
+	    // 	background: transparent;
+	    // }
 	    &:no-button {
 	    	width: 0;
 	    	height: 0;
@@ -175,11 +175,11 @@
 	}
 }
 // thumb
-.scrollbar-thumb(@background-color:#666;@box-shadow:none;@border-radius:3px; @border:none){
+.scrollbar-thumb(@background-color:#999;@box-shadow:none;@border-radius:3px; @border:none){
 	&::-webkit-scrollbar-thumb {
 		border: @border;
 	    border-radius: @border-radius;
-	    background: @background-color url('./image/scroll-bg.png') no-repeat;
+	    background: @background-color url('./image/scroll-bg-dark.png') no-repeat;
 	    background-size: contain;
 	    background-position: center;
 	    -webkit-box-shadow: @box-shadow;

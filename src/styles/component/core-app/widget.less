@@ -93,12 +93,15 @@
 		text-align: center;
 		cursor: pointer;
 		.fa-close {
+			width: 20px;
+			height: 20px;
 			color: transparent;
-			background: url(./image/close.png) no-repeat;
+			background: url(@icons_url) no-repeat;
+			.icon_position(2,7,0,5px,5px);
 		}
 		&:hover {
 			.fa-close {
-				background-position: 0 100%;
+				.icon_position(0,7,0,5px,5px);
 			}
 		}
 	}

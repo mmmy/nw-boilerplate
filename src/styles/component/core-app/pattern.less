@@ -29,7 +29,8 @@
 	overflow-x: hidden;
 	.scrollbar(@width:6px);
 	.scrollbar-track(@background-color:transparent);
-	.scrollbar-thumb(@background-color: @ks-color-gray-1);
+	// .scrollbar-thumb(@background-color: @ks-color-gray-1); //白版
+	.scrollbar-thumb();
 	
 	.no-data-wrapper {
 		display: none;
@@ -141,7 +142,7 @@
 
 		h5 {
 			color: @lulu-black;
-			font-size: 16px;//1.3rem;
+			font-size: 14px;//1.3rem;
 			font-weight: bold;
 			// margin-top: 1.6rem;
 			margin: 0;
@@ -431,14 +432,14 @@
 		}
 	}
 	position: relative;
-	height: 100%;
+	height: calc(~"100% + 1px");
 	overflow: scroll;
 	// padding: 10px 0 10px 10px;//2.8%;
 	margin-left: 30px;
 	margin-right: 30px;
 	.scrollbar(@width:6px);
 	.scrollbar-track(@background-color:transparent);
-	.scrollbar-thumb(@background-color: @ks-color-gray-1);
+	.scrollbar-thumb();
 
 	&.scroll-hidden{
 		overflow: hidden;

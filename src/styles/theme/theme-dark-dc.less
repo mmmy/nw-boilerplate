@@ -29,16 +29,28 @@ body[theme='dark'] {
 		.madan-white-circle {
 			background-color: #222;
 		}
+		.reset-btn-container,
 		.industry-info-container {
 			background-color: #222;
 			p {
 				color: #aaa;
+			}
+			button {
+				color: #fff;
+				background-color: #444;
+				box-shadow: none;
+				&:hover {
+					background-color: #555;
+				}
 			}
 		}
 
 		//dc
 		.dc-chart .axis text {
 			fill: #fff;
+		}
+		.dc-chart .axis path, .dc-chart .axis line {
+			stroke: #999;
 		}
 		.dc-chart .grid-line line, .dc-chart .axis .grid-line line {
 			stroke: #aaa;
