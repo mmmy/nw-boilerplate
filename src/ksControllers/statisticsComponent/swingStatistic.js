@@ -6,12 +6,14 @@ let _$container = null;
 let _dataDoms = [];
 
 let _model = null;
+let _isLight = false;
 
 swingStatistic.init = (wrapper, model) => {
+	_isLight = $.keyStone && ($.keyStone.theme == 'light');
 
 	_model = model;
 
-	let newDom = $(`<div class='ks-container swing'><h4 class="title"><img src="image/zhenfu.png"/>波动统计</h4><div class='row'></div></div>`);
+	let newDom = $(`<div class='ks-container swing'><h4 class="title"><img src="image/zhenfu${_isLight ? '' : '_white'}.png"/>波动统计</h4><div class='row'></div></div>`);
 	$(wrapper).append(newDom);
 
 	//add other doms

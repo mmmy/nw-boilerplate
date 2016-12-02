@@ -28,10 +28,11 @@ let _highlightLine = function(index) {
 }
 
 drawDownStatistic.init = (wrapper, model) => {
+	_isLight = $.keyStone && ($.keyStone.theme == 'light');
 
 	_model = model;
 
-	let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche.png"/>回撤统计<span class="btn-wrapper"><button class="flat-btn long active">做多</button><button class="flat-btn short">做空</button></span></h4><div class="row"></div></div>`);
+	let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche${_isLight ? '' : '_white'}.png"/>回撤统计<span class="btn-wrapper"><button class="flat-btn long active">做多</button><button class="flat-btn short">做空</button></span></h4><div class="row"></div></div>`);
 	$(wrapper).append(newDom);
 
 	//add other doms
@@ -233,7 +234,6 @@ drawDownStatistic._udpateLineChart = (summaryDrawDown) => {
 }
 
 drawDownStatistic.update = (param) => {
-	_isLight = $.keyStone && ($.keyStone.theme == 'light');
 	_intervalObj = param && param.intervalObj || _intervalObj;
 	let model = _model;
 	let dataObj = model && model.getSummary();

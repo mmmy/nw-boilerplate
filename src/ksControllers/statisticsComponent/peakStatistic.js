@@ -27,8 +27,9 @@ let _highlightLine = function(index) {
 }
 
 peakStatistic.init = (wrapper, model) => {
+	_isLight = $.keyStone && ($.keyStone.theme == 'light');
 	_model = model;
-	let newDom = $(`<div class='ks-container peak'><h4 class="title"><img src="image/jizhi.png" />极值统计</h4><div class="row"></div></div>`);
+	let newDom = $(`<div class='ks-container peak'><h4 class="title"><img src="image/jizhi${_isLight ? '' : '_white'}.png" />极值统计</h4><div class="row"></div></div>`);
 	_$container = newDom;
 	$(wrapper).append(newDom);
 
@@ -238,7 +239,6 @@ peakStatistic._redrawLineChart = (model) => {
 }
 
 peakStatistic.update = (param) => {
-	_isLight = $.keyStone && ($.keyStone.theme == 'light');
 	_intervalObj = param && param.intervalObj || _intervalObj;
 	let model = _model;
 	let dataObj = model && model.getSummary();

@@ -89,7 +89,7 @@ class Header extends React.Component {
 	renderAppTool() {
 		let node = <div className='app-tool-container'>
 			<button className='flat-btn button app-minimize' onClick={this.handleAppMinimize.bind(this)}></button>
-			<button className='flat-btn button app-maximize' onClick={this.handleAppMaximize.bind(this)}></button>
+			<button className='flat-btn button app-maximize' onClick={this.handleAppToggleFullScreen.bind(this)}></button>
 			<button className='flat-btn button app-close' onClick={this.handleAppClose.bind(this)}></button>
 		</div>
 		return node;
@@ -102,7 +102,7 @@ class Header extends React.Component {
 			<div className='app-drag-area' ref='drag_area'></div>
 			<span className='header-icon'></span>
 			{this.renderToolbar()}
-			{/*this.renderAppTool()*/}
+			{this.renderAppTool()}
 			{/*showLogin ? <LoginSmall ref='login_panel' onLogined={this.handleLogined.bind(this)} close={this.closeLogModal.bind(this)}/> : '' */}
 		</div>;
 	}
@@ -153,6 +153,10 @@ class Header extends React.Component {
 
 	handleAppMaximize() {
 		nwApp.appMaximize();
+	}
+
+	handleAppToggleFullScreen() {
+		nwApp.appToggleFullScreen();
 	}
 
 	handleAppClose() {
