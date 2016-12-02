@@ -68,7 +68,9 @@ function KlinePrediction(container, config) {
 		yMin: null,
 		yMax: null,
 		symbolName:'',
+		symbolNameColor: this._isLight ? '' : '#eee',
 		symbolDescribe:'',
+		symbolDescribeColor: this._isLight ? '' : '#aaa',
 		baseBarRange: [],
 		overflowPane: false, //超出上界面的内阴影
 		overflowPaneBottom: false, //超出上界面的内阴影

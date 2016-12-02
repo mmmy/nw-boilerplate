@@ -173,8 +173,12 @@ peakStatistic._redrawBarChart = (model) => {
 				value: freqLeft[i], 
 				fillStyle: _isLight ? 'rgba(16,145,33,0.2)' : 'rgba(115,176,20,0.2)', 
 				strokeStyle: _isLight ? 'rgba(16,145,33,0.2)' : 'rgba(115,176,20,0.2)',
-				textColor: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)',
-				hover: {fillStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)', strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)'}
+				textColor: _isLight ? 'rgba(16,145,33,1)' : 'rgba(255,255,255,1)',
+				hover: {
+					textColor: _isLight ? 'rgba(16,145,33,1)' : 'rgba(255,255,255,1)',
+					fillStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)', 
+					strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)'
+				}
 			});
 		}
 		xLables.push('0');
@@ -184,8 +188,12 @@ peakStatistic._redrawBarChart = (model) => {
 				value: freqRight[i], 
 				fillStyle: _isLight ? 'rgba(141,22,27,0.2)' : 'rgba(170,65,66,0.2)', 
 				strokeStyle: _isLight ? 'rgba(141,22,27,0.2)' : 'rgba(170,65,66,0.2)',
-				textColor: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)',
-				hover: {fillStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)', strokeStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)'}
+				textColor: _isLight ? 'rgba(141,22,27,1)' : 'rgba(255,255,255,1)',
+				hover: {
+					textColor: _isLight ? 'rgba(141,22,27,1)' : 'rgba(255,255,255,1)',
+					fillStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)', 
+					strokeStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)'
+				}
 			});
 		}
 		series[0] = {
@@ -210,8 +218,9 @@ peakStatistic._redrawLineChart = (model) => {
 			data: tPeakS,
 			strokeStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)',
 			fillStyle: _isLight ? 'rgba(141,22,27,0.1)' : 'rgba(170,65,66,0)',
+			lineWidth: 2,
 			hover: {
-				lineWidth: 2,
+				lineWidth: 3,
 				strokeStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)',
 				fillStyle: _isLight ? 'rgba(141,22,27,0.1)' : 'rgba(170,65,66,0)'
 			},
@@ -221,8 +230,9 @@ peakStatistic._redrawLineChart = (model) => {
 			data: tDownS,
 			strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)',
 			fillStyle: _isLight ? 'rgba(16,145,33,0.1)' : 'rgba(115,176,20,0)',
+			lineWidth: 2,
 			hover: {
-				lineWidth: 2,
+				lineWidth: 3,
 				strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)',
 				fillStyle: _isLight ? 'rgba(16,145,33,0.1)' : 'rgba(115,176,20,0)'
 			},

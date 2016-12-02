@@ -171,7 +171,12 @@ drawDownStatistic._updateBarChart = (model) => {
 				value: freqRight[i], 
 				fillStyle: _isLight ? 'rgba(0, 69, 135, 0.5)' : '#1e2f40', 
 				strokeStyle: _isLight ? 'rgba(0, 69, 135, 0.5)' : '#1e2f40',
-				hover: {fillStyle: _isLight ? 'rgba(0,69,135,1)' : '#173552', strokeStyle: _isLight ? 'rgba(0,69,135,1)' : '#173552'}
+				textColor: _isLight ? '' : '#fff',
+				hover: {
+					textColor: _isLight ? '' : '#fff',
+					fillStyle: _isLight ? 'rgba(0,69,135,1)' : '#173552', 
+					strokeStyle: _isLight ? 'rgba(0,69,135,1)' : '#173552'
+				}
 			});
 	}
 	series[0] = {
@@ -196,8 +201,9 @@ drawDownStatistic._udpateLineChart = (summaryDrawDown) => {
 				activeIndexes: [dayMostDrawDownLast],
 				strokeStyle: _isLight ? 'rgba(178,178,178,1)' : '#004587',
 				fillStyle: _isLight ? 'rgba(35,171,247,0.2)' : 'rgba(0,0,0,0)',
+				lineWidth: 2,
 				hover: {
-					lineWidth: 2,
+					lineWidth: 3,
 					strokeStyle: _isLight ? 'rgba(35,171,247,1)' : '#0054a4',
 					fillStyle: _isLight ? 'rgba(35,171,247,0.4)' : 'rgba(0,0,0,0)',
 				}
@@ -206,8 +212,9 @@ drawDownStatistic._udpateLineChart = (summaryDrawDown) => {
 				activeIndexes: [dayMostDrawDownStart],
 				strokeStyle: _isLight ? 'rgba(120,120,120,1)' : '#0068af',
 				fillStyle: _isLight ? 'rgba(0,104,175,0.2)' : 'rgba(0,0,0,0)',
+				lineWidth: 2,
 				hover: {
-					lineWidth: 2,
+					lineWidth: 3,
 					strokeStyle: _isLight ? 'rgba(0,104,175,1)' : '#007dd2',
 					fillStyle: _isLight ? 'rgba(0,104,175,0.4)' : 'rgba(0,0,0,0)',
 				}
@@ -216,8 +223,9 @@ drawDownStatistic._udpateLineChart = (summaryDrawDown) => {
 				activeIndexes: [dayMostDrawDownEnd],
 				strokeStyle: _isLight ? 'rgba(76,76,76,1)' : '#0d95b5',
 				fillStyle: _isLight ? 'rgba(00,69,136,0.2)' : 'rgba(0,0,0,0)',
+				lineWidth: 2,
 				hover: {
-					lineWidth: 2,
+					lineWidth: 3,
 					strokeStyle: _isLight ? 'rgba(00,69,136,1)' : '#10b0d6',
 					fillStyle: _isLight ? 'rgba(00,69,136,0.4)' : 'rgba(0,0,0,0)',
 				}

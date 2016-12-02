@@ -97,7 +97,8 @@ KlineEditor.prototype._drawKline = function(kline, options, optionsY, optionsX) 
 KlineEditor.prototype._init = function() {
 	this._updateCanvasSize();
 
-	this._drawKline(this._kline, {yMin:'200%', yMax:'200%'}); //预留上下的高度
+	// this._drawKline(this._kline, {yMin:'200%', yMax:'200%'}); //预留上下的高度
+	this.updateCanvas();
 	this._canvas.addEventListener('mousedown', this._mouseDown.bind(this));
 	this._canvas.addEventListener('mouseup', this._mouseUp.bind(this));
 	this._canvas.addEventListener('mousemove', this._mouseMove.bind(this));

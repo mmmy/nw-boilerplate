@@ -33,7 +33,9 @@ options: {
 	predictionBars:, 
 	baseBarRange:[], 
 	symbolName:, 
+	symbolNameColor:, 
 	symbolDescribe:, 
+	symbolDescribeColor:, 
 	overflowPane:上界限渐变, 
 	overfowPaneBottom:
 }
@@ -143,7 +145,9 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let baseBarRange = options && options.baseBarRange;
 	let hoverY = options && options.hoverY;
 	let symbolName = options && options.symbolName;
+	let symbolNameColor = options && options.symbolNameColor || '#333';
 	let symbolDescribe = options && options.symbolDescribe;
+	let symbolDescribeColor = options && options.symbolDescribeColor || '#666';
 	let overflowPane = options && options.overflowPane;
 	let overflowPaneBottom = options && options.overflowPaneBottom;
 	let ratio = getCanvasPixRatio();
@@ -366,8 +370,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 			ctx.textAlign = 'center';
 			let textSymbol = symbolName || '';
 			ctx.beginPath();
-			ctx.fillStyle = '#333';
-			ctx.strokeStyle = '#333';
+			ctx.fillStyle = symbolNameColor;
+			ctx.strokeStyle = symbolNameColor;
 			ctx.font = `${10*ratio}px Microsoft Yahei`;
 			ctx.fillText(textSymbol, (rangeX1 + rangeX2)/2, 25*ratio);
 			ctx.stroke();
@@ -375,8 +379,8 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 			let textDescribe = symbolDescribe || '';
 			ctx.font = `${12*ratio}px Microsoft Yahei`;
 			ctx.beginPath();
-			ctx.fillStyle = '#666';
-			ctx.strokeStyle = '#666';
+			ctx.fillStyle = symbolDescribeColor;
+			ctx.strokeStyle = symbolDescribeColor;
 			ctx.fillText(textDescribe, (rangeX1 + rangeX2)/2, 40*ratio);
 			ctx.stroke();
 

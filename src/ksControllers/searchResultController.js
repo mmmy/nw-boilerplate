@@ -190,7 +190,7 @@ let _updatePredictionUI = ({timespent, total, model}) => {
 
 	try {
 		let uprateStr = (model.upPercent*100).toFixed(1);
-		let downRateStr = (100 - model.upPercent * 100).toFixed(1);
+		let downRateStr = (model.downPercent * 100).toFixed(1);
 		let medianStr = (model.median*100).toFixed(decimal);
 		let meanStr = (model.mean*100).toFixed(decimal);
 		timespent = parseFloat(timespent/1000).toFixed(2);

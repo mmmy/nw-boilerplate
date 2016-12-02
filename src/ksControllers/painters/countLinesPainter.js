@@ -335,7 +335,7 @@ let drawCountBars = (canvas, options) => {
 			if(j === hoverIndex) {
 				ctx.lineWidth = data[j].hover && data[j].hover.lineWidth || defaultHoverStyle.lineWidth;
 				ctx.strokeStyle = data[j].hover && data[j].hover.strokeStyle || defaultHoverStyle.strokeStyle;
-				ctx.fillStyle = data[j].hover && data[j].hover.fillStyle || defaultHoverStyle.fillStyle;
+				ctx.fillStyle = data[j].hover && (data[j].hover.textColor || data[j].hover.fillStyle) || defaultHoverStyle.fillStyle;
 				if(!showValue) {
 					var fontSize = barWidth > 15 ? 15 : barWidth * (isHorizon ? 0.7 : 0.7);
 					fontSize = fontSize < 10 ? 10 : fontSize;
@@ -348,6 +348,7 @@ let drawCountBars = (canvas, options) => {
 						ctx.fillText(data[j].value + '个', x+barWidth/2, y - 8);
 					}
 				}
+				ctx.fillStyle = data[j].hover && data[j].hover.fillStyle || defaultHoverStyle.fillStyle;
 			} else {
 				ctx.lineWidth = data[j].lineWidth || defaultDrawStyle.lineWidth;
 				ctx.strokeStyle = data[j].strokeStyle || defaultDrawStyle.strokeStyle;

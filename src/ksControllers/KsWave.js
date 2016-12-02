@@ -70,7 +70,7 @@ KsWave.prototype._init = function() {
 //颜色红亮一下
 KsWave.prototype.shiningWaves = function() {
 	let waves = this._waves;
-	let base = 220;
+	let base = 150;
 	let count = 0;
 	let ctx = waves.ctx;
 	let that = this;

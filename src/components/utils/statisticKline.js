@@ -83,6 +83,7 @@ module.exports = (klines) => {
 		median,
 		mean,
 		upPercent,
+		downPercent,
 		up,
 		down,
 	};
