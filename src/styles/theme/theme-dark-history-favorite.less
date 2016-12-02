@@ -1,7 +1,9 @@
 
 body[theme='dark'] {
 	.container-stockview .nav-container {
-		background-color: lighten(@dark-bg-inner-lighter, 10%);
+		background-color: @dark-bg-inner-lighter;
+		border-left: 1px solid #111;
+		// background-color: lighten(@dark-bg-inner-lighter, 10%);
 		.nav-title {
 			color: #fff;
 		}
@@ -76,7 +78,11 @@ body[theme='dark'] {
 			background-color: #666;
 		}
 	}
-
+	.flat-btn.rename, .flat-btn.delete {
+		&:hover {
+			background-color: transparent !important;
+		}
+	}
 	.shoucang-pop-menu {
 		background-color: lighten(@dark-bg-inner-lighter, 10%);
 		color: #eee;
