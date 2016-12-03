@@ -575,6 +575,8 @@ let _handleDeleteFavoritesFolder = (event) => {
 };
 //收藏夹重命名
 let _handleRenameFolder = (event) => {
+	//先移除其他的rename 框
+	$(event.target).closest('.nav-item-container').find('.rename-input-container').remove();
 	event.stopPropagation();
 	let $folderNode = $(event.target).closest('.favorites-folder');
 	let data = $folderNode.data();
@@ -596,11 +598,13 @@ let _handleRenameFolder = (event) => {
 	$inputGroup.find('.ks-check').click(function(event) {
 		/* Act on the event */
 		if($(event.currentTarget).hasClass('ks-disable')) return;
+		let oldName = $folderNode.data('name');
 		let newName = $inputGroup.find('input').val();
 		newName = newName.trim();
-		if(newName && favoritesManager.renameFavorites(name, newName)) {
+		if(newName && favoritesManager.renameFavorites(oldName, newName)) {
 			$folderNode.find('.name').text(newName);
-			if(_activeName == name) {
+			$folderNode.data('name', newName);
+			if(_activeName == oldName) {
 				_activeName = newName;
 			}
 		}
