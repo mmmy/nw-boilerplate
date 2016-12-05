@@ -22,6 +22,10 @@ let appMinimize = () => {
 let appMaximize = () => {
 	getNwWindow().maximize();
 };
+let appUnMaximize = () => {
+	getNwWindow().unmaximize();
+};
+
 let appToggleFullScreen = () => {
 	getNwWindow().toggleFullscreen();
 };
@@ -91,6 +95,7 @@ let appGetSize = () => {
 
 module.exports = {
 	appMaximize,
+	appUnMaximize,
 	appToggleFullScreen,
 	appMinimize,
 	appClose,

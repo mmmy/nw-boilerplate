@@ -91,7 +91,7 @@ class Header extends React.Component {
 		let className = classNames('flat-btn button app-maximize', {fullScreen: this.state.fullScreen});
 		let node = <div className='app-tool-container'>
 			<button className='flat-btn button app-minimize' onClick={this.handleAppMinimize.bind(this)}></button>
-			<button className={className} onClick={this.handleAppToggleFullScreen.bind(this)}></button>
+			<button ref='app_maximize' className={className} onClick={this.handleAppToggleMaximize.bind(this)}></button>
 			<button className='flat-btn button app-close' onClick={this.handleAppClose.bind(this)}></button>
 		</div>
 		return node;
@@ -153,14 +153,18 @@ class Header extends React.Component {
 		nwApp.appMinimize();
 	}
 
-	handleAppMaximize() {
-		nwApp.appMaximize();
+	handleAppToggleMaximize() {
+		if($(this.refs.app_maximize).hasClass('fullScreen')) {
+			nwApp.appUnMaximize();
+		} else {
+			nwApp.appMaximize();	
+		}
 	}
 
 	handleAppToggleFullScreen() {
 		nwApp.appToggleFullScreen();
-		let fullScreen = this.state.fullScreen;
-		this.setState({fullScreen: !fullScreen});
+		// let fullScreen = this.state.fullScreen;
+		// this.setState({fullScreen: !fullScreen});
 	}
 
 	handleAppClose() {

@@ -146,6 +146,28 @@ let initResize = () => {
 	window.addEventListener('resize', _.debounce(setRem, 200));
 };
 
+let initNwEvents = () => {
+	var _btnCache = null;
+	try {
+		var gui = window.require('nw.gui');
+		var Win = gui.Window.get();
+		Win.on('maximize', function(){
+			if(_btnCache == null) {
+				_btnCache = $('.app-maximize');
+			}
+			_btnCache.addClass('fullScreen');
+		});
+		Win.on('unmaximize', function(){
+			if(_btnCache == null) {
+				_btnCache = $('.app-maximize');
+			}
+			_btnCache.removeClass('fullScreen');
+		});
+	} catch(e) {
+		console.error(e);
+	}
+};
+
 let initGolbalKeyEvent = () => {
 	window.addEventListener('keydown', (e)=>{
 		if(e.altKey && e.ctrlKey && e.shiftKey) {
@@ -187,5 +209,6 @@ module.exports = {
 	 	initAssert();
 	 	initResize();
 	 	initGolbalKeyEvent();
+	 	initNwEvents();
 	}
 }
