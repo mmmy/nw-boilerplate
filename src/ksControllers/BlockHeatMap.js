@@ -11,13 +11,14 @@ let _formatter = (value, yMin, yMax, decimal) => {
 
 function BlockHeatMap(dom, config){
 	config = config || {};
+	this._isLight = $ && $.keyStone && ($.keyStone.theme == 'light');
 	this._canvas = null;
 	this._ctx = null;
 	this._canvasParent = null;
 
 	this._labelFormatter = config.labelFormatter || _formatter;
 
-	this._colorRange = {from:{R:199, G:199, B:199}, to:{R:101, G:24, B:24}};
+	this._colorRange = this._isLight ? {from:{R:199, G:199, B:199}, to:{R:101, G:24, B:24}} : {from:{R:204, G:204, B:204}, to:{R:72, G:72, B:72}};
 	this._yMin = 0;
 	this._yMax = 0;
 	this._blocksNumber = 8;
