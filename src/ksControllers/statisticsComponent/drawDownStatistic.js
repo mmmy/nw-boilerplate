@@ -2,6 +2,7 @@
 
 import CountLinesChart from '../CountLinesChart';
 import CountBarsChart from '../CountBarsChart';
+import KsSwitch from '../widget/KsSwitch';
 
 let drawDownStatistic = {};
 
@@ -32,7 +33,8 @@ drawDownStatistic.init = (wrapper, model) => {
 
 	_model = model;
 
-	let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche${_isLight ? '' : '_white'}.png"/>回撤统计<span class="btn-wrapper"><button class="flat-btn long active">做多</button><button class="flat-btn short">做空</button></span></h4><div class="row"></div></div>`);
+	// let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche${_isLight ? '' : '_white'}.png"/>回撤统计<span class="btn-wrapper"><button class="flat-btn long active">做多</button><button class="flat-btn short">做空</button></span></h4><div class="row"></div></div>`);
+	let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche${_isLight ? '' : '_white'}.png"/>回撤统计<span class="btn-wrapper">做多<span class="switch-wrapper"></span>做空</span></h4><div class="row"></div></div>`);
 	$(wrapper).append(newDom);
 
 	//add other doms
@@ -60,8 +62,8 @@ drawDownStatistic.init = (wrapper, model) => {
 	newDom.find('.row').append(part1).append(part2);
 
 	//init event
+	/*
 	newDom.find('.btn-wrapper .short').click(function(event) {  //做空
-		/* Act on the event */
 		if(_isLong) {
 			_isLong = false;
 			newDom.find('.btn-wrapper .short').addClass('active');
@@ -70,12 +72,31 @@ drawDownStatistic.init = (wrapper, model) => {
 		}
 	});
 	newDom.find('.btn-wrapper .long').click(function(event) {  //做多
-		/* Act on the event */
 		if(!_isLong) {
 			_isLong = true;
 			newDom.find('.btn-wrapper .long').addClass('active');
 			newDom.find('.btn-wrapper .short').removeClass('active');
 			drawDownStatistic.update();
+		}
+	});
+	*/
+	new KsSwitch({
+		dom: newDom.find('.switch-wrapper'),
+		onOn: function() {
+			if(_isLong) {
+				_isLong = false;
+				newDom.find('.btn-wrapper .short').addClass('active');
+				newDom.find('.btn-wrapper .long').removeClass('active');
+				drawDownStatistic.update();
+			}
+		},
+		onOff: function() {
+			if(!_isLong) {
+				_isLong = true;
+				newDom.find('.btn-wrapper .long').addClass('active');
+				newDom.find('.btn-wrapper .short').removeClass('active');
+				drawDownStatistic.update();
+			}
 		}
 	});
 

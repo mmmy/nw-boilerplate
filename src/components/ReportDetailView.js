@@ -236,7 +236,7 @@ class ReportDetailView extends React.Component {
 								</div>);
 							})}
 						</div>
-						{names.length > 1 ? <span className="toggle-btn transition-all" onClick={_handleArrowClick} onMouseEnter={_handleArrowToggle} onMouseLeave={_handleArrowToggle}><img src="./image/arrow.png"/></span> : ''}
+						{names.length > 1 ? <span className="toggle-btn transition-all" onClick={_handleArrowClick} onMouseEnter={_handleArrowToggle} onMouseLeave={_handleArrowToggle}><img className="transition-all" src="./image/arrow.png"/></span> : ''}
 					</div>;
 	}
 	//弃用

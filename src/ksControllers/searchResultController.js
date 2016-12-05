@@ -472,7 +472,7 @@ searchResultController.showErrorPanel = (searchKline, error) => {
 	searchKline = searchKline || [];
 	let lastHasData = store.getState().patterns.rawData.length > 0;
 	let onLine = window.navigator.onLine;
-	let title = `本次搜索失败了 ${onLine ? "" : "<span class='subtitle'>请连接互联网</span>"}`,
+	let title = `本次搜索失败了 ${onLine ? "" : "<span class='subtitle'>请检查你的网络连接</span>"}`,
 			errorBody = `<span>请您尝试</span><button class='research'>重新搜索</button>${lastHasData ? "<span>或返回</span><button class='back'>上一次搜索</button>" : "" }`;
 
 	if(error && (error.type == 'no_data')) {

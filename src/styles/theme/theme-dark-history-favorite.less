@@ -3,6 +3,7 @@ body[theme='dark'] {
 	.container-stockview .nav-container {
 		background-color: @dark-bg-inner-lighter;
 		border-left: 1px solid #111;
+		border-right: 1px solid #111;
 		// background-color: lighten(@dark-bg-inner-lighter, 10%);
 		.nav-title {
 			color: #fff;
@@ -38,6 +39,19 @@ body[theme='dark'] {
 		.main-editor {
 			.header, .kline-editor-toolbar, .footer {
 				border-color: #444;
+			}
+		}
+		.search-editor-wrapper .rename-container {
+			background-color: #333;
+		}
+		.float-toolbar-container {
+			background-color: lighten(@dark-bg-inner-lighter, 20%);
+			.drag-icon, .range-tools-container button {
+				background-image: url(@icons_dark_url);
+			}
+			input[type='number'] {
+				background-color: lighten(@dark-bg-inner-lighter, 20%);
+				border-color: #666;
 			}
 		}
 	}
