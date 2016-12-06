@@ -12,6 +12,9 @@ let adjustConfig = (searchConfig) => {
 		dateRange[0] = {date:dateRange[0], hour:'0', minute:'0', second:'0'};
 		dateRange[1] = {date:dateRange[1], hour:'0', minute:'0', second:'0'};
 	}
+	if(!searchConfig.similarityThreshold) {
+		searchConfig.similarityThreshold = {on: false, value: 0.6};
+	}
 };
 
 function ConfigEditor(dom, searchConfig, info) {
@@ -30,6 +33,8 @@ function ConfigEditor(dom, searchConfig, info) {
 									additionBars:null, 
 									reduceBars:null, 
 									addBars:null, 
+									similarityCheck:null,
+									similaritySelect:null,
 									startTime:{hour:null,minute:null,second:null},
 									endTime:{hour:null,minute:null,second:null},
 								};
@@ -41,7 +46,7 @@ function ConfigEditor(dom, searchConfig, info) {
 }
 
 ConfigEditor.prototype._init = function() {
-	let { dateRange, additionDate, spaceDefinition, isLatestDate } = this._config;
+	let { dateRange, additionDate, spaceDefinition, isLatestDate, similarityThreshold } = this._config;
 	let d0 = dateRange[0],
 			d1 = dateRange[1];
 	this._inputs.startDate = $(`<input />`).val(d0.date);
@@ -67,6 +72,9 @@ ConfigEditor.prototype._init = function() {
 	this._inputs.endTime.minute = minute1;
 	this._inputs.endTime.second = second1;
 
+	this._inputs.similarityCheck = $('<input type="checkbox" />').attr('checked', similarityThreshold.on);
+	this._inputs.similaritySelect = $('<select><option value="0.9">90%</option><option value="0.8">80%</option><option value="0.7">70%</option><option value="0.6">60%</option></select>').attr('disabled', !similarityThreshold.on).val(similarityThreshold.value);
+
 	this._$wrapper.append(`<div class='title'>搜索配置</div>`);
 	
 	//统计天数
@@ -90,6 +98,8 @@ ConfigEditor.prototype._init = function() {
 							.append(endDateDoms);
 
 	this._$wrapper.append($date);
+	//相似度过滤
+	this._$wrapper.append($(`<div class="item-title font-simsun similarity">只显示相似度大于</div>`).prepend(this._inputs.similarityCheck).append(this._inputs.similaritySelect));
 
 	//标的类型
 	this._$wrapper.append(`<div class='item-title font-simsun hide'>标的类型</div>`);
@@ -136,8 +146,24 @@ ConfigEditor.prototype._initActions = function() {
 	this._inputs.endTime.hour.on('input', this._changeTime.bind(this, 1, 'hour'));
 	this._inputs.endTime.minute.on('input', this._changeTime.bind(this, 1, 'minute'));
 	this._inputs.endTime.second.on('input', this._changeTime.bind(this, 1, 'second'));
-	this._$wrapper.find('input[type="checkbox"]').on('change', this._toggleLatestTimeAuto.bind(this));
+	this._$wrapper.find('.check-box-wrapper input[type="checkbox"]').on('change', this._toggleLatestTimeAuto.bind(this));
+
+	this._inputs.similarityCheck.on('change', this._toggleSimilarityOn.bind(this));
+	this._inputs.similaritySelect.on('change', this._cahngeSimilarityValue.bind(this));
 }
+
+ConfigEditor.prototype._toggleSimilarityOn = function() {
+	var isOn = !this._config.similarityThreshold.on;
+	this._config.similarityThreshold.on = isOn;
+	this._inputs.similaritySelect.attr('disabled', !isOn);
+	this.onEdit();
+}
+
+ConfigEditor.prototype._cahngeSimilarityValue = function(e) {
+	var value = e.target.value;
+	this._config.similarityThreshold.value = value;
+	this.onEdit();
+} 
 
 ConfigEditor.prototype._toggleLatestTimeAuto = function(e) {
 	this._config.isLatestDate = !this._config.isLatestDate;

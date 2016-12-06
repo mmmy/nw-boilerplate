@@ -63,7 +63,7 @@ class SearchConfigModal extends React.Component {
 
 	renderContent() {
 
-		let { dateRange, additionDate, spaceDefinition, isLatestDate } = this.state.searchConfig;
+		let { dateRange, additionDate, spaceDefinition, isLatestDate, similarityThreshold } = this.state.searchConfig;
 		let d0 = dateRange[0],
 				d1 = dateRange[1];
 		const stockSelected = spaceDefinition.stock;
@@ -111,6 +111,16 @@ class SearchConfigModal extends React.Component {
 						<input disabled={isLatestDate} type="number" min='0' max='59' value={d1.second} onChange={this.changeTime.bind(this, 1,'second')}/>
 					</div>
 				</div>
+			</div>
+			<div className='item-title font-simsun similarity'>
+				<input type='checkbox' checked={similarityThreshold.on} onChange={this.toggleSimilarityOn.bind(this)}/>
+				只显示相似度大于
+				<select value={similarityThreshold.value} disabled={!similarityThreshold.on} onChange={this.changeSimilarity.bind(this)}>
+					<option value='0.9'>90%</option>
+					<option value='0.8'>80%</option>
+					<option value='0.7'>70%</option>
+					<option value='0.6'>60%</option>
+				</select>
 			</div>
 			<div className='item-title font-simsun hide'>标的类型</div>
 			<div className='item-body-container sid hide'>
@@ -207,6 +217,18 @@ class SearchConfigModal extends React.Component {
 		this.closeModal();
 	}
 
+	changeSimilarity(e) {
+		let value = e.target.value;
+		let { searchConfig } = this.state;
+		searchConfig.similarityThreshold.value = value;
+		this.setState({searchConfig});
+	}
+
+	toggleSimilarityOn() {
+		let { searchConfig } = this.state;
+		searchConfig.similarityThreshold.on = !searchConfig.similarityThreshold.on;
+		this.setState({searchConfig});
+	}
 }
 
 SearchConfigModal.propTypes = propTypes;

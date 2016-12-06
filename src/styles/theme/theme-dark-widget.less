@@ -9,6 +9,18 @@ body[theme="dark"] {
 	.modal-content-contianer .item-body-container.days button {
 		background-color: @dark-input-bg;
 	}
+	.modal-content-contianer {
+		.similarity {
+			select {
+				background-color: @dark-input-bg;
+				color: #aaa;
+				border-color: transparent;
+				&[disabled] {
+					opacity: 0.3;
+				}
+			}
+		}
+	}
 
 	.modal-content-contianer input, .modal-content-contianer .inputs-wrapper {
 		background-color: @dark-input-bg !important;
