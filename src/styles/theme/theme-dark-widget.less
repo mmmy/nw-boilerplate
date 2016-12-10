@@ -10,14 +10,12 @@ body[theme="dark"] {
 		background-color: @dark-input-bg;
 	}
 	.modal-content-contianer {
-		.similarity {
-			select {
-				background-color: @dark-input-bg;
-				color: #aaa;
-				border-color: transparent;
-				&[disabled] {
-					opacity: 0.3;
-				}
+		select {
+			background-color: @dark-input-bg;
+			color: #fff;
+			border-color: transparent;
+			&[disabled] {
+				opacity: 0.3;
 			}
 		}
 	}
@@ -148,5 +146,16 @@ body[theme="dark"] {
 	  // border-radius: 5px;
 	  // border: 1px solid #1C2023;
 	  // box-shadow: 2px 2px 4px rgba(0,0,0,0.2) inset
+	}
+
+	.flat-btn {
+		&.border-btn {
+			background-color: @dark-bg-inner-lighter-btn;
+			border-color: lighten(@dark-bg-inner-lighter-btn, 10%);
+			&:hover,&.hvoer,&:focus,&.focus {
+				color: #eee;
+				background-color: lighten(@dark-bg-inner-lighter-btn, 20%)
+			}
+		}
 	}
 }

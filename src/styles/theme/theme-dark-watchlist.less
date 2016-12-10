@@ -7,4 +7,30 @@ body[theme='dark'] {
 	.watchlist-body-wrapper {
 		
 	}
+	@watchlist-prediction-base: lighten(@dark-bg-inner-lighter, 2%);
+	.watchlist-prediction-wrapper {
+		background-color: @watchlist-prediction-base;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+	}
+	//编辑列表
+	@dropdown-bg-base: lighten(@dark-bg-inner-lighter, 7%);
+	.watch-list-dropdown {
+		background-color: @dropdown-bg-base;
+		.watch-list-item {
+			background-color: darken(@dropdown-bg-base, 3%);
+			&:hover {
+				background-color: darken(@dropdown-bg-base, 6%);
+			}
+			&.active {
+				background-color: darken(@dropdown-bg-base, 10%);
+			}
+		}
+		
+		.cancel {
+			border-color: lighten(@dropdown-bg-base, 10%);
+			&:hover {
+				border-color: lighten(@dropdown-bg-base, 20%);
+			}
+		}
+	}
 }

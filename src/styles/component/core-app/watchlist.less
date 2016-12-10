@@ -1,12 +1,165 @@
 
 .watchlist-header-wrapper {
-
+	margin-top: 20px;
+	padding-left: 30px;
+	padding-right: 20px;
+	.title {
+		font-size: 20px;
+	}
+	.config-info {
+		font-size: 10px;
+		margin-left: 40px;
+	}
+	[role="config-data"] {
+		font-weight: bold;
+	}
+	[role="edit-watchlist"] {
+		margin-left: 20px;
+	}
 }
 
 .watchlist-body-wrapper {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	height: calc(~"100% - 50px");
+	height: calc(~"100% - 60px");
 	overflow: scroll;
+}
+//cell
+.watchlist-prediction-wrapper {
+	width: calc(~"50% - 20px");
+	height: 400px;
+	position: relative;
+	float: left;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	.charts-wrapper {
+		position: absolute;
+		width: calc(~"100% - 235px");
+		height: 100%;
+		left: 0;
+		top: 0;
+		.chart-header {
+
+		}
+		.chart-body {
+			position: absolute;
+			width: 100%;
+			height: 250px;
+			left: 0;
+			top: 75px;
+			.prediction-chart {
+				position: absolute;
+				width: calc(~"100% - 70px");
+				height: 100%;
+				top: 0;
+				left: 0;
+			}
+			.heatmap-chart {
+				position: absolute;
+				width: 70px;
+				height: 100%;
+				right: 0;
+				top: 0;
+			}
+		}
+	}
+	.info-container {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 235px;
+		height: 100%;
+	}
+	.inputs-group-wrapper {
+		position: relative;
+	}
+}
+
+.symbol-list-container {
+	position: absolute;
+	z-index: 2;
+	width: 300px;
+	max-height: 300px;
+	top: 100%;
+	overflow: scroll;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+//编辑列表
+.watch-list-dropdown {
+	position: absolute;
+	right: 0;
+	top: 100%;
+	z-index: 2;
+	background-color: #fff;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.2);
+	.header-wrapper {
+		padding: 10px;
+	}
+	.body-wrapper {
+		white-space: nowrap;
+		overflow-y: scroll;
+		max-height: 280px;
+		min-height: 100px;
+		margin-left: 20px;
+		margin-right: 20px;
+		.scrollbar();
+		.scrollbar-thumb();
+		.scrollbar-track(@background-color:transparent);
+	}
+	.footer-wrapper {
+		white-space: nowrap;
+		padding-left: 20px;
+		margin-top: 20px;
+		margin-bottom: 30px;
+		.save,.cancel {
+			height: 35px;
+			border-radius: 2px;
+			letter-spacing: 3px;
+			width: 125px;
+		}
+		.save {
+			background-color: @brown-red;
+			&:hover {
+				background-color: @brown-red-light;
+			}
+		}
+		.cancel {
+			margin-left: 10px;
+			border: 1px solid #eee;
+		}
+	}
+	.watch-list-item {
+		overflow: hidden;
+		cursor: move;
+		margin-bottom: 1px;
+		line-height: 40px;
+		background-color: #eee;
+		&.active {
+			background-color: #aaa;
+		}
+		.describe {
+			display: inline-block;
+			width: 150px;
+			padding-left: 20px;
+			padding-right: 5px;
+			text-align: left;
+			white-space: nowrap;
+			text-overflow: ellipsis;	
+		}
+		.symbol {
+			display: inline-block;
+			width: 100px;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		button.delete {
+			display: none;
+		}
+
+	}
 }

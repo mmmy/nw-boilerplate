@@ -3,6 +3,8 @@
 @dark-bg-inner: rgb(37, 42, 45);
 @dark-bg-inner-lighter: #222528;
 
+@dark-bg-inner-lighter-btn: lighten(@dark-bg-inner-lighter, 8%);
+
 @dark-input-bg: #40474E;
 
 @dark-subtitle: #eee;
@@ -24,6 +26,7 @@ body[theme="dark"] {
 	background-color: @dark-bg-wrapper;
 	
 	input, .inputs-wrapper {
+		background-color: transparent;
 		// background-color: @dark-input-bg !important;
 		// border-color: transparent !important;
 		// color: #fff !important;
@@ -60,7 +63,7 @@ body[theme="dark"] {
 	.pattern-info-switch-wrapper {
 		background-color: rgba(40, 43, 47, 0.9)
 	}
-	//浅灰色
+	//浅灰色, 对话框背景
 	.config-modal-container,
 	.container-ks-sr.meta .pattern-wrapper,
 	.container-header {
