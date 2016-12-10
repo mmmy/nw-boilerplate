@@ -24,8 +24,10 @@ class StockView extends React.Component {
 
 
 	componentDidMount() {
+		var watchlistController = require('../ksControllers/watchlistController');
 		historyController.init(this.refs.history_nav_container, this.refs.history_body_container);
 		favoritesController.init(this.refs.favorites_nav_container, this.refs.favorites_body_container);
+		watchlistController.init(this.refs.watchlist_view);
 	}
 
 	componentWillReceiveProps(){
@@ -141,12 +143,17 @@ class StockView extends React.Component {
 	    <div ref='container' className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
 	    	<div className='container-stockview-inner'>
 	      	<div className='left-toolbar-container'>
-	      		<div><button data-kstooltip="K线图" ref='curve_btn' className='flat-btn curve active' onClick={ this.showSockView.bind(this) }>quxian</button></div>
+	      		<div><button data-kstooltip="Watchlist" ref='watchlist_btn' className='flat-btn watchlist active' onClick={ this.showWatchlist.bind(this) }>watchlist</button></div>
+	      		<div><button data-kstooltip="K线图" ref='curve_btn' className='flat-btn curve' onClick={ this.showSockView.bind(this) }>quxian</button></div>
 	      		<div><button data-kstooltip="收藏夹" ref='favorites_btn' className='flat-btn favorites' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
 	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onClick={ this.showHistory.bind(this) }>history</button></div>
 	      	</div>
 
-		      <div ref='stock_view' className='content-wrapper curve top-z'>
+	      	<div ref="watchlist_view" className='content-wrapper watchlist top-z'>
+
+	      	</div>
+
+		      <div ref='stock_view' className='content-wrapper curve'>
 		        <ReactTradingView
 		          viewId={ STOCK_VIEW }
 		          options={ options }
@@ -195,12 +202,14 @@ class StockView extends React.Component {
 	}
 
 	resetButton() {
+		$(this.refs.watchlist_btn).removeClass('active');
 		$(this.refs.curve_btn).removeClass('active');
 		$(this.refs.history_btn).removeClass('active');
 		$(this.refs.favorites_btn).removeClass('active');
 	}
 
 	showSockView(e) {
+		$(this.refs.watchlist_view).removeClass('top-z');
 		$(this.refs.favorites_view).removeClass('top-z');
 		$(this.refs.history_view).removeClass('top-z');
 		$(this.refs.stock_view).addClass('top-z');
@@ -208,8 +217,18 @@ class StockView extends React.Component {
 		$(e.target).addClass('active');
 	}
 
+	showWatchlist(e) {
+		$(this.refs.watchlist_view).addClass('top-z');
+		$(this.refs.favorites_view).removeClass('top-z');
+		$(this.refs.history_view).removeClass('top-z');
+		$(this.refs.stock_view).removeClass('top-z');
+		this.resetButton();
+		$(e.target).addClass('active');
+	}
+
 	showFavorites(e) {
 		$(this.refs.favorites_view).addClass('top-z');
+		$(this.refs.watchlist_view).removeClass('top-z');
 		$(this.refs.history_view).removeClass('top-z');
 		$(this.refs.stock_view).removeClass('top-z');
 		this.resetButton();
@@ -217,6 +236,7 @@ class StockView extends React.Component {
 	}
 
 	showHistory(e) {
+		$(this.refs.watchlist_view).removeClass('top-z');
 		$(this.refs.favorites_view).removeClass('top-z');
 		$(this.refs.history_view).addClass('top-z');
 		$(this.refs.stock_view).removeClass('top-z');
