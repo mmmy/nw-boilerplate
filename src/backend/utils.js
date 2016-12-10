@@ -85,6 +85,14 @@ let deleteFile = (pathName, cb) => {
 	fs.unlink(pathName, cb);
 };
 
+let readFileSync = (pathName) => {
+	try {
+		return fs.readFileSync(pathName);
+	} catch(e) {
+		console.error(e);
+	}
+};
+
 module.exports = {
 	getDaysDuration,
 	calcYieldRate,
@@ -93,4 +101,5 @@ module.exports = {
 	saveFile,
 	removeDir,
 	deleteFile,
+	readFileSync,
 };

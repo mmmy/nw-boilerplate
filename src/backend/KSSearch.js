@@ -35,7 +35,7 @@ let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMa
 	let id = symbol.replace(exchangeReg, ''); //去掉交易所字符
 
 	//console.assert(!isNaN(id), 'error: 股票id  为NaN');
-	console.assert(dateRange.length == 2);
+	// console.assert(dateRange.length == 2);
 	console.assert(bars > 0);
 	//console.log(searchOptions, config);
 	// let { path } = searchOptions;
@@ -122,6 +122,10 @@ let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMa
 	};
 	let postData = JSON.stringify(postObj);
 	// console.log(postData);
+	if(window.actionsForIframe.mockSearch) {
+		window.actionsForIframe.mockSearch(options, callback, errorCb, postData);
+		return;
+	}
 	return request(options, callback, errorCb, postData);
 }
 
