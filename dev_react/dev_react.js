@@ -1,12 +1,14 @@
 import React from 'react';
 //require('../src/styles/main.less');
 window.$ = require('jquery');
+require('../src/shared/extendJquery')(window.$);
 
 let tabsArr = [
 	// {title:'waves',component:'./component/waves'},
 	// {title:'kPrediction',component:'./component/kPrediction'},
 	// {title:'searchresult',component:'./component/searchresult'},
-	{title:'lineAreaChart',component:'./component/statisticsComponent'},
+	{title:'watchList',component:'./component/watchList'},
+	{title:'statisticsComponent',component:'./component/statisticsComponent'},
 	{title:'lineAreaChart',component:'./component/lineAreaChart'},
 	// {title:'prediction',component:'./component/prediction'},
 	// {title:'ksprediction',component:'./component/ksprediction'},
@@ -16,7 +18,9 @@ let tabsArr = [
 	// {title:'config',component:'./component/configModal'},
 	];
 
-
+require('../tradingview/charting_library/datafeed/udf/ks_symbols_database');
+require('../tradingview/charting_library/datafeed/udf/mock_request');
+require('../tradingview/charting_library/datafeed/udf/kfeed');
 
 let Main = React.createClass({
 	getInitialState(){
