@@ -39,13 +39,20 @@ export default {
     },
 
     groupOptions: {
-    	host: '112.74.17.46',
+        host: '112.74.17.46',
         port: 25501,
         path: '/groups',
         url: getURL(30011, 'groups'),
         // url: 'http://139.196.226.133:30011/groups',
         // url: 'http://112.74.17.46:25501/groups',
         method: 'GET'
+    },
+
+    dataTimeOptions: {
+        url: getURL(30011, 'querydatatime'),
+        // url: 'http://139.196.226.133:30011/groups',
+        // url: 'http://112.74.17.46:25501/groups',
+        method: 'POST'
     },
 
     symbolListOptions: {

@@ -7,7 +7,7 @@ const WATCHLIST = 'watchlist';
 
 const _watchlistPath = path.join(BASEPATH, WATCHLIST);
 
-let _generateFileName = (category='default') { //分组
+let _generateFileName = (category='default') => { //分组
 	const file = `watchlist_${category}.json`;
 	return path.join(_watchlistPath, file);
 }

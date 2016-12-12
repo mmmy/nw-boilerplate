@@ -72,13 +72,12 @@ function WatchList(config) {
 	this._$container = $(`<div class="watchlist-container">
 													<div class="watchlist-prediction-wrapper add">
 														<div class="add-info-wrapper">
-															<p>将您关注的标的加入Watchlist, 我们将试试监控它们<br/>的走势并对他们进行搜索和统计.</p>
-															<button class="flat-btn">添加新的监控</button>
+															<div><img src="./image/logo_white.png" height="20" alt="拱石"/></div>
+															<div class="description">将您关注的标的加入Watchlist, 我们将试试监控它们<br/>的走势并对他们进行搜索和统计.</div>
 														</div>
 														<div class="add-input-wrapper">
-															<p>LOGO</p>
 															<div class="inputs-group-wrapper">
-																<span class="inputs-group"><span class="search-icon"></span><input role="input" placeholder="期货,股票,指数"/><button role="submit" class="flat-btn">添加</button></span>
+																<span class="inputs-group"><span class="search-icon"></span><input role="input" placeholder="期货,股票,指数"/><button role="submit" class="flat-btn border-btn">添加</button></span>
 															</div>
 														</div>
 													</div>

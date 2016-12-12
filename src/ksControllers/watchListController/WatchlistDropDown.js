@@ -1,9 +1,10 @@
 
 function WatchlistDropDown(config) {
 	this._$wrapper = config.dom;
-	this._$submit = this._$wrapper.find('[row="edit-watchlist"]');
+	this._$submit = this._$wrapper.find('[role="edit-watchlist"]');
 	this._watchList = config.watchList;
 	this._unDoStack = [];
+	this._actvieIndex = 0;
 	this._removedNodeCache = [];
 	this._initDoms();
 	this._updateList();
@@ -23,8 +24,10 @@ WatchlistDropDown.prototype._initDoms = function() {
 
 	var that = this;
 	this._$submit.on('click', function(e){
-
+		that._show();
 	});
+	this._$headerWrapper.find('.icon-close').on('click', this._handleCancel.bind(this));
+	this._$headerWrapper.find('.icon-trash').on('click', this._deleteActive.bind(this));
 	this._$undoBtn.on('click', this._unDo.bind(this));
 	this._$footerWrapper.find('.save').on('click', this._handleSave.bind(this));
 	this._$footerWrapper.find('.cancel').on('click', this._handleCancel.bind(this));
@@ -33,7 +36,7 @@ WatchlistDropDown.prototype._handleSave = function() {
 	this._watchList.updateList(this._list);
 }
 WatchlistDropDown.prototype._handleCancel = function() {
-	this._sleep();
+	this._hide();
 }
 WatchlistDropDown.prototype._submitClick = function() {
 
@@ -81,6 +84,7 @@ WatchlistDropDown.prototype._unDo = function() {
 						console.error('undo: node is required!');
 					}
 					node.data(symbolInfo).ksSortable({onDragend: this._bindResort})
+							.click(this._bindHandleSetActive)
 							.find('.delete').on('click', this._bindHandleDelete);
 					//update UI
 					if(i===0) {
@@ -116,6 +120,20 @@ WatchlistDropDown.prototype._resort = function(listSorted) {
 		}
 	}
 }
+WatchlistDropDown.prototype._deleteActive = function() {
+	var $nodes = this._$bodyWrapper.children();
+	var activeItem = $nodes[this._actvieIndex];
+	if(activeItem) {
+		var $item = $(activeItem);
+		var symbolInfo = $item.data();
+		this._pushUndoStack();
+		this._removedNodeCache.push($item);
+		this._removeWatch(symbolInfo);
+
+		$item.removeClass('active').remove();
+		this._updateActive();
+	}
+}
 WatchlistDropDown.prototype._handleDelete = function(e) {
 	e.stopPropagation();
 	var listItem = $(e.currentTarget).closest('.watch-list-item');
@@ -132,6 +150,7 @@ WatchlistDropDown.prototype._updateList = function() {
 	this._$bodyWrapper.empty();
 	this._bindResort = this._resort.bind(this);
 	this._bindHandleDelete = this._handleDelete.bind(this);
+	this._bindHandleSetActive = this._setActiveItem.bind(this);
 
 	var that = this;
 	for (var i=0; i<list.length; i++) {
@@ -142,6 +161,7 @@ WatchlistDropDown.prototype._updateList = function() {
 										.append(`<button class="pull-right flat-btn delete">移除</button>`)
 										.data(symbolInfo)
 										.ksSortable({onDragend: this._bindResort})
+										.click(this._bindHandleSetActive)
 
 		infoNode.find('.delete').on('click', this._bindHandleDelete);
 		
@@ -149,8 +169,32 @@ WatchlistDropDown.prototype._updateList = function() {
 	}
 }
 
-WatchlistDropDown.prototype._sleep = function() {
+WatchlistDropDown.prototype._setActiveItem = function(e) {
+	var $cur = $(e.currentTarget);
+	var symbolInfo = $cur.data();
+	for(var i=0; i<this._list.length; i++) {
+		if(symbolInfo.symbol == this._list[i].symbolInfo.symbol) {
+			this._actvieIndex = i;
+			break;
+		}
+	}
+	this._updateActive();
+}
+WatchlistDropDown.prototype._updateActive = function() {
+	if(this._actvieIndex >= this._list.length) {
+		this._actvieIndex  = this._list.length - 1;
+	}
+	var $nodes = this._$bodyWrapper.children().removeClass('active');
+	$($nodes[this._actvieIndex]).addClass('active');
+}
 
+WatchlistDropDown.prototype._show = function() {
+	this._$container.show();
+	this._updateList();
+}
+
+WatchlistDropDown.prototype._hide = function() {
+	this._$container.hide();
 }
 
 module.exports = WatchlistDropDown;

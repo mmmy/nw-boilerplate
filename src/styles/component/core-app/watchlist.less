@@ -28,12 +28,15 @@
 //cell
 .watchlist-prediction-wrapper {
 	width: calc(~"50% - 20px");
-	height: 400px;
+	height: 390px;
 	position: relative;
 	float: left;
 	margin-left: 10px;
-	margin-bottom: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	overflow: hidden;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	line-height: 1;
 	.charts-wrapper {
 		position: absolute;
 		width: calc(~"100% - 235px");
@@ -41,13 +44,20 @@
 		left: 0;
 		top: 0;
 		.chart-header {
-
+			margin-top: 15px;
+			margin-left: 25px;
+			.describe {
+				font-size: 14px;
+			}
+			.symbol {
+				font-size: 12px;
+			}
 		}
 		.chart-body {
 			position: absolute;
-			width: 100%;
+			width: calc(~"100% - 20px");
 			height: 250px;
-			left: 0;
+			left: 10px;
 			top: 75px;
 			.prediction-chart {
 				position: absolute;
@@ -65,12 +75,74 @@
 			}
 		}
 	}
+	@color-title: #999;
 	.info-container {
 		position: absolute;
 		top: 0;
 		right: 0;
 		width: 235px;
 		height: 100%;
+		padding-top: 40px;
+		.statistic-container {
+			hr {
+				border-color: @color-title;
+				margin-left: 20px;
+				margin-right: 20px;
+				margin-top: 30px;
+				margin-bottom: 30px;
+			}
+			.statistic-item {
+				display: inline-block;
+				width: 50%;
+				text-align: center;
+				.title {
+					margin-bottom: 20px;
+					color: @color-title;
+				}
+			}
+			.percent-info {
+				font-size: 16px;
+				font-weight: bold;
+				color: #e0e0e0;
+				span:last-child {
+					margin-left: 2px;
+				}
+			}
+		}
+		.price-container {
+			padding-top: 10px;
+			.price-item {
+				display: inline-block;
+				width: 50%;
+				text-align: center;
+				vertical-align: top;
+				.title {
+					margin-bottom: 20px;
+					color: @color-title;
+				}
+				.percent-info {
+					font-size: 16px;
+					&.red {
+						color: @brown-red;
+					}
+					&.green {
+						color: @ks-color-green-grass;
+					}
+				}
+				&:nth-child(1) {
+					.percent-info {
+						line-height: 14px;
+						font-size: 20px;
+						span:nth-child(1) {
+							font-size: 26px
+						}
+						span:last-child {
+							display: none;
+						}
+					}
+				}
+			}
+		}
 	}
 	.inputs-group-wrapper {
 		position: relative;
@@ -161,5 +233,43 @@
 			display: none;
 		}
 
+	}
+}
+
+//添加watch-list
+.add-info-wrapper {
+	margin-top: 30px;
+	text-align: center;
+	.description {
+		font-size: 12px;
+		line-height: 1.8;
+		margin-top: 20px;
+		margin-bottom: 30px;
+	}
+}
+.add-input-wrapper {
+	text-align: center;
+	.inputs-group {
+		display: inline-block;
+		border: 1px solid #eee;
+		>* {
+			vertical-align: middle;
+		}
+		.search-icon {
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			margin-left: 10px;
+			margin-right: 10px;
+			background-image: url(@icons_url);
+			.icon_position(0,5,0);
+		}
+		input {
+			outline: none;
+			border: none;
+		}
+		.flat-btn.border-btn {
+			line-height: 28px;
+		}
 	}
 }

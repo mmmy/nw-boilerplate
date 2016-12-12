@@ -3,6 +3,7 @@ import WatchList from './WatchList';
 import WatchlistDropDown from './WatchlistDropDown';
 
 var _watchList = null;
+var _watchListDropdown = null;
 
 var watchListController = {};
 var _$headerDom = null;
@@ -33,11 +34,11 @@ watchListController._udpateConfigUI = () => {
 watchListController._initActions = () => {
 
 	var $editWatchlist = _$headerDom.find('.widget-wrapper.edit-watchlist');
-	var watchlistDropDown = new WatchlistDropDown({
-															dom:$editWatchlist,
-															watchList: _watchList,
-														});
-	window.watchlistDropDown = watchlistDropDown;
+	_watchListDropdown = new WatchlistDropDown({
+														dom:$editWatchlist,
+														watchList: _watchList,
+													});
+	window.watchlistDropDown = _watchListDropdown;
 
 	var $editSearchConfig = _$headerDom.find('.widget-wrapper.edit-searchConfig');
 	$editSearchConfig.on('click', function(event) {

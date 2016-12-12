@@ -2,7 +2,11 @@
 import PredictionWidget from '../PredictionWidget';
 import BlockHeatMap from '../BlockHeatMap';
 import searchForWatchList from '../../backend/searchForWatchList';
-var searchPattern = searchForWatchList.searchPattern;
+import statisticKline from '../../components/utils/statisticKline';
+import getPrice from '../../backend/getPrice';
+let { getLatestPrice } = getPrice;
+
+var SearchPattern = searchForWatchList.SearchPattern;
 
 var NODATA = 'NODATA',
 		FINISHED = 'FINISHED',
@@ -20,19 +24,24 @@ function PredictionWatch(config) {
 	this.__searchMetaData = {kline:[]};
 	this._state = {code:NODATA};
 	this.__searchResults = {patterns:[],closePrices:[]};
+	this.__latestPrice2 = []; //分钟级别的最新的数据
+	this.__latestDayPrice2 = []; //天级别的 , 用来计算涨跌
+
+	this._searchPatternInstance = new SearchPattern();
 
 	this._updateFuturesResolution();
 	this._init();
 }
 PredictionWatch.prototype._init = function() {
-	var percentInfoStr = `<div class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></div>`;
+	var percentInfoStr = `<div class="percent-info"><span>--</span><span>.</span><span>--</span><span>%</span></div>`;
 	this._percentInfoDoms = [$(percentInfoStr), $(percentInfoStr), $(percentInfoStr), $(percentInfoStr)];
 	this._pricesDoms = [$(percentInfoStr), $(percentInfoStr)];
 	this._$root = $(`<div class="watchlist-prediction-wrapper">
 											<div class="charts-wrapper">
 												<div class="chart-header">
 													<div class="symbol-info">
-														<span class="discribe">--</span>
+														<span class="describe">--</span>
+														<br/>
 														<span class="symbol">--</span>
 													</div>
 													<div class="state-info">NODATA</div>
@@ -45,10 +54,9 @@ PredictionWatch.prototype._init = function() {
 											<div class="info-container">
 												<div class="statistic-container"></div>
 												<div class="price-container"></div>
-												<button class="flat-btn">详细搜索结果</button>
 											</div>
 										</div>`);
-	this._$symbolInfoDoms = [this._$root.find('.discribe'), this._$root.find('.symbol')];
+	this._$symbolInfoDoms = [this._$root.find('.describe'), this._$root.find('.symbol')];
 	this._$stateDom = this._$root.find('.state-info');
 	var that = this;
 	var staitsticContainer = this._$root.find('.statistic-container');
@@ -69,9 +77,12 @@ PredictionWatch.prototype._init = function() {
 	},{
 		title: '涨跌中位数',
 		dom: this._percentInfoDoms[3]
-	}].forEach(function(data){
-		var newDom = $('<span class="statistic-item"></span>').append(`<h6>${data.title}</h6>`).append($(`<p></p>`).append(data.dom));
+	}].forEach(function(data, i){
+		var newDom = $('<span class="statistic-item"></span>').append(`<div class="title">${data.title}</div>`).append($(`<div></div>`).append(data.dom));
 		staitsticContainer.append(newDom);
+		if(i % 2 === 1) {
+			staitsticContainer.append('<hr/>');
+		}
 	});
 
 	[{
@@ -81,7 +92,7 @@ PredictionWatch.prototype._init = function() {
 		title: '涨跌',
 		dom: this._pricesDoms[1],
 	}].forEach(function(data){
-		var newDom = $('<span class="price-item"></span>').append(`<h6>${data.title}</h6>`).append($(`<p></p>`).append(data.dom));
+		var newDom = $('<span class="price-item"></span>').append(`<div class="title">${data.title}</div>`).append($(`<div></div>`).append(data.dom));
 		priceContainer.append(newDom);
 	});
 
@@ -99,22 +110,40 @@ PredictionWatch.prototype._init = function() {
 
 	this._dataFeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0);
 	
-	setTimeout(function(){that._fetchData();}, 500);       //马上进行取数据操作
-	this._pulseUpdateStart();
+	// this._fetchLastDayPrice(); //获取前一天的收盘价, 用来计算涨跌
+	setTimeout(function(){
+		that._fetchPredictionData();
+		// that._fetchLatestPrice();
+	}, 500);       //马上进行取数据操作
+	this._pulseUpdatePredictionStart();
+	// this._pulseUpdatePriceStart();
 }
-PredictionWatch.prototype._pulseUpdateStart = function() {
+PredictionWatch.prototype._pulseUpdatePredictionStart = function() {
 	if(this._pulseUpdater) {
 		return
 	}
 	var interval = 100000 * 1000;
 	var that = this;
 	this._pulseUpdater = setInterval(function(){
-		that._fetchData();
+		that._fetchPredictionData();
 	}, interval);
 }
-PredictionWatch.prototype._pulseUpdateStop = function() {
+PredictionWatch.prototype._pulseUpdatePredictionStop = function() {
 	clearInterval(this._pulseUpdater);
 	this._pulseUpdater = null;
+}
+PredictionWatch.prototype._pulseUpdatePriceStart = function() {
+	if(this._pulsePriceUpdater) {
+		return;
+	}
+	var interval = 100000 * 1000;
+	var that = this;
+	this._pulsePriceUpdater = setInterval(function() {
+		that._fetchLatestPrice();
+	}, interval);
+}
+PredictionWatch.prototype._pulseUpdatePriceStop = function() {
+
 }
 /*暂时解决方法, 期货先只支持5分钟数据, 而接口传过来的resolution, 现在只有"D"和"1"
 --------------------------------------------- */
@@ -127,6 +156,14 @@ PredictionWatch.prototype._updateFuturesResolution = function() {
 	---------------------------------------------*/
 PredictionWatch.prototype._udpate = function() {
 
+}
+PredictionWatch.prototype._updateStatisticUI = function() {
+	var statistic = statisticKline(this.__searchResults.patterns);
+	var { median, mean, upPercent, downPercent, up, down } = statistic;
+	this._percentInfoDoms[0].updatePercentInfo(upPercent, 1);
+	this._percentInfoDoms[1].updatePercentInfo(downPercent, 1);
+	this._percentInfoDoms[2].updatePercentInfo(mean);
+	this._percentInfoDoms[3].updatePercentInfo(median);
 }
 /*渲染charts
  ----------------------------------------------*/
@@ -161,20 +198,21 @@ PredictionWatch.prototype._search = function() {
 		that.__searchResults.patterns = patterns;
 		that.__searchResults.closePrices = closePrices;
 		that._state.code = FINISHED;
-		that._udpate();
+		// that._udpate();
 		that._renderCharts();
 		that._renderStuffs();
+		that._updateStatisticUI();
 	};
 	var errorCb = function(error) {
 		console.error(error);
 		that._state.code = ERROR;
 		that._renderStuffs();
 	};
-	searchPattern({symbol, kline, bars, searchConfig, dataCategory, interval}, cb, errorCb);
+	this._searchPatternInstance.search({symbol, kline, bars, searchConfig, dataCategory, interval}, cb, errorCb);
 }
 /*先获取kline数据, 然后搜索pattern, 完成后渲染
  -------------------------------------------------*/
-PredictionWatch.prototype._fetchData = function() {
+PredictionWatch.prototype._fetchPredictionData = function() {
 	this._state.code = SEARCHING;
 	this._renderStuffs();
 	var resolution = this._resolution,
@@ -198,6 +236,51 @@ PredictionWatch.prototype._fetchData = function() {
 	//调用这个 之前一定要注意的是kfeed的symbolist 需要 解析完成, 否则会出现bug
 	this._dataFeed.getBars(this._symbolInfo, resolution, rangeStartDate, rangeEndDate, cb, errorCb ,{arrayType:true});
 }
+/* 获取前一天的收盘价
+---------------------------------- */
+PredictionWatch.prototype._fetchLastDayPrice = function() {
+	var that = this;
+	getLatestPrice(this._symbolInfo, this._resolution,
+									function(priceArr) {
+										that.__latestDayPrice2 = priceArr;
+									},
+									function(err) {
+										console.error(err);
+									},
+									{isDay: true}
+								)
+}
+PredictionWatch.prototype._fetchLatestPrice = function() {
+	var that = this;
+	getLatestPrice(this._symbolInfo, this._resolution, 
+									function(priceArr){
+										that.__latestPrice2 = priceArr;
+										that._updateLatestPriceUI();
+									}, function(err){
+										console.error(err);
+									});
+}
+//更新实时价格
+PredictionWatch.prototype._updateLatestPriceUI = function() {
+	if(this.__latestPrice2 && this.__latestPrice2.length>1) {
+		var	close1 = this.__latestPrice2[1].close;
+		var price = close1;
+		this._pricesDoms[0].updatePercentInfo(price/100).removeClass('red green');
+		this._pricesDoms[1].removeClass('red green');
+		if(this.__latestDayPrice2 && this.__latestDayPrice2.length>0) {
+			var priceObj = this.__latestDayPrice2[0];
+			// var time = new Date(priceObj)
+			var upRate = (price - priceObj.close) / priceObj.close;
+			let colorClass = '';
+			if(upRate > 0) 
+				colorClass = 'red';
+			else if(upRate < 0) 
+				colorClass = 'green';
+			this._pricesDoms[1].updatePercentInfo(upRate).addClass(colorClass).animateCss('fadeIn');
+			this._pricesDoms[0].addClass(colorClass).animateCss('fadeIn');
+		}
+	}
+}
 /*将数据装换成需要搜索的格式
  ------------------------------------------------*/
 PredictionWatch.prototype.getSearchMetaData = function() {
@@ -211,7 +294,7 @@ PredictionWatch.prototype.updateConfig = function(config) {
 	this._baseBars = config.baseBars;
 
 	this._updateFuturesResolution();
-	this._fetchData();
+	this._fetchPredictionData();
 }
 PredictionWatch.prototype.getRootDom = function() {
 	return this._$root;
@@ -220,7 +303,7 @@ PredictionWatch.prototype._cancelSearch = function() {
 
 }
 PredictionWatch.prototype.dispose = function() {
-	this._pulseUpdateStop();
+	this._pulseUpdatePredictionStop();
 	this._cancelSearch();
 	this._$root.remove();
 }
