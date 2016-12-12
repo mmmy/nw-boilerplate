@@ -86,14 +86,21 @@ class CrossfilterView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {chart3larger: false};
+		this._isLight = $ && $.keyStone && ($.keyStone == 'light');
 		//this.oldCrossFilter = props.crossFilter;
 	}
 
 	componentDidMount() {
 
 		this.drawDc();
-
-		this.bindResizeFunc = lodash.debounce(this.handleResize.bind(this), 200, {trailing: true});
+		let that = this;
+		this.bindResizeFunc = lodash.debounce((e)=>{
+			that.handleResize.call(that, e, true);
+			setTimeout(()=>{
+				that.industryPieChart.redraw();
+			},100);
+			// this.handleResize.bind(this);
+		}, 500, {trailing: true});
 
 		window.addEventListener('resize', this.bindResizeFunc);
 	}
@@ -118,6 +125,17 @@ class CrossfilterView extends React.Component {
 		if(!this.props.stretchView) { return }
 
 		let {position_bubble_chart, industry_quarter_chart, yield_count_chart} = this.refs;
+		//resize pie chart
+		// let pieParent = industry_quarter_chart.parentNode;
+		// let pieH = 0;
+		// if(industry_quarter_chart.clientHeight + 50 > pieParent.clientHeight) {
+		// 	pieH = pieParent.clientHeight - 50;
+		// 	industry_quarter_chart.style.width = pieH + 'px';
+		// 	industry_quarter_chart.style.height = pieH + 'px';
+		// } else {
+		// 	industry_quarter_chart.style.width = '';
+		// 	industry_quarter_chart.style.height = '';
+		// }
 
 		let bubbleChartW = position_bubble_chart.clientWidth,
 			bubbleChartH = position_bubble_chart.clientHeight,
@@ -147,14 +165,14 @@ class CrossfilterView extends React.Component {
 			let xTicks = 3, yTicks = 5;
 			if(bubbleChartW > 400) xTicks = 6;
 			if(bubbleChartH > 200) yTicks = 9;
-			setTimeout(() => { 
+			// setTimeout(() => { 
 				that.yieldDateScatterChart.width(bubbleChartW).height(bubbleChartH)/*.symbolSize(size).excludedSize(size)*/.redraw(); 
 				that.yieldDateScatterChart.xAxis().ticks(xTicks);
 				that.yieldDateScatterChart.yAxis().ticks(yTicks);
 				that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart);
 				that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart);
 				disableTrasitionOnce && that.yieldDateScatterChart.transitionDuration(transitionDuration);
-			});
+			// });
 			// setTimeout(()=> {that.yieldDateScatterChart.renderYAxis(that.yieldDateScatterChart) })
 			// setTimeout(() => {that.yieldDateScatterChart.renderXAxis(that.yieldDateScatterChart) });
 			this.scatterChartW = bubbleChartW;
@@ -162,11 +180,11 @@ class CrossfilterView extends React.Component {
 		}
 
 		if (pieChartR != this.pieChartR) {
-			setTimeout(() => {
+			// setTimeout(() => {
 				// console.debug('pie chart resize !!!!'); 
 				that.industryPieChart.width(pieChartW).height(pieChartH).radius(pieChartR).innerRadius(pieChartR/1.8).redraw(); 
 				disableTrasitionOnce && that.industryPieChart.transitionDuration(transitionDuration);
-			});
+			// });
 			//setTimeout(()=> { that.industryPieChart.renderYAxis(that.industryPieChart) });
 			//setTimeout(() => { that.industryPieChart.renderXAxis(that.industryPieChart) });
 			this.pieChartR = pieChartR;
@@ -175,12 +193,16 @@ class CrossfilterView extends React.Component {
 		}
 
 		if (yieldChartW != this.yieldChartW || yieldChartH != this.yieldChartH) {
-			setTimeout(() => {
+			// setTimeout(() => {
 				that.yieldDimCountChart.width(yieldChartW).height(yieldChartH).redraw(); 
 				disableTrasitionOnce && that.yieldDimCountChart.transitionDuration(transitionDuration);
-			});
-			setTimeout(()=> {that.yieldDimCountChart.renderYAxis(that.yieldDimCountChart) });
-			setTimeout(() => {that.yieldDimCountChart.renderXAxis(that.yieldDimCountChart) });
+			// });
+			//setTimeout(()=> {
+				that.yieldDimCountChart.renderYAxis(that.yieldDimCountChart) 
+			//});
+			// setTimeout(() => {
+				that.yieldDimCountChart.renderXAxis(that.yieldDimCountChart) 
+			// });
 			this.yieldChartW = yieldChartW;
 			this.yieldChartH = yieldChartH;
 		}
@@ -361,7 +383,7 @@ resizeChart1() {
 	}
 
 	render() {
-		this.renderDate = new Date();
+		// this.renderDate = new Date();
 		const className = classnames('crossfilter-container', {
 		  'crossfilter-container-stretch': this.props.stretchView,
 		  'crossfilter-container-shrink': !this.props.stretchView
@@ -501,6 +523,13 @@ resizeChart1() {
 			});
 			//console.log(timeArr);
 			this.timeRange = [Math.min.apply(null, timeArr) || new Date('1990/1/1')/1000, Math.max.apply(null, timeArr) || new Date()/1000];     //年份的最大最小值
+   		//fix 只有一个搜索结果的时候x轴显示不合理的bug
+   		if(this.timeRange[0] == this.timeRange[1]) {
+   			let oneYear = 365 * 24 * 3600;
+   			this.timeRange[0] -= oneYear;
+   			this.timeRange[1] += oneYear;
+   		}
+
 			this.yield100Range = [Math.min.apply(null, yield100Arr), Math.max.apply(null, yield100Arr)]; //收益率的最大最小值
 			//this.yield100Range[0] = Math.floor(this.yield100Range[0] / 20) * 20; // -23 => -4, 34 => 20
 			//this.yield100Range[1] = Math.ceil(this.yield100Range[1] / 20) * 20; // 88 => 100, 129 => 140
@@ -510,6 +539,11 @@ resizeChart1() {
 			this.yield100Range[0] = widerNumber(this.yield100Range[0]);
 			this.yield100Range[1] = widerNumber(this.yield100Range[1]);
 			this.yield100Range = scalize(this.yield100Range);
+			//fix 搜索结果只有一个的时候的bug
+			if(this.yield100Range[0] == this.yield100Range[1]) {
+				this.yield100Range[0] < 0 ? (this.yield100Range[1] = -this.yield100Range[0]) : (this.yield100Range[0] = -this.yield100Range[0]);
+			}
+
 			let rangeInterval = ( this.yield100Range[1] -  this.yield100Range[0] ) / barChartBars;
 			// console.info(this.yield100Range);
 			// console.info(rangeInterval);
@@ -586,7 +620,7 @@ resizeChart1() {
 		this.scatterChartW = width;
 		this.scatterChartH = height;
 
-		let yieldDateScatterChart = this.yieldDateScatterChart || DC.scatterPlot(position_bubble_chart);
+		let yieldDateScatterChart = /*this.yieldDateScatterChart ||*/ DC.scatterPlot(position_bubble_chart);
 		let timeOffset = parseInt(this.timeRange[1] - this.timeRange[0]) * 0.05;
 
 		yieldDateScatterChart
@@ -599,11 +633,11 @@ resizeChart1() {
 		    // .xAxisLabel("x")
 		    //.clipPadding(16)
 				.transitionDuration(transitionDuration)
-		    .colors('#555')
+		    .colors(this._isLight ? '#555' : '#aaa')
 		    //.colors('rgba(117, 117, 117, 1)')
 		    .symbolSize(8) //width / 50
 		    .excludedSize(8)
-		    .excludedColor('#aFaFaF')
+		    .excludedColor(this._isLight ? '#aFaFaF' : '#555')
 		    .excludedOpacity(0.3)
 		    .renderHorizontalGridLines(true)
 		    .renderVerticalGridLines(true)
@@ -717,7 +751,7 @@ resizeChart1() {
 		let percent = (value * 100 / total).toFixed(1) + '%';
 
 		this.refs.industry_percent.innerHTML = `<div class='animated fadeIn'>${percent}</div>`;
-		this.refs.industry_name.innerHTML = `<div class='animated fadeIn'>${key}</div>`;
+		this.refs.industry_name.innerHTML = `<abbr class='animated fadeIn ks-abbr' title='${key}'>${key}</abbr>`;
 
 		let baseWidth = 50;
 		let containerWidth = this.refs.industry_percent.clientWidth;
@@ -803,7 +837,9 @@ resizeChart1() {
 		this.yieldChartH = height;
 
 		//收益率统计
-		let yieldDimCountChart = this.yieldDimCountChart || DC.barChart(yield_count_chart);
+		let yieldDimCountChart = /*this.yieldDimCountChart ||*/ DC.barChart(yield_count_chart);
+		// yieldDimCountChart.filterAll();
+
 		yieldDimCountChart
 			.width(width)
 			.height(height)
@@ -812,8 +848,8 @@ resizeChart1() {
 			.dimension(this.yieldDim)
 			.group(this.yieldGroup)
 			.renderHorizontalGridLines(true)
-			.colors('#4F4F4F')
-			//.excludedColor('#f00')
+			.colors(this._isLight ? '#4F4F4F' : '#aaa')
+			// .excludedColor(this._isLight ? '' : '#555')
 			.elasticY(true)
 			//.centerBar(true)
 			.gap(1)
@@ -850,7 +886,7 @@ resizeChart1() {
 		//_dimensionFilter(chart.dimension(), chart.filters());
 		// return;
 		let { dispatch } = this.props;
-		// console.info('onChartFiltered !!!',filter);
+		// console.info('yieldDimCountChart onChartFiltered !!!',filter);
 		switch (chart) {
 			case this.industryPieChart: 			//行业过滤
 				this.setResetBtnVisibility(chart);

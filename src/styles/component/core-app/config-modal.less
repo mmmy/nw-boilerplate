@@ -50,11 +50,16 @@
 		cursor: pointer;
 		.fa-close {
 			color: transparent;
-			background: url(./image/close.png) no-repeat;
+			display: inline-block;
+			width: 20px;
+			height: 20px;
+			background: url(@icons_url) no-repeat;
+			.icon_position(1,7,0,5px,5px);
 		}
 		&:hover {
 			.fa-close {
 				background-position: 0 100%;
+				.icon_position(3,7,0,5px,5px);
 			}
 		}
 	}
@@ -84,9 +89,43 @@
 		margin-bottom: 10px;
 		color: @ks-color-gray-4;
 		font-size: 13px;
+		.check-box-wrapper {
+			margin-left: 100px;
+			font-size: 12px;
+			input {
+				margin-right: 5px;
+			}
+		}
 	}
-
+	.similarity {
+		input[type="checkbox"] {
+			margin-right: 5px;
+		}
+		select {
+			color: #222;
+			background-color: #fff;
+			outline: none;
+			margin-left: 5px;
+		}
+	}
 	.item-body-container {
+		&.watchlist {
+			color: #aaa;
+			>span {
+				margin-right: 10px;
+				input {
+					border-radius: 2px;
+					max-width: 50px;
+					text-align: center;
+					margin-left: 5px;
+					margin-right: 5px;
+				}
+				select {
+					outline: none;
+					margin-right: 5px;
+				}
+			}
+		}
 		.stock{
 			cursor: pointer;
 			font-size: 13px;
@@ -124,7 +163,7 @@
 					height: 30px;
 					border: 1px solid #eee;
 					border-radius: 2px;
-					width: 44px;
+					width: 40px;
 					text-align: center;
 					.disable-input-spin();
 					&:not(:first-child) {
@@ -146,9 +185,9 @@
 		input {
 			font-size: 12px;
 			font-family: 'AvantGarde';
-			width: 130px;
+			width: 116px;
 			padding: 5px 7px;
-			color: #666;//@ks-color-gray-4;
+			color: #000;//#666;//@ks-color-gray-4;
 			background-color: #fff;//@config-modal-input-background-color;
 			box-shadow: none;
 			border: none;
@@ -199,7 +238,7 @@
 	}
 
 	.footer {
-		margin-top: 80px;//50px;
+		margin-top: 50px;
 		button {
 			width: 165px;
 			margin-left: 25%;
@@ -211,7 +250,7 @@
 			color: #fff;
 			&:hover {
 				.ks-button-hover();
-				box-shadow: 0 3px 10px 0 #eee;
+				// box-shadow: 0 3px 10px 0 #eee;
 			}
 		}
 		span{
@@ -226,7 +265,12 @@
 //datepicker
 .datepicker-dropdown {
 	.active {
-		background-color: @lulu-red1 !important;
+		background-color: @brown-red !important;
+	}
+	thead {
+		.prev, .next {
+			font-size: 14px;
+		}
 	}
 }
 
@@ -259,6 +303,19 @@
 		top: 80px;
 		text-align: center;
 		font-size: 16px;
+		letter-spacing: 1px;
+		&.up {
+			top: 70px;
+		}
+	}
+
+	.detail {
+		position: absolute;
+		text-align: center;
+		font-size: 12px;
+		top: 105px;
+		width: 100%;
+		letter-spacing: 1px;
 	}
 
 	.button {
@@ -276,6 +333,9 @@
 		background-color: @brown-red;
 		&:hover {
 			.ks-button-hover();
+		}
+		&.center {
+			left: 118px;
 		}
 	}
 

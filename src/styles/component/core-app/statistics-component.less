@@ -1,0 +1,752 @@
+/*
+	极值统计, 回撤统计, 振幅统计
+*/
+@gray-statistic: #b2b2b2;
+
+@gray-line-light: #b2b2b2;
+@gray-line-middle: #787878;
+@gray-line-dark: rgb(76, 76, 76);
+
+@blue-line-light: #0054a4;//#23abf7;
+@blue-line-middle: #007dd2;// #0068af;
+@blue-line-dark: #10b0d6;// #004587;
+
+//显示百分比的UI, 66.66%
+.percent-info(@color:#333;@font-size:20px) {
+	color: @color;
+	font-weight: normal;
+	margin-bottom: 0;
+
+	span:nth-child(1) {
+		font-size: @font-size;
+	}
+	span:nth-child(2) {
+		font-size: @font-size;
+	}
+	span:nth-child(3) {
+		font-size: @font-size * 0.7;
+	}
+	span:nth-child(4) {
+		margin-left: 5px;
+		font-size: @font-size * 0.7;
+		font-weight: normal;
+	}
+	img {
+		margin-left: 5px;
+	}
+	&.red {
+		color: @brown-red;
+	}
+	&.green {
+		color: @ks-color-green-grass;
+	}
+}
+
+//天数mixin 
+.days-info-wrapper(@font-size: 30px) {
+	position: relative;
+	max-width: 200px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+	padding-left: 14px;
+	color: #333;
+	font-size: @font-size * 0.35;
+	.days-info {
+		line-height: 0.8;// @font-size * 0.4;
+		margin-bottom: 10px;
+		font-size: @font-size * 0.53;
+		strong {
+			font-size: @font-size;
+			font-weight: normal;
+			color: #333;
+			margin-left: 10px;
+			margin-right: 10px;
+		}
+	}
+	&:before {
+		content: ' ';
+		position: absolute;
+		left: 0;
+		height: 100%;
+		width: 4px;
+	}
+	&.red:before {
+		background-color: @brown-red;
+	}
+	&.green:before {
+		background-color: @ks-color-green-grass;
+	}
+	&.gray-light{
+		&:before {
+			// background-color: @gray-line-light; //light
+			background-color: @blue-line-light;
+		}
+		&:hover {
+			strong {
+				color: @blue-line-light !important;
+			}
+			&:before {
+				background-color: @blue-line-light;
+			}
+		}
+	}
+	&.gray-middle{
+		&:before {
+			// background-color: @gray-line-middle; //light
+			background-color: @blue-line-middle;
+		}
+		&:hover {
+			strong {
+				color: @blue-line-middle !important;
+			}
+			&:before {
+				background-color: @blue-line-middle;
+			}
+		}
+	}
+	&.gray-dark{
+		&:before {
+			// background-color: @gray-line-dark; //light
+			background-color: @blue-line-dark;
+		}
+		&:hover {
+			strong {
+				color: @blue-line-dark !important;
+			}
+			&:before {
+				background-color: @blue-line-dark;
+			}
+		}
+	}
+	&.blue-light {
+	 	strong {
+	 		color: @blue-line-light !important;
+	 	}
+	 	&:before {
+			background-color: @blue-line-light !important;
+		}
+	}
+	&.blue-middle {
+	 	strong {
+	 		color: @blue-line-middle !important;
+	 	}
+	 	&:before {
+			background-color: @blue-line-middle !important;
+		}
+	}
+	&.blue-dark {
+	 	strong {
+	 		color: @blue-line-dark !important;
+	 	}
+	 	&:before {
+			background-color: @blue-line-dark !important;
+		}
+	}
+	
+}
+
+.ks-data-pane {
+	background-color: rgba(150, 150, 150, 0.08);
+	margin-left: 2.5px;
+	margin-right: 2.5px;
+	padding: 20px;
+}
+.ks-data-pane-wrapper {
+	position: relative;
+	top: 0;
+	&.half {
+		top: -100px;
+	}
+	&.togglable:hover {
+		cursor: pointer;
+		.ks-data-pane {
+			background-color: rgba(150, 150, 150, 0.2);
+		}
+	}
+}
+
+/**
+ * for ks-container
+ */
+.ks-container {
+	.percent-info {
+		.percent-info();
+	}
+	.days-info-wrapper {
+		.days-info-wrapper();
+	}
+	//点
+	.circle {
+		margin-right: 10px;
+		display: inline-block;
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		&.red {
+			background-color: @brown-red;
+		}
+		&.green {
+			background-color: @ks-color-green-grass;
+		}
+	}
+}
+
+
+.statistic-component-container {
+	.chart-title {
+		text-align: left;
+		font-size: 13px;
+		color: #333;
+		padding-left: 20px;
+		.axis {
+			color: #b5b5b5;
+			padding-right: 30px;
+			.black {
+				padding-left: 3px;
+				color: #666;
+				padding-right: 10px;
+			}
+		}
+		&.bar {
+			// padding-left: 60px;
+			.axis {
+				padding-right: 10px;
+			}
+		}
+	}
+	.chart-wrapper {
+		position: relative;
+		height: 175px;
+		margin-right: 20px;
+		&.bar {
+			margin-right: 0;
+			// margin-left: 40px;
+			&+.row {
+				// margin-left: 40px;
+				margin-right: 20px;
+			}
+		}
+		&.line {
+			&+.row {
+				margin-right: 20px;
+			}
+		}
+	}
+	.ks-container {
+		// margin-left: 40px;
+		// margin-right: 40px;
+		border-bottom: 1px solid #eee;
+		padding-bottom: 20px;
+	}
+	.title {
+		text-align: left;
+		font-size: 16px;
+		padding-left: 40px;
+		margin: 0;
+		margin-bottom: 8px;
+		color: #222;
+		line-height: 60px;
+		img {
+			margin-right: 10px;
+		}
+	}
+	p {
+		font-size: 12px;
+		color: #999;
+	}
+}
+
+/**
+	* peak 极值统计 
+ */
+.ks-container.peak {
+	text-align: center;
+	>.row {
+		// margin-left: 40px;
+		>.ks-col-50:first-child {
+			padding-left: 40px;
+			border-right: 1px solid rgba(205, 205, 205, 0.7);
+		}
+	}
+	.percent-info.rate {
+		.percent-info(@brown-red,24px);
+	}
+	.describe {
+		// color: #000;
+		margin-top: 13px;
+		margin-bottom: 0;
+	}
+	//上涨, 下跌按钮
+	.btns .flat-btn {
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: 1px solid @gray-statistic;
+		border-radius: 2px;
+		&.active {
+			color: #fff;
+			background-color: @gray-statistic;
+		}
+		&:first-child {
+			margin-right: 16px;
+		}
+	}
+	.days-info-wrapper {
+		.days-info-wrapper(@font-size:34px);
+		max-width: 90px;
+		white-space: nowrap;
+		&:nth-child(1) {
+			margin-top: 17px;
+		}
+		&:nth-child(2) {
+			margin-top: 22px;
+		}
+		&.red {
+			&.active, &:hover {
+				strong {
+					color: @brown-red !important;
+				}
+			}
+		}
+		&.green {
+			&.active, &:hover {
+				strong {
+					color: @ks-color-green-grass !important;
+				}
+			}
+		}
+	}
+	.ks-col-25:first-child {
+		border-right: 1px solid #ddd;
+	}
+	.chart-wrapper.bar {
+		width: 100%;//calc(~"100% - 150px - 20px");
+		height: 175px;
+		.main-wrapper {
+			height: calc(~"100% - 10px");
+			width: calc(~"100% - 45px");
+			left: 45px;
+		}
+		vertical-align: middle;
+
+	}
+	.row.percent-info-container {
+		margin-top: 18px;
+		vertical-align: middle;
+		.percent-info {
+			line-height: 0.8;
+		}
+		// width: 100%;//150px;
+	}
+	.percent-item {
+		position: relative;
+		text-align: left;
+		padding-left: 12px;
+		max-width: 90px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 10px;
+		.percent-info {
+			line-height: 0.8;
+		}
+		&:before {
+			content: ' ';
+			position: absolute;
+			left: 0;
+			height: 100%;
+			width: 4px;
+		}
+		&.red:before {
+			background-color: @brown-red;
+		}
+		&.green:before {
+			background-color: @ks-color-green-grass;
+		}
+	}
+}
+
+/**
+ *retracement 回撤统计 
+ */
+.ks-container.retracement {
+	>.row {
+		// margin-left: 40px;
+		>.ks-col-50:first-child {
+			padding-left: 40px;
+			border-right: 1px solid rgba(205, 205, 205, 0.7);
+		}
+	}
+	.data-wrapper {
+		margin-left: 20px;
+	}
+	.title .btn-wrapper {
+		float: right;
+		margin-right: 40px;
+		>button {
+			line-height: 1;
+			border: 1px solid #999;
+			padding: 8px 10px;
+			font-size: 14px;
+			color: #999;
+			&:hover,&:active {
+				text-decoration: none;
+				&:not(.active) {
+					color: #333;
+				}
+			}
+			&.active {
+				// font-size: 20px;
+				color:@brown-red;
+				background-color: #f0f0f0;
+			}
+		}
+		.long {
+			border-top-left-radius: 5px;
+			border-bottom-left-radius: 5px;
+		}
+		.short {
+			margin-left:  -1px;
+			border-top-right-radius: 5px;
+			border-bottom-right-radius: 5px;
+		}
+	}
+	.data-wrapper {
+		// background-color: #ededed;
+		// border: 1px solid #ddd;
+		border-radius: 3px;
+		// padding-top: 10px;
+		margin-bottom: 0;
+		text-align: center;
+		// margin-left: 40px;
+		// margin-right: 40px;
+		p {
+			// margin-bottom: 10px;
+			max-width: 150px;
+			margin-left: auto;
+			margin-right: auto;
+			text-align: left;
+			white-space: nowrap;
+		}
+		.name {
+			display: inline-block;
+			// min-width: 50px;
+			margin-right: 20px;
+			// text-align: left;
+			// margin-bottom: 5px;
+		}
+	}
+	.describe {
+		// font-size: 14px;
+		padding-left: calc(~"16.65% - 60px");
+	}
+	.percent-info {
+		.percent-info(@font-size:26px);
+	}
+	.days-info-wrapper {
+		.days-info-wrapper(@font-size:26px);
+		margin-top: 10px;
+		margin-bottom: 10px;
+		max-width: 100px;
+		white-space: nowrap;
+		p:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+/**	
+ * swing 振幅统计
+ */
+.ks-container.swing {
+	// text-align: center;
+	.name {
+		// color: #333;
+		font-weight: bold;
+		margin-right: 10px;
+		display: block;
+	}
+	p {
+		margin-bottom: 0;
+	}
+	.data-row {
+		margin-left: 37.5px;
+		margin-right: 37.5px;
+	}
+	.percent-info {
+		.percent-info(@font-size:26px);
+	}
+}
+
+/**
+ * 头部8个指标统计 参考pattern.less
+ */
+.reportdetail-container {
+	hr {
+		display: none;
+	}
+	text-align: left;
+	.percent-info {
+		.percent-info(@font-size:36px);
+	}
+	p {
+		font-size: 12px;
+		margin-bottom: 0;
+	}
+	.row.large {
+		margin-bottom: 15px;
+		color: #222;
+		.ks-data-pane {
+			height: 100px;
+			padding-right: 10px;
+			color: #999;
+			font-weight: bold;
+			&:nth-child(2) {
+				padding-top: 10px;
+			}
+			.day {
+				margin-left: 5px;
+				margin-right: 5px;
+				line-height: 1;
+				font-size: 120%;
+			}
+		}
+		.ks-col-25 {
+			height: 100px;
+			overflow: hidden;
+			position: relative;
+		}
+	}	
+	.row.small {
+		display: none;
+		margin-top: 9px;
+		color: #333;
+		.percent-info {
+			.percent-info(@font-size: 26px);
+			margin-left: 10px;
+		}
+	}
+	.toggle-btn {
+		position: absolute;
+		top: 10px;
+		right: 15px;
+		cursor: pointer;
+		width: 30px;
+		height: 30px;
+		img {
+			transform: rotate(0deg);
+		}
+		&.up {
+			img {
+				transform: rotate(180deg);
+			}
+		}
+	}
+}
+
+@media (max-width: 1599px) {
+	.statistic-component-container {
+		.title {
+			padding-left: 30px;
+			line-height: 55px;
+			margin-bottom: 0;
+			font-size: 14px;
+			img {
+				width: 16px;
+				height: auto;
+			}
+		}
+		.chart-title {
+			padding-left: 14px;
+		}
+		.chart-wrapper {
+			margin-right: 0;
+		}
+		.ks-container.peak {
+			&>.row {
+				>.ks-col-50:first-child {
+					padding-left: 16px;
+				}
+			}
+			.row.percent-info-container {
+				margin-top: 10px;
+				line-height: 0.8;
+			}
+			.describe {
+				margin-top: 8px;
+				line-height: 1.2;
+			}
+			.percent-info.rate {
+				.percent-info(@brown-red,20px);
+			}
+			.days-info-wrapper {
+				.days-info-wrapper(@font-size: 20px);
+				max-width: 75px;
+				margin-top: 10px;
+				margin-left: auto;
+				margin-right: auto;
+				.days-info{
+					margin-bottom: 8px;
+					line-height: 0.8;
+				}
+				.text {
+					line-height: 1.2;
+				}
+			}
+		}
+
+		.ks-container.retracement {
+			&>.row {
+				>.ks-col-50:first-child {
+					padding-left: 16px;
+				}
+			}
+			.percent-info {
+				.percent-info(@font-size:20px);
+			}
+			.data-wrapper {
+				margin-left: 0;
+				.name {
+					margin-right: 10px;
+				}
+				p {
+					max-width: 120px;
+				}
+				.average p, .ss p {
+					max-width: 90px;
+				}
+			}
+			.days-info-wrapper {
+				.days-info-wrapper(@font-size: 20px);
+				max-width: 80px;
+			}
+			.describe {
+				padding-left: calc(~"16.65% - 40px");
+			}
+		}
+
+		.ks-container.swing {
+			.percent-info {
+				.percent-info(@font-size: 20px);
+			}
+		}
+	}
+	.reportdetail-container {
+		.percent-info {
+			.percent-info(@font-size:26px);
+			margin-top: 10px;
+		}
+		.ks-data-pane:nth-child(2) {
+			p {
+				margin-top: 5px;
+			}
+			.percent-info {
+				margin-top: 0;
+			}
+		}
+	}
+}
+
+@media (min-width: 1800px) {
+	.statistic-component-container {
+		.title {
+			padding-left: 30px;
+			line-height: 55px;
+			margin-bottom: 0;
+			font-size: 14px;
+			img {
+				width: 16px;
+				height: auto;
+			}
+		}
+		.chart-title {
+			padding-left: 14px;
+		}
+		.chart-wrapper {
+			margin-right: 0;
+		}
+		.ks-container.peak {
+			&>.row {
+				>.ks-col-50:first-child {
+					padding-left: 16px;
+				}
+			}
+			.row.percent-info-container {
+				margin-top: 10px;
+				line-height: 0.8;
+			}
+			.describe {
+				margin-top: 8px;
+				line-height: 1.2;
+			}
+			.percent-info.rate {
+				.percent-info(@brown-red,20px);
+			}
+			.days-info-wrapper {
+				.days-info-wrapper(@font-size: 20px);
+				max-width: 75px;
+				margin-top: 10px;
+				margin-left: auto;
+				margin-right: auto;
+				.days-info{
+					margin-bottom: 8px;
+					line-height: 0.8;
+				}
+				.text {
+					line-height: 1.2;
+				}
+			}
+		}
+
+		.ks-container.retracement {
+			&>.row {
+				>.ks-col-50:first-child {
+					padding-left: 16px;
+				}
+			}
+			.percent-info {
+				.percent-info(@font-size:20px);
+			}
+			.data-wrapper {
+				margin-left: 0;
+				.name {
+					margin-right: 10px;
+				}
+				p {
+					max-width: 120px;
+				}
+				.average p, .ss p {
+					max-width: 90px;
+				}
+			}
+			.days-info-wrapper {
+				.days-info-wrapper(@font-size: 20px);
+				max-width: 80px;
+			}
+			.describe {
+				padding-left: calc(~"16.65% - 40px");
+			}
+		}
+
+		.ks-container.swing {
+			.percent-info {
+				.percent-info(@font-size: 20px);
+			}
+		}
+	}
+	.reportdetail-container {
+		.percent-info {
+			.percent-info(@font-size:26px);
+			margin-top: 10px;
+		}
+		.ks-data-pane:nth-child(2) {
+			p {
+				margin-top: 5px;
+			}
+			.percent-info {
+				margin-top: 0;
+			}
+		}
+	}
+}
+

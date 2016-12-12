@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 // import LoginSmall from '../components/LoginSmall';
 import {connect} from 'react-redux';
 import {accountActions} from '../flux/actions';
+import classNames from 'classnames';
 import { removeAccount } from '../backend/localStorage';
 import nwApp from '../shared/nwApp';
 
@@ -22,7 +23,7 @@ class Header extends React.Component {
 
 		};
 
-		this.state= {showLogin: true};
+		this.state= {showLogin: true, fullScreen: false};
 	}
 
 
@@ -87,9 +88,10 @@ class Header extends React.Component {
 	}
 
 	renderAppTool() {
+		let className = classNames('flat-btn button app-maximize', {fullScreen: this.state.fullScreen});
 		let node = <div className='app-tool-container'>
 			<button className='flat-btn button app-minimize' onClick={this.handleAppMinimize.bind(this)}></button>
-			<button className='flat-btn button app-maximize' onClick={this.handleAppMaximize.bind(this)}></button>
+			<button ref='app_maximize' className={className} onClick={this.handleAppToggleMaximize.bind(this)}></button>
 			<button className='flat-btn button app-close' onClick={this.handleAppClose.bind(this)}></button>
 		</div>
 		return node;
@@ -102,7 +104,7 @@ class Header extends React.Component {
 			<div className='app-drag-area' ref='drag_area'></div>
 			<span className='header-icon'></span>
 			{this.renderToolbar()}
-			{/*this.renderAppTool()*/}
+			{this.renderAppTool()}
 			{/*showLogin ? <LoginSmall ref='login_panel' onLogined={this.handleLogined.bind(this)} close={this.closeLogModal.bind(this)}/> : '' */}
 		</div>;
 	}
@@ -151,8 +153,18 @@ class Header extends React.Component {
 		nwApp.appMinimize();
 	}
 
-	handleAppMaximize() {
-		nwApp.appMaximize();
+	handleAppToggleMaximize() {
+		if($(this.refs.app_maximize).hasClass('fullScreen')) {
+			nwApp.appUnMaximize();
+		} else {
+			nwApp.appMaximize();	
+		}
+	}
+
+	handleAppToggleFullScreen() {
+		nwApp.appToggleFullScreen();
+		// let fullScreen = this.state.fullScreen;
+		// this.setState({fullScreen: !fullScreen});
 	}
 
 	handleAppClose() {

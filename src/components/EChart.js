@@ -5,7 +5,7 @@ import {factorCandleOption , factorLineOption} from './utils/echart-options';
 import store from '../store';
 import painter from '../ksControllers/painter';
 import updateEchartImage from './helper/updateEchartImage';
-let { setFunc, setCanvasVisibleFunc } = updateEchartImage;
+let { setFunc, setCanvasVisibleFunc, getZPatternViewCanvasSize } = updateEchartImage;
 let { drawKline } = painter;
 import _ from 'underscore';
 
@@ -282,6 +282,12 @@ class EChart extends React.Component {
 		let parent = canvas.parentNode;
 		let width = parent.clientWidth,
 				height = parent.clientHeight;
+		//height为0导致bug
+		if(width < 10) {
+			let size = getZPatternViewCanvasSize();
+			width = size.width;
+			height = size.height;
+		}
 		// canvas.style.width = width + 'px';
 		// canvas.style.height = height + 'px';
 		canvas.width = width;
@@ -291,7 +297,7 @@ class EChart extends React.Component {
 			console.log(pattern.kLine == kline);
 		}
 		let renderKline = kline.slice(0, baseBars);
-		drawKline(canvas, renderKline, {backgroundColor: renderKline.length>0 ? '#fff' : 'rgba(0,0,0,0)'});
+		drawKline(canvas, renderKline, {backgroundColor: renderKline.length>0 ? '#282B2F' : 'rgba(0,0,0,0)'});
 	}
 
 	hideCanvas(hide) {

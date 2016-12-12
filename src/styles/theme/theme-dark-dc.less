@@ -1,0 +1,64 @@
+/*
+  dc
+ ---------------------------------------------------------------*/
+
+body[theme='dark'] {
+	.crossfilter-out-container {
+		background-color: @dark-bg-inner-lighter;
+		&.show {
+			// box-shadow: -10px 0 20px rgba(100, 100, 100, 0.3);
+		}
+		.crossfilter-container {
+			background-color: @dark-bg-inner-lighter;
+		}
+		.toggle-crossfilter {
+			background-color: @dark-bg-inner-lighter;
+			box-shadow: -5px 0px 10px rgba(0,0,0,0.5);
+			color: #eee;
+		}
+		.dc-chart-row strong,
+		.title-container .title {
+			color: #fff;
+		}
+		.dc-chart-row {
+			border-color: #555;
+		}
+		
+		.industry-quarter-chart svg {
+			background-color: @dark-bg-inner-lighter;
+		}
+		.madan-white-circle {
+			background-color: #222;
+		}
+		.reset-btn-container,
+		.industry-info-container {
+			background-color: #222;
+			p {
+				color: #aaa;
+			}
+			button {
+				color: #fff;
+				background-color: #444;
+				box-shadow: none;
+				&:hover {
+					background-color: #555;
+				}
+			}
+		}
+
+		//dc
+		.dc-chart .axis text {
+			fill: #fff;
+		}
+		.dc-chart .axis path, .dc-chart .axis line {
+			stroke: #999;
+		}
+		.dc-chart .grid-line line, .dc-chart .axis .grid-line line {
+			stroke: #aaa;
+		}
+		.dc-chart .brush rect.extent {
+			fill: #fff;
+			fill-opacity: 0.1;
+		}
+	}
+}

@@ -5,6 +5,10 @@ let initJquery = () => {
 	let $ = require('jquery');
 	window.jQuery = window.$ = $;
 	global.jQuery = global.$ = $;
+
+	window.KEYSTONE = {
+		patternsSorted: []
+	};
 };
 
 let initJqueryPlugins = () => {
@@ -23,15 +27,19 @@ let initJqueryPlugins = () => {
 			});
 	}
 	//ksDefaultConfig
+	var theme = $(document.body).attr('theme');
 	$.extend({
 		keyStone: {
 			configDefault:{
 				brownRedDark: '#750905',
-				brownRed: '#8D151B',
+				brownRed: theme == 'dark' ? 'rgb(170,65,66)' : '#8D151B',
 				brownRedLight: '#AC1822'
-			}
+			},
+			theme: theme,              //or dark
 		}
 	});
+
+	require('./extendJquery')($);
 	//load tradingview libs
 	
 	/*let TradingView =*/ require('../../tradingview/charting_library/charting_library');
@@ -61,6 +69,28 @@ let initAssert = () => {
 let initResize = () => {
 	setRem();
 	window.addEventListener('resize', _.debounce(setRem, 200));
+};
+
+let initNwEvents = () => {
+	var _btnCache = null;
+	try {
+		var gui = window.require('nw.gui');
+		var Win = gui.Window.get();
+		Win.on('maximize', function(){
+			if(_btnCache == null) {
+				_btnCache = $('.app-maximize');
+			}
+			_btnCache.addClass('fullScreen');
+		});
+		Win.on('unmaximize', function(){
+			if(_btnCache == null) {
+				_btnCache = $('.app-maximize');
+			}
+			_btnCache.removeClass('fullScreen');
+		});
+	} catch(e) {
+		console.error(e);
+	}
 };
 
 let initGolbalKeyEvent = () => {
@@ -104,5 +134,6 @@ module.exports = {
 	 	initAssert();
 	 	initResize();
 	 	initGolbalKeyEvent();
+	 	initNwEvents();
 	}
 }

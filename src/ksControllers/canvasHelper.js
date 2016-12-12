@@ -14,8 +14,8 @@ let betterCanvasSize = (canvas) => {
 	// console.assert(parent,'canvas parent not exist');
 	let width = parent && parent.clientWidth || canvas.width;
 	let height = parent && parent.clientHeight || canvas.height;
-	canvas.width = width * ratio;
-	canvas.height = height * ratio;
+	(width > 0) && (canvas.width = width * ratio);
+	(height > 0) && (canvas.height = height * ratio);
 };
 
 let roundRect = function roundRect(ctx, x, y, width, height, radius, fill, stroke) {

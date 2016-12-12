@@ -39,9 +39,9 @@ function KlineEditor(container, kline) {  //container dom is div dom
 	$(container).append($wrapper);
 
 	let canvases = $wrapper.find('canvas');
+	this._isLight = $ && $.keyStone && ($.keyStone.theme == 'light');
 
 	this._wrapper = $wrapper[0];
-
 	this._canvas = canvases[0];
 	this._canvas_axis_y = canvases[1];
 	this._canvas_axis_x = canvases[2];
@@ -57,16 +57,26 @@ function KlineEditor(container, kline) {  //container dom is div dom
 	this._mouseX = -1;
 	this._mouseY = -1;
 
-	this._drawingState = {drawingRange: false, moveMode:0}; //moveMode:0(single) 1(linear)
+	this._isInsert
+
+	this._drawingState = {drawingRange: false, moveMode:0, isInsertOnly:false}; //moveMode:0(single) 1(linear)
 	this._selectedRange = [];
+	this._rangeOption = {top: 20};
 	this._clickHitTest = NONE;
 
 	//move kline states
 	this._moveKlineStates = {isMouseDown: false, x:-1, y:-1};
 	//yAxis states
-	this._yAxisStates = {isMouseDown: false, y:-1};
+	this._yAxisStates = {
+		isMouseDown: false, y:-1,
+	};
 	//xAxis states
-	this._xAxisStates = {isMouseDown: false, x:-1, paddingLeft:0, paddingRight:0};
+	this._xAxisStates = {
+		isMouseDown: false, 
+		x:-1, 
+		paddingLeft:0, 
+		paddingRight:0,
+	};
 
 	this._updateOHLC = null; //func
 	this._onMoveIndex = null; //func
@@ -87,7 +97,8 @@ KlineEditor.prototype._drawKline = function(kline, options, optionsY, optionsX) 
 KlineEditor.prototype._init = function() {
 	this._updateCanvasSize();
 
-	this._drawKline(this._kline, {yMin:'200%', yMax:'200%'}); //预留上下的高度
+	// this._drawKline(this._kline, {yMin:'200%', yMax:'200%'}); //预留上下的高度
+	this.updateCanvas();
 	this._canvas.addEventListener('mousedown', this._mouseDown.bind(this));
 	this._canvas.addEventListener('mouseup', this._mouseUp.bind(this));
 	this._canvas.addEventListener('mousemove', this._mouseMove.bind(this));
@@ -161,6 +172,8 @@ KlineEditor.prototype.deleteAtRange = function() {
 		this._selectedIndex = -1;
 		this._moveIndex = -1;
 		this.resetRangeIndex();
+		this._onRemoveRange && this._onRemoveRange();
+		this._onUpdateInfo && this._onUpdateInfo(this._kline.length);
 		this._onEdit && this._onEdit();
 		return true;
 	}
@@ -198,7 +211,7 @@ KlineEditor.prototype._keyDown = function(event) {
 }
 //K线画布 mousedonw事件
 KlineEditor.prototype._mouseDown = function(event) {
-	console.log('KlineEditor mousedown', event);
+	// console.log('KlineEditor mousedown', event);
 	let x = event.offsetX;
 	let y = event.offsetY;
 	this._setClickHitTest(event.offsetX, event.offsetY);  //记录click hit test
@@ -213,7 +226,7 @@ KlineEditor.prototype._mouseDown = function(event) {
 	if(this._isDrawingRange()) {
 		let drawIndex = this._getDrawRangePoints();
 		this.setRangeIndex(drawIndex, event.offsetX, event.offsetY, 1);
-		console.log('add mouse down event', drawIndex, this._selectedRange);
+		// console.log('add mouse down event', drawIndex, this._selectedRange);
 		if(drawIndex > 1) {
 			this._endDrawRange();
 		}
@@ -252,9 +265,9 @@ KlineEditor.prototype._mouseMove = function(event){
 
 	let hitTest = this.getHitTest(event.offsetX, event.offsetY);
 	if(this._clickHitTest === NONE) {
-		// this.setCursorByHittest(hitTest);
+		this.setCursorByHittest(hitTest);
 	}
-	console.log(hitTest);
+	// console.log(hitTest);
 
 	// if(this._editable) {
 	// 	if(this._isMouseDown) {
@@ -304,7 +317,7 @@ KlineEditor.prototype._wrapperMouseUp = function(e) {
 	this._moveKlineStates.isMouseDown = false;
 	this._moveKlineStates.x = -1;
 	this._moveKlineStates.y = -1;
-	this.setCursorByHittest(null);
+	// this.setCursorByHittest(null);
 }
 
 KlineEditor.prototype._wrapperMouseMove = function(e) {
@@ -382,12 +395,19 @@ KlineEditor.prototype.updateCanvas = function(){
 																yMin:this._drawInfo.yMin, 
 																yMax:this._drawInfo.yMax,
 																selectedRange: this._selectedRange,
+																rangeOption: this._rangeOption,
 																padding
 															}, {
 																hoverY: this._hoverY,
+																textColor: this._isLight ? '' : '#999',
+																hoverColor: this._isLight ? '' : '#333',
+																hoverBackground: this._isLight ? '' : '#aaa',
 															}, {
 																hoverIndex: this._hoverIndex,
 																selectedIndex: this._selectedIndex,
+																textColor: this._isLight ? '' : '#999',
+																hoverColor: this._isLight ? '' : '#333',
+																hoverBackground: this._isLight ? '' : '#aaa',
 																padding
 															});
 	// this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);
@@ -414,7 +434,10 @@ KlineEditor.prototype.beginMoveAKline = function(x,y) {
 }
 
 KlineEditor.prototype.movingAKline = function(x,y) {
+	if(this._drawingState.isInsertOnly) return;  //插入删除模式
+
 	if((this._moveIndex > -1) && (this._clickHitTest == MOVE_A_KLINE)) {
+		/**
 		let { pricePerPix } = this._drawInfo;
 		let dy = this._mouseY - y;
 		let dp = dy * pricePerPix; //根据移动的像素值 计算价格变化
@@ -428,9 +451,11 @@ KlineEditor.prototype.movingAKline = function(x,y) {
 		this._mouseY = y;
 		// this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2]);
 		this.updateCanvas();
+		**/
+		this.movingUpDownRange(x, y, true, true);
 
-		this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex], this._selectedRange.length == 0);
-		this._onEdit && this._onEdit();
+		// this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex], this._selectedRange.length == 0);
+		// this._onEdit && this._onEdit();
 	}
 }
 
@@ -520,13 +545,16 @@ KlineEditor.prototype.beginUpDownRange = function(x,y) {
 	this.updateCanvas();
 }
 
-KlineEditor.prototype.movingUpDownRange = function(x, y, hasMoveIndex) {
-	if(this._selectedRange.length > 1) {
+KlineEditor.prototype.movingUpDownRange = function(x, y, hasMoveIndex, all) {
+	if(this._selectedRange.length > 1 || all) {
 		let { pricePerPix } = this._drawInfo;
 		let dy = this._mouseY - y;
 		let dp = dy * pricePerPix; //根据移动的像素值 计算价格变化
 		
-		for(let i=this._selectedRange[0]; i<=this._selectedRange[1]; i++) { //同时移动
+		let index0 = all ? 0 : this._selectedRange[0],
+				index1 = all ? this._kline.length-1 : this._selectedRange[1];
+
+		for(let i=index0; i<=index1; i++) { //同时移动
 			let data = this._kline[i];
 			let rate = 1;
 			if(hasMoveIndex) { //有选中目标
@@ -537,9 +565,11 @@ KlineEditor.prototype.movingUpDownRange = function(x, y, hasMoveIndex) {
 					}
 				} else {          //两侧以线性移动 linear
 					if(i <= this._moveIndex) {
-						rate *= (i - this._selectedRange[0]) / (this._moveIndex - this._selectedRange[0]);
+						if(this._moveIndex - index0 !==0)
+							rate *= (i - index0) / (this._moveIndex - index0);
 					} else {
-						rate *= (this._selectedRange[1] - i) / (this._selectedRange[1] - this._moveIndex);
+						if(index1 - this._moveIndex !==0)
+							rate *= (index1 - i) / (index1 - this._moveIndex);
 					}
 				}
 			}
@@ -622,6 +652,7 @@ KlineEditor.prototype.setCursor = function(cursor) {
 KlineEditor.prototype._endDrawRange = function() {
 	this._drawingState.drawingRange = false;
 	this.setCursor();
+	this._resetClickHitTest();
 	this._onEndDrawRange && this._onEndDrawRange(this._selectedRange);
 }
 
@@ -672,11 +703,11 @@ KlineEditor.prototype.getHitTest = function(x,y) {
 	let isNearRangeLeft = Math.abs(indexToPoint(this._selectedRange[0]).x - x) < 5 ;
 	let isNearRangeRight = Math.abs(indexToPoint(this._selectedRange[1]).x - x) < 5 ;
 	//indexRange close
-	if(isXInRange && isNearRangeRight20 && (y > 0) && (y < 20)) {
+	if(isXInRange && isNearRangeRight20 && (y > this._rangeOption.top) && (y < this._rangeOption.top+20)) {
 		return RANGE_CLOSE;
 	}
 	//: indexRange move
-	if(isXInRange && (y > 0) && (y < 20)) {
+	if(isXInRange && (y > this._rangeOption.top) && (y < this._rangeOption.top+20)) {
 		return RANGE_MOVE;
 	}
 	//: indexRange left
@@ -749,12 +780,42 @@ KlineEditor.prototype.setRangeMoveMode = function(mode) { //0  or 1
 	this._drawingState.moveMode = mode;
 }
 
+KlineEditor.prototype.resetState = function() {
+	this._selectedRange = [];
+	// this._selectedIndex = -1;
+	// this._moveIndex = -1;
+	this._drawingState.drawingRange = false;
+	this.setCursor();
+	this.updateCanvas();
+	// this._onMoveIndex && this._onMoveIndex(this._selectedIndex);
+}
+
 KlineEditor.prototype.onRemoveRange = function(func) {
 	this._onRemoveRange = func;
 }
 
 KlineEditor.prototype.onEdit = function(func) {
 	this._onEdit = func;
+}
+
+KlineEditor.prototype.setInsertOnly = function(insertOnly) {
+	this._drawingState.isInsertOnly = insertOnly
+}
+
+KlineEditor.prototype.isInsertOnly = function() {
+	return this._drawingState.isInsertOnly;
+}
+
+KlineEditor.prototype.getKlineLength = function() {
+	return this._kline.length;
+}
+
+KlineEditor.prototype.getSelectedRange = function() {
+	return this._selectedRange.concat([]);
+}
+
+KlineEditor.prototype.getSelectedIndex = function() {
+	return this._selectedIndex;
 }
 
 module.exports = KlineEditor;

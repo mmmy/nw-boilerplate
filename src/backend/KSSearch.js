@@ -28,14 +28,14 @@ let {searchOptions} = config;
 ******************/
 
 //symbol:'Shenzhen:000001.SZ';
-let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory, dr }, cb, errorCb) => {
+let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMax, isLatestDate, dataCategory, dr }, cb, errorCb) => {
 
 	let exchangeReg = /.*\:/ ; //匹配开始到冒号的所有字符,
 	//let id = parseInt(symbol.replace(exchangeReg, '')); //去掉交易所字符
 	let id = symbol.replace(exchangeReg, ''); //去掉交易所字符
 
 	//console.assert(!isNaN(id), 'error: 股票id  为NaN');
-	console.assert(dateRange.length == 2);
+	// console.assert(dateRange.length == 2);
 	console.assert(bars > 0);
 	//console.log(searchOptions, config);
 	// let { path } = searchOptions;
@@ -76,7 +76,7 @@ let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMa
 	};
 
    var sSC1=new Date(`${dr[0].date} ${dr[0].hour}:${dr[0].minute}:${dr[0].second}`).toISOString();
-   var sSC2=new Date(`${dr[1].date} ${dr[1].hour}:${dr[1].minute}:${dr[1].second}`).toISOString();
+   var sSC2 = isLatestDate ? new Date().toISOString() : new Date(`${dr[1].date} ${dr[1].hour}:${dr[1].minute}:${dr[1].second}`).toISOString();
    /*
 
 	try{
@@ -122,6 +122,10 @@ let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMa
 	};
 	let postData = JSON.stringify(postObj);
 	// console.log(postData);
+	if(window.actionsForIframe.mockSearch) {
+		window.actionsForIframe.mockSearch(options, callback, errorCb, postData);
+		return;
+	}
 	return request(options, callback, errorCb, postData);
 }
 

@@ -49,3 +49,6 @@ export const SET_PATTERN_TRASH_LAYOUT = 'SET_PATTERN_TRASH_LAYOUT';
 
 //用户
 export const SET_USER = 'SET_USER';
+
+//patternsAsync 切换到第二页刷新第二页的action type
+export const CHANGE_PATTERNS_ASYNC = 'CHANGE_PATTERNS_ASYNC';

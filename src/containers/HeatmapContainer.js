@@ -47,7 +47,7 @@ class HeatmapContainer extends React.Component {
 	}
 
   updateHeatMap(){
-    this._heatMapChart = this._heatMapChart || new BlockHeatMap(this.refs.heatmap_container);
+    this._heatMapChart = this._heatMapChart || new BlockHeatMap(this.refs.heatmap_container, {textColor: '#999'});
     window._blockHeatMapChart = this._heatMapChart;
 
     let _predictionChart = window._predictionChart;

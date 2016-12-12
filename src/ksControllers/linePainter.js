@@ -45,7 +45,7 @@ let drawLines = (canvas, lines, options) => {
 	    }	
     }
 
-    var xInterval = width / (dataLen + emptyLeftLen - 1);
+    var xInterval = width / (dataLen + emptyLeftLen);
 
     var ctx = canvas.getContext('2d');
     //init

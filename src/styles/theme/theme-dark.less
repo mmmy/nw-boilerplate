@@ -1,0 +1,239 @@
+
+@dark-bg-wrapper: #15181A;
+@dark-bg-inner: rgb(37, 42, 45);
+@dark-bg-inner-lighter: #222528;
+
+@dark-bg-inner-lighter-btn: lighten(@dark-bg-inner-lighter, 8%);
+
+@dark-input-bg: #40474E;
+
+@dark-subtitle: #eee;
+@dark-graytitle: #999;
+
+@dark-brown-red: rgb(170,65,66);
+@dark-brown-red-light: #A7373F;
+@dark-green: rgb(115,176,20);
+
+@icons_dark_url: "./image/icons_dark.png";
+
+@gray-static: #40474E;
+
+html {
+	background-color: @dark-bg-wrapper;
+}
+body[theme="dark"] {
+	color: #fff;
+	background-color: @dark-bg-wrapper;
+	
+	input, .inputs-wrapper {
+		background-color: transparent;
+		// background-color: @dark-input-bg !important;
+		// border-color: transparent !important;
+		// color: #fff !important;
+		// &[disabled] {
+		// 	color: #666 !important;
+		// }
+	}
+	button {
+		// background-color: @dark-input-bg;
+		&:hover {
+			// background-color: lighten(@dark-input-bg, 10%) !important;
+		}
+	}
+
+	.comparator-chart-static .start-btn-container,
+	.comparator-heatmap, .comparator-prediction-chart,
+	.search-report-wrapper {
+		background-color: transparent;
+	}
+	/*
+	 背景
+	 -------------------------------------------------------------*/
+	//深灰色
+	.container-stockview,
+	.pattern-tv-split-line,
+	.login-panelsmall-container,
+	.inner-searchreport {
+		background-color: @dark-bg-wrapper;
+	}
+	.statistics-component-wrapper .no-data-wrapper,
+	.statistics-component-wrapper {
+		background-color: #1D1F23;
+	}
+	.pattern-info-switch-wrapper {
+		background-color: rgba(40, 43, 47, 0.9)
+	}
+	//浅灰色, 对话框背景
+	.config-modal-container,
+	.container-ks-sr.meta .pattern-wrapper,
+	.container-header {
+		background-color: @dark-bg-inner !important;
+	}
+	//浅灰色突出
+	.kline-prediction-widget-wrapper .body-container,
+	.kline-prediction-widget-container, #comparator-chart,
+	.container-ks-sr.meta,
+	.statistics-container-inner,
+	.container-stockview .left-toolbar-container,
+	.pattern-container,
+	.pattern-tv-box-shadow-bottom,
+	.pattern-bar-btn .search,
+	.pattern-statistics-panel,
+	.pattern-statistics-container button,
+	.btn-toggle {
+		background-color: @dark-bg-inner-lighter !important;
+	}
+	
+	.pattern-view {
+		background-color: #282B2F;
+	}
+	
+	//red
+	
+
+	//text
+	.btn-container {
+		color: #78878f;
+	}
+	.pattern-info-container p,
+	.symbol-container {
+		color: #fff;
+	}
+	//gray text
+	.container-ks-sr .info-item .item-title,
+	.statistic-component-container .chart-title {
+		color: @dark-graytitle;
+	}
+	.left-title,
+	.reportdetail-container .title,
+	.statistic-component-container .title,
+	.comparator-info-container {
+		color: #e3e3e3;
+	}
+	//eee白色
+	// .statistic-component-container .chart-title {
+	// 	color: @dark-subtitle;
+	// }
+	//白色
+	.container-ks-sr .title,
+	.container-ks-sr .info-item .item-value,
+	.pattern-statistics-panel .black,
+	.login-panelsmall-container .options,
+	.days-info-wrapper .days-info strong, .statistic-component-container .ks-container.retracement .percent-info,
+	.statistic-component-container .ks-container.swing .percent-info,
+	.prediction-name {
+		color: #fff !important;
+	}
+
+	.ks-data-pane {
+		color: #eee !important;
+		background-color: transparent;
+	}
+	.container-ks-sr .info-item .item-value.red,
+	.ks-container.peak .days-info-wrapper.red.active strong,
+	.percent-info.red , .ks-container.peak .days-info-wrapper.red:hover strong {
+		color: @dark-brown-red !important;
+	}
+	.container-ks-sr .info-item .item-value.green,
+	.ks-container.peak .days-info-wrapper.green.active strong,
+	.percent-info.green, .ks-container.peak .days-info-wrapper.green:hover strong {
+		color: @dark-green !important;
+	}
+	.percent-item.red:before, .days-info-wrapper.red:before {
+		background-color: @dark-brown-red !important;
+	}
+	.percent-item.green:before, .days-info-wrapper.green:before {
+		background-color: @dark-green !important;
+	}
+	/*
+	icons
+	--------------------------------------------------------------------*/
+	.search-editor-wrapper .title-name button,
+	.pattern-statistics-panel .trash-all-button .fa-trash,
+	.trash-modal-container .close-icon .fa-close,
+	.reset-container .ks-undo-icon,
+	.app-tool-container .button,
+	.container-header .header-icon,
+	.history-items-wrapper .history-item .canvas-wrapper .btn-overlay .re-search,
+	.container-stockview .nav-container .favorites-input-wrapper .new-folder,
+	.container-stockview .nav-container .favorites-input-wrapper .clear,
+	.container-stockview .nav-container .trash-panel-btn .delete, .container-stockview .nav-container .favorites-folder .delete,
+	.container-stockview .nav-container .trash-panel-btn .rename, .container-stockview .nav-container .favorites-folder .rename,
+	.modal-confirm-container .close-btn .close-icon,
+	.container-stockview .nav-container p.month .delete,
+	.config-modal-container .close-icon .fa-close,
+	.login-panelsmall-container .login-titlebar-container .app-close,
+	.comparator-info-container .add-btn,
+	.comparator-chart-static .start-btn-container button,
+	.container-stockview .left-toolbar-container .flat-btn,
+	.header-toolbar-container .account-button,
+	.login-panelsmall-container .options .icon-not-check,
+	.pattern-bar-btn .icon, input[nwsaveas]::before, input.nwsaveas::before,
+	.btn-toggle .arrow-icon {
+		background-image: url(@icons_dark_url) !important;
+	}
+
+	.flat-btn {
+		// background-color: transparent;
+	}
+
+	//
+	.red {
+		color: @dark-brown-red;
+	}
+	.pattern-toolbar-container:after,
+	.pattern-statistics-panel:before,
+	.pattern-view,
+	.statistic-component-container .ks-container {
+		border-color: #333;
+	}
+	
+	.ks-container > .row > .ks-col-50:first-child {
+		border-color: #333;
+	}
+
+	.statistics-component-wrapper::-webkit-scrollbar-thumb {
+		// background: #555 url('image/scroll-bg.png') no-repeat;
+	}
+
+	.countlineschart-tooltip {
+		background-color: rgba(255, 255, 255, 0.4);
+	}
+
+	.ks-container.retracement .title .btn-wrapper > button {
+		border-color: #333;
+		&.active {
+			color: @dark-brown-red;
+			background-color: @dark-bg-inner-lighter;
+		}
+		&:hover:not(.active) {
+			color: #aaa;
+		}
+	}
+	.container-toggle .btn-container,
+	.login-panelsmall-container .logo {
+		background-image: url('./image/logo_white.png');
+	}
+
+	.container-ks-sr.meta .pattern-wrapper {
+		border-color: transparent;
+	}
+
+	.pattern-toolbar-container .child-panel-search {
+		background-color: @dark-bg-inner-lighter;
+		input {
+			background-color: transparent;
+			color: #fff;
+			border: 1px solid #333;
+			line-height: 18px;
+			padding-left: 5px;
+		}
+	}
+	.pattern-toolbar-container .child-panel-container {
+		background-color: @dark-bg-inner-lighter;
+		&:after {
+			border-color: #999;
+		}
+	}
+
+}

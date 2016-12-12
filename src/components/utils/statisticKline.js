@@ -31,6 +31,7 @@ module.exports = (klines) => {
 	let median = 0,
 		mean = 0,
 		upPercent = 0,
+		downPercent = 0,
 		up = { median:0, mean:0, max:0 },
 		down = { median:0, mean:0, min:0 };
 
@@ -43,7 +44,7 @@ module.exports = (klines) => {
 			allArr = [];
 
 		klines.forEach((kline) => {
-			if (kline.yield >= 0) {
+			if (kline.yield > 0) {
 				upYieldArr.push(kline.yield);
 			} else if (kline.yield < 0) {
 				downYieldArr.push(kline.yield);
@@ -63,6 +64,8 @@ module.exports = (klines) => {
 			downSum = sum(downYieldArr);
 		
 		upPercent = upLen / klinesLen;
+		downPercent = downLen / klinesLen;
+		
 		mean = (upSum + downSum) / klinesLen;
 		median = getMedian(allArr);
 
@@ -80,6 +83,7 @@ module.exports = (klines) => {
 		median,
 		mean,
 		upPercent,
+		downPercent,
 		up,
 		down,
 	};

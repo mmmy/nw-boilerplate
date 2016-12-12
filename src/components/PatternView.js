@@ -123,11 +123,19 @@ class PatternView extends React.Component {
 
 	handleMouseEnter(){
 		// this.handleMouseLeave();
-		let color = '#b61c15';
+		let color = '#8D151B';
+		try {
+			color = $.keyStone.configDefault.brownRed;
+		} catch(e) {
+			console.error(e);
+		}
 			// const showSymbol = true;
 			// this.setState({showSymbol});
 		let {id, industry} = this.props.pattern;
 		let yieldRate = this.props.pattern.yield;
+
+		setPredictionChartHighlight(id);
+
 		//#3
 		let matchYieldBar = getCountBar(yieldRate, false);
 		this._countBarCache = matchYieldBar;
@@ -175,6 +183,7 @@ class PatternView extends React.Component {
 		let piePath = matchPie.firstChild;// && matchPie.lastChild;
 		if (piePath) {
 			piePath.style.fill = '';
+			matchPie.dispatchEvent(new window.MouseEvent('mouseleave'));
 		}
 
 		// let that = this;
@@ -205,12 +214,12 @@ class PatternView extends React.Component {
 	}
 
 	setActivePattern() {
-    let widget = window.widget_comparator;
-    let chart = document[window.document.getElementsByTagName('iframe')[0].id];
+    // let widget = window.widget_comparator;
+    // let chart = document[window.document.getElementsByTagName('iframe')[0].id];
 
 		let { dispatch, isActive, fullView } = this.props;
 		let { id, symbol, baseBars, kLine, similarity, industry, begin, end, lastDate, metaData} = this.props.pattern;
-    let dateLast = lastDate.time;
+    let dateLast = lastDate && lastDate.time;
     console.assert(window.store.getState().patterns.rawData[id] == this.props.pattern, 'patternview 的数据没有更新!!!!!');
     let yieldRate = this.props.pattern.yield;
 		if (!fullView) {
@@ -222,7 +231,11 @@ class PatternView extends React.Component {
 			// setHightlightPrediction(window.eChart, id);
 			// setHightlightPrediction(window.comChart, id);
 			setPredictionChartHighlight(id);
-			require('../ksControllers/klinePredictionWidget').setPattern(this.props.pattern);
+			var widget = require('../ksControllers/klinePredictionWidget');
+			widget.setPattern(this.props.pattern);
+			widget.show(true);
+			$(".start-btn-container").removeClass('hide'); //显示预测工具栏
+			$(".toolbar-item.item1").addClass('hide');     //隐藏pattern过滤工具栏
 		} catch(e) {
 			console.error(e);
 		}
@@ -234,55 +247,6 @@ class PatternView extends React.Component {
     let dateStart = begin;//kLine[0][0];
     let dateEnd = end;//kLine[kLine.length - 5][0];
     dispatch(activeActions.setActiveId(id, symbol, dateStart, dateEnd, similarity, yieldRate, industry, metaData, dateLast));
-
-
-    // let oneDay = 60 * 60 * 24;
-    // let dateRange = {
-    //   from: +new Date(begin) / 1000,// - oneDay * 1,
-    //   to: +new Date(lastDate.time) / 1000,// + oneDay * 2
-    // };
-
-    // window.timeRange = dateRange;
-
-    // let oldSymbol = widget._innerWindow().Q5.getAll()[0].model().mainSeries().symbol().split(':')[1];
-    
-    // this._unsubscribeCompleted(); //取消监听
-
-    // if (oldSymbol !== symbol) {
-    // 	let that = this;
-    //   this._doWhenSeries1Completed(() => {   	
-    //     widget.setVisibleRange(dateRange, '0', () => {
-    // 			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
-    //       // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
-    //       let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
-				// 	indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
-    //       widget.drawKsDateRangeLineTool(indexPoints, 0);
-    //       widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
-    //       widget.setVisibleRange(dateRange, '0');
-    //       that.setActivePattern();
-    //     });
-    //     // window.timeRange = undefined;
-    //   });
-	   //    // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-    //   chart.KeyStone.setSymbol(symbol, '', 0);
-
-    // } else {
-    // 	widget._innerWindow().Q5.getAll()[0].R99.removeAllDrawingTools();
-    //   widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-    //   this._doWhenSeries1Completed(() => {
-    //     widget.setVisibleRange(dateRange, '0', () => {
-    // 			let timeScale = widget._innerWindow().Q5.getAll()[0].R99.timeScale();
-    //       // var indexPoints = [timeScale.visibleBars().firstBar(), timeScale.visibleBars().firstBar() + baseBars - 1];
-    //       let indexPoints = [timeScale.timePointToIndex(dateRange.from)];
-				// 	indexPoints[1] = indexPoints[0] - 1 +  parseInt(baseBars);
-    //       widget.drawKsDateRangeLineTool(indexPoints, 0);
-    //       widget.centerPredictionPoint([indexPoints[0], indexPoints[1]+1], widget._innerWindow().Q5.getAll()[0].R99.model());
-    //       // widget.setVisibleRange(dateRange, '0');
-    //   // widget._innerWindow().Q5.getAll()[0].model().mainSeries().restart();
-    //       // 
-    //     });
-    //   });
-    // }
 	}
 
   // _doWhenSeries1Timeframe(callback) {

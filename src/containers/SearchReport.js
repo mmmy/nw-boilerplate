@@ -51,9 +51,8 @@ class SearchReport extends React.Component {
 		if(newProps.patterns !== this.props.patterns) {
 			let patterns = newProps.patterns;
 			searchResultController.updatePrediction(patterns);
-      searchResultController.updateStatistics(patterns);
-      // searchResultController.updatePatterns(patterns.rawData);
-      searchResultController.updateCharts(patterns);
+      // searchResultController.updateStatistics(patterns);
+      // searchResultController.updateCharts(patterns);
 		}
 	}
 
@@ -63,7 +62,6 @@ class SearchReport extends React.Component {
 	}
 
 	componentDidUpdate() {
-		// console.info('SearchReport did update in:', new Date() - this.d1);
 		let { fullView, waitingForPatterns } = this.props;
 		let { error } = store.getState().patterns;
 
@@ -102,7 +100,6 @@ class SearchReport extends React.Component {
 	}
 
 	render(){
-		this.d1 = new Date();
 		const { fullView, statisticsLarger} = this.props;
 		const className = classNames('container-searchreport', {
 			'searchreport-full': fullView,

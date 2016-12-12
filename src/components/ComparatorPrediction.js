@@ -172,7 +172,7 @@ class ComparatorPrediction extends React.Component {
     let node = this.refs.info_prediction_name;
     let rate = baseBars / (baseBars + additionBars) * 100;
     rate = rate<15 ? 15 : rate;
-    rate = rate>85 ? 85 : rate;
+    rate = rate>76 ? 76 : rate;
     if(!isNaN(rate) && isFinite(rate)) {
       node.style.left = rate + '%';
     } else {

@@ -8,7 +8,7 @@ import store from '../store';
 
 const SORT_BTN_DATE = { type:'SORT_BTN_DATE', label:'按日期' };
 const SORT_BTN_SIMILARITY = { type:'SORT_BTN_SIMILARITY', label:'按相似度' };
-const SORT_BTN_YIELD= { type:'SORT_BTN_YIELD', label:'按收益率' };
+const SORT_BTN_YIELD= { type:'SORT_BTN_YIELD', label:'按涨跌' };
 
 const propTypes = {
 	dispatch: PropTypes.func.isRequired,
@@ -19,6 +19,22 @@ const propTypes = {
 const defaultProps = {
   	
 };
+
+let savePatternsToCsv = function(path) {
+	try {
+		var json2csv = require('../../vendor/json2csv');
+		var fs = require('fs');
+		var patterns = window.KEYSTONE.patternsSorted;
+		var fields = ['symbol', 'similarity', 'yield', 'begin', 'end', 'industry', 'baseBars', 'kLine'];
+
+		var csvData = json2csv({data:patterns, fields: fields});
+		var csvDataGBK = require('iconv-lite').encode(csvData, 'GBK');
+		// console.log(path, csvDataGBK);
+		fs.writeFileSync(path, csvDataGBK);
+	} catch(e) {
+		console.error(e);
+	}
+}
 
 class SortBar extends React.Component {
 
@@ -35,12 +51,26 @@ class SortBar extends React.Component {
 	}
 
 	componentDidMount() {
-
+		var chooseFileDom = this.refs.save_as;
+		// chooseFileDom.setAttribute('nwsaveas', '新建文件.csv');
+		var chooseFile = require('../shared/fileHelper').chooseFile;
+		chooseFile(this.refs.save_as, savePatternsToCsv);
 	}
 
 	componentWillReceiveProps(newProps){
 		if(newProps.crossFilter !== this.props.crossFilter) {
 			this.setState({values: {min:0, max:100}, searchSymbol: ''});
+			//设置 保存默认名
+			try{
+				var searchMetaData = store.getState().patterns.searchMetaData;
+				var symbol = searchMetaData.symbol,
+						bars = searchMetaData.bars;
+				symbol = symbol.indexOf(':') > -1 ? symbol.split(':')[1] : symbol;
+				var nameDefault = `${symbol}(${bars}根K线).csv`;
+				this.refs.save_as.setAttribute('nwsaveas', nameDefault);
+			}catch(e){
+				console.error(e);
+			}
 		}
 	}
 
@@ -171,7 +201,8 @@ class SortBar extends React.Component {
 		return (<div className="toolbar-container">
 				<div className='toolbar-item item0'><h5 className='left-title'>匹配结果</h5></div>
 				<div className='toolbar-item item1'>
-					<button className='pattern-bar-btn' onFocus={ this.toggleSearchPanel.bind(this, true) } onBlur={ this.toggleSearchPanel.bind(this, false) }>
+					<span className="save-as-container" data-kstooltip="保存结果"><input className="nwsaveas" type="file" ref='save_as' /></span>
+					<button className='pattern-bar-btn' ref='pattern_bar_btn' onFocus={ this.toggleSearchPanel.bind(this, true) } onBlur={ this.toggleSearchPanel.bind(this, false) }>
 						<span data-kstooltip="关键字搜索" className={searchIconClass} ref='search_icon'></span>
 						<div className={searchPanelClass} ref='search_panel'><input value={searchSymbol} onChange={this.changeSearchSymbol.bind(this)} ref='search_input' /><i className='fa fa-close' onClick={this.clearSearchInput.bind(this)}></i></div>
 					</button>
@@ -180,14 +211,13 @@ class SortBar extends React.Component {
 						{this.renderChildPanel(2)}
 					</button>*/}
 					<button className='pattern-bar-btn' onClick={ this.showChildPanel.bind(this, 1) } onBlur={ this.hideChildPanel.bind(this) }>
-						<span data-kstooltip="涨跌幅度过滤" className={filterIconClass}></span>
+						<span data-kstooltip="相似度过滤" className={filterIconClass}></span>
 						{this.renderChildPanel(1)}
 					</button>
 					<button className='pattern-bar-btn' onClick={ this.showChildPanel.bind(this, 0) } onBlur={ this.hideChildPanel.bind(this) }>
 						<span data-kstooltip="排序" className={'icon sort '+(panelType===0 ? 'active' : '')}></span>
 						{this.renderChildPanel(0)}
 					</button>
-
 				</div>
 			</div>);
 	}
@@ -256,9 +286,10 @@ class SortBar extends React.Component {
 	}
 
 	filterSymbol(symbol){
+		symbol = symbol.toUpperCase();
 		this.initDimensions();
 		this.searchDim.filter(function(d){ 
-			return (typeof d[0] == 'string' && d[0].indexOf(symbol) >=0) || typeof d[1] == 'string' && d[1].indexOf(symbol) >= 0;
+			return (typeof d[0] == 'string' && d[0].toUpperCase().indexOf(symbol) >=0) || typeof d[1] == 'string' && d[1].toUpperCase().indexOf(symbol) >= 0;
 		});
 		DC.redrawAll();
 		this.props.dispatch(filterActions.setFilterSymbol(symbol));
@@ -295,6 +326,9 @@ class SortBar extends React.Component {
 		if(this.state.searchSymbol !== '') {
 			this.setState({searchSymbol:''});
 			this.filterSymbol('');
+		} else {
+			this.refs.pattern_bar_btn.blur();
+			this.setState({openSearch: false});
 		}
 	}
 }

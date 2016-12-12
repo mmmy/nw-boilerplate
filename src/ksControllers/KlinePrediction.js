@@ -22,14 +22,14 @@ function KlinePrediction(container, config) {
 
 	let $wrapper = $(`<div class='kline-editor-wrapper'></div>`).append(`<div class='kline-canvas-wrapper flex-center'><canvas tabindex='1' class='kline-canvas'/></div>`)
 														.append(`<div class='right-axis-y-wrapper'><canvas class=''/></div>`)
-														.append(`<div class='bottom-axis-x-wrapper'><canvas class=''/></div>`);
+														.append(`<div class='bottom-axis-x-wrapper silent'><canvas class=''/></div>`);
 
 	$(container).append($wrapper);
 
 	let canvases = $wrapper.find('canvas');
 
 	this._wrapper = $wrapper[0];
-
+	this._isLight = $ && $.keyStone && ($.keyStone.theme == 'light');
 	this._canvas = canvases[0];
 	this._canvas_axis_y = canvases[1];
 	this._canvas_axis_x = canvases[2];
@@ -39,6 +39,9 @@ function KlinePrediction(container, config) {
 	this._timeArray = [];
 
 	this._baseBars = Infinity;
+	
+	this._predictionBars = -1;   //绘图bar数量应该 是由baseBar和predictionBars 决定, 而不是kline.length
+
 	this._timeInterval = 'D';
 	this._symbolName = '';
 	this._symbolDescribe = '';
@@ -59,22 +62,32 @@ function KlinePrediction(container, config) {
 	};
 
 	this._klineDrawOption = {
+		drawLen: null,     //绘制bar数量, 如果>kline.length, 那么靠左绘制
 		hoverIndex: -1,
 		hoverY: -1,
 		yMin: null,
 		yMax: null,
 		symbolName:'',
+		symbolNameColor: this._isLight ? '' : '#eee',
 		symbolDescribe:'',
+		symbolDescribeColor: this._isLight ? '' : '#aaa',
 		baseBarRange: [],
 		overflowPane: false, //超出上界面的内阴影
 		overflowPaneBottom: false, //超出上界面的内阴影
 	};
 	this._yDrawOption = {
-		hoverY: -1
+		hoverY: -1,
+		textColor: this._isLight ? '' : '#999',
+		hoverColor: this._isLight ? '' : '#222',
+		hoverBackground: this._isLight ? '' : '#aaa',
 	};
 	this._xDrawOption = {
+		drawLen: null,       //保证与K线区域对其
 		hoverIndex: -1,
 		showTime: false, //是否精确显示到 时分秒
+		textColor: this._isLight ? '' : '#999',
+		hoverColor: this._isLight ? '' : '#222',
+		hoverBackground: this._isLight ? '' : '#aaa',
 	};
 
 	this._clickHitTest = NONE;
@@ -176,7 +189,8 @@ KlinePrediction.prototype._updateCanvasSize = function() {
 KlinePrediction.prototype._initKlineMaxMin = function() {
 	let lowArr = [],
 			highArr = [];
-	let baseKline = this._kline.slice(0, this._baseBars);
+	let baseKline = this._kline.slice(0, this._baseBars),
+			baseBars = this._baseBars < this._kline.length ? this._baseBars : this._kline.length;
 	let len = baseKline.length;
 	for(let i=0; i<len; i++) {
 		let klineData = baseKline[i];
@@ -186,7 +200,7 @@ KlinePrediction.prototype._initKlineMaxMin = function() {
 
 	let min = Math.min.apply(null, lowArr);
 	let max = Math.max.apply(null, highArr);
-	let lastClosePrice = baseKline[this._baseBars-1] && baseKline[this._baseBars-1][2];
+	let lastClosePrice = baseKline[baseBars - 1] && baseKline[baseBars - 1][2];
 	let offset = Math.max(max - lastClosePrice, lastClosePrice - min);
 
 	offset *= this._klineScaleRate;
@@ -289,10 +303,15 @@ KlinePrediction.prototype.update = function() {
 	this._klineDrawOption.overflowPane = this._klineDrawOption.yMax < this._predictionPriceMax;
 	this._klineDrawOption.overflowPaneBottom = this._klineDrawOption.yMin > this._predictionPriceMin;
 
+	let drawDataLen = this._baseBars + this._predictionBars;
+	//如果 
+	this._klineDrawOption.drawLen = (drawDataLen > this._kline.length) ? drawDataLen : null;
+
 	this._yDrawOption.hoverY = this._hoverY;
 
 	this._xDrawOption.hoverIndex = this._hoverIndex;
 	this._xDrawOption.showTime = this._isMinuteTime();
+	this._xDrawOption.drawLen = this._klineDrawOption.drawLen;
 }
 
 KlinePrediction.prototype.render = function() {
@@ -301,12 +320,15 @@ KlinePrediction.prototype.render = function() {
 	drawAxisTime(this._canvas_axis_x, this._timeArray, this._xDrawOption);
 }
 
-KlinePrediction.prototype.setData = function(kline, baseBars, interval, symbol, symbolDescribe) {
+KlinePrediction.prototype.setData = function(kline, baseBars, interval, symbol, symbolDescribe, predictionBars) {
 	this._kline = kline;
-	this._baseBars = baseBars || Infinity;
+	this._baseBars = +baseBars || Infinity;  //这个一定要设置
+	this._predictionBars = +predictionBars; //这个一定要设置
 	this._timeInterval = interval || 'D';
 	this._symbolName = symbol || '';
 	this._symbolDescribe = symbolDescribe || '';
+
+	this._hoverIndex = -1;   //fix bug
 
 	this._initKlineMaxMin();
 	this._initPredictionMaxMin();

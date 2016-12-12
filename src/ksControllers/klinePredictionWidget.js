@@ -97,9 +97,16 @@ klinePredictionWidget.setPattern = (pattern) => {
 			baseBars = pattern.baseBars || 0,
 			symbol = pattern.symbol || '',
 			interval = pattern.type || pattern.metaData && _ksIntervalToTradigviewInterval(pattern.metaData.dataCategory),
-			symbolDescribe = pattern.metaData && pattern.metaData.name || '';
+			symbolDescribe = pattern.metaData && pattern.metaData.name || '',
+			predictionBars;
+	try {
+		var patterns = require('../store').getState().patterns;
+		predictionBars = patterns.searchConfig.additionDate.value;
+	} catch(e) {
+		console.error(e);
+	}
 
-	_klinePrediction.setData(kline, baseBars, interval, symbol, symbolDescribe);
+	_klinePrediction.setData(kline, baseBars, interval, symbol, symbolDescribe, predictionBars);
 };
 
 klinePredictionWidget.triggerHover = (barIndex, showTooltip) => {
@@ -108,6 +115,10 @@ klinePredictionWidget.triggerHover = (barIndex, showTooltip) => {
 
 klinePredictionWidget.setOriginHoverHandle = (handle) => {
 	_triggerHoverOrigin = handle;
+};
+
+klinePredictionWidget.show = (show) => {
+	_$root.find('.kline-prediction-widget-wrapper').toggleClass('show', show);
 };
 
 module.exports = klinePredictionWidget;

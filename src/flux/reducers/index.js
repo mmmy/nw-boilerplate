@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 import layout from './layout';
 import statistics from './statistics';
-import patterns from './patterns';
+import { patterns } from './patterns';
+import patternsAsync from './patternsAsync';
 import report from './report';
 import filter from './filter';
 import sort from './sort';
@@ -17,6 +18,7 @@ export default combineReducers({
 	layout,
 	statistics,
 	patterns,
+	patternsAsync,
 	report,
 	filter,
 	sort,

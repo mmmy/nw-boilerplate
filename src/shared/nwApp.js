@@ -5,9 +5,14 @@ let getNwWindow = () => {
 	if(_nwWindow) {
 		return _nwWindow;
 	} else {
-		let gui = window.require('nw.gui');
-		_nwWindow = gui.Window.get();
-		return _nwWindow;
+		try {
+			let gui = window.require('nw.gui');
+			_nwWindow = gui.Window.get();
+			return _nwWindow;
+		} catch(e) {
+			console.error(e);
+			return;
+		}
 	}
 };
 
@@ -16,6 +21,13 @@ let appMinimize = () => {
 };
 let appMaximize = () => {
 	getNwWindow().maximize();
+};
+let appUnMaximize = () => {
+	getNwWindow().unmaximize();
+};
+
+let appToggleFullScreen = () => {
+	getNwWindow().toggleFullscreen();
 };
 let appClose = () => {
 	getNwWindow().close();
@@ -72,8 +84,19 @@ let appSetCenter = () => {
 	getNwWindow().setPosition('center');
 };
 
+let appGetSize = () => {
+	if(getNwWindow()) {
+		return {width:getNwWindow().width, height:getNwWindow().height}
+	} else {
+		let $body = $(document.body);
+		return {width: $body.width(), height: $body.height};
+	}
+};
+
 module.exports = {
 	appMaximize,
+	appUnMaximize,
+	appToggleFullScreen,
 	appMinimize,
 	appClose,
 	appSetSize,
@@ -83,4 +106,5 @@ module.exports = {
 	updateAppDragable,
 	appMoveTo,
 	appSetCenter,
+	appGetSize
 };

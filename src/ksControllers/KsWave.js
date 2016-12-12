@@ -47,17 +47,17 @@ KsWave.prototype._init = function() {
     initialize: function() {},
     resizeEvent: function() {
         var a0 = this.ctx.createLinearGradient(0, 0, this.width, 0);
-        a0.addColorStop(0, "rgba(0, 0, 0, 0.03)"),
-        a0.addColorStop(.5, "rgba(0, 0, 0, 0.1)"),
-        a0.addColorStop(1, "rgba(0, 0, 0, 0.03)");
+        a0.addColorStop(0, "rgba(255, 255, 255, 0.03)"),
+        a0.addColorStop(.5, "rgba(255, 255, 255, 0.1)"),
+        a0.addColorStop(1, "rgba(255, 255, 255, 0.03)");
         var a1 = this.ctx.createLinearGradient(0, 0, this.width, 0);
-        a1.addColorStop(0, "rgba(0, 0, 0, 0.03)"),
-        a1.addColorStop(.5, "rgba(0, 0, 0, 0.07)"),
-        a1.addColorStop(1, "rgba(0, 0, 0, 0.03)");
+        a1.addColorStop(0, "rgba(255, 255, 255, 0.03)"),
+        a1.addColorStop(.5, "rgba(255, 255, 255, 0.07)"),
+        a1.addColorStop(1, "rgba(255, 255, 255, 0.03)");
         var a2 = this.ctx.createLinearGradient(0, 0, this.width, 0);
-        a2.addColorStop(0, "rgba(0, 0, 0, 0.03)"),
-        a2.addColorStop(.5, "rgba(0, 0, 0, 0.04)"),
-        a2.addColorStop(1, "rgba(0, 0, 0, 0.03)");
+        a2.addColorStop(0, "rgba(255, 255, 255, 0.03)"),
+        a2.addColorStop(.5, "rgba(255, 255, 255, 0.04)"),
+        a2.addColorStop(1, "rgba(255, 255, 255, 0.03)");
         var a = [a0,a1,a2];
         for (var b = -1, c = this.waves.length; ++b < c; )
             this.waves[b].strokeStyle = a[b] ? a[b] : a[0];
@@ -70,7 +70,7 @@ KsWave.prototype._init = function() {
 //颜色红亮一下
 KsWave.prototype.shiningWaves = function() {
 	let waves = this._waves;
-	let base = 220;
+	let base = 150;
 	let count = 0;
 	let ctx = waves.ctx;
 	let that = this;

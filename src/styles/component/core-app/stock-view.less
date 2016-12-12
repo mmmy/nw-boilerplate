@@ -42,9 +42,15 @@
 			height: 30px;
 			margin: 10px 5px;
 			position: relative;
+			background-image: url(@icons_url);
+		}
+		.watchlist {
+			.icon_position(0, 4, 0);
+			&.active {
+				.icon_position(3, 4, 0);
+			}
 		}
 		.curve {
-			background-image: url(@icons_url);
 			.icon_position(0, 0, 0);
 			&.active {
 				.icon_position(3, 0, 0);
@@ -137,6 +143,10 @@
 			.name {
 				display: inline-block;
 				padding-top: 8px;
+				max-width: 108px;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
 			}
 			button {
 				display: none;
@@ -271,6 +281,9 @@
 				&:hover {
 					.icon_position(0,7,0);
 				}
+				&.ks-disable:hover {
+					.icon_position(2,7,0);
+				}
 			}
 		}
 	}
@@ -315,7 +328,7 @@
 		// border-bottom-right-radius: 5px;
 		.scrollbar(@width:6px);
 		.scrollbar-track(@background-color:transparent);
-		.scrollbar-thumb(@background-color: #000);
+		.scrollbar-thumb();
 			// box-shadow: 0 20px 10px -5px rgba(0, 255, 255, 0.5) inset;
 		// &:empty {
 
@@ -485,7 +498,7 @@
 				}
 				.go-detail {
 					background-image: url(@icons_url);
-					.icon_position(3, 9, 1);
+					.icon_position(0, 9, 1);
 				}
 				.recover {
 					background-image: url(@icons_url);
@@ -579,7 +592,8 @@
 			overflow-x: hidden;
 			.scrollbar(@width:6px);
 			.scrollbar-track(@background-color:transparent);
-			.scrollbar-thumb(@background-color: #000);
+			// .scrollbar-thumb(@background-color: #000);
+			.scrollbar-thumb();
 		}
 	}
 	//编辑

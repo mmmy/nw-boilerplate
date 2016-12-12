@@ -103,7 +103,7 @@ class TrashModal extends React.Component {
 			
 			that._idArr.push(id);
 
-			let symbol = node.find('.symbol-container').text();
+			let symbol = node.find('.symbol-container>span').text();
 			let describe = node.find('.describe').text();
 			let imgSrc = node.find('img').attr('src');
 			let infoNode = node.find('.font-number');
@@ -117,7 +117,8 @@ class TrashModal extends React.Component {
 
 			patternViewNode.mouseenter(function() {
 				/* Stuff to do when the mouse enters the element */
-				patternViewNode.append(`<div class='reset-container flex-center'><i class='fa fa-undo'></i></div>`);
+				// patternViewNode.append(`<div class='reset-container flex-center'><i class='fa fa-undo'></i></div>`);
+				patternViewNode.append(`<div class='reset-container flex-center'><i class='ks-undo-icon'></i></div>`);
 			}).mouseleave(function(event) {
 				/* Act on the event */
 				patternViewNode.find('.reset-container').remove();

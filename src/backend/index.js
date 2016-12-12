@@ -48,39 +48,53 @@ let searchPattern = (args, cb, errorCb) => {
 
 	const { symbol, kline, bars, dateRange, searchConfig, dataCategory, interval} = args;
 
-	let { additionDate, searchLenMax } = searchConfig;
+	let { additionDate, searchLenMax, isLatestDate, similarityThreshold } = searchConfig;
 
 	let dr = searchConfig.dateRange;
 
-	let searchArgs = { symbol, kline, dateRange, bars, additionDate, searchLenMax, dataCategory, dr};
+	let searchArgs = { symbol, kline, dateRange, bars, additionDate, searchLenMax, isLatestDate, dataCategory, dr};
 
 	let searchCb = (resObj) => {
-		
 		// console.info(`第一步: 搜索 [ 正常结束 ], 匹配到 ${resObj.results.length} 个`);
-		__data = resObj.results.map((pattern, i) => {
+		__data = [];
+		__closePrice = [];
+		var args = [];
+
+		resObj.results.forEach((pattern, i) => {
 
 			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type=interval} = pattern;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];
 			//let id = i;
-			return {
-				id: i,
-				symbol: id,
-				similarity: similarity,//_growSimilarity(similarity),
-				begin: begin.time,
-				end: end.time,
-				lastDate,
-				industry,
-				type,
-				baseBars: bars,
-				kLine,
-				'yield': _return
-			};
-
+			if(!similarityThreshold || (similarityThreshold.on && (similarity >= similarityThreshold.value))) {
+				__data.push({
+					id: i,
+					symbol: id,
+					similarity: similarity,//_growSimilarity(similarity),
+					begin: begin.time,
+					end: end.time,
+					lastDate,
+					industry,
+					type,
+					baseBars: bars,
+					kLine,
+					'yield': _return
+				});
+				if(resObj.closePrices) {
+					__closePrice.push(resObj.closePrices[i]);					
+				}
+				args.push({
+					'symbol':id,
+					'dateRange': [begin.time, end.time],
+					'lastDate': resObj.lastDates && resObj.lastDates[i],
+					'additionDate': additionDate,
+					'bars': bars,
+					'dataCategory': dataCategory,
+				});
+			}
 		});
 
-		__closePrice = resObj.closePrices || [];
 		//获取kline具体数据
 		let dataCb = (startIndex, klineArr) => {
 			
@@ -107,25 +121,25 @@ let searchPattern = (args, cb, errorCb) => {
 		};
 
 		//let args = [{'symbol':'ss600000',dateRange:[3, 5]}, {'symbol':'ss600000', dateRange:[7, 8]}];
-		let args = resObj.results.map((pattern, i) => {
+		// let args = resObj.results.map((pattern, i) => {
 			
-			const {id, begin, end} = pattern;
+		// 	const {id, begin, end} = pattern;
 
-			return {
-				'symbol':id,
-				'dateRange': [begin.time, end.time],
-				'lastDate': resObj.lastDates && resObj.lastDates[i],
-				'additionDate': additionDate,
-				'bars': bars,
-				'dataCategory': dataCategory,
-			};
-		});
+		// 	return {
+		// 		'symbol':id,
+		// 		'dateRange': [begin.time, end.time],
+		// 		'lastDate': resObj.lastDates && resObj.lastDates[i],
+		// 		'additionDate': additionDate,
+		// 		'bars': bars,
+		// 		'dataCategory': dataCategory,
+		// 	};
+		// });
 
 		// console.log(resObj.results);
 		// console.info('第二步: 获取kline具体数据 [ 开始 ]');
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
 		let startIndex = 0,
-				nextIndex = 5;
+				nextIndex = 2;
 		__ksDataXhr_1 =  KSDataService.postSymbolData(startIndex, args.slice(0, nextIndex), bars, dataCb, (err) => {
 			// console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);

@@ -1,3 +1,4 @@
+/*
 import React from 'react';
 // import echarts from 'echarts';
 import {factorCandleOption, factorLineOption} from '../../src/components/utils/echart-options';
@@ -428,28 +429,7 @@ var data = [
 			new KlineEditor(this.refs.kline_editor, data.slice(0, 100));
 		},
 		drawChart(){
-			/*****
-			var data0 = splitData(data.slice(0,30), 4);
-			var lastClosePrice = data0.values[data0.values.length-1][1];
-			var { lineSeries, min, max } = generateSeries([data.slice(0, 3).map(function(e){ return e[3] }),data.slice(0, 3).map(function(e){ return e[2] })], lastClosePrice);
-			// var minPrice = Math.min(min, data0.yMin);
-			// var maxPrice = Math.max(max, data0.yMax);
-			//lastClosePrice 居中
-			// var offset = Math.max(maxPrice - lastClosePrice, lastClosePrice - minPrice);
-			var offset = Math.max(data0.yMax - lastClosePrice, lastClosePrice - data0.yMin);
 
-			option.series = option.series.concat(lineSeries);
-			option.series[0].data = data0.values;
-			option.xAxis.data = data0.categoryData;
-			option.yAxis[0].min = lastClosePrice - offset;
-			option.yAxis[0].max = lastClosePrice + offset;			
-			option.yAxis[1].min = lastClosePrice - offset;
-			option.yAxis[1].max = lastClosePrice + offset;
- 			var chart = echarts.init(this.refs.container);
-			chart.setOption(option);
-			this.chart = chart;
-			window.predictionChart = chart;
-			********/
 		},
 		componentDidMount() {
 			this.initEditor();
@@ -457,7 +437,12 @@ var data = [
 			// window.addEventListener('resize', function(){
 			// 	window.predictionChart.resize();
 			// });
-			drawKline(this.refs.canvas, data.slice(0, 100));
+			let data1 = data.slice(0, 100);
+			for(var i=0; i<data1.length; i++) {
+				// if(i>50)
+					// data1[i][4] = data1[i][2] = data1[i][3] = data1[i][1];
+			}
+			drawKline(this.refs.canvas, data1);
 		},
 		render(){
 			return <div>
@@ -465,7 +450,9 @@ var data = [
 					<div ref='container' style={{width:'300px', height:'250px', border:'1px solid #eee'}}>
 				
 					</div>
-					<div><canvas ref='canvas' width='800' height='400' style={{width: '800px', height:'400px'}} /></div>
+					<div style={{width: '100px', height:'400px', border: "1px solid red"}}><canvas ref='canvas' width='100' height='400'/></div>
 			</div>
 		}
 	});
+
+***/

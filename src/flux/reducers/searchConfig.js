@@ -6,7 +6,9 @@ var now = new Date();
 var initialState = {
 	additionDate: {type:'days', value:30},
 	searchSpace: '000010',
-	dateRange: [{date:'1990/01/01', hour:'0', minute:'0', second:'0'}, {date:`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`, hour:'0', minute:'0', second:'0'}],
+	dateRange: [{date:'1990/01/01', hour:'0', minute:'0', second:'0'}, {date:`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`, hour:'23', minute:'59', second:'59'}],
+	isLatestDate: true,
+	similarityThreshold: {value: 0.6, on:true},
 	spaceDefinition: { stock: true, future: false },
 	matchType: MATCH_TYPE.MORPHO,
 	searchLenMax: 200
@@ -22,8 +24,9 @@ try {
 var searchConfigFilePath = '../searchConfig/searchConfigFilePath.json';
 try {
     var sC = JSON.parse(fs.readFileSync(searchConfigFilePath).toString());
-    for (let x in initialState) 
+    for (let x in initialState) {
     	initialState[x] = sC[x] || initialState[x];
+    }
 } catch(e) {
     console.log(e);
 }

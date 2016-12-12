@@ -14,14 +14,16 @@ let _searchEditorHistory = null;
 let _searchEditorFavorites = null;
 
 //显示K线编辑器
-let _createDetailPanel = (parentDom, editorCache, dataObj) => {
+let _createDetailPanel = (parentDom, type, dataObj) => {
 	let editorContainer = $(`<div class='search-editor-container'></div>`);
 	let $newDom = $(`<div class='detail-panel'><div class='head-nav'><button class='flat-btn font-simsun return'><span class='icon-return'></span>返回</button></div></div>`).append(editorContainer);
+	let editorCache = null;
 	$newDom.find('button.return').click((event) => { //返回
 		_disposeDetailPanel(parentDom, editorCache);
 	});
 	$(parentDom).append($newDom);
 	editorCache = new SearchEditor(editorContainer, dataObj, favoritesManager, favoritesController);
+	(type == 'favorites') ? (_searchEditorFavorites = editorCache) : (_searchEditorHistory = editorCache);
 };
 
 let _disposeDetailPanel = (parentDom, editorCache) => {
@@ -29,14 +31,19 @@ let _disposeDetailPanel = (parentDom, editorCache) => {
 	let remove = () => {
 			editorCache.dispose();
 			editorCache = null;	
-			$(parentDom).find('.detail-panel').remove();
+			parentDom && $(parentDom).find('.detail-panel').remove();
 	};
 	if(!isSaved) {
-		new ConfirmModal('编辑未保存, 是否保存?', '', ()=>{
-			editorCache.save();
-			remove();
-		}, ()=>{
-			remove();
+		new ConfirmModal({
+			title:'编辑未保存, 是否保存?', 
+			sessionName:'', 
+			onYes:()=>{
+				editorCache.save();
+				remove();
+			}, 
+			onNo:()=>{
+				remove();
+			}
 		});
 	} else {
 		remove();
@@ -45,10 +52,39 @@ let _disposeDetailPanel = (parentDom, editorCache) => {
 	// _refreshFavoritesBody();
 }; 
 
-let _removeSearchEditor = () => {
-	_searchEditorFavorites && _searchEditorFavorites.dispose && _searchEditorFavorites.dispose();
-	_searchEditorFavorites = null;
-	$('.favorites .detail-panel').remove();
+let _removeSearchEditor = (onDispose) => {
+	try {
+		if(!_searchEditorFavorites) {
+			onDispose && onDispose();
+			return;
+		}
+		let isSaved = _searchEditorFavorites.isSaved();
+		let remove = () => {
+				_searchEditorFavorites.dispose();
+				_searchEditorFavorites = null;	
+				$('.favorites .detail-panel').remove();
+		};
+		if(!isSaved) {
+			new ConfirmModal({
+				title:'编辑未保存, 是否保存?', 
+				sessionName:'', 
+				onYes:()=>{
+					_searchEditorFavorites.save();
+					remove();
+					onDispose && onDispose();
+				}, 
+				onNo:()=>{
+					remove();
+					onDispose && onDispose();
+				}
+			});
+		} else {
+			remove();
+			onDispose && onDispose();
+		}
+	} catch(e) {
+		console.error(e);
+	}
 }
 
 let _reSearch = (dataObj, cb, {favoriteFolder=''}) => {  //当从收藏夹过来的 favoriteFolder 为收藏夹名
@@ -91,7 +127,7 @@ let _handleReSearch = ({favoriteFolder=''},event) => {
 let _handleDetail = (event) => {
 	let dataObj = $(event.target).closest('.history-item').data('data');
 	let bodyNode = $(event.target).closest('.body-container')[0];
-	_createDetailPanel(bodyNode.parentNode, (bodyNode==_bodyDom ? _searchEditorHistory : _searchEditorFavorites), dataObj);
+	_createDetailPanel(bodyNode.parentNode, (bodyNode==_bodyDom ? 'history' : 'favorites'), dataObj);
 };
 
 let _handleRecoverPattern = (event) => {
@@ -155,23 +191,23 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 	let name = `<h2 class='name font-msyh'>${pattern.name||'未命名'}</h2>`;
 	// let info = `<p class='header-info'>${pattern.symbol}     ${pattern.kline.length}根K线</p>`;
 	let info = `<p class='header-info'><span class='strong'>${pattern.kline.length}</span>根K线</p>`;
-	let addButton = (type==2) ? '' : `<button class='add-btn flat-btn ${type==1?"right":""}'>add</button>`;
-	let deleteButton = (type == 0 || type == 2) ? `<button class='delete-btn flat-btn'>delete</button>` : '';
+	let addButton = (type==2) ? '' : `<button class='add-btn flat-btn ${type==1?"right":""}' data-kstooltip='收藏'>add</button>`;
+	let deleteButton = (type == 0 || type == 2) ? `<button class='delete-btn flat-btn' data-kstooltip='删除'>delete</button>` : '';
 	let hoverBtns = (type == 0) ? 
-									`<span class='btn-overlay flex-around'><button class='flat-btn re-search'>重新搜索</button><button class='flat-btn go-detail'>查看详情</button></span>`
+									`<span class='btn-overlay flex-around'><button class='flat-btn re-search' data-kstooltip='再次搜索'>再次搜索</button><button class='flat-btn go-detail' data-kstooltip='编辑K线'>编辑K线</button></span>`
 									:
-									(type == 1 ? `<span class='btn-overlay flex-around'><button class='flat-btn re-search'>重新搜索</button></span>` 
-															: `<span class='btn-overlay flex-around'><button class='flat-btn recover'>恢复</button></span>`);
+									(type == 1 ? `<span class='btn-overlay flex-around'><button class='flat-btn re-search' data-kstooltip='再次搜索'>再次搜索</button></span>` 
+															: `<span class='btn-overlay flex-around'><button class='flat-btn recover' data-kstooltip='恢复'>恢复</button></span>`);
 
 	let canvasDiv = `<div class='canvas-wrapper'><canvas class='kline' width='150' height='120' style='width:150px;height:120px'/>${hoverBtns}</div>`;
 	// let range = `<span class='daterange-info font-number'>${startDateStr} ~ ${endDateStr}</span>`;
-	// let footer = `<div class='btn-wrapper'><button class='re-search'>重新搜索</button><button class='go-detail'>查看详情</button></div>`;
+	// let footer = `<div class='btn-wrapper'><button class='re-search'>再次搜索</button><button class='go-detail'>查看详情</button></div>`;
 
 	//favorites 和 history 不一样
 	let fromInfoContent = (type === 0 || type === 2) ? pattern.symbol : (pattern.favoriteFolder ? `收藏夹/${pattern.favoriteFolder}` : `${pattern.symbol}<br/>${startDateStr}<br/>${endDateStr}<br/>${getIntervalString(pattern.interval)}`); 
 	let fromInfo = `<p class='from-info font-arial'><span class='font-simsun'>来源</span>:${fromInfoContent}</p>`;
 
-	let favoriteFolder = type === 0 ? _activeName : '';
+	let favoriteFolder = (type === 0 ? _activeName : pattern.favoriteFolder) || '';
 
 	let typeClass = (type === 0 || type ===2) ? 'favorites' : 'history';
 	let trashClass = (type!=2 && state.isTrashed) ? 'hide' : '';//被删除
@@ -181,11 +217,13 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 	let shoucangType = (type == 0) ? 2 : 1;
 			$node.find('.add-btn').focus(handleShouCangFocus.bind(null, favoritesManager, favoritesController, pattern, {type:shoucangType})).blur(handleShouCangBlur); //添加到收藏夹
 			$node.find('.delete-btn').click(_handleDeleteOne);
-			$node.find('.re-search').click(_handleReSearch.bind(null,{favoriteFolder}));  //重新搜索
-			$node.find('.go-detail').click(_handleDetail);  //重新搜索
+			$node.find('.re-search').click(_handleReSearch.bind(null,{favoriteFolder}));  //再次搜索
+			$node.find('.go-detail').click(_handleDetail);  //再次搜索
 			$node.find('.recover').click(_handleRecoverPattern);
 			drawKline($node.find('canvas.kline')[0], pattern.kline);
 
+	//init tooltip
+	$node.find('[data-kstooltip]').ksTooltip();
 	return $node;
 };
 
@@ -255,10 +293,14 @@ let _handleDeleteHistoryByMonth = (event) => {
 	event.stopPropagation();
 	let $item = $(event.target).closest('.month');
 	let { year, month } = $item.data();
-	new ConfirmModal(`确认删除${year}-${month}历史记录?`, 'history-month-delete', () => {
-		deleteHistory(year, month);
-		_removeHistroiesByMonth(year, month);
-		$item.remove();
+	new ConfirmModal({
+		title:`确认删除${year}-${month}历史记录?`, 
+		sessionName:'history-month-delete', 
+		onYes:() => {
+			deleteHistory(year, month);
+			_removeHistroiesByMonth(year, month);
+			$item.remove();
+		}
 	});
 };
 
@@ -474,20 +516,23 @@ let _bodyDomF = null;
 let _activeName = '';
 
 let _handleFolderClick = (event) => {
-	let $item = $(event.target).closest('.favorites-folder');
-	let data = $item.data('data');
-	let name = $item.data('name');
-	if(_activeName == name) return;
-	$item.siblings('.favorites-folder').removeClass('active');
-	$item.addClass('active');
-	let $bodyDom = $(_bodyDomF);
-	_activeName = name;
-	$bodyDom.empty();
-	$bodyDom.append(_generatePatterns(data, 0, {name:name}));
+	let onDispose = () => {
+		let $item = $(event.target).closest('.favorites-folder');
+		let data = $item.data('data');
+		let name = $item.data('name');
+		if(_activeName == name) return;
+		$item.siblings('.favorites-folder').removeClass('active');
+		$item.addClass('active');
+		let $bodyDom = $(_bodyDomF);
+		_activeName = name;
+		$bodyDom.empty();
+		$bodyDom.append(_generatePatterns(data, 0, {name:name}));
 
-	$(_navDomF).siblings('.trash-panel-btn').removeClass('active');
+		$(_navDomF).siblings('.trash-panel-btn').removeClass('active');
+	};
+
 	//移除编辑器
-	_removeSearchEditor();
+	_removeSearchEditor(onDispose);
 };
 
 let _refreshBodyItemUI = (ele) => {
@@ -513,19 +558,25 @@ let _handleDeleteFavoritesFolder = (event) => {
 	let $item = $(event.target).closest('.favorites-folder');
 	let { fileName, name } = $item.data();
 	let title = `确认删除"${name}"?`;
-	new ConfirmModal(title, 'delete-favorite-folder', () => {
-		favoritesManager.deleteFavorites(fileName, (e, d) => {
-			if(e) {
-				console.error(e);
-			} else {
-				$item.remove();
-				_showFolder(0); //显示默认
-			}
-		});
+	new ConfirmModal({
+		title, 
+		sessionName: 'delete-favorite-folder', 
+		onYes:() => {
+			favoritesManager.deleteFavorites(fileName, (e, d) => {
+				if(e) {
+					console.error(e);
+				} else {
+					$item.remove();
+					_showFolder(0); //显示默认
+				}
+			});
+		}
 	});
 };
 //收藏夹重命名
 let _handleRenameFolder = (event) => {
+	//先移除其他的rename 框
+	$(event.target).closest('.nav-item-container').find('.rename-input-container').remove();
 	event.stopPropagation();
 	let $folderNode = $(event.target).closest('.favorites-folder');
 	let data = $folderNode.data();
@@ -547,11 +598,13 @@ let _handleRenameFolder = (event) => {
 	$inputGroup.find('.ks-check').click(function(event) {
 		/* Act on the event */
 		if($(event.currentTarget).hasClass('ks-disable')) return;
+		let oldName = $folderNode.data('name');
 		let newName = $inputGroup.find('input').val();
 		newName = newName.trim();
-		if(newName && favoritesManager.renameFavorites(name, newName)) {
+		if(newName && favoritesManager.renameFavorites(oldName, newName)) {
 			$folderNode.find('.name').text(newName);
-			if(_activeName == name) {
+			$folderNode.data('name', newName);
+			if(_activeName == oldName) {
 				_activeName = newName;
 			}
 		}
@@ -660,13 +713,17 @@ favoritesController.showTrashedPatterns = (e) => {
 }
 
 favoritesController.clearTrashedPatterns = () => {
-	new ConfirmModal('清空回收站?', 'clear-trashed-patterns', () => {
-		if(favoritesManager.clearTrashedFavorites()) {
-			_updateTrashedNumber();
-			let $bodyDom = $(_bodyDomF);
-			let trashedData = [];
-			$bodyDom.empty();
-			$bodyDom.append(_generatePatterns(trashedData, 2));
+	new ConfirmModal({
+		title:'清空回收站?', 
+		sessionName:'clear-trashed-patterns', 
+		onYes:() => {
+			if(favoritesManager.clearTrashedFavorites()) {
+				_updateTrashedNumber();
+				let $bodyDom = $(_bodyDomF);
+				let trashedData = [];
+				$bodyDom.empty();
+				$bodyDom.append(_generatePatterns(trashedData, 2));
+			}
 		}
 	});
 };
@@ -678,6 +735,7 @@ favoritesController.hasFavoriteFolder = (folderName) => {
 favoritesController.setEditorSaved = () => {
 	try {
 		_searchEditorFavorites.setSaved();
+		_searchEditorFavorites.save();
 	} catch (e) {
 		console.error(e);
 	}

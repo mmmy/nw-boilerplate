@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 // import { updateImgAll } from '../components/helper/updateEchartImage';
 import classNames from 'classnames';
 import CrossfilterContainer from './CrossfilterContainer';
+import statisticsComponent from '../ksControllers/statisticsComponent';
 
 const propTypes = {
 	shrinkView: PropTypes.bool
@@ -32,6 +33,7 @@ class SearchDetail extends React.Component {
 		// window.addEventListener('resize', this._handleResize);
 		// this.handleResize();
 		// updateImgAll(0);
+		statisticsComponent.init(this.refs.statistics_component);
 	}
 
 	componentWillReceiveProps(){
@@ -56,7 +58,8 @@ class SearchDetail extends React.Component {
 		});
 		return (<div className={ className } ref='container'>
 			<StatisticsContainer />
-			<PatternContainer />
+			{/*<PatternContainer />*/}
+			<div ref="statistics_component" className="statistics-component-wrapper"></div>
 			<CrossfilterContainer />
 		</div>);
 	}
