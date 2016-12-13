@@ -100,7 +100,7 @@ PredictionWatch.prototype._init = function() {
 
 	this._$parent.find(".watchlist-prediction-wrapper.add").before(this._$root);
 	//k线图
-	this._predictionWidget = new PredictionWidget(this._$root.find('.prediction-chart')[0], {showRange: false});
+	this._predictionWidget = new PredictionWidget(this._$root.find('.prediction-chart')[0], {showRange: false, slient: true});
 	this._predictionWidget.onHoverKline((index, data)=>{
 
 	})

@@ -52,12 +52,23 @@ body[theme='dark'] {
 			}
 		}
 	}
-}
-.add-input-wrapper {
-	.inputs-group {
-		border-color: #3e3e3e;
-		.search-icon {
-			background-image: url(@icons_dark_url);
+
+	.add-input-wrapper {
+		.inputs-group {
+			border-color: #3e3e3e;
+			.search-icon {
+				background-image: url(@icons_dark_url);
+			}
 		}
 	}
+	
+	.symbol-list-container {
+		background-color: @dropdown-bg-base;
+		.symbol-item {
+			&.active {
+				background-color: darken(@dropdown-bg-base, 4%)
+			}
+		}
+	}
+
 }
