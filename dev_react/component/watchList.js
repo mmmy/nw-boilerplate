@@ -52,10 +52,11 @@ window.actionsForIframe = {
 		}, 300);
 	},
 	mockStorage: function() {
-		return  = {
+		var now = new Date();
+		return  {
 								list:[
 											{
-					symbolInfo:{
+						symbolInfo:{
 																	symbol: '000001.SH',
 																	ticker: '上证综合指数',
 																	type: 'index',
