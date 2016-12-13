@@ -53,7 +53,7 @@ SearchPattern.prototype.search = function(args, cb, errorCb) {
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];
 			//let id = i;
-			if(!similarityThreshold || (similarityThreshold.on && (similarity >= similarityThreshold.value))) {
+			if(!similarityThreshold || (!similarityThreshold.on) || (similarityThreshold.on && (similarity >= similarityThreshold.value))) {
 				__data.push({
 					id: i,
 					symbol: id,
@@ -81,10 +81,11 @@ SearchPattern.prototype.search = function(args, cb, errorCb) {
 			}
 		});
 		if(__data.length == 0) {
-			errorCb && errorCb({type:'no_data', name:'error'});
+			console.warn({type:'no_data', name:'error'}, symbol, searchConfig);
 		} else {
-			cb && cb(__data, __closePrice);
+			// cb && cb(__data, __closePrice);
 		}
+		cb && cb(__data, __closePrice);
 		that.__data = __data;
 		that.__closePrice = __closePrice;
 		//let args = [{'symbol':'ss600000',dateRange:[3, 5]}, {'symbol':'ss600000', dateRange:[7, 8]}];

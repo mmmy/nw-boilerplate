@@ -80,10 +80,10 @@ var getLatestPrice = function(symbolInfo, resolution, dataCallBack, errorCb, opt
 										dateTime: record.datetime,
 										volume: record.volume,
 										amount: record.amount,
-										open: record.open * adjfactor1 / adjfactor,
-										close: record.close * adjfactor1 / adjfactor,
-										low: record.low * adjfactor1 / adjfactor,
-										high: record.high * adjfactor1 / adjfactor,
+										open: record.open * adjfactor / adjfactor1,
+										close: record.close * adjfactor / adjfactor1,
+										low: record.low * adjfactor / adjfactor1,
+										high: record.high * adjfactor / adjfactor1,
 									};
 									return priceObj;
 								});

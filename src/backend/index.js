@@ -67,7 +67,8 @@ let searchPattern = (args, cb, errorCb) => {
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];
 			//let id = i;
-			if(!similarityThreshold || (similarityThreshold.on && (similarity >= similarityThreshold.value))) {
+			//没有定义, 或者为false, 或者为true的时候在过滤范围内 , 这3个条件push
+			if((!similarityThreshold) || (!similarityThreshold.on) || (similarityThreshold.on && (similarity >= similarityThreshold.value))) {
 				__data.push({
 					id: i,
 					symbol: id,

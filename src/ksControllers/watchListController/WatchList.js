@@ -20,54 +20,15 @@ var defaultSearchConfig = {
  -----------------------------*/
 function WatchList(config) {
 	config = config || {};
-	this._searchConfig = defaultSearchConfig;
 	this._category = config.category || 'default'; //分类
 	this._dataFeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0);
-	this._list = config.list || [{
-																symbolInfo:{
-																	symbol: '000001.SH',
-																	ticker: '上证综合指数',
-																	type: 'index',
-																	exchange: '',
-																}
-															},{
-																symbolInfo:{
-																	symbol: 'ru',
-																	ticker: '橡胶',
-																	type: 'futures',
-																	exchange: '',
-																}
-															},{
-																symbolInfo:{
-																	symbol: 'a',
-																	ticker: '豆一',
-																	type: 'futures',
-																	exchange: '',
-																}
-															},{
-																symbolInfo:{
-																	symbol: 'hc',
-																	ticker: '热卷',
-																	type: 'futures',
-																	exchange: '',
-																}
-															},{
-																symbolInfo:{
-																	symbol: 'cf',
-																	ticker: '棉花',
-																	type: 'futures',
-																	exchange: '',
-																}
-															},{
-																symbolInfo:{
-																	symbol: 'ma',
-																	ticker: '甲醇',
-																	type: 'futures',
-																	exchange: '',
-																}
-															}];
-	this._resolution = 'D';
-	this._baseBars = 30;
+
+	var storage = window.actionsForIframe.mockStorage ? window.actionsForIframe.mockStorage() : require('../../backend/watchlistStorage').getDataFromStorage(this._category);
+	this._searchConfig = storage.searchConfig || defaultSearchConfig;
+	this._list = storage.list || [];
+	this._resolution = storage.resolution || 'D';
+	this._baseBars = storage.baseBars || 30;
+
 	this._wrapper = config.dom;
 	this._$container = $(`<div class="watchlist-container">
 													<div class="watchlist-prediction-wrapper add">
@@ -88,6 +49,17 @@ function WatchList(config) {
 	this._initPredicitonList();
 
 	this._initAddPanel();
+
+	this._initResize();
+}
+
+WatchList.prototype._initResize = function()  {
+	var that = this;
+	window.addEventListener('resize',function(){
+		that._list.forEach(function(item){
+			item.prediction.resize();
+		});
+	});
 }
 
 WatchList.prototype._initAddPanel = function() {
@@ -114,6 +86,7 @@ WatchList.prototype._append = function(symbolObj) {
 	var symbolInfo = {ticker:symbolObj.symbol, symbol:symbolObj.description, exchange:symbolObj.exchange, type:symbolObj.type};
 	var prediction = new PredictionWatch({dom: this._$container, baseBars:this._baseBars, resolution:this._resolution, symbolInfo: symbolInfo, searchConfig: this._searchConfig});
 	this._list.push({symbolInfo,prediction});
+	this._saveToFile();
 }
 WatchList.prototype._disposeAll = function() {
 	// for(var i=0,len=this._predictionList.length; i<len; i++) {
@@ -127,7 +100,7 @@ WatchList.prototype._initPredicitonList = function() {
 	this._disposeAll();
 	var list = this._list;
 	for(var i=0,len=list.length; i<len; i++) {
-		this._list[i].prediction = new PredictionWatch({dom: this._$container, baseBars:this._baseBars, resolution:this._resolution, symbolInfo: list[i].symbolInfo, searchConfig: defaultSearchConfig});
+		this._list[i].prediction = new PredictionWatch({dom: this._$container, baseBars:this._baseBars, resolution:this._resolution, symbolInfo: list[i].symbolInfo, searchConfig: this._searchConfig});
 	}
 }
 
@@ -172,6 +145,8 @@ WatchList.prototype.updateList = function(symbolInfoList) {
 	}
 	this._list = newList;
 	this._sortPredictionList();
+	//保存
+	this._saveToFile();
 }
 //排序UI
 WatchList.prototype._sortPredictionList = function() {
@@ -181,9 +156,25 @@ WatchList.prototype._sortPredictionList = function() {
 		$thisDom.insertAfter($lastDom);
 	}
 }
-//删除 尾巴 len
-WatchList.prototype._removeTailingList = function(len) {
-
+//持久化
+WatchList.prototype._saveToFile = function() {
+	var listForSave = this._list.map(function(item){
+		return {symbolInfo: item.symbolInfo};
+	});
+	var data = {
+		list: listForSave,
+		searchConfig: this._searchConfig,
+		resolution: this._resolution,
+		baseBars: this._baseBars,
+	};
+	try {
+		require('../../backend/watchlistStorage').saveToFile(data,this._category);
+	} catch(e) {
+		console.error(e);
+	}
+}
+WatchList.prototype.saveToFile = function() {
+	this._saveToFile();
 }
 WatchList.prototype.updateConfig = function(config) {
 	var isChanged = false;
@@ -202,6 +193,7 @@ WatchList.prototype.updateConfig = function(config) {
 
 	if(isChanged) {
 		this._updatePredictionsConfig();
+		this._saveToFile();
 		// this._render();
 	}
 }

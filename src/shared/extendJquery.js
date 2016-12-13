@@ -1,6 +1,13 @@
 
 module.exports = function($) {
 	$.fn.extend({
+		animateCss: function (animationName, cb) {
+        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        $(this).addClass('animated ' + animationName).one(animationEnd, function() {
+            $(this).removeClass('animated ' + animationName);
+            cb && cb();
+        });
+    },
 		ksSortable: function(options) {				//拖动排序
 			var $this = $(this);
 			$this.attr('draggable',true);

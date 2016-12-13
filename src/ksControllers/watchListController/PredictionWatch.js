@@ -4,6 +4,8 @@ import BlockHeatMap from '../BlockHeatMap';
 import searchForWatchList from '../../backend/searchForWatchList';
 import statisticKline from '../../components/utils/statisticKline';
 import getPrice from '../../backend/getPrice';
+import config_marketing_time from '../../backend/config_marketing_time';
+
 let { getLatestPrice } = getPrice;
 
 var SearchPattern = searchForWatchList.SearchPattern;
@@ -110,19 +112,77 @@ PredictionWatch.prototype._init = function() {
 
 	this._dataFeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0);
 	
-	// this._fetchLastDayPrice(); //获取前一天的收盘价, 用来计算涨跌
+	this._fetchLastDayPrice(); //获取前一天的收盘价, 用来计算涨跌
 	setTimeout(function(){
 		that._fetchPredictionData();
-		// that._fetchLatestPrice();
+		that._fetchLatestPrice();
 	}, 500);       //马上进行取数据操作
-	this._pulseUpdatePredictionStart();
+	//开启定时器更新数据
+	this.watchDateTimeOnce();
+	this._pulseWatchDatetime();
+	// this._pulseUpdatePredictionStart();
 	// this._pulseUpdatePriceStart();
+}
+/* 在开始的时候调用一次, 然后在监视时间定时器中调用
+----------------------------------------------- */
+PredictionWatch.prototype.watchDateTimeOnce = function() {
+	var now = new Date(),
+			day = now.getDay(),
+			hour = now.getHours(),
+			minute = now.getMinutes(),
+			M = hour * 60 + minute;
+	var type = this._symbolInfo.type;
+
+	var isMarketingTime = false;
+	
+	if(day>0 && day<6) {                  //只有在非周六,周日 的交易时间内, 才开启更新
+		var timeArr = config_marketing_time[type];
+		for(var i=0; i<timeArr.length; i++) {
+			var timeRange = timeArr[i];  //[['9:00','11:30'],['13:00','15:00']]
+			var T0s = timeRange[0].split(':'),
+					T1s = timeRange[1].split(':');
+			//将时间换算成分钟
+			var M0 = parseInt(T0s[0]) * 60 + parseInt(T0s[1]),
+					M1 = parseInt(T1s[0]) * 60 + parseInt(T1s[1]);
+			if((M >= M0) && (M <= M1)) {   //在交易时间内
+				isMarketingTime = true;
+				break;
+			}
+		}
+	}
+	if(isMarketingTime) {
+		this.pulseUpdateDataStart();
+	} else {
+		this.pulseUpdateDataStop();
+	}
+}
+
+//用来监听时间, 如果是该symbol的交易时间, 那么开启各个pulse数据更新, 否则关闭
+PredictionWatch.prototype._pulseWatchDatetime = function() {
+	var that = this;
+	clearInterval(this._pulseWatchInterval);
+	this._pulseWatchInterval = setInterval(function(){  //一分钟一次
+		that.watchDateTimeOnce();
+	}, 60 * 1000);
+}
+
+PredictionWatch.prototype.pulseUpdateDataStart = function() {
+	this._pulseUpdatePredictionStart();
+	this._pulseUpdatePriceStart();
+}
+PredictionWatch.prototype.pulseUpdateDataStop = function() {
+	this._pulseUpdatePredictionStop();
+	this._pulseUpdatePriceStop();
+}
+PredictionWatch.prototype.isFutures = function() {
+	return this._symbolInfo.type == 'futures';
 }
 PredictionWatch.prototype._pulseUpdatePredictionStart = function() {
 	if(this._pulseUpdater) {
 		return
 	}
-	var interval = 100000 * 1000;
+	//期货5分钟刷新一次
+	var interval = (this.isFutures() ? 5 * 60 : 60) * 1000;
 	var that = this;
 	this._pulseUpdater = setInterval(function(){
 		that._fetchPredictionData();
@@ -136,14 +196,15 @@ PredictionWatch.prototype._pulseUpdatePriceStart = function() {
 	if(this._pulsePriceUpdater) {
 		return;
 	}
-	var interval = 100000 * 1000;
+	var interval = 10 * 1000;
 	var that = this;
 	this._pulsePriceUpdater = setInterval(function() {
 		that._fetchLatestPrice();
 	}, interval);
 }
 PredictionWatch.prototype._pulseUpdatePriceStop = function() {
-
+	clearInterval(this._pulsePriceUpdater);
+	this._pulsePriceUpdater = null;
 }
 /*暂时解决方法, 期货先只支持5分钟数据, 而接口传过来的resolution, 现在只有"D"和"1"
 --------------------------------------------- */
@@ -160,10 +221,10 @@ PredictionWatch.prototype._udpate = function() {
 PredictionWatch.prototype._updateStatisticUI = function() {
 	var statistic = statisticKline(this.__searchResults.patterns);
 	var { median, mean, upPercent, downPercent, up, down } = statistic;
-	this._percentInfoDoms[0].updatePercentInfo(upPercent, 1);
-	this._percentInfoDoms[1].updatePercentInfo(downPercent, 1);
-	this._percentInfoDoms[2].updatePercentInfo(mean);
-	this._percentInfoDoms[3].updatePercentInfo(median);
+	this._percentInfoDoms[0].updatePercentInfo(upPercent, 1).animateCss('fadeIn');
+	this._percentInfoDoms[1].updatePercentInfo(downPercent, 1).animateCss('fadeIn');
+	this._percentInfoDoms[2].updatePercentInfo(mean).animateCss('fadeIn');
+	this._percentInfoDoms[3].updatePercentInfo(median).animateCss('fadeIn');
 }
 /*渲染charts
  ----------------------------------------------*/
@@ -181,7 +242,12 @@ PredictionWatch.prototype._renderCharts = function() {
 }
 
 PredictionWatch.prototype._renderStuffs = function() {
-	this._$stateDom.text(this._state.code);
+	var kline = this.__searchMetaData.kline;
+	var close = 0;
+	if(kline.length>0) {
+		close = kline[kline.length-1][2];
+	}
+	this._$stateDom.text(this._state.code + ' ' + new Date().toTimeString() + ' ' + 'last close ' + close);
 }
 //搜索, 只在fecthData中调用
 PredictionWatch.prototype._search = function() {
@@ -215,15 +281,24 @@ PredictionWatch.prototype._search = function() {
 PredictionWatch.prototype._fetchPredictionData = function() {
 	this._state.code = SEARCHING;
 	this._renderStuffs();
-	var resolution = this._resolution,
-			rangeStartDate = new Date('2016/10/1') / 1000,
-			rangeEndDate = new Date() / 1000;
+	var periodLengthSeconds = window.Kfeeds.DataPulseUpdater.prototype.periodLengthSeconds; //参考kfeed.js
+	var resolution = this._resolution, 		//股票,指数:'D' || '1', 期货:'D' || '5'
+			rangeStartDate = 0,//new Date('2016/10/1') / 1000,
+			rangeEndDate = 0,//new Date() / 1000;
+			nowSeconds = Math.ceil(new Date() / 1000);
+
+	//开始时间为当前时间往前两倍baseBar的时间, 往后两个bar的时间
+	//天数据应该没有问题, 但是分钟级别的会有问题
+	rangeStartDate = nowSeconds - periodLengthSeconds(resolution, this._baseBars * 2);
+	rangeEndDate = nowSeconds + periodLengthSeconds(resolution, 2);
+
 	var that = this;
 	// this._dataFeed.searchSymbolsByName(this._symbolInfo.ticker, '', 'index', function(d){
 	// 	console.log('searchSymbolsByName', d);
 	// });
 	var cb = function(kline) {  //kline: [[open,close,high,low],]
 		setTimeout(function(){
+			//截断数据
 			that.__searchMetaData.kline = kline.slice(- that._baseBars) || [];
 			that._search();
 		});
@@ -268,7 +343,7 @@ PredictionWatch.prototype._updateLatestPriceUI = function() {
 		this._pricesDoms[0].updatePercentInfo(price/100).removeClass('red green');
 		this._pricesDoms[1].removeClass('red green');
 		if(this.__latestDayPrice2 && this.__latestDayPrice2.length>0) {
-			var priceObj = this.__latestDayPrice2[0];
+			var priceObj = this.__latestDayPrice2[1];
 			// var time = new Date(priceObj)
 			var upRate = (price - priceObj.close) / priceObj.close;
 			let colorClass = '';
@@ -301,6 +376,9 @@ PredictionWatch.prototype.getRootDom = function() {
 }
 PredictionWatch.prototype._cancelSearch = function() {
 
+}
+PredictionWatch.prototype.resize = function() {
+	this._predictionWidget.resize();
 }
 PredictionWatch.prototype.dispose = function() {
 	this._pulseUpdatePredictionStop();

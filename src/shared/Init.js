@@ -14,18 +14,7 @@ let initJquery = () => {
 let initJqueryPlugins = () => {
 	require('./bootstrap-datepicker.min');
 	require('./bootstrap-datepicker.zh-CN.min');
-	//animate.css helper
-	if(!$.fn.animatedCss){
-			$.fn.extend({
-			    animateCss: function (animationName, cb) {
-			        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-			        $(this).addClass('animated ' + animationName).one(animationEnd, function() {
-			            $(this).removeClass('animated ' + animationName);
-			            cb && cb();
-			        });
-			    }
-			});
-	}
+
 	//ksDefaultConfig
 	var theme = $(document.body).attr('theme');
 	$.extend({

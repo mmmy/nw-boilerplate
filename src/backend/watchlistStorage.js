@@ -13,6 +13,7 @@ let _generateFileName = (category='default') => { //分组
 }
 
 let _createFolderes = (category) => {
+	var filePath = _generateFileName(category);
 	try{
 		if (!fs.existsSync(BASEPATH)) {
 			fs.mkdirSync(BASEPATH);
@@ -20,7 +21,7 @@ let _createFolderes = (category) => {
 		if (!fs.existsSync(_watchlistPath)) {
 			fs.mkdirSync(_watchlistPath);
 		}
-		if (!fs.existsSync(_watchlistFile)) {
+		if (!fs.existsSync(filePath)) {
 			var now = new Date();
 			var defaultData = {
 													list:[
@@ -53,7 +54,7 @@ let _createFolderes = (category) => {
 															searchLenMax: 200
 													}
 												};
-			utils.saveFile(_generateFileName(category), JSON.stringify(defaultData));
+			utils.saveFile(filePath, JSON.stringify(defaultData));
 		}
 	} catch(e) { console.error(e); }
 };
