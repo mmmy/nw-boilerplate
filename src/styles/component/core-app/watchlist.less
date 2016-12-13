@@ -23,7 +23,10 @@
 	bottom: 0;
 	width: 100%;
 	height: calc(~"100% - 60px");
-	overflow: scroll;
+	overflow-y: scroll;
+	.scrollbar();
+	.scrollbar-thumb();
+	.scrollbar-track();
 }
 //cell
 .watchlist-prediction-wrapper {
@@ -121,6 +124,7 @@
 					color: @color-title;
 				}
 				.percent-info {
+					animation-duration: 0.3s;
 					font-size: 16px;
 					&.red {
 						color: @brown-red;
@@ -163,7 +167,7 @@
 	position: absolute;
 	right: 0;
 	top: 100%;
-	z-index: 2;
+	z-index: 1001;
 	background-color: #fff;
 	border-top-left-radius: 5px;
 	border-bottom-left-radius: 5px;

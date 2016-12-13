@@ -1,5 +1,8 @@
 
 body[theme='dark'] {
+	.container-stockview .content-wrapper.watchlist {
+		background-color: @dark-bg-inner-lighter;
+	}
 	.watchlist-header-wrapper {
 		
 	}
@@ -22,11 +25,14 @@ body[theme='dark'] {
 	.watch-list-dropdown {
 		background-color: @dropdown-bg-base;
 		&:before {
+			// z-index: -1;
 			// content: ' ';
 			// display: block;
 			// position: fixed;
 			// width: 100%;
 			// height: 100%;
+			// left: 0;
+			// top: 0;
 			// background-color: #111;
 		}
 		.watch-list-item {
