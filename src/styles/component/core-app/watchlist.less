@@ -187,10 +187,13 @@
 	position: absolute;
 	z-index: 2;
 	// width: 300px;
-	max-height: 200px;
+	max-height: 118px;
 	width: 100%;
 	top: calc(~"100% + 1px");
-	overflow: scroll;
+	overflow-y: scroll;
+	.scrollbar();
+	.scrollbar-track();
+	.scrollbar-thumb();
 	border: 1px solid rgba(255, 255, 255, 0.1);
 	img {
 		margin-top: 5px;
