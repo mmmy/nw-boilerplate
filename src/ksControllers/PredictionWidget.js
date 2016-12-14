@@ -36,7 +36,6 @@ let PredictionWidget = function(dom, config){
 	this._clickX = 0;
 	this._clickY = 0;
 	this._linesYOffset = 0;
-	this._activeLine = 0;
 
 	this._cursorAtIndex = -1;
 
@@ -44,6 +43,8 @@ let PredictionWidget = function(dom, config){
 	this._slient = Boolean(config.slient);
 	let rate = parseFloat(config.klineScaleRate);
 	this._klineScaleRate = isNaN(rate) ? 1.5 : rate;
+
+	this._activeLine = this._slient ? -1 : 0;
 
 	this._klineOption = {
 		yMin: null,

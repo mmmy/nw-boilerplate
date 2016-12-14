@@ -10,6 +10,8 @@ let { getLatestPrice } = getPrice;
 
 var SearchPattern = searchForWatchList.SearchPattern;
 
+var dev_local = $.DEBUG;
+
 var NODATA = 'NODATA',
 		FINISHED = 'FINISHED',
 		SEARCHING = 'SEARCHING',
@@ -24,12 +26,13 @@ function PredictionWatch(config) {
 	this._baseBars = config.baseBars;
 	this._searchConfig = config.searchConfig;
 	this.__searchMetaData = {kline:[]};
-	this._state = {code:NODATA};
+	this._state = {code:NODATA, lastCode:null};
 	this.__searchResults = {patterns:[],closePrices:[]};
 	this.__latestPrice2 = []; //分钟级别的最新的数据
 	this.__latestDayPrice2 = []; //天级别的 , 用来计算涨跌
 
 	this._searchPatternInstance = new SearchPattern();
+	this._researchTimes = 0;
 
 	this._updateFuturesResolution();
 	this._init();
@@ -46,11 +49,14 @@ PredictionWatch.prototype._init = function() {
 														<br/>
 														<span class="symbol">--</span>
 													</div>
-													<div class="state-info">NODATA</div>
+													<div class="state-info"></div>
 												</div>
-												<div class="chart-body">
+												<div class="chart-body transition-all">
 													<div class="prediction-chart"></div>
 													<div class="heatmap-chart"></div>
+												</div>
+												<div class="chart-footer">
+													<button role="search" class="flat-btn border-btn" disabled>详细搜索结果</button>
 												</div>
 											</div>
 											<div class="info-container">
@@ -60,6 +66,12 @@ PredictionWatch.prototype._init = function() {
 										</div>`);
 	this._$symbolInfoDoms = [this._$root.find('.describe'), this._$root.find('.symbol')];
 	this._$stateDom = this._$root.find('.state-info');
+
+	this._$chartBody = this._$root.find('.chart-body');
+	this._$predictionChart = this._$root.find('.prediction-chart');
+	this._$heatmapChart = this._$root.find('.heatmap-chart');
+	this._$statisticContainer = this._$root.find('.statistic-container');
+
 	var that = this;
 	var staitsticContainer = this._$root.find('.statistic-container');
 	var priceContainer = this._$root.find('.price-container');
@@ -67,6 +79,8 @@ PredictionWatch.prototype._init = function() {
 	this._$symbolInfoDoms[0].text(this._symbolInfo.ticker);
 	this._$symbolInfoDoms[1].text(this._symbolInfo.symbol);
 
+	this._$searchDetailBtn = this._$root.find('[role="search"]').click(this._searchDetail.bind(this));
+	
 	[{
 		title: '上涨比例',
 		dom: this._percentInfoDoms[0],
@@ -116,7 +130,7 @@ PredictionWatch.prototype._init = function() {
 	setTimeout(function(){
 		that._fetchPredictionData();
 		that._fetchLatestPrice();
-	}, 500);       //马上进行取数据操作
+	}, 2000);       //马上进行取数据操作
 	//开启定时器更新数据
 	this.watchDateTimeOnce();
 	this._pulseWatchDatetime();
@@ -157,13 +171,15 @@ PredictionWatch.prototype.watchDateTimeOnce = function() {
 	}
 }
 
+// PredictionWatch.prototype.
+
 //用来监听时间, 如果是该symbol的交易时间, 那么开启各个pulse数据更新, 否则关闭
 PredictionWatch.prototype._pulseWatchDatetime = function() {
 	var that = this;
 	clearInterval(this._pulseWatchInterval);
 	this._pulseWatchInterval = setInterval(function(){  //一分钟一次
 		that.watchDateTimeOnce();
-	}, 60 * 1000);
+	}, 3 * 1000);
 }
 
 PredictionWatch.prototype.pulseUpdateDataStart = function() {
@@ -182,7 +198,7 @@ PredictionWatch.prototype._pulseUpdatePredictionStart = function() {
 		return
 	}
 	//期货5分钟刷新一次
-	var interval = (this.isFutures() ? 5 * 60 : 60) * 1000;
+	var interval = dev_local ? 5 * 1000 : (this.isFutures() ? 5 * 60 : 60) * 1000;
 	var that = this;
 	this._pulseUpdater = setInterval(function(){
 		that._fetchPredictionData();
@@ -247,8 +263,63 @@ PredictionWatch.prototype._renderStuffs = function() {
 	if(kline.length>0) {
 		close = kline[kline.length-1][2];
 	}
-	this._$stateDom.text(this._state.code + ' ' + new Date().toTimeString() + ' ' + 'last close ' + close);
+	if(dev_local) {
+		this._$stateDom.text(this._researchTimes + this._state.code + ' ' + new Date().toTimeString() + ' ' + 'last close ' + close);
+	}
+
+	var $charts = this._$root.find('.prediction-chart,.heatmap-chart');
+	var chartOpacity = 1;
+	this._$watingOverLay = this._$watingOverLay || $(`<div class="waiting-overlay flex-center"><div><i class="fa fa-circle-o-notch fa-spin"></i><br/>搜索中</div></div>`);
+	this._$errorWaitingOverLay = this._$errorWaitingOverLay || $(`<div class="waiting-overlay flex-center"><div><i class="fa fa-circle-o-notch fa-spin"></i><br/>搜索失败<br><span class="error">正在重新搜索</span></div></div>`);
+	this._$zeroOverLay = this._$zeroOverLay || $(`<div class="waiting-overlay flex-center"><div><img src="./image/warn.png" /><br/>搜索结果为零<br></div></div>`);
+	this._$errorOverLay = this._$errorOverLay || $(`<div class="waiting-overlay flex-center"><div><img src="./image/warn.png" /><br/>搜索失败<br></div></div>`);
+	this._$offLineOverLay = this._$offLineOverLay || $(`<div class="waiting-overlay flex-center"><div><img src="./image/warn.png" /><br/>请检查你的网络连接<br></div></div>`);
+	
+	this._$watingOverLay.remove();
+	this._$errorWaitingOverLay.remove();
+	this._$errorOverLay.remove();
+	this._$zeroOverLay.remove();
+	this._$offLineOverLay.remove();
+
+	switch(this._state.code) {
+		case NODATA:
+			this._$zeroOverLay.appendTo(this._$statisticContainer);
+			break;
+		case ERROR: //error 停留的时间很短
+			if(!window.navigator.onLine) {
+				this._$offLineOverLay.appendTo(this._$statisticContainer);
+			} else {
+				this._$errorOverLay.appendTo(this._$statisticContainer);
+			}
+			break;
+		case SEARCHING:
+			if(this._state.lastCode == ERROR)
+				this._$errorWaitingOverLay.appendTo(this._$statisticContainer);
+			else
+				this._$watingOverLay.appendTo(this._$statisticContainer);
+			// chartOpacity = 0.5;
+			break;
+		case FINISHED:
+			break;
+		default: 
+			break;
+	}
+	// $charts.css('opacity',chartOpacity);
 }
+/* 搜索失败, 重新搜索, 5次之后停止
+-------------------------------------------- */
+PredictionWatch.prototype._research = function() {
+	console.log('research');
+	this._researchTimes ++;
+	if(this._researchTimes < 6) {
+		this._fetchPredictionData();
+	} else {
+		// if(this._state.lastCode == FINISHED) { //如果上一次的是成功的, 用来区别第一的失败和重复后的失败
+		// 	this._researchTimes = 0;
+		// }
+	}
+}
+
 //搜索, 只在fecthData中调用
 PredictionWatch.prototype._search = function() {
 	var symbol = this._symbolInfo.symbol,
@@ -263,7 +334,14 @@ PredictionWatch.prototype._search = function() {
 	var cb = function(patterns, closePrices) {
 		that.__searchResults.patterns = patterns;
 		that.__searchResults.closePrices = closePrices;
-		that._state.code = FINISHED;
+		that._state.lastCode = that._state.code;
+		if(!closePrices || closePrices.length==0) {
+			that._state.code = NODATA;
+		} else {
+			that._state.code = FINISHED;
+			that._$searchDetailBtn.attr('disabled',false);
+		}
+		that._researchTimes = 0;
 		// that._udpate();
 		that._renderCharts();
 		that._renderStuffs();
@@ -271,14 +349,17 @@ PredictionWatch.prototype._search = function() {
 	};
 	var errorCb = function(error) {
 		console.error(error);
+		that._state.lastCode = that._state.code;
 		that._state.code = ERROR;
 		that._renderStuffs();
+		that._research();
 	};
 	this._searchPatternInstance.search({symbol, kline, bars, searchConfig, dataCategory, interval}, cb, errorCb);
 }
 /*先获取kline数据, 然后搜索pattern, 完成后渲染
  -------------------------------------------------*/
 PredictionWatch.prototype._fetchPredictionData = function() {
+	this._state.lastCode = this._state.code;
 	this._state.code = SEARCHING;
 	this._renderStuffs();
 	var periodLengthSeconds = window.Kfeeds.DataPulseUpdater.prototype.periodLengthSeconds; //参考kfeed.js
@@ -304,9 +385,11 @@ PredictionWatch.prototype._fetchPredictionData = function() {
 		});
 	};
 	var errorCb = function(e) {
-		console.error(e);
+		console.error('获取K线 错误',e);
+		that._state.lastCode = that._state.code;
 		that._state.code = ERROR;
-		that._renderStuffs();	
+		that._renderStuffs();
+		that._research();
 	};
 	//调用这个 之前一定要注意的是kfeed的symbolist 需要 解析完成, 否则会出现bug
 	this._dataFeed.getBars(this._symbolInfo, resolution, rangeStartDate, rangeEndDate, cb, errorCb ,{arrayType:true});
@@ -370,6 +453,19 @@ PredictionWatch.prototype.updateConfig = function(config) {
 
 	this._updateFuturesResolution();
 	this._fetchPredictionData();
+}
+//详细搜索结果
+PredictionWatch.prototype._searchDetail = function() {
+	var param ={
+		symbol : this._symbolInfo.symbol,
+		bars : this.__searchMetaData.kline.length,
+		interval : this._resolution,
+		type : this._symbolInfo.type,
+		kline : this.__searchMetaData.kline,
+		searchConfig : this._searchConfig
+	}
+	var actions = require('../../flux/actions');
+	window.store.dispatch(actions.patternActions.getPatterns(param));
 }
 PredictionWatch.prototype.getRootDom = function() {
 	return this._$root;

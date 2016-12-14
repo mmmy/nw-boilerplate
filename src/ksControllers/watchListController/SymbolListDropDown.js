@@ -13,21 +13,28 @@ function SymbolListDropDown(options) {
 	this._symbolList = [];
 
 	this._initActions();
-	this._fetchData();
+	this._hide();
+	// this._fetchData();
 }
 
 SymbolListDropDown.prototype._initActions = function() {
 	var that = this;
+	this._disableSubmit();
 	this._$input.on('input.symbol-change', this._fetchData.bind(this));
-	this._$input.on('focus', this._fetchData.bind(this));
+	// this._$input.on('focus', this._fetchData.bind(this));
 	this._$submit.on('click', function(){
-		var $active = that._$container.find('.symbol-item.active');
-		if($active.length>0) {
-			that._sleep();
-			that._submit($active.data());
+		// var $active = that._$container.find('.symbol-item.active');
+		// if($active.length>0) {
+		// 	that._hide();
+		// 	that._submit($active.data());
+		// }
+		var symbolObj = that._$input.data();
+		if(symbolObj) {
+			that._submit(symbolObj);
 		}
 	});
 }
+//添加
 SymbolListDropDown.prototype._submit = function(symbolObj) {
 	this._$input.val(symbolObj.symbol);
 	this._onSumbmit && this._onSumbmit(symbolObj);
@@ -45,22 +52,28 @@ SymbolListDropDown.prototype._showLoading = function() {
 }
 SymbolListDropDown.prototype._fetchData = function() {
 	this._showLoading();
+	this._disableSubmit();
 	var symbol = this._$input.val();
-	this._dataFeed.searchSymbolsByName(symbol,'','',this._render.bind(this));
+	if(symbol === '') {
+		this._hide();
+	} else {
+		this._dataFeed.searchSymbolsByName(symbol,'','',this._render.bind(this));
+	}
 }
 
 SymbolListDropDown.prototype._render = function(symbolList) {
-	console.log(symbolList);
 	this._disableSubmit();
 	this._$container.empty();
 	var that = this;
 	if(symbolList.length === 0) {
-		this._$container.append("<p><i>没有符合要求的标的</i></p>")
+		this._$container.append("<div><i>没有符合要求的标的</i></div>")
 	} else {
 		this._activeIndex = 0;
-		this._enableSubmit();
 		symbolList.forEach(function(symbolObj, i){
 			var { description, symbol, type } = symbolObj;
+			if(type == 'stock') type = '股票';
+			if(type == 'index') type = '指数';
+			if(type == 'futures') type = '期货';
 			var symbolItem = $(`<div class='symbol-item'></div>`)
 												.append(`<span>${symbol}</span>`)
 												.append(`<span>${description}</span>`)
@@ -69,9 +82,13 @@ SymbolListDropDown.prototype._render = function(symbolList) {
 												.data(symbolObj)
 
 			symbolItem.on('click', function(e){
-				that._sleep();
+				that._hide();
 				var $cur = $(e.currentTarget);
-				that._submit($cur.data());
+				var symbolObj = $cur.data();
+				that._$input.data(symbolObj);
+				that._$input.val(symbolObj.symbol);
+				that._enableSubmit();
+				// that._submit($cur.data());
 			});
 
 			that._$container.append(symbolItem);
@@ -79,7 +96,7 @@ SymbolListDropDown.prototype._render = function(symbolList) {
 	}
 }
 
-SymbolListDropDown.prototype._sleep = function() {
+SymbolListDropDown.prototype._hide = function() {
 	this._$container.hide();
 }
 
