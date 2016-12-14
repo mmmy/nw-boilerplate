@@ -12,6 +12,7 @@
 	}
 	[role="config-data"] {
 		font-weight: bold;
+		font-size: 140%;
 	}
 	[role="edit-watchlist"] {
 		margin-left: 20px;
@@ -31,7 +32,10 @@
 //cell
 .watchlist-prediction-wrapper {
 	width: calc(~"50% - 20px");
-	height: 390px;
+	@media (min-width:1700px) {
+		width: calc(~"33% - 20px");
+	}
+	height: 295px;
 	position: relative;
 	float: left;
 	margin-left: 10px;
@@ -42,7 +46,7 @@
 	line-height: 1;
 	.charts-wrapper {
 		position: absolute;
-		width: calc(~"100% - 235px");
+		width: calc(~"100% - 160px");
 		height: 100%;
 		left: 0;
 		top: 0;
@@ -59,9 +63,9 @@
 		.chart-body {
 			position: absolute;
 			width: calc(~"100% - 20px");
-			height: 250px;
+			height: 200px;
 			left: 10px;
-			top: 75px;
+			top: 48px;
 			.prediction-chart {
 				position: absolute;
 				width: calc(~"100% - 70px");
@@ -77,22 +81,31 @@
 				top: 0;
 			}
 		}
+		.chart-footer {
+			position: absolute;
+			width: 100%;
+			text-align: center;
+			// height: 100%;
+			bottom: 15px;
+		}
 	}
 	@color-title: #999;
 	.info-container {
 		position: absolute;
 		top: 0;
 		right: 0;
-		width: 235px;
+		width: 160px;
 		height: 100%;
-		padding-top: 40px;
+		padding-top: 30px;
+		font-size: 12px;
 		.statistic-container {
+			position: relative;
 			hr {
-				border-color: @color-title;
-				margin-left: 20px;
-				margin-right: 20px;
-				margin-top: 30px;
-				margin-bottom: 30px;
+				border-color: #666;
+				margin-left: 10px;
+				margin-right: 10px;
+				margin-top: 15px;
+				margin-bottom: 20px;
 			}
 			.statistic-item {
 				display: inline-block;
@@ -104,11 +117,27 @@
 				}
 			}
 			.percent-info {
-				font-size: 16px;
+				font-size: 14px;
 				font-weight: bold;
 				color: #e0e0e0;
 				span:last-child {
 					margin-left: 2px;
+				}
+			}
+			.waiting-overlay {
+				text-align: center;
+				padding-bottom: 20px;
+				i,img {
+					margin-bottom: 15px;
+					font-size: 18px;
+				}
+				font-size: 14px;
+				height: calc(~"100% - 1px");
+				.error {
+					display: inline-block;
+					line-height: 2;
+					margin-top: 20px;
+					font-size: 12px;
 				}
 			}
 		}
@@ -136,9 +165,9 @@
 				&:nth-child(1) {
 					.percent-info {
 						line-height: 14px;
-						font-size: 20px;
+						font-size: 16px;
 						span:nth-child(1) {
-							font-size: 26px
+							font-size: 20px;
 						}
 						span:last-child {
 							display: none;
@@ -159,9 +188,18 @@
 	z-index: 2;
 	// width: 300px;
 	max-height: 200px;
+	width: 100%;
 	top: calc(~"100% + 1px");
 	overflow: scroll;
 	border: 1px solid rgba(255, 255, 255, 0.1);
+	img {
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+	i {
+		font-size: 12px;
+		line-height: 1.6;
+	}
 	.symbol-item {
 		padding-left: 20px;
 		padding-right: 20px;
@@ -182,6 +220,8 @@
 			}
 			&:nth-child(3) {
 				font-size: 80%;
+				font-style: italic;
+				color: #999;
 			}
 		}
 	}

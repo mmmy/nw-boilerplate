@@ -19,6 +19,10 @@ body[theme='dark'] {
 			background-color: darken(@watchlist-prediction-base, 1%);
 			box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
 		}
+
+		.waiting-overlay {
+			background-color: darken(@watchlist-prediction-base, 1%);
+		}
 	}
 	//编辑列表
 	@dropdown-bg-base: lighten(@dark-bg-inner-lighter, 7%);
@@ -60,13 +64,24 @@ body[theme='dark'] {
 				background-image: url(@icons_dark_url);
 			}
 		}
+		button[disabled] {
+			opacity: 0.5;
+			cursor: default;
+			&:hover {
+				background-color: @dropdown-bg-base;
+			}
+		}
 	}
 	
 	.symbol-list-container {
 		background-color: @dropdown-bg-base;
 		.symbol-item {
+			cursor: pointer;
 			&.active {
-				background-color: darken(@dropdown-bg-base, 4%)
+				// background-color: darken(@dropdown-bg-base, 4%);
+			}
+			&:hover {
+				background-color: darken(@dropdown-bg-base, 4%);
 			}
 		}
 	}

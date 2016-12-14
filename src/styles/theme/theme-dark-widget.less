@@ -150,11 +150,16 @@ body[theme="dark"] {
 
 	.flat-btn {
 		&.border-btn {
-			background-color: @dark-bg-inner-lighter-btn;
+			font-size: 12px;
+			background-color: transparent;//@dark-bg-inner-lighter-btn;
 			border-color: lighten(@dark-bg-inner-lighter-btn, 10%);
-			&:hover,&.hvoer,&:focus,&.focus {
+			&:hover,&.hover {
 				color: #eee;
 				background-color: lighten(@dark-bg-inner-lighter-btn, 20%)
+			}
+			&[disabled],&[disabled]:hover {
+				opacity: 0.5;
+				background-color: transparent;//@dark-bg-inner-lighter-btn;
 			}
 		}
 	}
