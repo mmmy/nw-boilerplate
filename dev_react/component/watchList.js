@@ -44,12 +44,12 @@ window.actionsForIframe = {
 	},
 	mockSearch: function(options, callback, errorCb, postData) {
 		setTimeout(function(){
-			if(Math.random() < 2) {
+			if(Math.random() < 0.8) {
 				callback(searchSamples[Math.round(Math.random())]);
 			} else {
 				errorCb({error:'mockSearch error'});
 			}
-		}, 300);
+		}, 200);
 	},
 	mockStorage: function() {
 		var now = new Date();
@@ -91,7 +91,7 @@ window.actionsForIframe = {
 																	exchange: '',
 																}
 															}
-								],
+								].slice(0,1),
 								resolution: 'D',
 								baseBars: 30,
 								searchConfig: {

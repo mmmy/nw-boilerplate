@@ -2,6 +2,7 @@ import React from 'react';
 //require('../src/styles/main.less');
 window.$ = require('jquery');
 require('../src/shared/extendJquery')(window.$);
+window.$.DEBUG = true;
 
 let tabsArr = [
 	// {title:'waves',component:'./component/waves'},
