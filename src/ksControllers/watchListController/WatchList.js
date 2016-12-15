@@ -34,7 +34,7 @@ function WatchList(config) {
 													<div class="watchlist-prediction-wrapper add">
 														<div class="add-info-wrapper">
 															<div><img src="./image/logo_white.png" height="20" alt="拱石"/></div>
-															<div class="description">将您关注的标的加入Watchlist, 我们将试试监控它们<br/>的走势并对他们进行搜索和统计.</div>
+															<div class="description">将您关注的标的加入Watchlist, 我们将实时监控它们<br/>的走势并对他们进行搜索和统计.</div>
 														</div>
 														<div class="add-input-wrapper">
 															<div class="inputs-group-wrapper">
