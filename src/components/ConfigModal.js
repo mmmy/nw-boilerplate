@@ -86,7 +86,7 @@ class SearchConfigModal extends React.Component {
 			<div className='title'>搜索配置</div>
 			<div className='item-title font-simsun'>后向统计范围</div>
 			<div className='item-body-container days'>
-				<div className='inputs-wrapper'><button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button></div><span className='font-simsun'>根</span>
+				<div className='inputs-wrapper'><button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)} onBlur={this.validateDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button></div><span className='font-simsun'>根</span>
 			</div>
 			<div className='item-title font-simsun'>搜索时间范围<span className="check-box-wrapper"><input type="checkbox" checked={ isLatestDate } onChange={this.toggleLastTimeAuto.bind(this)}/>当前时间</span></div>
 			<div className='item-body-container date'>
@@ -153,6 +153,15 @@ class SearchConfigModal extends React.Component {
 
 	changeDays(event) {
 		let days = event.target.value;
+		let { searchConfig } = this.state;
+		searchConfig.additionDate.value = days;
+		this.setState({searchConfig});
+	}
+
+	validateDays(event) {
+		let days = event.target.value;
+		if(days < 1) days = 1;
+		
 		let { searchConfig } = this.state;
 		searchConfig.additionDate.value = days;
 		this.setState({searchConfig});

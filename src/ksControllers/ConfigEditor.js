@@ -107,7 +107,7 @@ ConfigEditor.prototype._init = function() {
 		let dom1 = $('<span>根据最近</span>').append(this._inputs.baseBars).append('根');
 		let dom2 = $('<span></span>').append(this._inputs.resolution).append('K线');
 		let dom3 = $('<span>统计后向</span>').append(this._inputs.additionBars).append('根');
-		this._$wrapper.append($('<div class="item-body-container watchlist"></div>').append(dom1).append(dom2).append(dom3));
+		this._$wrapper.append($('<div class="item-body-container watchlist font-simsun"></div>').append(dom1).append(dom2).append(dom3));
 	} else {
 		//统计天数
 		this._$wrapper.append(`<div class='item-title font-simsun'>后向统计范围</div>`);
@@ -173,8 +173,8 @@ ConfigEditor.prototype._initActions = function() {
 			this.onEdit();
 		});
 	}
-	this._inputs.baseBars.on('input', this._changeBasebars.bind(this));
-	this._inputs.resolution.on('input', this._selectResolution.bind(this));
+	this._inputs.baseBars.on('change', this._changeBasebars.bind(this));
+	this._inputs.resolution.on('change', this._selectResolution.bind(this));
 	//init sid type
 	this._inputs.typeStock.on('click', this._clickStock.bind(this));
 	this._inputs.typeFuture.on('click', this._clickFuture.bind(this));
@@ -182,7 +182,7 @@ ConfigEditor.prototype._initActions = function() {
 	//init addition date
 	this._inputs.reduceBars.on('click', this._clickReduceBars.bind(this));
 	this._inputs.addBars.on('click', this._clickAddBars.bind(this));
-	this._inputs.additionBars.on('input', this._changeBars.bind(this));
+	this._inputs.additionBars.on('change', this._changeBars.bind(this));
 
 	this._inputs.startTime.hour.on('input', this._changeTime.bind(this, 0, 'hour'));
 	this._inputs.startTime.minute.on('input', this._changeTime.bind(this, 0, 'minute'));
@@ -276,8 +276,9 @@ ConfigEditor.prototype._clickAddBars = function(e) {
 }
 
 ConfigEditor.prototype._changeBars = function(e) {
-	let val = $(e.target).val();
-	this._config.additionDate.value = +val;
+	let val = +$(e.target).val();
+	if(val <1) val = 1;
+	this._config.additionDate.value = val;
 	this.updateBars();
 	this.onEdit();
 }
