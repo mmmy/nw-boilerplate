@@ -71,7 +71,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 	symbol = symbol || _lastSearch.symbol;
 	dateRange = dateRange || _lastSearch.dateRange;
 	bars = bars || _lastSearch.bars;
-	dataCategory = dataCategory || getDataCategory();
+	dataCategory = dataCategory || $.keyStone.resolutionToDataCategory({type:type, resolution:interval}) || getDataCategory();
 	kline = kline || _lastSearch.kline;
 	// setComparatorVisibleRange({from: +new Date(dateRange[0])/1000, to: +new Date(lastDate)/1000}, '0');
 	//缓存上一次的

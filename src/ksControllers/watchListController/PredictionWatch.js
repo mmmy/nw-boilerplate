@@ -6,7 +6,7 @@ import statisticKline from '../../components/utils/statisticKline';
 import getPrice from '../../backend/getPrice';
 import config_marketing_time from '../../backend/config_marketing_time';
 
-let { getLatestPrice } = getPrice;
+let { getLatestPrice, getPriceFromSina } = getPrice;
 
 var SearchPattern = searchForWatchList.SearchPattern;
 
@@ -362,6 +362,10 @@ PredictionWatch.prototype._fetchPredictionData = function() {
 	this._state.lastCode = this._state.code;
 	this._state.code = SEARCHING;
 	this._renderStuffs();
+	//清空数据, 绘图
+	this.__searchResults.patterns = [];
+	this.__searchResults.closePrices = [];
+	this._renderCharts();
 	var periodLengthSeconds = window.Kfeeds.DataPulseUpdater.prototype.periodLengthSeconds; //参考kfeed.js
 	var resolution = this._resolution, 		//股票,指数:'D' || '1', 期货:'D' || '5'
 			rangeStartDate = 0,//new Date('2016/10/1') / 1000,
@@ -394,7 +398,7 @@ PredictionWatch.prototype._fetchPredictionData = function() {
 	//调用这个 之前一定要注意的是kfeed的symbolist 需要 解析完成, 否则会出现bug
 	this._dataFeed.getBars(this._symbolInfo, resolution, rangeStartDate, rangeEndDate, cb, errorCb ,{arrayType:true});
 }
-/* 获取前一天的收盘价
+/* 获取前一天的收盘价, 从拱石服务器
 ---------------------------------- */
 PredictionWatch.prototype._fetchLastDayPrice = function() {
 	var that = this;
@@ -410,25 +414,39 @@ PredictionWatch.prototype._fetchLastDayPrice = function() {
 }
 PredictionWatch.prototype._fetchLatestPrice = function() {
 	var that = this;
-	getLatestPrice(this._symbolInfo, this._resolution, 
-									function(priceArr){
-										that.__latestPrice2 = priceArr;
-										that._updateLatestPriceUI();
-									}, function(err){
-										console.error(err);
-									});
+	var cb = function(priceArr){                  //{datetime:,close:,open:,high:,low:,volume:,amount:}
+							that.__latestPrice2 = priceArr;
+							that._updateLatestPriceUI();
+						};
+	var errorCb = function(err) {
+		console.error(err);
+	};
+	//期货从拱石服务器取
+	if(this._symbolInfo.type == 'futures') {
+		getLatestPrice(this._symbolInfo, this._resolution, cb, errorCb);
+	} else {
+		getPriceFromSina(this._symbolInfo, this._resolution, cb, errorCb);
+	}
 }
 //更新实时价格
 PredictionWatch.prototype._updateLatestPriceUI = function() {
-	if(this.__latestPrice2 && this.__latestPrice2.length>1) {
-		var	close1 = this.__latestPrice2[1].close;
-		var price = close1;
+	if(this.__latestPrice2 && this.__latestPrice2.length>0) {
+		var nowPriceObj = this.__latestPrice2[this.__latestPrice2.length - 1];
+		var	close1 = nowPriceObj.close;
+		var price = close1,
+				lastClose = nowPriceObj.lastClose; //如果从新浪取数据, 那么就有lastClose
 		this._pricesDoms[0].updatePercentInfo(price/100).removeClass('red green');
 		this._pricesDoms[1].removeClass('red green');
-		if(this.__latestDayPrice2 && this.__latestDayPrice2.length>0) {
+
+		//第二种方案
+		if(!lastClose && this.__latestDayPrice2 && this.__latestDayPrice2.length>0) {
 			var priceObj = this.__latestDayPrice2[1];
+			lastClose = priceObj.close;
 			// var time = new Date(priceObj)
-			var upRate = (price - priceObj.close) / priceObj.close;
+		}
+
+		if(lastClose) {
+			var upRate = (price - lastClose) / lastClose;
 			let colorClass = '';
 			if(upRate > 0) 
 				colorClass = 'red';

@@ -15,19 +15,6 @@ let initJqueryPlugins = () => {
 	require('./bootstrap-datepicker.min');
 	require('./bootstrap-datepicker.zh-CN.min');
 
-	//ksDefaultConfig
-	var theme = $(document.body).attr('theme');
-	$.extend({
-		keyStone: {
-			configDefault:{
-				brownRedDark: '#750905',
-				brownRed: theme == 'dark' ? 'rgb(170,65,66)' : '#8D151B',
-				brownRedLight: '#AC1822'
-			},
-			theme: theme,              //or dark
-		}
-	});
-
 	require('./extendJquery')($);
 	//load tradingview libs
 	

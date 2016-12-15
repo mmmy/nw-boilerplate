@@ -24,7 +24,7 @@ var queryDataTime = function(symbol, dataCategory, endTime, dataCallBack, errorC
 	return request(options, dataCallBack, errorCb, postData);
 }
 
-/*给watchlist 使用 获取实时价格
+/*给watchlist 使用 获取实时价格(天数据或分钟数据), 股票,期货,通用,
 	symbolInfo: {
 		ticker:'',
 		symbol:'000001.SH',
@@ -103,7 +103,35 @@ var getLatestPrice = function(symbolInfo, resolution, dataCallBack, errorCb, opt
 var getLastDayPrice = function() {
 
 }
+/* 从sina获取实时价格
+----------------------------------- */
+var getPriceFromSina = function(symbolInfo, resolution, dataCallBack, errorCb) {
+	// if(!/\./.test(symbolInfo.symbol)) {     //'000001.SH'
+	// 	console.warn(symbolInfo.symbol, 'has no exchange!');
+	// }
+	var symbols = symbolInfo.symbol.split('.');
+	var list0 = symbols[1].toLowerCase() + symbols[0];      //sh000001
+	var url = `http://hq.sinajs.cn/list=${list0}`;
+	var method = "GET";
+	var cb = function(resStr) {
+		var sS = resStr.split(','); //open:1 close:3 high:4 low:5 lastClose:2
+		if(sS.length > 1) {
+			dataCallBack([{
+				open: parseFloat(sS[1]),
+				close: parseFloat(sS[3]),
+				high: parseFloat(sS[4]),
+				low: parseFloat(sS[5]),
+				lastClose: parseFloat(sS[2])
+			}]);
+		} else {
+			dataCallBack([]);
+		}
+	}
+
+	request({url,method}, cb, errorCb);
+}
 
 module.exports = {
 	getLatestPrice,
+	getPriceFromSina
 };
