@@ -24,6 +24,21 @@ var queryDataTime = function(symbol, dataCategory, endTime, dataCallBack, errorC
 	return request(options, dataCallBack, errorCb, postData);
 }
 
+var getLatestTime = function(symbolInfo, resolution, endTime, dataCallBack, errorCb) {
+	var symbol = symbolInfo.symbol;
+	var dataCategory = 'cs_m1';
+	if(symbolInfo.type.toLowerCase() == 'futures') {
+		dataCategory = 'cf_m5';
+	}
+	let cb = function(resStr) {
+		var dataTime = JSON.parse(resStr);
+		// console.log(dataTime);
+		var latestTime = new Date(dataTime.batchTimeResult[0].end);
+		dataCallBack({latestTime});
+	}
+	queryDataTime(symbol, dataCategory, endTime, cb, errorCb);
+}
+
 /*给watchlist 使用 获取实时价格(天数据或分钟数据), 股票,期货,通用,
 	symbolInfo: {
 		ticker:'',
@@ -132,6 +147,7 @@ var getPriceFromSina = function(symbolInfo, resolution, dataCallBack, errorCb) {
 }
 
 module.exports = {
+	getLatestTime,
 	getLatestPrice,
 	getPriceFromSina
 };

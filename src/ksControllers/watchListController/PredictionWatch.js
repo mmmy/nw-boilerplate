@@ -6,7 +6,7 @@ import statisticKline from '../../components/utils/statisticKline';
 import getPrice from '../../backend/getPrice';
 import config_marketing_time from '../../backend/config_marketing_time';
 
-let { getLatestPrice, getPriceFromSina } = getPrice;
+let { getLatestTime, getLatestPrice, getPriceFromSina } = getPrice;
 
 var SearchPattern = searchForWatchList.SearchPattern;
 
@@ -370,7 +370,8 @@ PredictionWatch.prototype._fetchPredictionData = function() {
 	var resolution = this._resolution, 		//股票,指数:'D' || '1', 期货:'D' || '5'
 			rangeStartDate = 0,//new Date('2016/10/1') / 1000,
 			rangeEndDate = 0,//new Date() / 1000;
-			nowSeconds = Math.ceil(new Date() / 1000);
+			now = new Date(),
+			nowSeconds = Math.ceil(now / 1000);
 
 	//开始时间为当前时间往前两倍baseBar的时间, 往后两个bar的时间
 	//天数据应该没有问题, 但是分钟级别的会有问题
@@ -395,8 +396,19 @@ PredictionWatch.prototype._fetchPredictionData = function() {
 		that._renderStuffs();
 		that._research();
 	};
-	//调用这个 之前一定要注意的是kfeed的symbolist 需要 解析完成, 否则会出现bug
-	this._dataFeed.getBars(this._symbolInfo, resolution, rangeStartDate, rangeEndDate, cb, errorCb ,{arrayType:true});
+	//如果是天数据, 直接获取K线数据
+	if(this._symbolInfo.type == 'D') {
+		//调用这个 之前一定要注意的是kfeed的symbolist 需要 解析完成, 否则会出现bug
+		this._dataFeed.getBars(this._symbolInfo, resolution, rangeStartDate, rangeEndDate, cb, errorCb ,{arrayType:true});
+	} else {
+		//先获取最近的时间
+		getLatestTime(this._symbolInfo, this._resolution, now, function({latestTime}){
+			var latestSeconds = Math.ceil(latestTime / 1000);
+			var rangeStartDate1 = latestSeconds - periodLengthSeconds(resolution, that._baseBars * 2);
+			var rangeEndDate1 = latestSeconds + periodLengthSeconds(resolution, 2);
+			that._dataFeed.getBars(that._symbolInfo, resolution, rangeStartDate1, rangeEndDate1, cb, errorCb, {arrayType:true});
+		}, errorCb);
+	}
 }
 /* 获取前一天的收盘价, 从拱石服务器
 ---------------------------------- */
