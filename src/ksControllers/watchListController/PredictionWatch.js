@@ -124,7 +124,7 @@ PredictionWatch.prototype._init = function() {
 	//热点图
 	this._blockHeatMap = new BlockHeatMap(this._$root.find('.heatmap-chart')[0], {textColor:'#999'});
 
-	this._dataFeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10 * 1000, 2, 0);
+	this._dataFeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10000 * 1000, 2, 0);
 	
 	this._fetchLastDayPrice(); //获取前一天的收盘价, 用来计算涨跌
 	setTimeout(function(){
