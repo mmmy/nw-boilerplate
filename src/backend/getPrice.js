@@ -124,19 +124,36 @@ var getPriceFromSina = function(symbolInfo, resolution, dataCallBack, errorCb) {
 	// if(!/\./.test(symbolInfo.symbol)) {     //'000001.SH'
 	// 	console.warn(symbolInfo.symbol, 'has no exchange!');
 	// }
-	var symbols = symbolInfo.symbol.split('.');
-	var list0 = symbols[1].toLowerCase() + symbols[0];      //sh000001
+	var isF = symbolInfo.type == 'futures';
+	var isFF = false; //金融期货
+	var list0 = '';//sina接口的格式
+	if(isF) {
+		if(!symbolInfo.instrument) {
+			console.warn('合约呢!?',symbolInfo);
+		}
+		var instrument = symbolInfo.instrument || '';
+		//判断是否为金融期货, 需要加CFF_
+		console.log(symbolInfo);
+		isFF = ['ic','if','ih','t','tf'].indexOf(symbolInfo.symbol.toLowerCase()) > -1;
+		list0 = (isFF ? 'CFF_' : '') + instrument.toUpperCase();
+	} else {
+		var symbols = symbolInfo.symbol.split('.');
+		list0 = symbols[1].toLowerCase() + symbols[0];      //sh000001
+	}
 	var url = `http://hq.sinajs.cn/list=${list0}`;
 	var method = "GET";
 	var cb = function(resStr) {
-		var sS = resStr.split(','); //open:1 close:3 high:4 low:5 lastClose:2
+		//股票:open:1 close:3 high:4 low:5 lastClose:2
+		//期货:open:2 close:8 high:3 low:4 lastClose:10(昨日结算价) volume:13
+		//金融期货:open:0 close:3 high:1 low:2 lastClose:14
+		var sS = resStr.split(',');
 		if(sS.length > 1) {
 			dataCallBack([{
-				open: parseFloat(sS[1]),
-				close: parseFloat(sS[3]),
-				high: parseFloat(sS[4]),
-				low: parseFloat(sS[5]),
-				lastClose: parseFloat(sS[2])
+				open: parseFloat(sS[isF ? (isFF ? 0:2):1]),
+				close: parseFloat(sS[isF ? (isFF ? 3:8):3]),
+				high: parseFloat(sS[isF ? (isFF ? 1:3):4]),
+				low: parseFloat(sS[isF ? (isFF ? 2:4):5]),
+				lastClose: parseFloat(sS[isF ? (isFF ? 14:10):2])
 			}]);
 		} else {
 			dataCallBack([]);

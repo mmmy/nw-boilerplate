@@ -83,7 +83,7 @@ WatchList.prototype._initAddPanel = function() {
 		}
 ------------------------------------------------ */
 WatchList.prototype._append = function(symbolObj) {
-	var symbolInfo = {ticker:symbolObj.symbol, symbol:symbolObj.description, exchange:symbolObj.exchange, type:symbolObj.type};
+	var symbolInfo = {ticker:symbolObj.symbol, symbol:symbolObj.description, exchange:symbolObj.exchange, type:symbolObj.type, instrument:symbolObj.instrument};
 	var prediction = new PredictionWatch({dom: this._$container, baseBars:this._baseBars, resolution:this._resolution, symbolInfo: symbolInfo, searchConfig: this._searchConfig});
 	this._list.push({symbolInfo,prediction});
 	this._saveToFile();

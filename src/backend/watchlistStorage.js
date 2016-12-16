@@ -31,6 +31,7 @@ let _createFolderes = (category) => {
 																		ticker: '上证综合指数',
 																		type: 'index',
 																		exchange: '',
+																		instrument: '',  //记录期货的主力合约
 																	}
 																},{
 																	symbolInfo:{
@@ -38,6 +39,7 @@ let _createFolderes = (category) => {
 																		ticker: '深证综合指数',
 																		type: 'index',
 																		exchange: '',
+																		instrument: '',
 																	}
 																}
 													],

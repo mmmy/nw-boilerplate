@@ -434,11 +434,11 @@ PredictionWatch.prototype._fetchLatestPrice = function() {
 		console.error(err);
 	};
 	//期货从拱石服务器取
-	if(this._symbolInfo.type == 'futures') {
-		getLatestPrice(this._symbolInfo, this._resolution, cb, errorCb);
-	} else {
+	// if(this._symbolInfo.type == 'futures') {
+	// 	getLatestPrice(this._symbolInfo, this._resolution, cb, errorCb);
+	// } else {
 		getPriceFromSina(this._symbolInfo, this._resolution, cb, errorCb);
-	}
+	// }
 }
 //更新实时价格
 PredictionWatch.prototype._updateLatestPriceUI = function() {
