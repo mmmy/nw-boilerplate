@@ -396,6 +396,12 @@ PredictionWatch.prototype._fetchPredictionData = function() {
 		that._renderStuffs();
 		that._research();
 	};
+
+	this._dataFeed.getBars(this._symbolInfo, resolution, rangeStartDate, rangeEndDate, cb, errorCb ,{arrayType:true,number:this._baseBars});
+
+	return;
+	/*备用方案
+	-------------------------------*/
 	//如果是天数据, 直接获取K线数据
 	if(this._symbolInfo.type == 'D') {
 		//调用这个 之前一定要注意的是kfeed的symbolist 需要 解析完成, 否则会出现bug

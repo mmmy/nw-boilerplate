@@ -21,10 +21,10 @@ let startSearch = ()=>{
 	searchResultController.reportSlideDown(true);
 	wavesController.start();
 	wavesController.speedUp();
+	$(document.body).removeClass('watchlist');
 	// updateCanvasVisible(true);
 };
 let searchSuccess = (patterns, searchTimeSpent)=>{
-	$(document.body).removeClass('watchlist');
 	searchResultController.removeErrorPanel();
 	searchResultController.reportSlideDown(false, ()=>{
 		// afterSearchMessage(patterns.rawData.length, searchTimeSpent);

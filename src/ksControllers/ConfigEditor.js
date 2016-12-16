@@ -132,7 +132,8 @@ ConfigEditor.prototype._init = function() {
 
 	this._$wrapper.append($date);
 	//相似度过滤
-	this._$wrapper.append($(`<div class="item-title font-simsun similarity">只显示相似度大于</div>`).prepend(this._inputs.similarityCheck).append(this._inputs.similaritySelect));
+	let similarity80 = similarityThreshold.on && +similarityThreshold.value < 0.8;
+	this._$wrapper.append($(`<div class="item-title font-simsun similarity">只显示相似度大于</div>`).prepend(this._inputs.similarityCheck).append(this._inputs.similaritySelect).append($(`<span class="warning">(搜索结果数量可能比较小或为零)</span>`).toggleClass('hide', similarity80)));
 
 	//标的类型
 	this._$wrapper.append(`<div class='item-title font-simsun hide'>标的类型</div>`);
@@ -221,16 +222,22 @@ ConfigEditor.prototype._selectResolution = function(e) {
 	this._resolution = resolution;
 }
 
-ConfigEditor.prototype._toggleSimilarityOn = function() {
+ConfigEditor.prototype._toggleSimilarityOn = function(e) {
 	var isOn = !this._config.similarityThreshold.on;
 	this._config.similarityThreshold.on = isOn;
 	this._inputs.similaritySelect.attr('disabled', !isOn);
 	this.onEdit();
+	if(isOn) {
+		$(e.target).siblings('.warning').toggleClass('hide', +this._config.similarityThreshold.value < 0.8);
+	} else {
+		$(e.target).siblings('.warning').addClass('hide');
+	}
 }
 
 ConfigEditor.prototype._changeSimilarityValue = function(e) {
 	var value = e.target.value;
 	this._config.similarityThreshold.value = value;
+	$(e.target).siblings('.warning').toggleClass('hide', +value < 0.8);
 	this.onEdit();
 } 
 
