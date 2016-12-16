@@ -344,3 +344,38 @@
 		}
 	}
 }
+
+body.watchlist {
+	.container-stockview {
+		height: calc(~"100% - 80px");
+	}
+	.container-searchreport.static {
+		// transition-property: none;
+		// height: 104px;
+		bottom: -90px;
+		.search-report-wrapper {
+			opacity: 0;
+		}
+	}
+	.searchreport-full {
+		height: calc(~"100% + 90px");
+	}
+	.container-toggle {
+		bottom: 25px;
+		&.up {
+			bottom: calc(~"100% - 43px");
+		}
+	}
+	.container-toggle .btn-container {
+		&.slide-center {
+			top: 0px;
+		}
+	}
+	.waves-container.float {
+		// transition-property: none;
+		// height: 104px;
+		canvas {
+			top: 50px;
+		}
+	}
+}

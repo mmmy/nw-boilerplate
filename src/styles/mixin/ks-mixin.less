@@ -10,6 +10,13 @@
 	// transition-timing-function: cubic-bezier(1, 0.02, 0, 0.95);
 	transition-delay: 0s;
 }
+.transition-size {
+	transition-property: width, height;
+	transition-duration: @transition-duration;
+	transition-timing-function: ease-in-out;
+	// transition-timing-function: cubic-bezier(1, 0.02, 0, 0.95);
+	transition-delay: 0s;
+}
 .transition-top{
 	transition-property: top;
 	transition-timing-function: ease;
@@ -288,9 +295,9 @@
 		width: 30px;
 		height: 30px;
 		&.icon-undo {
-			.icon_position(2,9,2);
+			.icon_position(2,7,1);
 			&:hover {
-				.icon_position(0,9,2);
+				.icon_position(0,7,1);
 			}
 		}
 		&.icon-close {

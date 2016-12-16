@@ -114,7 +114,7 @@ let searchChartHtml = `<div class='container-ks-sr chart'>
 												<span class='earnchart-wrapper'><div class='earnchart'></div></span>
 											</div>`;
 
-let wrappersDomStr = `<div class='transition-all container-searchreport static'>
+let wrappersDomStr = `<div class='transition-size container-searchreport static'>
 												<div class='inner-searchreport gray transition-all'>
 													<div class='search-report-wrapper white ${true ? 'slide-down' : ''} transition-top transition-duration2'>
 														${comparatorInner}

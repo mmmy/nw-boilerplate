@@ -79,7 +79,7 @@ ConfigEditor.prototype._init = function() {
 	this._inputs.endDate = $(`<input />`).val(d1.date).attr('disabled', isLatestDate);
 	this._inputs.typeStock = $(`<span class='stock fa'>股票</span>`).toggleClass('fa-check-square-o selected', spaceDefinition.stock).toggleClass('fa-square-o', !spaceDefinition.stock);
 	this._inputs.typeFuture = $(`<span class='stock fa'>期货</span>`).toggleClass('fa-check-square-o selected', spaceDefinition.future).toggleClass('fa-square-o', !spaceDefinition.future);
-	this._inputs.additionBars = $(`<input min="1" type='number' />`).val(additionDate.value);
+	this._inputs.additionBars = $(`<input min="1" max="100" type='number' />`).val(additionDate.value);
 	this._inputs.reduceBars = $(`<button>-</button>`);
 	this._inputs.addBars = $(`<button>+</button>`);
 
@@ -277,7 +277,11 @@ ConfigEditor.prototype._clickAddBars = function(e) {
 
 ConfigEditor.prototype._changeBars = function(e) {
 	let val = +$(e.target).val();
-	if(val <1) val = 1;
+	var min = (typeof e.target.min != 'undefined' ? +e.target.min : 1);
+	var max = (typeof e.target.max != 'undefined' ? +e.target.max : 100);
+
+	if(val < min) val = min;
+	if(val > max) val = max;
 	this._config.additionDate.value = val;
 	this.updateBars();
 	this.onEdit();

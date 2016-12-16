@@ -140,7 +140,7 @@ class StockView extends React.Component {
 				}
 			};
 		return (
-	    <div ref='container' className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
+	    <div ref='container' className={"transition-all transition-opacity container-stockview " + (stockView ? "" : "stockview-hide")} >
 	    	<div className='container-stockview-inner'>
 	      	<div className='left-toolbar-container'>
 	      		<div><button data-kstooltip="Watchlist" ref='watchlist_btn' className='flat-btn watchlist active' onClick={ this.showWatchlist.bind(this) }>watchlist</button></div>
@@ -202,6 +202,7 @@ class StockView extends React.Component {
 	}
 
 	resetButton() {
+		$(document.body).removeClass('watchlist');
 		$(this.refs.watchlist_btn).removeClass('active');
 		$(this.refs.curve_btn).removeClass('active');
 		$(this.refs.history_btn).removeClass('active');
@@ -224,6 +225,7 @@ class StockView extends React.Component {
 		$(this.refs.stock_view).removeClass('top-z');
 		this.resetButton();
 		$(e.target).addClass('active');
+		$(document.body).addClass('watchlist');
 	}
 
 	showFavorites(e) {

@@ -133,7 +133,6 @@ var getPriceFromSina = function(symbolInfo, resolution, dataCallBack, errorCb) {
 		}
 		var instrument = symbolInfo.instrument || '';
 		//判断是否为金融期货, 需要加CFF_
-		console.log(symbolInfo);
 		isFF = ['ic','if','ih','t','tf'].indexOf(symbolInfo.symbol.toLowerCase()) > -1;
 		list0 = (isFF ? 'CFF_' : '') + instrument.toUpperCase();
 	} else {

@@ -24,6 +24,7 @@ let startSearch = ()=>{
 	// updateCanvasVisible(true);
 };
 let searchSuccess = (patterns, searchTimeSpent)=>{
+	$(document.body).removeClass('watchlist');
 	searchResultController.removeErrorPanel();
 	searchResultController.reportSlideDown(false, ()=>{
 		// afterSearchMessage(patterns.rawData.length, searchTimeSpent);

@@ -9,7 +9,7 @@ let wavesController = {};
 
 wavesController.init = (root) => {
 	_$root = $(root);
-	_$wavesDoms = $(`<div class="waves-container float transition-all transition-duration2"><div class="waves-wrapper"><canvas></canvas></div></div>`);
+	_$wavesDoms = $(`<div class="waves-container float transition-all transition-duration2"><div class="waves-wrapper"><canvas class="transition-all"></canvas></div></div>`);
 	_$root.append(_$wavesDoms);
 };
 
