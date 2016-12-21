@@ -314,6 +314,8 @@ let _triggerToggle = () => { //作为外部接口
 	}
 	let $detailReport = $('.container-searchreport:not(.static)');   //详情页
 	let $comparatorContainer = $('#__comparator_prediction_container');
+	let $tradingview = $('iframe');
+
 	$comparatorContainer.css('opacity', '0');
 	$detailReport.css('opacity', '0');
 
@@ -321,7 +323,7 @@ let _triggerToggle = () => { //作为外部接口
 
 	_$reportContainer.one('transitionend', ()=>{
 		let zIndex = $detailReport.css('z-index');
-		if(zIndex == '0') {
+		if(zIndex == '0') {                           //切换到详情页
 			updateDetailPane();
 			$detailReport.css({'z-index':'2', 'opacity':'1'});
 			$comparatorContainer.css({'z-index':'3', 'opacity':'1'});
@@ -331,6 +333,8 @@ let _triggerToggle = () => { //作为外部接口
 			_$reportWrapper.css('display', 'block');
 			//resize charts
 			_handleResize();
+			//将焦点切换到tradingview
+			$tradingview.focus();
 		}
 	});
 	_$reportContainer.toggleClass('searchreport-full');
@@ -345,6 +349,8 @@ let _initToggle = () => {
 	_$toggle.find('.btn-container').click(function() {
 		/* Act on the event */
 		_triggerToggle();
+	}).on('mouseup',function(e){
+		e.stopPropagation();
 	});
 };
 

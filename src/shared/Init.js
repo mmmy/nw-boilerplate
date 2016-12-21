@@ -84,6 +84,18 @@ let initGolbalKeyEvent = () => {
 			}
 		}
 	});
+	//在K线图页, 将焦点锁定在tradingview
+	var $stockViewCache = null,
+			$searchReportCache = null,
+			$iframe = null;
+	window.addEventListener('mouseup', (e)=>{
+		$stockViewCache = $stockViewCache || $('.content-wrapper.curve');
+		$searchReportCache = $searchReportCache || $('.container-searchreport.static');
+		$iframe = $iframe || $('iframe');
+		if($stockViewCache && $stockViewCache.hasClass('top-z') && $searchReportCache && !$searchReportCache.hasClass('searchreport-full')) {
+			$iframe.focus();
+		}
+	});
 };
 
 module.exports = {
