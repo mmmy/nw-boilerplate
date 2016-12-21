@@ -72,7 +72,7 @@ let _decimal = 2;
 let _klineCharts = [];
 // let _earnChart = null;
 
-let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title"><span class='title-jieguo'>搜索结果</span><span class='title-zhong'>搜索中</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
+let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position"><div class="item title"><span class='title-jieguo'>搜索结果</span><span class='title-zhong'>搜索中</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
 let _$toggle = null;
 
 let patternHtml = `<div class='pattern-inner'>
