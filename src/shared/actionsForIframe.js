@@ -12,8 +12,8 @@ module.exports = function(store) {
 		}
 	};
 
-  const sendSymbolHistory = function(postData, cb) {
-    tradingViewActions.getSymbolHistory(postData, cb);
+  const sendSymbolHistory = function(postData, cb, errorCb) {
+    tradingViewActions.getSymbolHistory(postData, cb, errorCb);
   };
 
   const sendSymbolSearchResult = function(postData, cb) {

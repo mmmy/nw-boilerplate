@@ -126,11 +126,11 @@ PredictionWatch.prototype._init = function() {
 
 	this._dataFeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10000 * 1000, 2, 0);
 	
-	this._fetchLastDayPrice(); //获取前一天的收盘价, 用来计算涨跌
+	// this._fetchLastDayPrice(); //获取前一天的收盘价, 用来计算涨跌
 	setTimeout(function(){
 		that._fetchPredictionData();
 		that._fetchLatestPrice();
-	}, 2000);       //马上进行取数据操作
+	}, 1000);       //马上进行取数据操作
 	//开启定时器更新数据
 	this.watchDateTimeOnce();
 	this._pulseWatchDatetime();
@@ -395,6 +395,7 @@ PredictionWatch.prototype._fetchPredictionData = function() {
 		that._state.code = ERROR;
 		that._renderStuffs();
 		that._research();
+		that._renderCharts();
 	};
 
 	this._dataFeed.getBars(this._symbolInfo, resolution, rangeStartDate, rangeEndDate, cb, errorCb ,{arrayType:true,number:this._baseBars});

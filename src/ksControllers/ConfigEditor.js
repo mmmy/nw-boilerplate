@@ -132,7 +132,7 @@ ConfigEditor.prototype._init = function() {
 
 	this._$wrapper.append($date);
 	//相似度过滤
-	let similarity80 = similarityThreshold.on && +similarityThreshold.value < 0.8;
+	let similarity80 = !similarityThreshold.on || similarityThreshold.on && (+similarityThreshold.value < 0.8);
 	this._$wrapper.append($(`<div class="item-title font-simsun similarity">只显示相似度大于</div>`).prepend(this._inputs.similarityCheck).append(this._inputs.similaritySelect).append($(`<span class="warning">(搜索结果数量可能比较小或为零)</span>`).toggleClass('hide', similarity80)));
 
 	//标的类型

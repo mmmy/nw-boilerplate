@@ -22,6 +22,8 @@ function WatchList(config) {
 	config = config || {};
 	this._category = config.category || 'default'; //分类
 	this._dataFeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10000 * 1000, 2, 0);
+	//先获取更新symbolList 列表, 消除symbollist没有被tradingview加载的时候, 获取k线数据错误
+	this._dataFeed.searchSymbolsByName('','','',function(list){ /*console.log(list)*/ }); // 消除bug
 
 	var storage = window.actionsForIframe.mockStorage ? window.actionsForIframe.mockStorage() : require('../../backend/watchlistStorage').getDataFromStorage(this._category);
 	this._searchConfig = storage.searchConfig || defaultSearchConfig;
