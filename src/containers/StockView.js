@@ -143,10 +143,10 @@ class StockView extends React.Component {
 	    <div ref='container' className={"transition-all transition-opacity container-stockview " + (stockView ? "" : "stockview-hide")} >
 	    	<div className='container-stockview-inner'>
 	      	<div className='left-toolbar-container'>
-	      		<div><button data-kstooltip="Watchlist" ref='watchlist_btn' className='flat-btn watchlist active' onClick={ this.showWatchlist.bind(this) }>watchlist</button></div>
-	      		<div><button data-kstooltip="K线图" ref='curve_btn' className='flat-btn curve' onClick={ this.showSockView.bind(this) }>quxian</button></div>
-	      		<div><button data-kstooltip="收藏夹" ref='favorites_btn' className='flat-btn favorites' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
-	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onClick={ this.showHistory.bind(this) }>history</button></div>
+	      		<div><button data-kstooltip="智能监控" ref='watchlist_btn' className='flat-btn watchlist active' onMouseDown={ this.showWatchlist.bind(this) }>watchlist</button></div>
+	      		<div><button data-kstooltip="K线图" ref='curve_btn' className='flat-btn curve' onMouseDown={ this.showSockView.bind(this) }>quxian</button></div>
+	      		<div><button data-kstooltip="收藏夹" ref='favorites_btn' className='flat-btn favorites' onMouseDown={ this.showFavorites.bind(this) }>favorites</button></div>
+	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onMouseDown={ this.showHistory.bind(this) }>history</button></div>
 	      	</div>
 
 	      	<div ref="watchlist_view" className='content-wrapper watchlist top-z'>
