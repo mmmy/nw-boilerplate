@@ -73,10 +73,12 @@ BlockHeatMap.prototype._createBlocks = function() {
 	let blocks = [];
 	let labels = [];
 
-	for(let i=0; i<blocksNumber; i++) {
-		blocks.push(0);
-		let label = this._labelFormatter(yMin + (i)*blockValueInterval, yMin, yMax, this._labelDecimal);
-		labels.push(label);
+	if(isFinite(range)) {
+		for(let i=0; i<blocksNumber; i++) {
+			blocks.push(0);
+			let label = this._labelFormatter(yMin + (i)*blockValueInterval, yMin, yMax, this._labelDecimal);
+			labels.push(label);
+		}		
 	}
 
 	let dataLen = data.length;

@@ -53,6 +53,17 @@ watchListController._initActions = () => {
 			watchListController._udpateConfigUI();
 		});
 	});
+	//尝试解决双重scroll的bug
+	_$bodyDom.on('mousewheel',function(e){
+		// console.log(e,'mousewheel');
+		// var $target = $(e.target);
+		// var $parent = $target.parent();
+		// if($(e.currentTarget).hasClass('watchlist-body-wrapper')) {
+		// 	if($target.hasClass('symbol-item') || $target.hasClass('symbol-list-container') || $parent.hasClass('symbol-item') || $parent.hasClass('symbol-list-container')) {
+		// 		e.preventDefault();
+		// 	}
+		// }
+	});
 	// setTimeout(function(){
 	// 	var ConfigEditor = require('../ConfigEditor');
 	// 	var searchConfig = _watchList.getSearchConfig();
