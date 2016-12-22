@@ -24,6 +24,7 @@ let _createFolderes = (category) => {
 		}
 		if (!fs.existsSync(filePath)) {
 			firstTime = true;
+			/*
 			var now = new Date();
 			var defaultData = {
 													list:[
@@ -48,17 +49,18 @@ let _createFolderes = (category) => {
 													resolution: 'D',
 													baseBars: 30,
 													searchConfig: {
-															additionDate: {type:'days', value:30},
+															additionDate: {type:'days', value:7},
 															searchSpace: '000010',
 															dateRange: [{date:'1990/01/01', hour:'0', minute:'0', second:'0'}, {date:`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`, hour:'23', minute:'59', second:'59'}],
 															isLatestDate: true,
-															similarityThreshold: {value: 0.6, on:true},
+															similarityThreshold: {value: 0.6, on:false},
 															spaceDefinition: { stock: true, future: false },
 															matchType: '形态',
 															searchLenMax: 200
 													}
 												};
 			utils.saveFile(filePath, JSON.stringify(defaultData));
+			*/
 		}
 	} catch(e) { console.error(e); }
 	return firstTime;
@@ -66,8 +68,12 @@ let _createFolderes = (category) => {
 
 let getDataFromStorage = (category='default') => {
 	var firstTime = _createFolderes(category);
-	var dataStr = utils.readFileSync(_generateFileName(category));
-	return JSON.parse(dataStr);
+	if(firstTime) {
+		return null;
+	} else {
+		var dataStr = utils.readFileSync(_generateFileName(category));
+		return JSON.parse(dataStr);
+	}
 }
 
 let saveToFile = (dataObj, category='default') => {

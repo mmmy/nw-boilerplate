@@ -8,6 +8,15 @@ let showSuccessMessage = (message) => {
 	}, 2000);
 };
 
+let showWarningMessage = (message) => {
+	let $body = $(window.document.body);
+	let $messageDom = $(`<div class='ks-messager-container'><span class='success-message'><img src="./image/warn.png">${message}</span></div>`);
+	$body.append($messageDom);
+	setTimeout(() => { 
+		$messageDom.remove();
+	}, 2000);
+};
+
 let afterSearchMessage = (number, timeSpent) => {
 	const time = (timeSpent/1000).toFixed(3);
 	let msgNode = $(`<div class="search-message-container slide-up-down">拱石为你找到匹配图形<span class="number">${number}</span>个，用时<span>${time}</span>秒</div>`);
@@ -23,5 +32,6 @@ let afterSearchMessage = (number, timeSpent) => {
 
 module.exports = {
 	showSuccessMessage,
+	showWarningMessage,
 	afterSearchMessage,
 };

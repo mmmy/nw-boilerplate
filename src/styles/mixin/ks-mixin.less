@@ -287,6 +287,21 @@
 		width: 20px;
 		height: 20px;
 	}
+	&.icon-btn-15 {
+		background-image: url(@icons_url);
+		width: 15px;
+		height: 15px;
+		[theme="dark"] & {
+			background-image: url(@icons_dark_url);
+		}
+		&.icon-close {
+			.icon_position(2,7,0,7px,7px);
+			&:hover {
+				.icon_position(0,7,0,7px,7px);
+			}
+		}
+	}
+
 	&.icon-btn-30 {
 		background-image: url(@icons_url);
 		[theme="dark"] & {
@@ -311,6 +326,23 @@
 			&:hover {
 				.icon_position(0,1,1);
 			}	
+		}
+	}
+}
+
+.warn {
+	color: @brown-red;
+}
+
+a.flat-btn {
+	cursor: pointer;
+	&:hover {
+		text-decoration: none;
+	}
+	&.primary {
+		color: @brown-red;
+		&:hover {
+			color: @brown-red-light;
 		}
 	}
 }

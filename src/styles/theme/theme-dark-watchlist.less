@@ -86,4 +86,31 @@ body[theme='dark'] {
 		}
 	}
 
+	.watchlist-guide-container {
+		button.flat-btn.border-btn {
+	  	background-color: #3a3a3a;
+	  	&:hover {
+	  		background-color: #4c4c4c;
+	  	}
+	  	&[disabled] {
+	  		&:hover {
+	  			background-color: #3a3a3a;
+	  		}
+	  	}
+	  	&.btn-red {
+	  		border-color: transparent;
+				background-color: @brown-red;
+				&:hover {
+					background-color: @brown-red-light;
+				}
+				&[disabled] {
+					opacity: 0.5;
+					&:hover {
+						background-color: @brown-red;
+					}
+				}
+			}
+	  }
+	}
+
 }

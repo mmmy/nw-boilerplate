@@ -177,15 +177,17 @@
 			}
 		}
 	}
-	.inputs-group-wrapper {
-		position: relative;
-		display: inline-block;
-	}
+}
+
+.inputs-group-wrapper {
+	position: relative;
+	display: inline-block;
 }
 
 .symbol-list-container {
 	position: absolute;
 	z-index: 2;
+	max-width: 266px;
 	// width: 300px;
 	max-height: 118px;
 	width: 100%;
@@ -378,4 +380,116 @@ body.watchlist {
 			top: -45px;
 		}
 	}
+}
+
+//guide
+.watchlist-guide-container {
+	position: relative;
+  width: 680px;
+  height: 500px;
+  z-index: 10001;
+  border-radius: 5px;
+  background: #282828 url('./image/yindao.png') no-repeat;
+  background-position: right bottom;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+
+  .inner-wrapper {
+  	margin: 60px 0 45px 67px;
+  	// overflow: hidden;
+  	// position: relative;
+  }
+  .header {
+  	height: 19px;
+  	margin-bottom: 17px;
+  	img {
+  		margin-top: -10px;
+  	}
+	  .h4 {
+	  	margin: 0;
+	  	vertical-align: super;
+	  	display: inline-block;
+	  }
+  	
+  }
+  .body {
+  	> p {
+  		color: #999;
+  		b {
+  			color: #eee;
+  		}
+  	}
+  }
+  .footer {
+  	position: absolute;
+  	left: 67px;
+  	bottom: 45px;
+  	font-size: 12px;
+  	p {
+  		color: #999;
+  		margin-top: 10px;
+  		margin-bottom: 0;
+  	}
+  	> button.flat-btn {
+  		width: 180px;
+  		margin-right: 30px;
+  	}
+  }
+  .add-input-wrapper {
+  	text-align: left;
+  	margin-bottom: 10px;
+  	.inputs-group {
+  		background-color: #1f1f1f;
+  	}
+  }
+  .symbol-list-container {
+  	max-height: 170px;
+  }
+  .add-input-wrapper .inputs-group input {
+  	width: 214px;
+  }
+  .add-symbol-list {
+  	max-width: 500px;
+  	font-size: 12px;
+  	overflow: auto;
+  	max-height: 160px;
+  	color: #999;
+  	.scrollbar();
+  	.scrollbar-thumb();
+  	.scrollbar-track();
+  	.symbol-item {
+  		background-color: #3A3A3A;
+			padding: 10px 15px;
+			display: inline-block;
+			position: relative;
+			margin-right: 10px;
+			margin-bottom: 10px;
+  		span {
+  		}
+			span:nth-child(1) {
+				margin-right: 10px;
+			}
+			span:nth-child(2) {
+				
+			}
+			.icon-close {
+				position: absolute;
+				top:0;
+				right: 0;
+				display: none;
+			}
+			&:hover {
+				.icon-close {
+					display: block;
+				}
+			}
+  	}
+  }
+
+  .modal-content-contianer {
+  	margin-top: 50px;
+  	padding: 0;
+  	> .title {
+  		display: none;
+  	}
+  }
 }

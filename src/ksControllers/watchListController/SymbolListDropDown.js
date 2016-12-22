@@ -32,6 +32,7 @@ SymbolListDropDown.prototype._initActions = function() {
 		if(symbolObj) {
 			that._submit(symbolObj);
 		}
+		that._$input.select();
 	});
 }
 //添加

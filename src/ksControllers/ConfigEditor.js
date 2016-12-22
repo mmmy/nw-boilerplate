@@ -16,8 +16,9 @@ let adjustConfig = (searchConfig) => {
 		searchConfig.similarityThreshold = {on: false, value: 0.6};
 	}
 };
-
-function ConfigEditor(dom, searchConfig, info, watchlist) {
+/* watchlist 或者 additionConfig 提供resolution 和 baseBars
+ ----------------------------------*/
+function ConfigEditor(dom, searchConfig, info, watchlist, additionConfig) {
 	adjustConfig(searchConfig);
 	this._$dom = dom ? $(dom) : $(document.body);
 	this._$overLay = dom ? null : $(`<div class="modal-overlay flex-center"><div class="config-modal-container">
@@ -33,13 +34,16 @@ function ConfigEditor(dom, searchConfig, info, watchlist) {
 	}
 	this._config = searchConfig;
 	this._watchlist = watchlist;
-	this._resolution = 'D';
+	this._resolution = null;//'D';
 	this._baseBars = 1;
 	if(watchlist) {
 		this._resolution = watchlist.getResolution();
 		this._baseBars = watchlist.getBasebars();
 	}
-
+	if(additionConfig) {
+		this._resolution = additionConfig.resolution;
+		this._baseBars = additionConfig.baseBars;
+	}
 	if(info) {
 		this._$info = $(`<div class='search-info-container'></div>`);
 		this._$dom.append(this._$info);
@@ -103,7 +107,7 @@ ConfigEditor.prototype._init = function() {
 
 	this._$wrapper.append(`<div class='title'>搜索配置</div>`);
 	
-	if(this._watchlist) {
+	if(this._resolution) {
 		let dom1 = $('<span>根据最近</span>').append(this._inputs.baseBars).append('根');
 		let dom2 = $('<span></span>').append(this._inputs.resolution).append('K线');
 		let dom3 = $('<span>统计后向</span>').append(this._inputs.additionBars).append('根');
@@ -316,6 +320,14 @@ ConfigEditor.prototype._handleSave = function() {
 		baseBars: this._baseBars
 	});
 	this.dispose();
+}
+
+ConfigEditor.prototype.getConfig = function() {
+	return {
+		searchConfig: this._config,
+		resolution: this._resolution,
+		baseBars: this._baseBars
+	};
 }
 
 ConfigEditor.prototype._reset = function() {

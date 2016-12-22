@@ -24,10 +24,23 @@ class StockView extends React.Component {
 
 
 	componentDidMount() {
+		
 		var watchlistController = require('../ksControllers/watchlistController');
 		historyController.init(this.refs.history_nav_container, this.refs.history_body_container);
 		favoritesController.init(this.refs.favorites_nav_container, this.refs.favorites_body_container);
-		watchlistController.init(this.refs.watchlist_view);
+		
+		var watchlistStorage = require('../backend/watchlistStorage');
+		var storage = watchlistStorage.getDataFromStorage(this._category);
+		var that = this;
+		if(storage) {
+			watchlistController.init(this.refs.watchlist_view);
+		} else {
+			var watchlistGuide = require('../ksControllers/watchlistController/watchlistGuide');
+			watchlistGuide.start(function(configObj){
+				watchlistStorage.saveToFile(configObj);
+				watchlistController.init(that.refs.watchlist_view);
+			});
+		}
 	}
 
 	componentWillReceiveProps(){

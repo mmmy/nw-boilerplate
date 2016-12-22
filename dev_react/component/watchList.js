@@ -1,5 +1,6 @@
 import React from 'react';
 import watchListController from '../../src/ksControllers/watchListController';
+import watchlistGuide from '../../src/ksControllers/watchListController/watchlistGuide';
 import request from '../../src/backend/request';
 import config from '../../src/backend/config';
 
@@ -114,7 +115,8 @@ export default React.createClass({
 		return {};
 	},
 	componentDidMount() {
-		watchListController.init(this.refs.container);
+		watchlistGuide.start();
+		// watchListController.init(this.refs.container);
 	},
 	render(){
 		return (<div ref="container" className="statistics-wrapper" style={{position:'relative',backgroundColor:'#222528',top:'20px',height:'500px',border:'1px solid rgba(0,0,0,0.2)'}}>
