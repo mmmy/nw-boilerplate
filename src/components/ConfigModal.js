@@ -135,7 +135,7 @@ class SearchConfigModal extends React.Component {
 	render(){
 		return <div className='modal-overlay flex-center'>
 
-			<div className='config-modal-container'>
+			<div className='config-modal-container' onMouseUp = {function(e){ e.stopPropagation(); }}>
 				<div className='close-icon' onClick={this.closeModal.bind(this)}><span className='fa fa-close'></span></div>
 				<div className='modal-content-wrapper'>
 					{this.renderContent()}
@@ -149,6 +149,7 @@ class SearchConfigModal extends React.Component {
 	closeModal() {
 		let { dispatch } = this.props;
 		dispatch(layoutActions.closeConfigModal());
+		document.querySelector('iframe').focus();
 	}
 
 	changeDays(event) {

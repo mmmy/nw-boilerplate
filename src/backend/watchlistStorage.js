@@ -13,6 +13,7 @@ let _generateFileName = (category='default') => { //分组
 }
 
 let _createFolderes = (category) => {
+	var firstTime = false;
 	var filePath = _generateFileName(category);
 	try{
 		if (!fs.existsSync(BASEPATH)) {
@@ -22,6 +23,7 @@ let _createFolderes = (category) => {
 			fs.mkdirSync(_watchlistPath);
 		}
 		if (!fs.existsSync(filePath)) {
+			firstTime = true;
 			var now = new Date();
 			var defaultData = {
 													list:[
@@ -59,10 +61,11 @@ let _createFolderes = (category) => {
 			utils.saveFile(filePath, JSON.stringify(defaultData));
 		}
 	} catch(e) { console.error(e); }
+	return firstTime;
 };
 
 let getDataFromStorage = (category='default') => {
-	_createFolderes(category);
+	var firstTime = _createFolderes(category);
 	var dataStr = utils.readFileSync(_generateFileName(category));
 	return JSON.parse(dataStr);
 }

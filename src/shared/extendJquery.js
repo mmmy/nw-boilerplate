@@ -124,11 +124,11 @@ module.exports = function($) {
 	    }
 	    return this;
 		},
-		ksTooltip: function() {
+		ksTooltip: function(handle) {
 			var $this = $(this);
 			$this.on('mouseenter', function(e) {
 				let that = this;
-				let kstooltip = $(that).data().kstooltip;
+				let kstooltip = handle ? handle($this) : $(that).data().kstooltip;
 				let top = e.pageY - 12,
 						left = e.pageX + 12;
 				let $tooltip = $(`<div class="ks-tooltip-container fade"><span class="tooltip-describe">${kstooltip}</span></div>`).css({left, top});
