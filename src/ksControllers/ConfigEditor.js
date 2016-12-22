@@ -205,6 +205,9 @@ ConfigEditor.prototype._initActions = function() {
 	}
 	this._$wrapper.find('.save-btn').click(this._handleSave.bind(this));
 	this._$wrapper.find('.reset-btn').click(this._reset.bind(this));
+	this._$wrapper.on('mouseup',function(e){
+		e.stopPropagation();
+	});
 }
 
 ConfigEditor.prototype._changeBasebars = function(e) {

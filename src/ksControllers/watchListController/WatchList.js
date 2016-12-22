@@ -64,6 +64,16 @@ WatchList.prototype._initResize = function()  {
 	});
 }
 
+WatchList.prototype._hideAddPanel = function() {
+	var $dom = this._$container.find(".watchlist-prediction-wrapper.add");
+	$dom.hide();
+}
+
+WatchList.prototype._showAddPanel = function() {
+	var $dom = this._$container.find(".watchlist-prediction-wrapper.add");
+	$dom.show();
+}
+
 WatchList.prototype._initAddPanel = function() {
 	var $dom = this._$container.find(".watchlist-prediction-wrapper.add");
 	var $input = $dom.find('input');
@@ -85,10 +95,19 @@ WatchList.prototype._initAddPanel = function() {
 		}
 ------------------------------------------------ */
 WatchList.prototype._append = function(symbolObj) {
+	//先查看有没有重复的
+	for(var i=0; i<this._list.length; i++) {
+		if(this._list[i].symbolInfo.ticker == symbolObj.symbol) {
+			return;
+		}
+	}
 	var symbolInfo = {ticker:symbolObj.symbol, symbol:symbolObj.description, exchange:symbolObj.exchange, type:symbolObj.type, instrument:symbolObj.instrument};
 	var prediction = new PredictionWatch({dom: this._$container, baseBars:this._baseBars, resolution:this._resolution, symbolInfo: symbolInfo, searchConfig: this._searchConfig});
 	this._list.push({symbolInfo,prediction});
 	this._saveToFile();
+	if(this._list.length >= 20) {
+		this._hideAddPanel();
+	}
 }
 WatchList.prototype._disposeAll = function() {
 	// for(var i=0,len=this._predictionList.length; i<len; i++) {
@@ -149,6 +168,9 @@ WatchList.prototype.updateList = function(symbolInfoList) {
 	this._sortPredictionList();
 	//保存
 	this._saveToFile();
+	if(this._list.length < 20) {
+		this._showAddPanel();
+	}
 }
 //排序UI
 WatchList.prototype._sortPredictionList = function() {

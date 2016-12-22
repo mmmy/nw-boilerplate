@@ -30,6 +30,9 @@ OCLHTooltip.prototype._init = function() {
 OCLHTooltip.prototype.setPosition = function(left, top, cssPosition) {
 	left += this._offset;
 	top += this._offset;
+	let h = this._$container.height();
+	let maxTop = document.body.clientHeight - h - 50;
+	top = (top > maxTop) ? maxTop : top;
 	let position = cssPosition || 'absolute';
 	this._$container.css({left, top, position});
 }

@@ -359,7 +359,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		//判断文字是否应该绘制 , 当K线顶部到达文字y轴区域则不绘制
 		let shouldDrawText = true;
 		for(let i=index0; i<=index1; i++) {
-			if(klineWhisker[i][0][0][1] < 40*ratio){
+			if(klineWhisker[i][0][0][1] < 30*ratio){
 				shouldDrawText = false;
 				break;
 			}
