@@ -282,6 +282,17 @@
 	outline: none;
 	border: none;
 	background-color: transparent;
+	&.btn-red {
+		color: #fff;
+		background-color: @brown-red;
+		&:hover {
+			background-color: @brown-red-light;
+		}
+		&[disabled] {
+			opacity: 0.5;
+			background-color: @brown-red;
+		}
+	}
 	&.border-btn {
 		border: 1px solid #bbb;
 		line-height: 30px;
@@ -442,7 +453,7 @@ a.flat-btn {
 }
 
 .ks-button-hover() {
-	background-color: @brown-red-dark;
+	background-color: @brown-red-light;
 	color: #fff;
 }
 

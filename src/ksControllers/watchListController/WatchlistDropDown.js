@@ -14,7 +14,7 @@ function WatchlistDropDown(config) {
 WatchlistDropDown.prototype._initDoms = function() {
 	this._$headerWrapper = $(`<div class="header-wrapper"><button role="undo" class="flat-btn icon-btn-30 icon-undo"></button></button><button class="flat-btn icon-btn-30 icon-close pull-right"></button><button class="flat-btn icon-btn-30 icon-trash pull-right"></div>`);
 	this._$bodyWrapper = $(`<div class="body-wrapper"></div>`);
-	this._$footerWrapper = $(`<div class="footer-wrapper"><button class="flat-btn save">保存</button><button class="flat-btn cancel">撤销</button></div>`);
+	this._$footerWrapper = $(`<div class="footer-wrapper"><button class="flat-btn save btn-red">保存</button><button class="flat-btn cancel border-btn">撤销</button></div>`);
 	this._$container = $(`<div class="watch-list-dropdown"><div>`)
 											.append(this._$headerWrapper)
 											.append(this._$bodyWrapper)
