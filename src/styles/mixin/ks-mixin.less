@@ -210,6 +210,11 @@
   font-family: 'msyh';
   src: url('./fonts/msyh.ttf') format('truetype');
 }
+//思源黑体
+@font-face {
+  font-family: 'syht';
+  src: url('./fonts/SourceHanSansCN-Normal.otf') format('opentype');
+}
 @font-face {
   font-family: 'AvantGarde';
   src: url('./fonts/texgyreadventor-regular.otf') format('opentype');
@@ -227,9 +232,9 @@
 
 // Catchall baseclass
 .font-msyh {
-  font-family: 'msyh';
+  font-family: 'syht';
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: antialiased;
+  // -moz-osx-font-smoothing: antialiased;
 }
 
 .font-number {
@@ -239,7 +244,7 @@
 }
 
 .font-simsun {
-  font-family: 'msyh';//'Microsoft Yahei';//'simsun';
+  font-family: 'syht';//'Microsoft Yahei';//'simsun';
   -webkit-font-smoothing: antialiased;//none;
   // -moz-osx-font-smoothing: grayscale;
 }
