@@ -21,7 +21,7 @@ let adjustConfig = (searchConfig) => {
 function ConfigEditor(dom, searchConfig, info, watchlist, additionConfig) {
 	adjustConfig(searchConfig);
 	this._$dom = dom ? $(dom) : $(document.body);
-	this._$overLay = dom ? null : $(`<div class="modal-overlay flex-center"><div class="config-modal-container">
+	this._$overLay = dom ? null : $(`<div class="modal-overlay font-msyh flex-center"><div class="config-modal-container">
 																		<div class="close-icon"><span class="fa fa-close"></span></div>
 																		<div class="modal-content-wrapper"></div>
 																	</div></div>`);
