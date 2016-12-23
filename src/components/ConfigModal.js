@@ -81,6 +81,9 @@ class SearchConfigModal extends React.Component {
 			'selected': futureSelected,
 		});
 
+		let warningClass = classNames('warning', {
+			'hide': !similarityThreshold.on || similarityThreshold.on && similarityThreshold.value < 0.8
+		});
 
 		return <div className='modal-content-contianer'>
 			<div className='title'>搜索配置</div>
@@ -121,6 +124,7 @@ class SearchConfigModal extends React.Component {
 					<option value='0.7'>70%</option>
 					<option value='0.6'>60%</option>
 				</select>
+				<div className={warningClass}>(搜索结果数量可能比较小或为零)</div>
 			</div>
 			<div className='item-title font-simsun hide'>标的类型</div>
 			<div className='item-body-container sid hide'>
@@ -146,10 +150,20 @@ class SearchConfigModal extends React.Component {
 		
 	}
 
-	closeModal() {
+	closeModal(e) {
 		let { dispatch } = this.props;
 		dispatch(layoutActions.closeConfigModal());
-		document.querySelector('iframe').focus();
+		var $$ = document.querySelector('iframe').contentWindow.$;
+		var dom = document.querySelector('iframe').contentWindow.document.querySelector('.header-chart-panel');
+		var $dom = $$(dom);
+		// $dom.mousedown();
+		// $dom.mouseup();
+		var event = new window.MouseEvent('mouseup',{
+			'view': window,
+			'bubbles': true,
+			'cancelable': true
+		});
+		dom.dispatchEvent(event);
 	}
 
 	changeDays(event) {
