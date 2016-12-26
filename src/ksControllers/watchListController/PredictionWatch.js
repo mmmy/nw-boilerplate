@@ -130,7 +130,7 @@ PredictionWatch.prototype._init = function() {
 	setTimeout(function(){
 		that._fetchPredictionData();
 		that._fetchLatestPrice();
-	}, 1000);       //马上进行取数据操作
+	}, 0);       //马上进行取数据操作
 	//开启定时器更新数据
 	this.watchDateTimeOnce();
 	this._pulseWatchDatetime();
@@ -385,12 +385,13 @@ PredictionWatch.prototype._fetchPredictionData = function() {
 	var cb = function(kline) {  //kline: [[open,close,high,low],]
 		setTimeout(function(){
 			//截断数据
+			// console.log('kline',kline);
 			that.__searchMetaData.kline = kline.slice(- that._baseBars) || [];
 			that._search();
 		});
 	};
 	var errorCb = function(e) {
-		console.error('获取K线 错误',e);
+		console.error('获取kline 错误',e);
 		that._state.lastCode = that._state.code;
 		that._state.code = ERROR;
 		that._renderStuffs();

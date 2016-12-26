@@ -19,12 +19,18 @@ var defaultSearchConfig = {
 	dataList:[]
  -----------------------------*/
 function WatchList(config) {
-	config = config || {};
-	this._category = config.category || 'default'; //分类
+	var that = this;
 	this._dataFeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10000 * 1000, 2, 0);
 	//先获取更新symbolList 列表, 消除symbollist没有被tradingview加载的时候, 获取k线数据错误
-	this._dataFeed.searchSymbolsByName('','','',function(list){ /*console.log(list)*/ }); // 消除bug
+	this._dataFeed.searchSymbolsByName('','','',function(list){ 
+		// console.log('获取kline列表',list);
+		that._init(config);
+	}); // 消除bug
+}
 
+WatchList.prototype._init = function(config) {
+	config = config || {};
+	this._category = config.category || 'default'; //分类
 	var storage = window.actionsForIframe.mockStorage ? window.actionsForIframe.mockStorage() : require('../../backend/watchlistStorage').getDataFromStorage(this._category);
 	this._searchConfig = storage.searchConfig || defaultSearchConfig;
 	this._list = storage.list || [];
