@@ -33,6 +33,17 @@ export default function filter(state = initialState, action) {
 				sortType
 			};
 
+		case types.SORT_BY_VSIMILARITY: //相似度
+
+			sortType = sortType === sortTypes.VSIMILARITY ?
+						sortTypes.VSIMILARITY_R :
+						(sortType === sortTypes.VSIMILARITY_R ? '' : sortTypes.VSIMILARITY);
+
+			return {
+				...state,
+				sortType
+			};
+
 		case types.SORT_BY_YIELD: //收益率
 
 			sortType = sortType === sortTypes.YIELD ?

@@ -277,10 +277,14 @@ class PatternCollection extends React.Component {
 
 		sortedData = sortedData.sort((a,b) => { 
 			switch (sortType) {
-				case sortTypes.SIMILARITY:
+				case sortTypes.SIMILARITY://价相似度
 					return  a.similarity - b.similarity;
 				case sortTypes.SIMILARITY_R:
 					return  b.similarity - a.similarity;
+				case sortTypes.VSIMILARITY://量相似度
+					return  a.vsimilarity - b.vsimilarity;
+				case sortTypes.VSIMILARITY_R:
+					return  b.vsimilarity - a.vsimilarity;
 				case sortTypes.DATE:
 					return  getLastDate(a) - getLastDate(b);
 				case sortTypes.DATE_R:

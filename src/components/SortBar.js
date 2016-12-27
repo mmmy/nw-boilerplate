@@ -7,7 +7,8 @@ import * as sortTypes from '../flux/constants/SortTypes';
 import store from '../store';
 
 const SORT_BTN_DATE = { type:'SORT_BTN_DATE', label:'按日期' };
-const SORT_BTN_SIMILARITY = { type:'SORT_BTN_SIMILARITY', label:'按相似度' };
+const SORT_BTN_SIMILARITY = { type:'SORT_BTN_SIMILARITY', label:'按价相似度' };
+const SORT_BTN_VSIMILARITY = { type:'SORT_BTN_VSIMILARITY', label:'按量相似度' };
 const SORT_BTN_YIELD= { type:'SORT_BTN_YIELD', label:'按涨跌' };
 
 const propTypes = {
@@ -43,7 +44,8 @@ class SortBar extends React.Component {
 		this.state = {
 			showChildPanel: false,
 			panelType: -1,  					//0,1,2,3
-			values:{min:0.0, max:100.0},
+			values:{min:0.0, max:100.0}, //价格相似度
+			vValues:{min:0.0, max:100.0}, //量相似度
 			eyeType: 0, 								//0,1,2
 			searchSymbol: '',
 			openSearch: false,
@@ -59,7 +61,7 @@ class SortBar extends React.Component {
 
 	componentWillReceiveProps(newProps){
 		if(newProps.crossFilter !== this.props.crossFilter) {
-			this.setState({values: {min:0, max:100}, searchSymbol: ''});
+			this.setState({values: {min:0, max:100}, vValues: {min:0, max:100}, searchSymbol: ''});
 			//设置 保存默认名
 			try{
 				var searchMetaData = store.getState().patterns.searchMetaData;
@@ -101,6 +103,12 @@ class SortBar extends React.Component {
 			case sortTypes.SIMILARITY_R:
 				if(btnType.type === SORT_BTN_SIMILARITY.type) { desc = true; }
 				break;
+			case sortTypes.VSIMILARITY:
+				if(btnType.type === SORT_BTN_VSIMILARITY.type) { asc = true; }
+				break;
+			case sortTypes.VSIMILARITY_R:
+				if(btnType.type === SORT_BTN_VSIMILARITY.type) { desc = true; }
+				break;
 			case sortTypes.YIELD:
 				if(btnType.type === SORT_BTN_YIELD.type) { asc = true; }
 				break;
@@ -136,6 +144,7 @@ class SortBar extends React.Component {
 			case 0:   //sort
 				return <div style={{zIndex: 5}} className='child-panel-container' onClick={handle}>
 					{this.renderSortIcons(SORT_BTN_SIMILARITY)}
+					{this.renderSortIcons(SORT_BTN_VSIMILARITY)}
 					{/*this.renderSortIcons(SORT_BTN_DATE)*/}
 					{this.renderSortIcons(SORT_BTN_YIELD)}
 				</div>;
@@ -143,8 +152,10 @@ class SortBar extends React.Component {
 
 			case 1:  //filter
 				let {min, max} = this.state.values;
+				let vMin = this.state.vValues.min,
+						vMax = this.state.vValues.max;
 				return <div style={{zIndex: 5}} className='child-panel-container' onClick={handle}>
-					<span className='title-left font-simsun' >相似度:</span>
+					<span className='title-left font-simsun' >价相似度:</span>
 					<div className='slider-container'>
 						<RCSlider 
 							className='slider-appearance' 
@@ -155,6 +166,20 @@ class SortBar extends React.Component {
 							value={[min, max]} 
 							onChange={this.rangeChange.bind(this)} 
 							onAfterChange={this.rangeChangeComplete.bind(this)} 
+							tipFormatter={ function(d) {return d+'%';} }
+						/>
+					</div>
+					<span className='title-left font-simsun' >量相似度:</span>
+					<div className='slider-container'>
+						<RCSlider 
+							className='slider-appearance' 
+							min={0.0} 
+							max={100.0}
+							step={0.1} 
+							range 
+							value={[vMin, vMax]} 
+							onChange={this.rangeChange.bind(this, 'volume')} 
+							onAfterChange={this.rangeChangeComplete.bind(this, 'volume')} 
 							tipFormatter={ function(d) {return d+'%';} }
 						/>
 					</div>
@@ -231,6 +256,9 @@ class SortBar extends React.Component {
 			case SORT_BTN_SIMILARITY.type:
 				this.props.dispatch(sortActions.sortBySimilarity());
 				break;
+			case SORT_BTN_VSIMILARITY.type:
+				this.props.dispatch(sortActions.sortByVSimilarity());
+				break;
 			case SORT_BTN_YIELD.type:
 				this.props.dispatch(sortActions.sortByYield());
 				break;
@@ -265,19 +293,27 @@ class SortBar extends React.Component {
 		this.setState({showChildPanel: false, panelType: -1});
 	}
 
-	rangeChange(range){
-		this.setState({values:{min:range[0], max:range[1]}});
+	rangeChange(type, range){
+		if(type === 'volume') {
+			this.setState({vValues:{min:range[0], max:range[1]}});
+		} else {
+			this.setState({values:{min:range[0], max:range[1]}});
+		}
 	}
 
-	rangeChangeComplete(range){
+	rangeChangeComplete(type, range){
 		console.log('rangeChangeComplete');
-		this.handleFilterSimilarity();
+		this.handleFilterSimilarity(type);
 	}
 
-	handleFilterSimilarity() {
-		this.filterSimilarity(this.state.values);
-		this.props.dispatch(filterActions.setFilterSimilarity(this.state.values));	
-	}
+	handleFilterSimilarity(type) {
+		if(type === 'volume') {
+			
+		} else {
+			this.filterSimilarity(this.state.values);
+			this.props.dispatch(filterActions.setFilterSimilarity(this.state.values));	
+		}
+	}	
 	
 	filterSimilarity({min, max}) {
 		this.initDimensions();

@@ -62,7 +62,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 		resObj.results.forEach((pattern, i) => {
 
-			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type=interval} = pattern;
+			const {id, similarity= resObj.similarities && resObj.similarities[i], vsimilarity = Math.random(), begin, end, industry=getIndustry(id), type=interval} = pattern;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];
@@ -73,6 +73,7 @@ let searchPattern = (args, cb, errorCb) => {
 					id: i,
 					symbol: id,
 					similarity: similarity,//_growSimilarity(similarity),
+					vsimilarity: vsimilarity,//交易量相似度
 					begin: begin.time,
 					end: end.time,
 					lastDate,

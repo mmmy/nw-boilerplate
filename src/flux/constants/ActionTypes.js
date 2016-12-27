@@ -27,6 +27,7 @@ export const RESET_ERROR = 'RESET_ERROR';
 //sort
 export const SORT_BY_DATE = 'SORT_BY_DATE';
 export const SORT_BY_SIMILARITY = 'SORT_BY_SIMILARITY';
+export const SORT_BY_VSIMILARITY = 'SORT_BY_VSIMILARITY';
 export const SORT_BY_YIELD = 'SORT_BY_YIELD';
 
  // 预测曲线
