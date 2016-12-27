@@ -199,7 +199,7 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 									(type == 1 ? `<span class='btn-overlay flex-around'><button class='flat-btn re-search' data-kstooltip='再次搜索'>再次搜索</button></span>` 
 															: `<span class='btn-overlay flex-around'><button class='flat-btn recover' data-kstooltip='恢复'>恢复</button></span>`);
 
-	let canvasDiv = `<div class='canvas-wrapper'><canvas class='kline' width='150' height='120' style='width:150px;height:120px'/>${hoverBtns}</div>`;
+	let canvasDiv = `<div class='canvas-wrapper'><canvas class='kline' width='150' height='154' style='width:150px;height:154px'/>${hoverBtns}</div>`;
 	// let range = `<span class='daterange-info font-number'>${startDateStr} ~ ${endDateStr}</span>`;
 	// let footer = `<div class='btn-wrapper'><button class='re-search'>再次搜索</button><button class='go-detail'>查看详情</button></div>`;
 
@@ -220,7 +220,7 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 			$node.find('.re-search').click(_handleReSearch.bind(null,{favoriteFolder}));  //再次搜索
 			$node.find('.go-detail').click(_handleDetail);  //再次搜索
 			$node.find('.recover').click(_handleRecoverPattern);
-			drawKline($node.find('canvas.kline')[0], pattern.kline);
+			drawKline($node.find('canvas.kline')[0], pattern.kline, {volume:true, volumeHeight:1/6});
 
 	//init tooltip
 	$node.find('[data-kstooltip]').ksTooltip();
@@ -269,7 +269,7 @@ let _initDayDom = ($dayDom, dataArr) => {
 	let $canvas = $dayDom.find('canvas.kline');
 	for(let i=0, len=$canvas.length; i<len; i++) {
 		let canvasDom = $canvas[i];
-		drawKline(canvasDom, dataArr[i].kline);
+		drawKline(canvasDom, dataArr[i].kline, {volume:true, volumeHeight:true});
 	}
 };
 
@@ -469,7 +469,7 @@ let _insertHistoryMonth = (date) => {
 let _addNewDayWrapper = (data, isInsert, $wrapper0) => {  //插入历史
 	if(isInsert) {
 		let $newHistoryItem = $(_generatePattern(data, 1));
-		drawKline($newHistoryItem.find('canvas')[0], data.kline);
+		drawKline($newHistoryItem.find('canvas')[0], data.kline, {volume:true, volumeHeight:1/6});
 		$wrapper0.find('.history-items-wrapper').prepend($newHistoryItem);
 	}else {
 		// let $newWrapper = $(_generatePatterns(data, 1, new Date()));
@@ -543,7 +543,7 @@ let _refreshBodyItemUI = (ele) => {
 
 	$ele.find('.name').text(name);
 	$ele.find('.header-info').text(`${klineLen}根K线`);
-	drawKline($ele.find('canvas.kline')[0], data.kline);
+	drawKline($ele.find('canvas.kline')[0], data.kline, {volume:true, volumeHeight:1/6});
 }
 
 let _refreshFavoritesBody = () => {

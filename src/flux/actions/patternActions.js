@@ -61,7 +61,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 			klineClone.push(prices);
 		});
 		kline = klineClone;
-		console.assert(kline[0].length == 5 && (kline instanceof Array));
+		console.assert(kline[0].length == 6 && (kline instanceof Array));
 	}
 	//console.log(kline);
 

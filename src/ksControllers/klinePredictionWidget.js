@@ -20,7 +20,7 @@ let _triggerHover = (barIndex, showTooltip) => {
 	let {x,y} = _klinePrediction.setHoverIndex(barIndex);
 	if(showTooltip) {
 		let OCLH = _klinePrediction.getHoverOCLH();
-		_tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
+		_tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3], OCLH[4]);
 		_tooltip.setPosition(x,y);
 		_tooltip.show();
 	} else {
@@ -38,7 +38,7 @@ let _initTooltip = () => {
 		// console.log('isCursorOverBar',isCursorOverBar);
 		if(isCursorOverBar) {
 			let OCLH = _klinePrediction.getHoverOCLH();
-			_tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
+			_tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3], OCLH[4]);
 			_tooltip.setPosition(x, y, 'fixed');
 			_tooltip.show();
 		}else{

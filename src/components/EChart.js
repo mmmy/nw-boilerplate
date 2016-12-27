@@ -297,7 +297,7 @@ class EChart extends React.Component {
 			console.log(pattern.kLine == kline);
 		}
 		let renderKline = kline.slice(0, baseBars);
-		drawKline(canvas, renderKline, {backgroundColor: renderKline.length>0 ? '#282B2F' : 'rgba(0,0,0,0)'});
+		drawKline(canvas, renderKline, {volume:true, klineGapBottom:10, volumeHeight:0.167, backgroundColor: renderKline.length>0 ? '#282B2F' : 'rgba(0,0,0,0)'});
 	}
 
 	hideCanvas(hide) {

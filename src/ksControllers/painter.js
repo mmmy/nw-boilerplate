@@ -8,16 +8,19 @@ let _toInt = (number) => {
 	return Math.round(number);
 };
 
-let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H) => {
-	let rate = viewYHeight / (yMin - yMax);
+let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H, V, volumeMax, volumeMaxHeight, klineGapBottom) => {
+	volumeMaxHeight = volumeMaxHeight || 0;
+	klineGapBottom = klineGapBottom || 0;
+	let rate = (viewYHeight - klineGapBottom - volumeMaxHeight) / (yMin - yMax);
 	let oY = (O - yMax) * rate + marginTop,
 			cY = (C - yMax) * rate + marginTop,
 			lY = (L - yMax) * rate + marginTop,
 			hY = (H - yMax) * rate + marginTop;
+	let vY = marginTop + viewYHeight - V / volumeMax * volumeMaxHeight;
 	if(oY == cY) { //至少绘制一个像素的高度
 		cY += 1;
 	}
-	return {open:_to05(oY), close:_to05(cY), low:_to05(lY), high:_to05(hY)};
+	return {open:_to05(oY), close:_to05(cY), low:_to05(lY), high:_to05(hY), volume:_to05(vY)};
 };
 /**
 options: {
@@ -38,6 +41,8 @@ options: {
 	symbolDescribeColor:, 
 	overflowPane:上界限渐变, 
 	overfowPaneBottom:
+	volume: false,
+	volumeHeight: 0.2,
 }
 **/
 let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C, L,H]
@@ -55,13 +60,26 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let width = dom.width;
 	let height = dom.height - 1;
 
+	let volume = options && options.volume || false;
+	//绘制volume的高度比例, 那么K线的高度为0.8;
+	let volumeHeight = options && options.volumeHeight || 0.2;
+	//绘制K线底部与volume的间隔, 以防靠的太近
+	let klineGapBottom = options && options.klineGapBottom || 0;
+	//辅助计算值
+	let volumeMaxHeight = 0;
+	if(volume) {
+		volumeMaxHeight = Math.round(height * volumeHeight);
+	}
+
 	let min = Infinity,
 			max = -Infinity;
+	let volumeMax = 0; //记录volume的最高值
 	for(let i=0; i<kline.length; i++) {
 		let low = kline[i][3];
 		let high = kline[i][4];
 		min = min < low ? min : low;
 		max = max > high ? max : high;
+		volumeMax = Math.max(volumeMax, kline[i][5]);
 	}
 
 	let diff = max - min;
@@ -80,6 +98,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 			max += (parseInt(options.yMax)/100 - 1) * diff;
 		}
 	}
+	//预测未来多少天
 	let predictionBars = options && options.predictionBars || 0;
 
 	let len = kline.length,
@@ -115,13 +134,14 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 
 	let klineWhisker = [];
 	let klineBox = [];
-	let isUpCandle = []
+	let isUpCandle = [];
+	let volumeTops = [];
 	for(var i=0; i<len; i++) {
 		let x = left + (i+1) * klineXSpace - klineXSpace/2;
 		x = _to05(x);
 		let prices = kline[i];
 		isUpCandle.push(prices[2] >= prices[1]);
-		let ys = _dataToPointY(top, viewYheight, min, max, prices[1], prices[2], prices[3], prices[4]);
+		let ys = _dataToPointY(top, viewYheight, min, max, prices[1], prices[2], prices[3], prices[4], prices[5], volumeMax, volumeMaxHeight, klineGapBottom);
 
 		// console.assert(ys.open < (height - top));
 		// console.assert(ys.close < (height - top));
@@ -134,6 +154,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		let boxStartPoint = [x - Math.floor(klineW/2), whisker[0][1][1]],
 				boxEndPoint = [x + Math.floor(klineW/2), whisker[1][0][1]];
 		klineBox.push([boxStartPoint, boxEndPoint]);
+		volumeTops.push(ys.volume)
 	}
 
 	//options
@@ -208,6 +229,15 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.moveTo(whisker2[0][0], whisker2[0][1]);
 		ctx.lineTo(whisker2[1][0], whisker2[1][1]);
 		ctx.stroke();
+
+		//draw volume 
+		if(volume) {
+			let vY = volumeTops[i],
+			    vX = whisker1[0][0] - Math.floor(klineW/2);
+			let vHeight = top + viewYheight - vY;
+			ctx.beginPath();
+			ctx.fillRect(vX, vY, klineW, vHeight);
+		}
 	}
 	//overflowPane , after baseBarRange
 	if(overflowPaneBottom) {
