@@ -124,6 +124,8 @@ class Login extends React.Component {
 		let innerBtn = isLogining ? <i className='fa fa-spinner fa-spin'></i> : '登录';
 		let autoLoginBtnClass = classNames('flat-btn autologin-button', {'checked':autoLogin});
 		let autoLoginIconClass = classNames('icon-not-check', {'checked': autoLogin});
+		let isEmpty = username === '' || password === '';
+
 		return (
       <div className='login-panelsmall-container' ref='login_panel_container'>
       	{/*<div className='fix-drag-bug'></div>*/}
@@ -136,9 +138,9 @@ class Login extends React.Component {
       		<div>
       			<div className='user-name font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_username'>用户名</span>*/}<input ref='input_user' onChange={this.changeUsernamne.bind(this)} type='text' value={username} placeholder='用户名'/>{this.state.usernameError ? <span className='error-icon'></span> : ''}</div>
       			<div className='password font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_password'>密码</span>*/}<input ref='password_user' onChange={this.changePassword.bind(this)} onFocus={this.handleFocus.bind(this, 1)} onBlur={this.handleBlur.bind(this, 1)} type='password' value={password} placeholder='密码'/>{this.state.passwordError ? <span className='error-icon'></span> : ''}</div>
-      			<div className='denglu'><button className='' onClick={this.handleLogin.bind(this)}>{innerBtn}</button></div>
+      			<div className='denglu'><button className='' onClick={this.handleLogin.bind(this)} disabled={isEmpty}>{innerBtn}</button></div>
       			<div className='options font-simsun'>
-      				<button className={autoLoginBtnClass} onClick={this.toggleAutoLogin.bind(this)}>
+      				<button className={autoLoginBtnClass} onClick={this.toggleAutoLogin.bind(this)} >
       					<span className={autoLoginIconClass}></span>{/*<input onChange={this.changeAutoLogin.bind(this)} type='checkbox' checked={autoLogin}/>*/}
       					自动登录
       				</button>

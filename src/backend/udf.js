@@ -12,7 +12,7 @@ let getSymbolHistory = (postData, callback, errorCallback) => {
 
   const errorCb = (err) => {
     console.error('getSymbolHistory error', err);
-    // callback && callback(err);
+    errorCallback && errorCallback(err);
   };
 
   request(options, requestCb, errorCb, JSON.stringify(postData));

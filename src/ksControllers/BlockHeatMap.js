@@ -26,9 +26,11 @@ function BlockHeatMap(dom, config){
 	this._blocks = [];
 	this._labels= [];
 	this._labelDecimal = config && config.labelDecimal || 2;
+	this._volumeHeight = config && config.volumeHeight || 0; //底部留白百分比 一般0.2
 	this._heatMapOptions = {
 		textColor: config.textColor,
 		fontSize: config.fontSize,
+		volumeHeight: this._volumeHeight, //暂时没有用
 	};
 	this._colors = [];
 	this._init(dom);
@@ -73,10 +75,12 @@ BlockHeatMap.prototype._createBlocks = function() {
 	let blocks = [];
 	let labels = [];
 
-	for(let i=0; i<blocksNumber; i++) {
-		blocks.push(0);
-		let label = this._labelFormatter(yMin + (i)*blockValueInterval, yMin, yMax, this._labelDecimal);
-		labels.push(label);
+	if(isFinite(range)) {
+		for(let i=0; i<blocksNumber; i++) {
+			blocks.push(0);
+			let label = this._labelFormatter(yMin + (i)*blockValueInterval, yMin, yMax, this._labelDecimal);
+			labels.push(label);
+		}		
 	}
 
 	let dataLen = data.length;

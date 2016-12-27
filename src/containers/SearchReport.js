@@ -122,7 +122,8 @@ class SearchReport extends React.Component {
 	
 		let { waitingForPatterns, firstStart } = this.props;
 
-		let wavesContainer = classNames('waves-container transition-all transition-duration2');
+		let wavesContainer = classNames('waves-container');
+		// let wavesContainer = classNames('waves-container transition-size transition-duration2');
 		let node = waitingForPatterns ? <div className = { wavesContainer } ><SearchWaitingWaves slow={firstStart}/></div> : '';
 
 		return node;

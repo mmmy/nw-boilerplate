@@ -16,11 +16,12 @@ let adjustConfig = (searchConfig) => {
 		searchConfig.similarityThreshold = {on: false, value: 0.6};
 	}
 };
-
-function ConfigEditor(dom, searchConfig, info, watchlist) {
+/* watchlist 或者 additionConfig 提供resolution 和 baseBars
+ ----------------------------------*/
+function ConfigEditor(dom, searchConfig, info, watchlist, additionConfig) {
 	adjustConfig(searchConfig);
 	this._$dom = dom ? $(dom) : $(document.body);
-	this._$overLay = dom ? null : $(`<div class="modal-overlay flex-center"><div class="config-modal-container">
+	this._$overLay = dom ? null : $(`<div class="modal-overlay font-msyh flex-center"><div class="config-modal-container">
 																		<div class="close-icon"><span class="fa fa-close"></span></div>
 																		<div class="modal-content-wrapper"></div>
 																	</div></div>`);
@@ -33,13 +34,16 @@ function ConfigEditor(dom, searchConfig, info, watchlist) {
 	}
 	this._config = searchConfig;
 	this._watchlist = watchlist;
-	this._resolution = 'D';
+	this._resolution = null;//'D';
 	this._baseBars = 1;
 	if(watchlist) {
 		this._resolution = watchlist.getResolution();
 		this._baseBars = watchlist.getBasebars();
 	}
-
+	if(additionConfig) {
+		this._resolution = additionConfig.resolution;
+		this._baseBars = additionConfig.baseBars;
+	}
 	if(info) {
 		this._$info = $(`<div class='search-info-container'></div>`);
 		this._$dom.append(this._$info);
@@ -79,7 +83,7 @@ ConfigEditor.prototype._init = function() {
 	this._inputs.endDate = $(`<input />`).val(d1.date).attr('disabled', isLatestDate);
 	this._inputs.typeStock = $(`<span class='stock fa'>股票</span>`).toggleClass('fa-check-square-o selected', spaceDefinition.stock).toggleClass('fa-square-o', !spaceDefinition.stock);
 	this._inputs.typeFuture = $(`<span class='stock fa'>期货</span>`).toggleClass('fa-check-square-o selected', spaceDefinition.future).toggleClass('fa-square-o', !spaceDefinition.future);
-	this._inputs.additionBars = $(`<input min="1" type='number' />`).val(additionDate.value);
+	this._inputs.additionBars = $(`<input min="1" max="100" type='number' />`).val(additionDate.value);
 	this._inputs.reduceBars = $(`<button>-</button>`);
 	this._inputs.addBars = $(`<button>+</button>`);
 
@@ -103,11 +107,11 @@ ConfigEditor.prototype._init = function() {
 
 	this._$wrapper.append(`<div class='title'>搜索配置</div>`);
 	
-	if(this._watchlist) {
+	if(this._resolution) {
 		let dom1 = $('<span>根据最近</span>').append(this._inputs.baseBars).append('根');
 		let dom2 = $('<span></span>').append(this._inputs.resolution).append('K线');
 		let dom3 = $('<span>统计后向</span>').append(this._inputs.additionBars).append('根');
-		this._$wrapper.append($('<div class="item-body-container watchlist"></div>').append(dom1).append(dom2).append(dom3));
+		this._$wrapper.append($('<div class="item-body-container watchlist font-simsun"></div>').append(dom1).append(dom2).append(dom3));
 	} else {
 		//统计天数
 		this._$wrapper.append(`<div class='item-title font-simsun'>后向统计范围</div>`);
@@ -132,7 +136,8 @@ ConfigEditor.prototype._init = function() {
 
 	this._$wrapper.append($date);
 	//相似度过滤
-	this._$wrapper.append($(`<div class="item-title font-simsun similarity">只显示相似度大于</div>`).prepend(this._inputs.similarityCheck).append(this._inputs.similaritySelect));
+	let similarity80 = !similarityThreshold.on || similarityThreshold.on && (+similarityThreshold.value < 0.8);
+	this._$wrapper.append($(`<div class="item-title font-simsun similarity">只显示相似度大于</div>`).prepend(this._inputs.similarityCheck).append(this._inputs.similaritySelect).append($(`<span class="warning">(搜索结果数量可能比较小或为零)</span>`).toggleClass('hide', similarity80)));
 
 	//标的类型
 	this._$wrapper.append(`<div class='item-title font-simsun hide'>标的类型</div>`);
@@ -149,12 +154,14 @@ ConfigEditor.prototype._init = function() {
 
 	//info
 	if(this._info) {
-		let symbolStartDate = this._info.dateRange[0],
-				symbolEndDate = this._info.dateRange[1];
-		let dateStr1 = new Date(symbolStartDate).toISOString().slice(0, 10).replace(/-/g,'.');
-		let dateStr2 = new Date(symbolEndDate).toISOString().slice(0, 10).replace(/-/g,'.');
+		let symbolStartDate = this._info.dateRange && this._info.dateRange[0],
+				symbolEndDate = this._info.dateRange && this._info.dateRange[1];
 		this._$info.append(`<p class='info-p font-simsun'><span class='title'>来源:</span><span class='content font-arial'>${this._info.symbol}</span></p>`)
-								.append(`<p class='info-p font-simsun'><span class='title'>时间区间:</span><span class='content font-arial'>${dateStr1} - ${dateStr2}</span></p>`);
+		if(symbolStartDate) {
+			let dateStr1 = new Date(symbolStartDate).toISOString().slice(0, 10).replace(/-/g,'.');
+			let dateStr2 = new Date(symbolEndDate).toISOString().slice(0, 10).replace(/-/g,'.');
+			this._$info.append(`<p class='info-p font-simsun'><span class='title'>时间区间:</span><span class='content font-arial'>${dateStr1} - ${dateStr2}</span></p>`);
+		}
 	}
 }
 
@@ -173,8 +180,8 @@ ConfigEditor.prototype._initActions = function() {
 			this.onEdit();
 		});
 	}
-	this._inputs.baseBars.on('input', this._changeBasebars.bind(this));
-	this._inputs.resolution.on('input', this._selectResolution.bind(this));
+	this._inputs.baseBars.on('change', this._changeBasebars.bind(this));
+	this._inputs.resolution.on('change', this._selectResolution.bind(this));
 	//init sid type
 	this._inputs.typeStock.on('click', this._clickStock.bind(this));
 	this._inputs.typeFuture.on('click', this._clickFuture.bind(this));
@@ -182,7 +189,7 @@ ConfigEditor.prototype._initActions = function() {
 	//init addition date
 	this._inputs.reduceBars.on('click', this._clickReduceBars.bind(this));
 	this._inputs.addBars.on('click', this._clickAddBars.bind(this));
-	this._inputs.additionBars.on('input', this._changeBars.bind(this));
+	this._inputs.additionBars.on('change', this._changeBars.bind(this));
 
 	this._inputs.startTime.hour.on('input', this._changeTime.bind(this, 0, 'hour'));
 	this._inputs.startTime.minute.on('input', this._changeTime.bind(this, 0, 'minute'));
@@ -204,6 +211,9 @@ ConfigEditor.prototype._initActions = function() {
 	}
 	this._$wrapper.find('.save-btn').click(this._handleSave.bind(this));
 	this._$wrapper.find('.reset-btn').click(this._reset.bind(this));
+	this._$wrapper.on('mouseup',function(e){
+		e.stopPropagation();
+	});
 }
 
 ConfigEditor.prototype._changeBasebars = function(e) {
@@ -221,16 +231,22 @@ ConfigEditor.prototype._selectResolution = function(e) {
 	this._resolution = resolution;
 }
 
-ConfigEditor.prototype._toggleSimilarityOn = function() {
+ConfigEditor.prototype._toggleSimilarityOn = function(e) {
 	var isOn = !this._config.similarityThreshold.on;
 	this._config.similarityThreshold.on = isOn;
 	this._inputs.similaritySelect.attr('disabled', !isOn);
 	this.onEdit();
+	if(isOn) {
+		$(e.target).siblings('.warning').toggleClass('hide', +this._config.similarityThreshold.value < 0.8);
+	} else {
+		$(e.target).siblings('.warning').addClass('hide');
+	}
 }
 
 ConfigEditor.prototype._changeSimilarityValue = function(e) {
 	var value = e.target.value;
 	this._config.similarityThreshold.value = value;
+	$(e.target).siblings('.warning').toggleClass('hide', +value < 0.8);
 	this.onEdit();
 } 
 
@@ -276,8 +292,13 @@ ConfigEditor.prototype._clickAddBars = function(e) {
 }
 
 ConfigEditor.prototype._changeBars = function(e) {
-	let val = $(e.target).val();
-	this._config.additionDate.value = +val;
+	let val = +$(e.target).val();
+	var min = (typeof e.target.min != 'undefined' ? +e.target.min : 1);
+	var max = (typeof e.target.max != 'undefined' ? +e.target.max : 100);
+
+	if(val < min) val = min;
+	if(val > max) val = max;
+	this._config.additionDate.value = val;
 	this.updateBars();
 	this.onEdit();
 }
@@ -301,6 +322,14 @@ ConfigEditor.prototype._handleSave = function() {
 		baseBars: this._baseBars
 	});
 	this.dispose();
+}
+
+ConfigEditor.prototype.getConfig = function() {
+	return {
+		searchConfig: this._config,
+		resolution: this._resolution,
+		baseBars: this._baseBars
+	};
 }
 
 ConfigEditor.prototype._reset = function() {

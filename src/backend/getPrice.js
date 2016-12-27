@@ -24,7 +24,22 @@ var queryDataTime = function(symbol, dataCategory, endTime, dataCallBack, errorC
 	return request(options, dataCallBack, errorCb, postData);
 }
 
-/*给watchlist 使用 获取实时价格
+var getLatestTime = function(symbolInfo, resolution, endTime, dataCallBack, errorCb) {
+	var symbol = symbolInfo.symbol;
+	var dataCategory = 'cs_m1';
+	if(symbolInfo.type.toLowerCase() == 'futures') {
+		dataCategory = 'cf_m5';
+	}
+	let cb = function(resStr) {
+		var dataTime = JSON.parse(resStr);
+		// console.log(dataTime);
+		var latestTime = new Date(dataTime.batchTimeResult[0].end);
+		dataCallBack({latestTime});
+	}
+	queryDataTime(symbol, dataCategory, endTime, cb, errorCb);
+}
+
+/*给watchlist 使用 获取实时价格(天数据或分钟数据), 股票,期货,通用,
 	symbolInfo: {
 		ticker:'',
 		symbol:'000001.SH',
@@ -80,10 +95,10 @@ var getLatestPrice = function(symbolInfo, resolution, dataCallBack, errorCb, opt
 										dateTime: record.datetime,
 										volume: record.volume,
 										amount: record.amount,
-										open: record.open * adjfactor1 / adjfactor,
-										close: record.close * adjfactor1 / adjfactor,
-										low: record.low * adjfactor1 / adjfactor,
-										high: record.high * adjfactor1 / adjfactor,
+										open: record.open * adjfactor / adjfactor1,
+										close: record.close * adjfactor / adjfactor1,
+										low: record.low * adjfactor / adjfactor1,
+										high: record.high * adjfactor / adjfactor1,
 									};
 									return priceObj;
 								});
@@ -103,7 +118,52 @@ var getLatestPrice = function(symbolInfo, resolution, dataCallBack, errorCb, opt
 var getLastDayPrice = function() {
 
 }
+/* 从sina获取实时价格
+----------------------------------- */
+var getPriceFromSina = function(symbolInfo, resolution, dataCallBack, errorCb) {
+	// if(!/\./.test(symbolInfo.symbol)) {     //'000001.SH'
+	// 	console.warn(symbolInfo.symbol, 'has no exchange!');
+	// }
+	var isF = symbolInfo.type == 'futures';
+	var isFF = false; //金融期货
+	var list0 = '';//sina接口的格式
+	if(isF) {
+		if(!symbolInfo.instrument) {
+			console.warn('合约呢!?',symbolInfo);
+		}
+		var instrument = symbolInfo.instrument || '';
+		//判断是否为金融期货, 需要加CFF_
+		isFF = ['ic','if','ih','t','tf'].indexOf(symbolInfo.symbol.toLowerCase()) > -1;
+		list0 = (isFF ? 'CFF_' : '') + instrument.toUpperCase();
+	} else {
+		var symbols = symbolInfo.symbol.split('.');
+		list0 = symbols[1].toLowerCase() + symbols[0];      //sh000001
+	}
+	var url = `http://hq.sinajs.cn/list=${list0}`;
+	var method = "GET";
+	var cb = function(resStr) {
+		//股票:open:1 close:3 high:4 low:5 lastClose:2
+		//期货:open:2 close:8 high:3 low:4 lastClose:10(昨日结算价) volume:13
+		//金融期货:open:0 close:3 high:1 low:2 lastClose:14
+		var sS = resStr.split(',');
+		if(sS.length > 1) {
+			dataCallBack([{
+				open: parseFloat(sS[isF ? (isFF ? 0:2):1]),
+				close: parseFloat(sS[isF ? (isFF ? 3:8):3]),
+				high: parseFloat(sS[isF ? (isFF ? 1:3):4]),
+				low: parseFloat(sS[isF ? (isFF ? 2:4):5]),
+				lastClose: parseFloat(sS[isF ? (isFF ? 14:10):2])
+			}]);
+		} else {
+			dataCallBack([]);
+		}
+	}
+
+	request({url,method}, cb, errorCb);
+}
 
 module.exports = {
+	getLatestTime,
 	getLatestPrice,
+	getPriceFromSina
 };

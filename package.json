@@ -1,6 +1,6 @@
 {
   "name": "keystone",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "onkeystone search",
   "manifestUrl": "http://112.74.17.175/updateInfo.json",
   "main": "./build/index.html",

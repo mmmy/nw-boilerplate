@@ -12,6 +12,7 @@
 	}
 	[role="config-data"] {
 		font-weight: bold;
+		font-size: 140%;
 	}
 	[role="edit-watchlist"] {
 		margin-left: 20px;
@@ -23,12 +24,18 @@
 	bottom: 0;
 	width: 100%;
 	height: calc(~"100% - 60px");
-	overflow: scroll;
+	overflow-y: scroll;
+	.scrollbar();
+	.scrollbar-thumb();
+	.scrollbar-track();
 }
 //cell
 .watchlist-prediction-wrapper {
 	width: calc(~"50% - 20px");
-	height: 390px;
+	@media (min-width:1700px) {
+		width: calc(~"33% - 20px");
+	}
+	height: 295px;
 	position: relative;
 	float: left;
 	margin-left: 10px;
@@ -39,7 +46,7 @@
 	line-height: 1;
 	.charts-wrapper {
 		position: absolute;
-		width: calc(~"100% - 235px");
+		width: calc(~"100% - 160px");
 		height: 100%;
 		left: 0;
 		top: 0;
@@ -56,12 +63,12 @@
 		.chart-body {
 			position: absolute;
 			width: calc(~"100% - 20px");
-			height: 250px;
+			height: 200px;
 			left: 10px;
-			top: 75px;
+			top: 48px;
 			.prediction-chart {
 				position: absolute;
-				width: calc(~"100% - 70px");
+				width: calc(~"100%");
 				height: 100%;
 				top: 0;
 				left: 0;
@@ -74,22 +81,31 @@
 				top: 0;
 			}
 		}
+		.chart-footer {
+			position: absolute;
+			width: 100%;
+			text-align: center;
+			// height: 100%;
+			bottom: 15px;
+		}
 	}
 	@color-title: #999;
 	.info-container {
 		position: absolute;
 		top: 0;
 		right: 0;
-		width: 235px;
+		width: 160px;
 		height: 100%;
-		padding-top: 40px;
+		padding-top: 30px;
+		font-size: 12px;
 		.statistic-container {
+			position: relative;
 			hr {
-				border-color: @color-title;
-				margin-left: 20px;
-				margin-right: 20px;
-				margin-top: 30px;
-				margin-bottom: 30px;
+				border-color: #666;
+				margin-left: 10px;
+				margin-right: 10px;
+				margin-top: 15px;
+				margin-bottom: 20px;
 			}
 			.statistic-item {
 				display: inline-block;
@@ -101,11 +117,27 @@
 				}
 			}
 			.percent-info {
-				font-size: 16px;
+				font-size: 14px;
 				font-weight: bold;
 				color: #e0e0e0;
 				span:last-child {
 					margin-left: 2px;
+				}
+			}
+			.waiting-overlay {
+				text-align: center;
+				padding-bottom: 20px;
+				i,img {
+					margin-bottom: 15px;
+					font-size: 18px;
+				}
+				font-size: 14px;
+				height: calc(~"100% - 1px");
+				.error {
+					display: inline-block;
+					line-height: 2;
+					margin-top: 20px;
+					font-size: 12px;
 				}
 			}
 		}
@@ -121,6 +153,7 @@
 					color: @color-title;
 				}
 				.percent-info {
+					animation-duration: 0.3s;
 					font-size: 16px;
 					&.red {
 						color: @brown-red;
@@ -132,9 +165,9 @@
 				&:nth-child(1) {
 					.percent-info {
 						line-height: 14px;
-						font-size: 20px;
+						font-size: 16px;
 						span:nth-child(1) {
-							font-size: 26px
+							font-size: 20px;
 						}
 						span:last-child {
 							display: none;
@@ -144,26 +177,66 @@
 			}
 		}
 	}
-	.inputs-group-wrapper {
-		position: relative;
-	}
+}
+
+.inputs-group-wrapper {
+	position: relative;
+	display: inline-block;
 }
 
 .symbol-list-container {
 	position: absolute;
 	z-index: 2;
-	width: 300px;
-	max-height: 300px;
-	top: 100%;
-	overflow: scroll;
+	max-width: 266px;
+	// width: 300px;
+	max-height: 118px;
+	width: 100%;
+	top: calc(~"100% + 1px");
+	overflow-y: scroll;
+	.scrollbar();
+	.scrollbar-track();
+	.scrollbar-thumb();
 	border: 1px solid rgba(255, 255, 255, 0.1);
+	img {
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+	i {
+		font-size: 12px;
+		line-height: 1.6;
+	}
+	.symbol-item {
+		padding-left: 20px;
+		padding-right: 20px;
+		white-space: nowrap;
+		text-align: left;
+		font-size: 12px;
+		span {
+			line-height: 1.6;
+			display: inline-block;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			&:nth-child(1) {
+				width: 100px;
+			}
+			&:nth-child(2) {
+				width: 100px;
+			}
+			&:nth-child(3) {
+				font-size: 80%;
+				font-style: italic;
+				color: #999;
+			}
+		}
+	}
 }
 //编辑列表
 .watch-list-dropdown {
 	position: absolute;
 	right: 0;
 	top: 100%;
-	z-index: 2;
+	z-index: 1001;
 	background-color: #fff;
 	border-top-left-radius: 5px;
 	border-bottom-left-radius: 5px;
@@ -193,6 +266,7 @@
 			border-radius: 2px;
 			letter-spacing: 3px;
 			width: 125px;
+			font-size: 14px !important;
 		}
 		.save {
 			background-color: @brown-red;
@@ -272,4 +346,151 @@
 			line-height: 28px;
 		}
 	}
+}
+
+body.watchlist {
+	.container-stockview {
+		height: calc(~"100% - 80px");
+	}
+	.container-searchreport.static, .waves-container.float {
+		// transition-property: none;
+		// height: 104px;
+		bottom: -90px;
+		.search-report-wrapper {
+			opacity: 0;
+		}
+	}
+	.searchreport-full {
+		height: calc(~"100% + 90px");
+	}
+	.container-toggle {
+		bottom: 25px;
+		&.up {
+			bottom: calc(~"100% - 43px");
+		}
+	}
+	.container-toggle .btn-container {
+		&.slide-center {
+			top: 0px;
+		}
+	}
+	.waves-container.float {
+		// transition-property: none;
+		// height: 104px;
+		canvas {
+			top: -45px;
+		}
+	}
+}
+
+//guide
+.watchlist-guide-container {
+	position: relative;
+  width: 680px;
+  height: 500px;
+  z-index: 10001;
+  border-radius: 5px;
+  background: #282828 url('./image/yindao.png') no-repeat;
+  background-position: right bottom;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+
+  .inner-wrapper {
+  	margin: 60px 0 45px 67px;
+  	// overflow: hidden;
+  	// position: relative;
+  }
+  .header {
+  	height: 19px;
+  	margin-bottom: 17px;
+  	img {
+  		margin-top: -10px;
+  	}
+	  .h4 {
+	  	margin: 0;
+	  	vertical-align: super;
+	  	display: inline-block;
+	  }
+  	
+  }
+  .body {
+  	> p {
+  		color: #999;
+  		b {
+  			color: #eee;
+  		}
+  	}
+  }
+  .footer {
+  	position: absolute;
+  	left: 67px;
+  	bottom: 45px;
+  	font-size: 12px;
+  	p {
+  		color: #999;
+  		margin-top: 10px;
+  		margin-bottom: 0;
+  	}
+  	> button.flat-btn {
+  		width: 180px;
+  		margin-right: 30px;
+  	}
+  }
+  .add-input-wrapper {
+  	text-align: left;
+  	margin-bottom: 10px;
+  	.inputs-group {
+  		background-color: #1f1f1f;
+  	}
+  }
+  .symbol-list-container {
+  	max-height: 170px;
+  }
+  .add-input-wrapper .inputs-group input {
+  	width: 214px;
+  }
+  .add-symbol-list {
+  	max-width: 500px;
+  	font-size: 12px;
+  	overflow: auto;
+  	max-height: 160px;
+  	color: #999;
+  	.scrollbar();
+  	.scrollbar-thumb();
+  	.scrollbar-track();
+  	.symbol-item {
+  		background-color: #3A3A3A;
+			padding: 10px 15px;
+			display: inline-block;
+			position: relative;
+			margin-right: 10px;
+			margin-bottom: 10px;
+  		span {
+  		}
+			span:nth-child(1) {
+				margin-right: 10px;
+			}
+			span:nth-child(2) {
+				
+			}
+			.icon-close {
+				position: absolute;
+				top:0;
+				right: 0;
+				display: none;
+			}
+			&:hover {
+				.icon-close {
+					display: block;
+				}
+			}
+  	}
+  }
+
+  .modal-content-contianer {
+  	margin-top: 50px;
+  	padding: 0;
+  	> .title {
+  		display: none;
+  	}
+  }
 }

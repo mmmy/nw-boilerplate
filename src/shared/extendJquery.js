@@ -1,6 +1,50 @@
 
 module.exports = function($) {
+	var theme = $(document.body).attr('theme');
+	$.extend({
+		keyStone: {
+			configDefault:{
+				brownRedDark: '#750905',
+				brownRed: theme == 'dark' ? 'rgb(170,65,66)' : '#8D151B',
+				brownRedLight: '#AC1822'
+			},
+			theme: theme,              //or dark
+			resolutionToDataCategory: function(conifg) {
+				var type = conifg.type,                //'futures','stock','index'
+						resolution = conifg.resolution;    //'1','5','15','D'
+
+				var dataCategory = "cs";
+        if(type === "stock" || type === "index") {   //股票 & 指数
+            if(resolution === "1") {
+                dataCategory = "cs_m1";
+            } else if(resolution === '5') {
+                dataCategory = "cs_m5";
+            } else if(resolution.toUpperCase() === 'D') {
+                dataCategory = "cs";
+            }
+        } else if(type === "bt") { //bit coin
+            dataCategory = "bt";
+        } else if(type === "futures") { //期货
+            if(resolution == '5') { //5分钟
+                dataCategory = 'cf_m5';
+            } else if(resolution === 'D' || resolution == 'd') { //天数据
+                dataCategory = 'cf';
+            }
+        }
+        return dataCategory;
+			}
+
+		}
+	});
+
 	$.fn.extend({
+		animateCss: function (animationName, cb) {
+        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        $(this).addClass('animated ' + animationName).one(animationEnd, function() {
+            $(this).removeClass('animated ' + animationName);
+            cb && cb();
+        });
+    },
 		ksSortable: function(options) {				//拖动排序
 			var $this = $(this);
 			$this.attr('draggable',true);
@@ -80,11 +124,11 @@ module.exports = function($) {
 	    }
 	    return this;
 		},
-		ksTooltip: function() {
+		ksTooltip: function(handle) {
 			var $this = $(this);
 			$this.on('mouseenter', function(e) {
 				let that = this;
-				let kstooltip = $(that).data().kstooltip;
+				let kstooltip = handle ? handle($this) : $(that).data().kstooltip;
 				let top = e.pageY - 12,
 						left = e.pageX + 12;
 				let $tooltip = $(`<div class="ks-tooltip-container fade"><span class="tooltip-describe">${kstooltip}</span></div>`).css({left, top});

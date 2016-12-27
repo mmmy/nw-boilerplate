@@ -2,16 +2,17 @@ import React from 'react';
 //require('../src/styles/main.less');
 window.$ = require('jquery');
 require('../src/shared/extendJquery')(window.$);
+window.$.DEBUG = true;
 
 let tabsArr = [
 	// {title:'waves',component:'./component/waves'},
 	// {title:'kPrediction',component:'./component/kPrediction'},
 	// {title:'searchresult',component:'./component/searchresult'},
+	{title:'ksprediction',component:'./component/ksprediction'},
 	{title:'watchList',component:'./component/watchList'},
 	{title:'statisticsComponent',component:'./component/statisticsComponent'},
 	{title:'lineAreaChart',component:'./component/lineAreaChart'},
 	// {title:'prediction',component:'./component/prediction'},
-	// {title:'ksprediction',component:'./component/ksprediction'},
 	// {title:'heatmap',component:'./component/heatmap'},
 	// {title:'chart',component:'./component/chart'},
 	// {title:'transition',component:'./component/transition'},

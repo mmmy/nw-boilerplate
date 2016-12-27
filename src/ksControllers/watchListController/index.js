@@ -10,7 +10,7 @@ var _$headerDom = null;
 var _$bodyDom = null;
 
 watchListController.init = (wrapper) => {
-	_$headerDom = $(`<div class="watchlist-header-wrapper"><strong class="title strong">实时监控</strong><span class="config-info">根据近期  <span role="config-data">-</span> 根  <span role="config-data">-</span> 线 统计后向 <span role="config-data">-</span>根</span><span class="update hide">实时监测中</span></div>`)
+	_$headerDom = $(`<div class="watchlist-header-wrapper"><strong class="title strong">智能监控</strong><span class="config-info">根据近期  <span role="config-data">-</span> 根  <span role="config-data">-</span> 线 统计后向 <span role="config-data">-</span>根</span><span class="update hide">实时监测中</span></div>`)
 								.append(`<div class="pull-right widget-wrapper edit-watchlist"><button role="edit-watchlist" class="flat-btn border-btn">编辑列表</button></div>`)
 								.append(`<div class="pull-right widget-wrapper edit-searchConfig"><button role="edit-searchConfig" class="flat-btn border-btn">设置搜索条件</button></div>`)
 	
@@ -52,6 +52,17 @@ watchListController._initActions = () => {
 			_watchList.updateConfig({searchConfig, resolution, baseBars});
 			watchListController._udpateConfigUI();
 		});
+	});
+	//尝试解决双重scroll的bug
+	_$bodyDom.on('mousewheel',function(e){
+		// console.log(e,'mousewheel');
+		// var $target = $(e.target);
+		// var $parent = $target.parent();
+		// if($(e.currentTarget).hasClass('watchlist-body-wrapper')) {
+		// 	if($target.hasClass('symbol-item') || $target.hasClass('symbol-list-container') || $parent.hasClass('symbol-item') || $parent.hasClass('symbol-list-container')) {
+		// 		e.preventDefault();
+		// 	}
+		// }
 	});
 	// setTimeout(function(){
 	// 	var ConfigEditor = require('../ConfigEditor');

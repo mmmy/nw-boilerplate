@@ -82,7 +82,7 @@ class PatternCollection extends React.Component {
 		let $patternViews = $(this.refs.container).find('.pattern-view:visible');
 		if($patternViews.length > 0) {
 			let width = $patternViews[0].clientWidth,
-					height = width * 210 / 160;
+					height = width * 230 / 160;
 			$patternViews.height(height);
 			callFunc();
 		}
@@ -277,10 +277,14 @@ class PatternCollection extends React.Component {
 
 		sortedData = sortedData.sort((a,b) => { 
 			switch (sortType) {
-				case sortTypes.SIMILARITY:
+				case sortTypes.SIMILARITY://价相似度
 					return  a.similarity - b.similarity;
 				case sortTypes.SIMILARITY_R:
 					return  b.similarity - a.similarity;
+				case sortTypes.VSIMILARITY://量相似度
+					return  a.vsimilarity - b.vsimilarity;
+				case sortTypes.VSIMILARITY_R:
+					return  b.vsimilarity - a.vsimilarity;
 				case sortTypes.DATE:
 					return  getLastDate(a) - getLastDate(b);
 				case sortTypes.DATE_R:

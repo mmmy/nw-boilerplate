@@ -27,6 +27,7 @@ let PredictionWidget = function(dom, config){
 	this._closePrice = [];
 	this._closePriceScaled = [];
 	this._linesVisibility = [];
+	this._patterns = [];
 	this._baseBars = 0;
 	this._predictionBars = 0;
 
@@ -36,7 +37,6 @@ let PredictionWidget = function(dom, config){
 	this._clickX = 0;
 	this._clickY = 0;
 	this._linesYOffset = 0;
-	this._activeLine = 0;
 
 	this._cursorAtIndex = -1;
 
@@ -45,13 +45,18 @@ let PredictionWidget = function(dom, config){
 	let rate = parseFloat(config.klineScaleRate);
 	this._klineScaleRate = isNaN(rate) ? 1.5 : rate;
 
+	this._activeLine = this._slient ? -1 : 0;
+
+	var padding = config.padding || {right:58};
 	this._klineOption = {
 		yMin: null,
 		yMax: null,
 		predictionBars: 0,
 		hoverIndex: -1,
 		selectedRange: [0, 0],
-		rangeOption: {noCloseBtn: true}
+		rangeOption: {noCloseBtn: true},
+		padding: padding,
+		volume: false,
 	};
 
 	this._linesOptions = {
@@ -60,9 +65,12 @@ let PredictionWidget = function(dom, config){
 		dataLen: null, //一定要设置
 		emptyLeftLen: 10,
 		activeIndex: 0,
+		volumeHeight: 0.2,
 		lineColor: 'rgba(200,200,200,0.5)',
 		activeColor: $.keyStone && $.keyStone.configDefault.brownRed || '#862020',
-		visibilitys: null
+		visibilitys: null,
+		padding: padding,
+		patterns: null
 	};
 
 	this._onHoverKline = null; //func
@@ -108,8 +116,13 @@ PredictionWidget.prototype._getHitTest = function(x, y) {
 	let { pointToIndex, indexToPoint } = this._drawKlineInfo;
 	if(!pointToIndex || !indexToPoint) return;
 	let index = pointToIndex(x, false);
+	let height = this._canvas.height;
 	if(index == -1) {
-		return HITTEST.SCALE_LINES;
+		if(y < height * 0.8) {
+			return HITTEST.SCALE_LINES;
+		} else {
+			return HITTEST.NONE;
+		}
 	}	else {
 		return HITTEST.KLINE;
 	}
@@ -215,6 +228,7 @@ PredictionWidget.prototype._updateKlineOption = function(){
   this._klineOption.yMax = lastClosePrice + offset;
   this._klineOption.yMin = lastClosePrice - offset;
   this._klineOption.predictionBars = +this._predictionBars;
+  this._klineOption.volume = this._patterns.length > 0;
 }
 
 PredictionWidget.prototype._updateLinesOption = function(){
@@ -255,6 +269,7 @@ PredictionWidget.prototype._drawLines = function(){
 	this._linesOptions.yMin = this._linesOptions.yMin - this._linesYOffset;
 	this._linesOptions.activeIndex = this._activeLine;
 	this._linesOptions.visibilitys = this._linesVisibility;
+	this._linesOptions.patterns = this._patterns;
 
 	linePainter.drawLines(this._canvas, this._closePriceScaled, this._linesOptions);
 }
@@ -281,11 +296,12 @@ PredictionWidget.prototype._updateData = function(){
 	}
 }
 
-PredictionWidget.prototype.setData = function(kline, closePrice, baseBars, predictionBars){
+PredictionWidget.prototype.setData = function(kline, closePrice, baseBars, predictionBars, patterns){
 	this._kline = kline || this._kline;
 	this._closePrice = closePrice || this._closePrice;
 	this._baseBars = baseBars || kline && kline.length || this._baseBars;
 	this._predictionBars = predictionBars || closePrice && closePrice[0] && closePrice[0].length || this._predictionBars;
+	this._patterns = patterns || this._patterns;
 	this._updateData();
 	this._hoverKlineIndex = -1;
 	this._updateKlineOption();
@@ -353,7 +369,7 @@ PredictionWidget.prototype.isCursorOverBar = function() {
 
 PredictionWidget.prototype.getHoverOCLH = function() {
 	let OCLH = this._kline[this._hoverKlineIndex] || [];
-	return OCLH.slice(-4);
+	return OCLH.slice(-5);
 }
 PredictionWidget.prototype.getHoverIndex = function() {
 	return this._hoverKlineIndex;

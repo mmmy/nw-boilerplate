@@ -14,30 +14,6 @@ let initJquery = () => {
 let initJqueryPlugins = () => {
 	require('./bootstrap-datepicker.min');
 	require('./bootstrap-datepicker.zh-CN.min');
-	//animate.css helper
-	if(!$.fn.animatedCss){
-			$.fn.extend({
-			    animateCss: function (animationName, cb) {
-			        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-			        $(this).addClass('animated ' + animationName).one(animationEnd, function() {
-			            $(this).removeClass('animated ' + animationName);
-			            cb && cb();
-			        });
-			    }
-			});
-	}
-	//ksDefaultConfig
-	var theme = $(document.body).attr('theme');
-	$.extend({
-		keyStone: {
-			configDefault:{
-				brownRedDark: '#750905',
-				brownRed: theme == 'dark' ? 'rgb(170,65,66)' : '#8D151B',
-				brownRedLight: '#AC1822'
-			},
-			theme: theme,              //or dark
-		}
-	});
 
 	require('./extendJquery')($);
 	//load tradingview libs
@@ -106,6 +82,18 @@ let initGolbalKeyEvent = () => {
 				default:
 					break;
 			}
+		}
+	});
+	//在K线图页, 将焦点锁定在tradingview
+	var $stockViewCache = null,
+			$searchReportCache = null,
+			$iframe = null;
+	window.addEventListener('mouseup', (e)=>{
+		$stockViewCache = $stockViewCache || $('.content-wrapper.curve');
+		$searchReportCache = $searchReportCache || $('.container-searchreport.static');
+		$iframe = $iframe || $('iframe');
+		if($stockViewCache && $stockViewCache.hasClass('top-z') && $searchReportCache && !$searchReportCache.hasClass('searchreport-full')) {
+			$iframe.focus();
 		}
 	});
 };

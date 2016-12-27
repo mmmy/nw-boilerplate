@@ -9,6 +9,10 @@ let sortBySimilarity = () => {
 	return {type:types.SORT_BY_SIMILARITY};
 }
 
+let sortByVSimilarity = () => {
+	return {type:types.SORT_BY_VSIMILARITY};
+}
+
 let sortByYield = () => {
 	return {type:types.SORT_BY_YIELD};
 }
@@ -17,5 +21,6 @@ let sortByYield = () => {
 module.exports = {
 	sortByDate,
 	sortBySimilarity,
+	sortByVSimilarity,
 	sortByYield
 }

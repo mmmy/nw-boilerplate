@@ -158,15 +158,15 @@ peakStatistic._redrawBarChart = (model) => {
 
 		let decimal = 1;
 		if(unit >= 0.01)
-			decimal = 0;
-		else if(unit >= 0.001)
 			decimal = 1;
-		else if(unit >= 0.0001)
+		else if(unit >= 0.001)
 			decimal = 2;
-		else if(unit >= 0.00001)
+		else if(unit >= 0.0001)
 			decimal = 3;
-		else if(unit >= 0.000001)
+		else if(unit >= 0.00001)
 			decimal = 4;
+		else if(unit >= 0.000001)
+			decimal = 5;
 		for(var i=leftLen-1; i>=0; i--) {   //绿色
 			xLables.push((- unit * (i+1) * 100).toFixed(decimal)); 
 			data.push({

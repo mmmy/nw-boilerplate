@@ -69,7 +69,7 @@ statisticComponent.update = (closePrices, options) => {
 
 	peakStatistic.update(param);
 	drawDownStatistic.update(param);
-	swingStatistic.update();
+	swingStatistic.update(param);
 }
 
 statisticComponent.getModel = () => {

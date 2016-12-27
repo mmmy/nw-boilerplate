@@ -62,16 +62,18 @@ let searchPattern = (args, cb, errorCb) => {
 
 		resObj.results.forEach((pattern, i) => {
 
-			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type=interval} = pattern;
+			const {id, similarity= resObj.similarities && resObj.similarities[i], vsimilarity = Math.random(), begin, end, industry=getIndustry(id), type=interval} = pattern;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];
 			//let id = i;
-			if(!similarityThreshold || (similarityThreshold.on && (similarity >= similarityThreshold.value))) {
+			//没有定义, 或者为false, 或者为true的时候在过滤范围内 , 这3个条件push
+			if((!similarityThreshold) || (!similarityThreshold.on) || (similarityThreshold.on && (similarity >= similarityThreshold.value))) {
 				__data.push({
 					id: i,
 					symbol: id,
 					similarity: similarity,//_growSimilarity(similarity),
+					vsimilarity: vsimilarity,//交易量相似度
 					begin: begin.time,
 					end: end.time,
 					lastDate,
@@ -139,7 +141,7 @@ let searchPattern = (args, cb, errorCb) => {
 		// console.info('第二步: 获取kline具体数据 [ 开始 ]');
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
 		let startIndex = 0,
-				nextIndex = 2;
+				nextIndex = 3;
 		__ksDataXhr_1 =  KSDataService.postSymbolData(startIndex, args.slice(0, nextIndex), bars, dataCb, (err) => {
 			// console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);

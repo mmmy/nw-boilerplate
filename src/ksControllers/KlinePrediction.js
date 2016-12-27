@@ -74,6 +74,8 @@ function KlinePrediction(container, config) {
 		baseBarRange: [],
 		overflowPane: false, //超出上界面的内阴影
 		overflowPaneBottom: false, //超出上界面的内阴影
+		volume: true,
+		volumeHeight: 0.2,
 	};
 	this._yDrawOption = {
 		hoverY: -1,
@@ -340,7 +342,7 @@ KlinePrediction.prototype.setData = function(kline, baseBars, interval, symbol, 
 
 KlinePrediction.prototype.getHoverOCLH = function() {
 	let OCLH = this._kline[this._hoverIndex] || [];
-	return OCLH.slice(-4);
+	return OCLH.slice(-5);
 }
 
 KlinePrediction.prototype.getHoverIndex = function() {

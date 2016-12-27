@@ -446,6 +446,12 @@
 				background-color: @brown-red-light;//lighten(@brown-red, 10%);
 				// box-shadow: 0 3px 10px 0 #eee;
 			}
+			&[disabled] {
+				opacity: 0.5;
+				&:hover {
+					background-color: @brown-red;
+				}
+			}
 			.fa-spinner {
 				width: 16px;
 				height: 16px;
@@ -524,7 +530,7 @@
 
 .ks-messager-container {
 	position: fixed;
-	z-index: 200;
+	z-index: 1001;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%,-50%);
@@ -548,6 +554,9 @@
 		font-size: 18px;
 		line-height: 30px;
 		margin: 10px 20px 10px 0;
+		img {
+			margin-right: 10px;
+		}
 	}
 }
 
@@ -574,6 +583,7 @@
 	background-color: rgba(0, 0, 0, 0.8);
 	padding: 5px;
 	padding-right: 7px;
+	z-index: 1;
 	// transition: left .05s linear, top .05s linear;
 	.oclh-item {
 		font-size: 12px;

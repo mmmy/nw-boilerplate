@@ -81,12 +81,15 @@ class SearchConfigModal extends React.Component {
 			'selected': futureSelected,
 		});
 
+		let warningClass = classNames('warning', {
+			'hide': !similarityThreshold.on || similarityThreshold.on && similarityThreshold.value < 0.8
+		});
 
 		return <div className='modal-content-contianer'>
 			<div className='title'>搜索配置</div>
 			<div className='item-title font-simsun'>后向统计范围</div>
 			<div className='item-body-container days'>
-				<div className='inputs-wrapper'><button onClick={this.reduceDays.bind(this)}>-</button><input type='number' value={additionDate.value} onChange={this.changeDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button></div><span className='font-simsun'>根</span>
+				<div className='inputs-wrapper'><button onClick={this.reduceDays.bind(this)}>-</button><input type='number' min={1} max={100} value={additionDate.value} onChange={this.changeDays.bind(this)} onBlur={this.validateDays.bind(this)}/><button onClick={this.addDays.bind(this)}>+</button></div><span className='font-simsun'>根</span>
 			</div>
 			<div className='item-title font-simsun'>搜索时间范围<span className="check-box-wrapper"><input type="checkbox" checked={ isLatestDate } onChange={this.toggleLastTimeAuto.bind(this)}/>当前时间</span></div>
 			<div className='item-body-container date'>
@@ -121,6 +124,7 @@ class SearchConfigModal extends React.Component {
 					<option value='0.7'>70%</option>
 					<option value='0.6'>60%</option>
 				</select>
+				<div className={warningClass}>(搜索结果数量可能比较小或为零)</div>
 			</div>
 			<div className='item-title font-simsun hide'>标的类型</div>
 			<div className='item-body-container sid hide'>
@@ -135,7 +139,7 @@ class SearchConfigModal extends React.Component {
 	render(){
 		return <div className='modal-overlay flex-center'>
 
-			<div className='config-modal-container'>
+			<div className='config-modal-container' onMouseUp = {function(e){ e.stopPropagation(); }}>
 				<div className='close-icon' onClick={this.closeModal.bind(this)}><span className='fa fa-close'></span></div>
 				<div className='modal-content-wrapper'>
 					{this.renderContent()}
@@ -146,13 +150,36 @@ class SearchConfigModal extends React.Component {
 		
 	}
 
-	closeModal() {
+	closeModal(e) {
 		let { dispatch } = this.props;
 		dispatch(layoutActions.closeConfigModal());
+		var $$ = document.querySelector('iframe').contentWindow.$;
+		var dom = document.querySelector('iframe').contentWindow.document.querySelector('.header-chart-panel');
+		var $dom = $$(dom);
+		// $dom.mousedown();
+		// $dom.mouseup();
+		var event = new window.MouseEvent('mouseup',{
+			'view': window,
+			'bubbles': true,
+			'cancelable': true
+		});
+		dom.dispatchEvent(event);
 	}
 
 	changeDays(event) {
 		let days = event.target.value;
+		let { searchConfig } = this.state;
+		searchConfig.additionDate.value = days;
+		this.setState({searchConfig});
+	}
+
+	validateDays(event) {
+		let days = event.target.value;
+		let min = +event.target.min;
+		let max = +event.target.max;
+		if(days < min) days = min;
+		if(days > max) days = max;
+		
 		let { searchConfig } = this.state;
 		searchConfig.additionDate.value = days;
 		this.setState({searchConfig});

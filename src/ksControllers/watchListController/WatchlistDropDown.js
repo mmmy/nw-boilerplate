@@ -7,13 +7,14 @@ function WatchlistDropDown(config) {
 	this._actvieIndex = 0;
 	this._removedNodeCache = [];
 	this._initDoms();
-	this._updateList();
+	this._hide();
+	// this._updateList();
 }
 
 WatchlistDropDown.prototype._initDoms = function() {
 	this._$headerWrapper = $(`<div class="header-wrapper"><button role="undo" class="flat-btn icon-btn-30 icon-undo"></button></button><button class="flat-btn icon-btn-30 icon-close pull-right"></button><button class="flat-btn icon-btn-30 icon-trash pull-right"></div>`);
 	this._$bodyWrapper = $(`<div class="body-wrapper"></div>`);
-	this._$footerWrapper = $(`<div class="footer-wrapper"><button class="flat-btn save">保存</button><button class="flat-btn cancel">撤销</button></div>`);
+	this._$footerWrapper = $(`<div class="footer-wrapper"><button class="flat-btn save btn-red">保存</button><button class="flat-btn cancel border-btn">撤销</button></div>`);
 	this._$container = $(`<div class="watch-list-dropdown"><div>`)
 											.append(this._$headerWrapper)
 											.append(this._$bodyWrapper)
@@ -33,6 +34,7 @@ WatchlistDropDown.prototype._initDoms = function() {
 	this._$footerWrapper.find('.cancel').on('click', this._handleCancel.bind(this));
 }
 WatchlistDropDown.prototype._handleSave = function() {
+	this._hide();
 	this._watchList.updateList(this._list);
 }
 WatchlistDropDown.prototype._handleCancel = function() {
@@ -47,7 +49,7 @@ WatchlistDropDown.prototype._resetUndoStack = function() {
 }
 WatchlistDropDown.prototype._pushUndoStack = function() {
 	//copy
-	this._unDoStack.push(this._list.map(function(item){ return window.Object.assign({},item); }));
+	this._unDoStack.push(this._list.map(function(item){ return $.extend(true,{},item); }));
 }
 WatchlistDropDown.prototype._unDo = function() {
 	var lastList = this._unDoStack.pop();
@@ -191,10 +193,12 @@ WatchlistDropDown.prototype._updateActive = function() {
 WatchlistDropDown.prototype._show = function() {
 	this._$container.show();
 	this._updateList();
+	this._$wrapper.append('<div class="modal-overlay"></div>');
 }
 
 WatchlistDropDown.prototype._hide = function() {
 	this._$container.hide();
+	this._$wrapper.find('.modal-overlay').remove();
 }
 
 module.exports = WatchlistDropDown;

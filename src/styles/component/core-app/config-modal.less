@@ -98,6 +98,8 @@
 		}
 	}
 	.similarity {
+		// white-space: nowrap;
+		height: 45px;
 		input[type="checkbox"] {
 			margin-right: 5px;
 		}
@@ -106,10 +108,19 @@
 			background-color: #fff;
 			outline: none;
 			margin-left: 5px;
+			border-radius: 2px;
+			height: 28px;
+		}
+		.warning {
+			font-size: 12px;
+			color:@brown-red;
+			margin-left: 8px;
+			white-space: nowrap;
 		}
 	}
 	.item-body-container {
 		&.watchlist {
+			white-space: nowrap;
 			color: #aaa;
 			>span {
 				margin-right: 10px;
@@ -123,6 +134,8 @@
 				select {
 					outline: none;
 					margin-right: 5px;
+					height: 28px;
+					border-radius: 2px;
 				}
 			}
 		}
@@ -238,7 +251,7 @@
 	}
 
 	.footer {
-		margin-top: 50px;
+		margin-top: 40px;//50px;
 		button {
 			width: 165px;
 			margin-left: 25%;
