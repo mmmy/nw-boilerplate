@@ -62,7 +62,8 @@ let searchPattern = (args, cb, errorCb) => {
 
 		resObj.results.forEach((pattern, i) => {
 
-			const {id, similarity= resObj.similarities && resObj.similarities[i], vsimilarity = Math.random(), begin, end, industry=getIndustry(id), type=interval} = pattern;
+			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type=interval} = pattern;
+			const vsimilarity = resObj.volumeSim && resObj.volumeSim[i] || 0;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];

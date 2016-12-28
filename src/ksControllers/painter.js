@@ -43,6 +43,7 @@ options: {
 	overfowPaneBottom:
 	volume: false,
 	volumeHeight: 0.2,
+	klineGapBottom: 0,
 }
 **/
 let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C, L,H]
