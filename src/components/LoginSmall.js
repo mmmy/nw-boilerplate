@@ -245,9 +245,12 @@ class Login extends React.Component {
 		var postData = 'username='+ encodeURIComponent(username)+'&password='+encodeURIComponent(password);
 		udf.getLoginInfo(postData, function(data) {
 			if (data) loginstate = data;
-			if (!loginstate.session) {
+			if (!loginstate.success) {
 				//console.log('login fail');
-				that.setState({isLogining: false, passwordError:false, errorText:'用户名或者密码错误 !'});
+				var errorText = '用户名或者密码错误';
+				if(loginstate.code == 10001) errorText = '用户名不存在!';
+				else if(loginstate.code == 10002) errorText = '密码不正确!';
+				that.setState({isLogining: false, passwordError:false, errorText:errorText});
 				return; 
 			} // else console.log("login success");
 			try {
