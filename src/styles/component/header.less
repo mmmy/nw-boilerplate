@@ -46,35 +46,46 @@
 		.user-panel-container {
 			position: absolute;
 			width: 160px;
-			height: 120px;
+			text-align: left;
+			padding: 20px;
+			// height: 120px;
 			right: 0;
 			top: 30px;
 			min-width: 50px;
+			font-size: 12px;
 			//width: 50px;
 			// padding: 5px 10px;
 			background-color: white;
 			border-radius: 5px;
 			.modal-box-shadow();
 			color: @ks-color-gray-1;
+			cursor: default;
 			.username {
-				padding-bottom: 10px;
-				margin: 20px;
-				text-align: center;
-				cursor: default;
-				border-bottom: 1px solid #eee;
+				padding-bottom: 5px;
+				// margin: 20px;
+				// text-align: center;
+				// border-bottom: 1px solid #eee;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				&:hover{
 					// color: @ks-color-gray-3;
 				}
 			}
+			hr {
+				margin-top: 10px;
+				margin-bottom: 10px;
+				border-color: #666;
+			}
 			.logout-btn {
-				width: 100px;
-				height: 30px;
-				line-height: 30px;
+				text-align: center;
+				margin-top: 10px;
+				width: 60px;
+				height: 24px;
+				line-height: 24px;
 				background-color: #eee;
 				border-radius: 2px;
-				margin-left: 30px;
+				cursor: pointer;
+				// margin-left: 30px;
 				color: #666;
 				&:hover {
 					.ks-button-hover();

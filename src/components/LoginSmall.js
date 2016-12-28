@@ -240,16 +240,19 @@ class Login extends React.Component {
 		let autoLogin = this.state.autoLogin;
 
 		var udf = require('../backend/udf');
-		var loginstate = {success:false};
+
 		//udf.getLoginInfo({username: username,password:password}, function(data) {if(data)loginstate=data;});
 		var postData = 'username='+ encodeURIComponent(username)+'&password='+encodeURIComponent(password);
 		udf.getLoginInfo(postData, function(data) {
-			if (data) loginstate = data;
-			if (!loginstate.success) {
+			var loginstate = data;
+			if (!loginstate || (loginstate.code != 0 && loginstate.code != 10003/*用户过期*/)) {
 				//console.log('login fail');
-				var errorText = '用户名或者密码错误';
-				if(loginstate.code == 10001) errorText = '用户名不存在!';
-				else if(loginstate.code == 10002) errorText = '密码不正确!';
+				var errorText = '登录错误,请联系拱石获取帮助';
+				if(loginstate) {
+					if(loginstate.code == 10001) errorText = '用户名不存在!';
+					else if(loginstate.code == 10002) errorText = '密码不正确!';
+					else if(loginstate.code == 10004) errorText = '服务器内部错误!';
+				}
 				that.setState({isLogining: false, passwordError:false, errorText:errorText});
 				return; 
 			} // else console.log("login success");
@@ -270,7 +273,7 @@ class Login extends React.Component {
 			setTimeout(function(){
 				autoLogin ? storageAccount(username, password) : removeAccount();
 				window.document.body.style.opacity = '';
-				onLogined && onLogined(username, password, autoLogin, (error) => { 
+				onLogined && onLogined({username, password, autoLogin, loginState:loginstate}, (error) => { 
 					if(!error) {
 						saveUser(username, password);
 					}

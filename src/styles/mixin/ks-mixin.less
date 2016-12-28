@@ -554,3 +554,15 @@ input[disabled] {
 		}
 	}
 }
+
+a.link {
+	text-decoration: underline;
+	[theme='dark'] & {
+		color: #fff;
+		&:hover {
+			color: #aaa;
+		}
+	}
+	cursor: pointer;
+	margin-bottom: 10px;
+}

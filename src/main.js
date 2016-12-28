@@ -9,14 +9,14 @@ let { initJquery, initAfterLogin } = init;
 
 let showLogin = login.showLogin;
 
-let loginSuccess = (username, password, autologin, cb) => {
+let loginSuccess = (info, cb) => {
   let actionsForIframe = require('./shared/actionsForIframe'),
       store = require('./store'),
       actions = require('./flux/actions'),
       app = require('./app');
   initAfterLogin();
   actionsForIframe(store);
-  store.dispatch(actions.accountActions.setUser(username, password, autologin));
+  store.dispatch(actions.accountActions.setUser(info));
   app();
   cb && cb();
   // setTimeout(waitingWidget.removeWaiting,2000);
