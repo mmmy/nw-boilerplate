@@ -82,7 +82,7 @@ class PatternCollection extends React.Component {
 		let $patternViews = $(this.refs.container).find('.pattern-view:visible');
 		if($patternViews.length > 0) {
 			let width = $patternViews[0].clientWidth,
-					height = width * 230 / 160;
+					height = width * 260 / 160;
 			$patternViews.height(height);
 			callFunc();
 		}

@@ -60,7 +60,7 @@ class PatternInfo extends React.Component {
 
 	render(){
 		//console.log('pattern-info-container');
-		let {similarity} = this.props.pattern;
+		let {similarity, vsimilarity} = this.props.pattern;
 		let yieldRate = this.props.pattern.yield;
 
 		let { column, index, fullView, isTrashed } = this.props;
@@ -78,16 +78,25 @@ class PatternInfo extends React.Component {
 		let switchWidget = this.state.showSwitch ? <div className='pattern-info-switch-wrapper'><Switch trasded={isTrashed} onToggle={this.props.toggleTrash}/></div> : '';
 		// console.log(column,smaller, index);
 		let brownRed = $.keyStone.configDefault.brownRed || '#8D151B';
+		let returnClass = classNames('font-number after-icon', {
+			up: yieldRate > 0,
+			plain: yieldRate == 0,
+			down: yieldRate < 0,
+		});
 
 		return (<div className = {containerClass} onMouseEnter={this.mouseEnter.bind(this)} onMouseLeave={this.mouseLeave.bind(this)}>
 			<div className = {flexClass}>
-				<div>
-					<h5 className='font-simsun'>相似度</h5>
+				<div className='item'>
+					<h5 className='font-simsun'>价相似度</h5>
 					<p className='font-number'>{(similarity*100 + '').slice(0, 4)}{'%'}</p>
 				</div>
-				{ (column && smaller) ? [] : (<div>
+				<div className='item'>
+					<h5 className='font-simsun'>量相似度</h5>
+					<p className='font-number'>{(vsimilarity*100 + '').slice(0, 4)}{'%'}</p>
+				</div>
+				{ (column && smaller) ? [] : (<div className='item return'>
 					<h5 className='font-simsun'>涨跌</h5>
-					<p className='font-number' style={{color: (yieldRate>0 ? brownRed : '')}}>{(yieldRate*100).toFixed(_decimal)+'%'}</p>
+					<p className={returnClass}>{(yieldRate*100).toFixed(_decimal)+'%'}</p>
 				</div>)}
 			</div>
 			{switchWidget}

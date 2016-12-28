@@ -15,8 +15,15 @@ const defaultProps = {
   
 };
 
-let generatePattenView = (symbol, imgSrc, similarity, yieldRate, describe) => {
-	let infoContainer = `<div class='pattern-info-container'><div class='flex-container'><div><h5 class='font-simsun'>相似度</h5><p class='font-number'>${similarity}</p></div><div><h5 class='font-simsun'>涨跌</h5><p class='font-number'>${yieldRate}</p></div></div></div>`;
+let generatePattenView = (symbol, imgSrc, similarity, vsimilarity, yieldRate, describe) => {
+	let infoContainer = `<div class='pattern-info-container'>
+												<div class='flex-container'>
+													<div class='item'><h5 class='font-simsun'>价相似度</h5><p class='font-number'>${similarity}</p></div>
+													<div class='item'><h5 class='font-simsun'>量相似度</h5><p class='font-number'>${vsimilarity}</p></div>
+													<div class='item return'><h5 class='font-simsun'>涨跌</h5><p class='font-number'>${yieldRate}</p></div>
+												</div>
+											</div>`;
+
 	return `<div class='pattern-view trashed'>
 						<div class='symbol-container font-arial'>
 							<span class='symbol'>${symbol}</span>
@@ -108,12 +115,13 @@ class TrashModal extends React.Component {
 			let imgSrc = node.find('img').attr('src');
 			let infoNode = node.find('.font-number');
 			let similarity = $(infoNode[0]).text();
-			let yieldRate = $(infoNode[1]).text();
+			let vsimilarity = $(infoNode[1]).text();
+			let yieldRate = $(infoNode[2]).text();
 			let pattern = patterns.rawData[id];
 
-			let patternViewNode = $(generatePattenView(symbol, imgSrc, similarity, yieldRate, describe));
+			let patternViewNode = $(generatePattenView(symbol, imgSrc, similarity, vsimilarity, yieldRate, describe));
 			
-			painter.drawKline(patternViewNode.find('canvas')[0], pattern && pattern.kLine || []);
+			painter.drawKline(patternViewNode.find('canvas')[0], pattern && pattern.kLine || [], {volume: true, volumeHeight: 1/6});
 
 			patternViewNode.mouseenter(function() {
 				/* Stuff to do when the mouse enters the element */

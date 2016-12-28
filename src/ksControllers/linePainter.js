@@ -14,6 +14,7 @@ let _priceToY = (height, yMax, yMin, price, volumeMaxHeight) => {
 高度, volume高度, volume最大值, volume值
  */
 let _volumeToY = (height, volumeMaxHeight, volumeMax, volume) => {
+    volumeMaxHeight -= 2;
     return _to05(height - volume / volumeMax * volumeMaxHeight);
 }
 /***

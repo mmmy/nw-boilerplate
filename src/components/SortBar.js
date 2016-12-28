@@ -164,7 +164,7 @@ class SortBar extends React.Component {
 							step={0.1} 
 							range 
 							value={[min, max]} 
-							onChange={this.rangeChange.bind(this)} 
+							onChange={this.rangeChange.bind(this, 'price')} 
 							onAfterChange={this.rangeChangeComplete.bind(this)} 
 							tipFormatter={ function(d) {return d+'%';} }
 						/>
@@ -207,7 +207,7 @@ class SortBar extends React.Component {
 
 	render(){
 		//let {sort} = this.props;
-		let {panelType, searchSymbol, values, openSearch} = this.state;
+		let {panelType, searchSymbol, values, vValues, openSearch} = this.state;
 
 		let searchIconClass = classNames('transition-all transition-ease transition-duration2 icon search', {
 			'active': openSearch,
@@ -220,7 +220,7 @@ class SortBar extends React.Component {
 
 		let filterIconClass = classNames('icon filter', {
 			'active': panelType === 1,
-			'red-circle': (values.min > 0 || values.max < 100)
+			'red-circle': (values.min > 0 || values.max < 100 || vValues.min > 0 || vValues.max < 100)
 		});
 
 		return (<div className="toolbar-container">
@@ -308,7 +308,8 @@ class SortBar extends React.Component {
 
 	handleFilterSimilarity(type) {
 		if(type === 'volume') {
-			
+			this.filterVSimilarity(this.state.vValues);
+			this.props.dispatch(filterActions.setFilterVSimilarity(this.state.vValues));
 		} else {
 			this.filterSimilarity(this.state.values);
 			this.props.dispatch(filterActions.setFilterSimilarity(this.state.values));	
@@ -318,6 +319,12 @@ class SortBar extends React.Component {
 	filterSimilarity({min, max}) {
 		this.initDimensions();
 		this.similarityDim.filter([min, max + 0.1]); //bug
+		DC.redrawAll();
+	}
+	
+	filterVSimilarity({min, max}) {
+		this.initDimensions();
+		this.vSimilarityDim.filter([min, max + 0.1]); //bug
 		DC.redrawAll();
 	}
 
@@ -339,6 +346,7 @@ class SortBar extends React.Component {
 				return [d.symbol, name];
 			});
 			this.similarityDim = crossFilter.dimension(function(d) {return Math.floor(d.similarity*1000) / 10; });
+			this.vSimilarityDim = crossFilter.dimension(function(d) {return Math.floor(d.vsimilarity*1000) / 10; });
 			this.oldCrossFilter = crossFilter;
 		}
 	}

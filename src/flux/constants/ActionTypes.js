@@ -16,7 +16,8 @@ export const SORT_PATTERNS = 'SORT_PATTERNS';
 export const SET_FILTER_INDUSTRY = 'SET_FILTER_INDUSTRY';     //filter行业
 export const SET_FILTER_YIELDRANGE = 'SET_FILTER_YIELDRANGE'; 		//filter收益率
 export const SET_FILTER_SYMBOL = 'SET_FILTER_SYMBOL';           //symbol filter
-export const SET_FILTER_SIMILARITY = 'SET_FILTER_SIMILARITY';   //相似度范围过滤
+export const SET_FILTER_SIMILARITY = 'SET_FILTER_SIMILARITY';   //价相似度范围过滤
+export const SET_FILTER_VSIMILARITY = 'SET_FILTER_VSIMILARITY';   //量相似度范围过滤
 export const SET_FILTER_YIELDDATERANGE = 'SET_FILTER_YIELDDATERANGE';   //时间范围过滤
 export const SET_FILTER_ID = 'SET_FILTER_ID';
 

@@ -5,6 +5,7 @@ const initialState = {
 	yieldRange: [], //收益率
 	symbol: '',
 	similarity: {min:0, max:100},
+	vsimilarity: {min:0, max:100},
 	yieldDateRange: [],
 	trashedIdArr: []
 };
@@ -60,6 +61,15 @@ export default function filter(state = initialState, actions) {
 			return {
 				...state,
 				similarity,
+			};
+		
+		case types.SET_FILTER_VSIMILARITY:
+
+			let { vsimilarity } = actions;
+
+			return {
+				...state,
+				vsimilarity,
 			};
 
 		case types.SET_FILTER_YIELDDATERANGE:
