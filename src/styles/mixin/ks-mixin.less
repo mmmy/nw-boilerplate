@@ -520,3 +520,37 @@ input[disabled] {
 .ks-tooltip {
 	cursor: pointer;
 }
+
+.after-icon {
+	&:after {
+		content: ' ';
+		display: inline-block;
+		vertical-align: middle;
+		vertical-align: -1px;
+		margin-left: 5px;
+	}
+	&.up {
+		color: @brown-red !important;
+		&:after {
+			background-image: url('./image/up_small.png');
+			width: 10px;
+			height: 12px;
+		}
+	}
+	&.down {
+		color: @dark-green !important;
+		&:after {
+			background-image: url('./image/down_small.png');
+			width: 10px;
+			height: 12px;
+			vertical-align: -2px;
+		}
+	}
+	&.plain {
+		&:after {
+			background-image: url('./image/plain_small.png');
+			width: 12px;
+			height: 10px;
+		}
+	}
+}
