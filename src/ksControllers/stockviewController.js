@@ -182,10 +182,10 @@ let getIntervalString = (interval) => {
 };
 
 let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 trashed
-	let startDateStr = pattern.dateRange && new Date(pattern.dateRange[0]).toISOString() || '',
-			endDateStr = pattern.dateRange && new Date(pattern.dateRange[1]).toISOString() || '';
-	startDateStr = startDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
-	endDateStr = endDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
+	let startDateStr = pattern.dateRange && new Date(pattern.dateRange[0]).toLocaleString('cn',{hour12:false}) || '',
+			endDateStr = pattern.dateRange && new Date(pattern.dateRange[1]).toLocaleString('cn',{hour12:false}) || '';
+	// startDateStr = startDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
+	// endDateStr = endDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
 
 	let state = pattern.state || {};
 
