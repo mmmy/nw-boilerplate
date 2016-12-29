@@ -65,7 +65,10 @@ body[theme="dark"] {
 	}
 
 	.modal-overlay {
-		background-color: rgba(0, 0, 0, 0.6)
+		background-color: rgba(0, 0, 0, 0.6);
+		&.black {
+			background-color: rgba(0, 0, 0, 1);
+		}
 	}
 	.modal-confirm-container {
 		background-color: @dark-bg-inner-lighter;

@@ -1,6 +1,8 @@
 import React from 'react';
 import PredictionWidget from '../../src/ksControllers/PredictionWidget';
 import BlockHeatMap from '../../src/ksControllers/BlockHeatMap';
+import updateLog from '../../src/ksControllers/updateLog';
+import trialReminder from '../../src/ksControllers/trialReminder';
 
 var data = [
 		    ['2013/1/24', 2320.26,2320.26,2287.3,2362.94,102],
@@ -49,6 +51,8 @@ export default React.createClass({
 		window.addEventListener('resize', () => {
 			that._widget.resize();
 		});
+		// updateLog.show();
+		trialReminder.show();
 	},
 
 	render(){

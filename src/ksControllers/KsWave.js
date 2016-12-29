@@ -14,7 +14,6 @@ KsWave.prototype._init = function() {
 	let el = this._canvas;
 	const speed = this._slow ? this._slowSpeed : this._baseSpeed;
 	let SineWaves = getSineWaves();
-	return;
 	this._waves = new SineWaves({
 		// Canvas Element
 		el: el,

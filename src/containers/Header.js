@@ -141,6 +141,10 @@ class Header extends React.Component {
 		let {dispatch} = this.props;
 		dispatch(accountActions.setUser(info));
 		// $('.container-toggle').css('z-index', '');
+		  //检查用户过期信息
+	  if(require('../ksControllers/trialReminder').check(info)) {
+	    //没有过期
+	  }
 		cb && cb();
 	}
 
@@ -186,7 +190,7 @@ class Header extends React.Component {
 	}
 
 	showUpdateLog() {
-
+		require('../ksControllers/updateLog').show();
 	}
 }
 
