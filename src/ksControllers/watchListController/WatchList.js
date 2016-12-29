@@ -16,9 +16,19 @@ var defaultSearchConfig = {
 };
 
 /*config: {
-	dataList:[]
+	dataList:[],
+	dom
+	}
  -----------------------------*/
 function WatchList(config) {
+	config = config || {};
+	this._category = config.category || 'default'; //分类
+	var storage = window.actionsForIframe.mockStorage ? window.actionsForIframe.mockStorage() : require('../../backend/watchlistStorage').getDataFromStorage(this._category);
+	this._searchConfig = storage.searchConfig || defaultSearchConfig;
+	this._list = storage.list || [];
+	this._resolution = storage.resolution || 'D';
+	this._baseBars = storage.baseBars || 30;
+	
 	var that = this;
 	this._dataFeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10000 * 1000, 2, 0);
 	//先获取更新symbolList 列表, 消除symbollist没有被tradingview加载的时候, 获取k线数据错误
@@ -29,13 +39,6 @@ function WatchList(config) {
 }
 
 WatchList.prototype._init = function(config) {
-	config = config || {};
-	this._category = config.category || 'default'; //分类
-	var storage = window.actionsForIframe.mockStorage ? window.actionsForIframe.mockStorage() : require('../../backend/watchlistStorage').getDataFromStorage(this._category);
-	this._searchConfig = storage.searchConfig || defaultSearchConfig;
-	this._list = storage.list || [];
-	this._resolution = storage.resolution || 'D';
-	this._baseBars = storage.baseBars || 30;
 
 	this._wrapper = config.dom;
 	this._$container = $(`<div class="watchlist-container">

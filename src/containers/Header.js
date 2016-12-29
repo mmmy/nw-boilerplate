@@ -5,6 +5,7 @@ import {accountActions} from '../flux/actions';
 import classNames from 'classnames';
 import { removeAccount } from '../backend/localStorage';
 import nwApp from '../shared/nwApp';
+import pkg from '../../package.json';
 
 const propTypes = {
 	stretchView: PropTypes.bool,
@@ -79,7 +80,20 @@ class Header extends React.Component {
 	
 	renderToolbar() {
 		let {account} = this.props;
-		let userPanel = this.state.showUserPanel ? <div className='user-panel-container'><div className='username'>{account.username}</div><div className="logout-btn" onClick={this.handleLogout.bind(this)}>登出</div></div> : '';
+		let loginState = account.loginState;
+		let userPanel = this.state.showUserPanel 
+											? 
+											<div className='user-panel-container'>
+												<div className='username'>{account.username}</div>
+												<div className='userType red'>{loginState && loginState.userType && loginState.userType.toUpperCase() == 'VIP' ? 'VIP用户' : '试用账户'}</div>
+												<div className='days-remain red'>有效期剩余 {loginState && loginState.expireInDay} 天</div>
+												<hr />
+												<div className='version'>当前版本: {pkg.version}</div>
+												<a className='link udpate-log' onClick={this.showUpdateLog}>更新日志</a>
+												<div className="logout-btn" onClick={this.handleLogout.bind(this)}>登出</div>
+											</div> 
+											: 
+											'';
 
 		let toolbar = <div className='header-toolbar-container flex-center' onMouseUp={function(e){ e.stopPropagation(); }}>
 			<button className='account-button' onBlur={this.hideUserPanel.bind(this)} onClick={this.showLoginPanel.bind(this)}>{userPanel}</button>
@@ -123,10 +137,14 @@ class Header extends React.Component {
 		this.setState({showUserPanel: false});
 	}
 
-	handleLogined(username, password, autoLogin, cb) {
+	handleLogined(info, cb) {
 		let {dispatch} = this.props;
-		dispatch(accountActions.setUser(username, password, autoLogin));
+		dispatch(accountActions.setUser(info));
 		// $('.container-toggle').css('z-index', '');
+		  //检查用户过期信息
+	  if(require('../ksControllers/trialReminder').check(info)) {
+	    //没有过期
+	  }
 		cb && cb();
 	}
 
@@ -169,6 +187,10 @@ class Header extends React.Component {
 
 	handleAppClose() {
 		nwApp.appClose();
+	}
+
+	showUpdateLog() {
+		require('../ksControllers/updateLog').show();
 	}
 }
 

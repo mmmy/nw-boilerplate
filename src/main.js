@@ -9,15 +9,25 @@ let { initJquery, initAfterLogin } = init;
 
 let showLogin = login.showLogin;
 
-let loginSuccess = (username, password, autologin, cb) => {
+let loginSuccess = (info, cb) => {
   let actionsForIframe = require('./shared/actionsForIframe'),
       store = require('./store'),
       actions = require('./flux/actions'),
       app = require('./app');
   initAfterLogin();
   actionsForIframe(store);
-  store.dispatch(actions.accountActions.setUser(username, password, autologin));
-  app();
+  store.dispatch(actions.accountActions.setUser(info));
+  var onClose = (isExpired) => {
+    if(!isExpired) {
+      //显示更新日志
+      require('./ksControllers/updateLog').check();
+    }
+  };
+  //检查用户过期信息
+  if(require('./ksControllers/trialReminder').check(info, onClose)) {
+    //没有过期
+    app();
+  }
   cb && cb();
   // setTimeout(waitingWidget.removeWaiting,2000);
 };

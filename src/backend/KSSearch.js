@@ -72,6 +72,7 @@ let searchPattern = ({ symbol, kline, dateRange, bars, additionDate, searchLenMa
 			"close": onekline[2],
 			"low": onekline[3],
 			"high": onekline[4],
+			"volume": onekline[5] ? onekline[5] : 0,
 		}
 	};
 

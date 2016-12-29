@@ -12,6 +12,7 @@ import ConfirmModal from './ConfirmModal';
 
 let _searchEditorHistory = null;
 let _searchEditorFavorites = null;
+let drawKlineOption = {volume:true, volumeHeight:1/6, klineGapBottom: 10};
 
 //显示K线编辑器
 let _createDetailPanel = (parentDom, type, dataObj) => {
@@ -181,10 +182,10 @@ let getIntervalString = (interval) => {
 };
 
 let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 trashed
-	let startDateStr = pattern.dateRange && new Date(pattern.dateRange[0]).toISOString() || '',
-			endDateStr = pattern.dateRange && new Date(pattern.dateRange[1]).toISOString() || '';
-	startDateStr = startDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
-	endDateStr = endDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
+	let startDateStr = pattern.dateRange && new Date(pattern.dateRange[0]).toLocaleString('cn',{hour12:false}) || '',
+			endDateStr = pattern.dateRange && new Date(pattern.dateRange[1]).toLocaleString('cn',{hour12:false}) || '';
+	// startDateStr = startDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
+	// endDateStr = endDateStr.slice(0, 19).replace(/-/g,'.').replace(/T/,' ');
 
 	let state = pattern.state || {};
 
@@ -220,7 +221,7 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 			$node.find('.re-search').click(_handleReSearch.bind(null,{favoriteFolder}));  //再次搜索
 			$node.find('.go-detail').click(_handleDetail);  //再次搜索
 			$node.find('.recover').click(_handleRecoverPattern);
-			drawKline($node.find('canvas.kline')[0], pattern.kline, {volume:true, volumeHeight:1/6});
+			drawKline($node.find('canvas.kline')[0], pattern.kline, drawKlineOption);
 
 	//init tooltip
 	$node.find('[data-kstooltip]').ksTooltip();
@@ -469,7 +470,7 @@ let _insertHistoryMonth = (date) => {
 let _addNewDayWrapper = (data, isInsert, $wrapper0) => {  //插入历史
 	if(isInsert) {
 		let $newHistoryItem = $(_generatePattern(data, 1));
-		drawKline($newHistoryItem.find('canvas')[0], data.kline, {volume:true, volumeHeight:1/6});
+		drawKline($newHistoryItem.find('canvas')[0], data.kline, drawKlineOption);
 		$wrapper0.find('.history-items-wrapper').prepend($newHistoryItem);
 	}else {
 		// let $newWrapper = $(_generatePatterns(data, 1, new Date()));
@@ -543,7 +544,7 @@ let _refreshBodyItemUI = (ele) => {
 
 	$ele.find('.name').text(name);
 	$ele.find('.header-info').text(`${klineLen}根K线`);
-	drawKline($ele.find('canvas.kline')[0], data.kline, {volume:true, volumeHeight:1/6});
+	drawKline($ele.find('canvas.kline')[0], data.kline, drawKlineOption);
 }
 
 let _refreshFavoritesBody = () => {

@@ -21,6 +21,8 @@ const propTypes = {
 	filter: PropTypes.object,
 };
 
+const patternViewRate = 260 / 160;
+
 const defaultProps = {
   	
 };
@@ -78,13 +80,15 @@ class PatternCollection extends React.Component {
 		//this._idTrashed = _idTrashed;
 	}
 
-	handleResize() {
+	handleResize(e, slient) {
 		let $patternViews = $(this.refs.container).find('.pattern-view:visible');
 		if($patternViews.length > 0) {
 			let width = $patternViews[0].clientWidth,
-					height = width * 230 / 160;
+					height = width * patternViewRate;
 			$patternViews.height(height);
-			callFunc();
+			if(!slient) {
+				callFunc();
+			} 
 		}
 	}
 
@@ -136,7 +140,10 @@ class PatternCollection extends React.Component {
 				$('.pattern-view', node).addClass('hide');
 				if(showNotTrashed){ 																				//alway true
 					idArr.forEach((id) => {
-						$(`#pattern_view_${id}`,node).removeClass('hide');
+						var $patternView = $(`#pattern_view_${id}`,node).removeClass('hide');
+						// var width = $patternView.width();
+						// $patternView.height(width * patternViewRate);       //设置高度, 以防没有对齐
+
 						closePrice[id] && closePriceFiltered.push(closePrice[id]);
 					});
 				}
@@ -145,6 +152,7 @@ class PatternCollection extends React.Component {
 						isTrashed && $(`#pattern_view_${id}`,node).removeClass('hide');
 					});
 				}
+				this.handleResize(null, false);
 				$(node).toggleClass('empty', $('.pattern-view:visible', node).length == 0);
 				
 				//更新统计信息, 极值统计, 回撤统计, 振幅统计

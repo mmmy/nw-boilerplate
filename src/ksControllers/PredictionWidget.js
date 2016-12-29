@@ -43,7 +43,7 @@ let PredictionWidget = function(dom, config){
 	this._showRange = Boolean(config.showRange);
 	this._slient = Boolean(config.slient);
 	let rate = parseFloat(config.klineScaleRate);
-	this._klineScaleRate = isNaN(rate) ? 1.5 : rate;
+	this._klineScaleRate = isNaN(rate) ? 1.25 : rate;
 
 	this._activeLine = this._slient ? -1 : 0;
 

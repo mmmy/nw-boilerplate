@@ -51,9 +51,9 @@ body[theme="dark"] {
 
 	.header-toolbar-container .account-button .user-panel-container {
 		background-color: lighten(@dark-bg-inner-lighter, 8%);
-		color: @dark-graytitle;
+		color: #fff;// @dark-graytitle;
 		.username {
-			border-color: #999;
+			// border-color: #999;
 		}
 		.logout-btn {
 			color: white;
@@ -65,7 +65,10 @@ body[theme="dark"] {
 	}
 
 	.modal-overlay {
-		background-color: rgba(0, 0, 0, 0.6)
+		background-color: rgba(0, 0, 0, 0.6);
+		&.black {
+			background-color: rgba(0, 0, 0, 1);
+		}
 	}
 	.modal-confirm-container {
 		background-color: @dark-bg-inner-lighter;
@@ -161,6 +164,13 @@ body[theme="dark"] {
 				opacity: 0.5;
 				background-color: transparent;//@dark-bg-inner-lighter-btn;
 			}
+		}
+	}
+	//排序按钮
+	.sort-btn .sorticons-container {
+		color: #333;
+		.active {
+			color: #ccc;
 		}
 	}
 }

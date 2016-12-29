@@ -494,12 +494,19 @@ PredictionWatch.prototype.updateConfig = function(config) {
 }
 //详细搜索结果
 PredictionWatch.prototype._searchDetail = function() {
+	var kline = this.__searchMetaData.kline;
+	var dateRange = [];
+	if(kline.length > 0) {
+		dateRange[0] = new Date(kline[0][0] * 1000);
+		dateRange[1] = new Date(kline[kline.length - 1][0] * 1000);
+	}
 	var param ={
 		symbol : this._symbolInfo.symbol,
-		bars : this.__searchMetaData.kline.length,
+		bars : kline.length,
+		dateRange: dateRange,
 		interval : this._resolution,
 		type : this._symbolInfo.type,
-		kline : this.__searchMetaData.kline,
+		kline : kline,
 		searchConfig : this._searchConfig
 	}
 	var actions = require('../../flux/actions');

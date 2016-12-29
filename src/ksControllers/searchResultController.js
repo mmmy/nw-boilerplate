@@ -1,8 +1,6 @@
 //搜索结果底部展示controller
 import { getKlineImgSrc } from './publicHelper';
-// import { generateHeatMapOption } from '../components/utils/heatmap-options';
 import statisticKline from '../components/utils/statisticKline';
-// import echarts from 'echarts';
 import painter from './painter';
 import store from '../store';
 import { getDecimalForStatistic } from '../shared/storeHelper';

@@ -48,7 +48,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 	const { symbol, kline, bars, dateRange, searchConfig, dataCategory, interval} = args;
 
-	let { additionDate, searchLenMax, isLatestDate, similarityThreshold } = searchConfig;
+	let { additionDate, searchLenMax, isLatestDate, similarityThreshold, vsimilarityThreshold} = searchConfig;
 
 	let dr = searchConfig.dateRange;
 
@@ -62,13 +62,16 @@ let searchPattern = (args, cb, errorCb) => {
 
 		resObj.results.forEach((pattern, i) => {
 
-			const {id, similarity= resObj.similarities && resObj.similarities[i], vsimilarity = Math.random(), begin, end, industry=getIndustry(id), type=interval} = pattern;
+			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type=interval} = pattern;
+			const vsimilarity = resObj.volumeSim && resObj.volumeSim[i] || 0;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];
 			//let id = i;
 			//没有定义, 或者为false, 或者为true的时候在过滤范围内 , 这3个条件push
-			if((!similarityThreshold) || (!similarityThreshold.on) || (similarityThreshold.on && (similarity >= similarityThreshold.value))) {
+			var threshold0 = (!similarityThreshold) || (!similarityThreshold.on) || (similarityThreshold.on && (similarity >= similarityThreshold.value));
+			var threshold1 = (!vsimilarityThreshold) || (!vsimilarityThreshold.on) || (vsimilarityThreshold.on && (vsimilarity >= vsimilarityThreshold.value));
+			if(threshold0 && threshold1) {
 				__data.push({
 					id: i,
 					symbol: id,
