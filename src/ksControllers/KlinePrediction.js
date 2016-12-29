@@ -45,7 +45,7 @@ function KlinePrediction(container, config) {
 	this._timeInterval = 'D';
 	this._symbolName = '';
 	this._symbolDescribe = '';
-	this._klineScaleRate = 1.5;
+	this._klineScaleRate = 1.3;
 
 	this._predictionPriceMin = 0; //记录预测部分kline价格下限
 	this._predictionPriceMax = 0; //记录预测部分kline价格上限
@@ -75,7 +75,8 @@ function KlinePrediction(container, config) {
 		overflowPane: false, //超出上界面的内阴影
 		overflowPaneBottom: false, //超出上界面的内阴影
 		volume: true,
-		volumeHeight: 0.2,
+		volumeHeight: 0.19,
+		centerKline: true
 	};
 	this._yDrawOption = {
 		hoverY: -1,

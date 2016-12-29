@@ -8,10 +8,10 @@ let _toInt = (number) => {
 	return Math.round(number);
 };
 
-let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H, V, volumeMax, volumeMaxHeight, klineGapBottom) => {
+let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H, V, volumeMax, volumeMaxHeight, klineGapBottom, centerKline) => {
 	volumeMaxHeight = volumeMaxHeight || 0;
 	klineGapBottom = klineGapBottom || 0;
-	let rate = (viewYHeight - klineGapBottom - volumeMaxHeight) / (yMin - yMax);
+	let rate = (viewYHeight - klineGapBottom - (centerKline ? 0 : volumeMaxHeight)) / (yMin - yMax);
 	let oY = (O - yMax) * rate + marginTop,
 			cY = (C - yMax) * rate + marginTop,
 			lY = (L - yMax) * rate + marginTop,
@@ -44,6 +44,7 @@ options: {
 	volume: false,
 	volumeHeight: 0.2,
 	klineGapBottom: 0,
+	centerKline:false, //当绘制交易量的时候有时需要将K线绘制到中心
 }
 **/
 let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C, L,H]
@@ -62,6 +63,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let height = dom.height - 1;
 
 	let volume = options && options.volume || false;
+	let centerKline = options && options.centerKline || false;
 	//绘制volume的高度比例, 那么K线的高度为0.8;
 	let volumeHeight = options && options.volumeHeight || 0.2;
 	//绘制K线底部与volume的间隔, 以防靠的太近
@@ -142,7 +144,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		x = _to05(x);
 		let prices = kline[i];
 		isUpCandle.push(prices[2] >= prices[1]);
-		let ys = _dataToPointY(top, viewYheight, min, max, prices[1], prices[2], prices[3], prices[4], prices[5], volumeMax, volumeMaxHeight, klineGapBottom);
+		let ys = _dataToPointY(top, viewYheight, min, max, prices[1], prices[2], prices[3], prices[4], prices[5], volumeMax, volumeMaxHeight, klineGapBottom, centerKline);
 
 		// console.assert(ys.open < (height - top));
 		// console.assert(ys.close < (height - top));

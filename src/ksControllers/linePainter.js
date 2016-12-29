@@ -1,5 +1,5 @@
 
-import { betterCanvasSize } from './canvasHelper';
+import { betterCanvasSize, getCanvasPixRatio } from './canvasHelper';
 
 let _to05 = (number) => {
     return Math.floor(number) + 0.5;
@@ -39,6 +39,8 @@ let drawLines = (canvas, lines, options) => {
     var height = canvas.height,
         width = canvas.width;
 
+    var radio = getCanvasPixRatio();
+
     let strokeStyle = options && options.lineColor || 'rgba(200,200,200,0.5)';
     //dataLen :预测的天数
     var dataLen = options && options.dataLen || lines && lines[0] && (lines[0].length - 1),
@@ -50,7 +52,7 @@ let drawLines = (canvas, lines, options) => {
     var patterns = options && options.patterns || []; //需要获取volume 数据
     var volumeHeight = options && options.volumeHeight || 0.2;
     var padding = options && options.padding || {};
-    var right = padding.right || 0;
+    var right = padding.right * radio || 0;
 
     var volume = patterns.length > 0;
     var volumeMaxHeight = 0;
