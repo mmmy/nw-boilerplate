@@ -80,7 +80,7 @@ class PatternCollection extends React.Component {
 		//this._idTrashed = _idTrashed;
 	}
 
-	handleResize(slient) {
+	handleResize(e, slient) {
 		let $patternViews = $(this.refs.container).find('.pattern-view:visible');
 		if($patternViews.length > 0) {
 			let width = $patternViews[0].clientWidth,
@@ -152,7 +152,7 @@ class PatternCollection extends React.Component {
 						isTrashed && $(`#pattern_view_${id}`,node).removeClass('hide');
 					});
 				}
-				this.handleResize(true);
+				this.handleResize(null, false);
 				$(node).toggleClass('empty', $('.pattern-view:visible', node).length == 0);
 				
 				//更新统计信息, 极值统计, 回撤统计, 振幅统计

@@ -57,10 +57,12 @@ export default function filter(state = initialState, action) {
 
 		case types.CHANGE_PATTERNS: //重置
 
-			return {
-				...state,
-				sortType: ''
-			};
+			state.sortType = '';
+			return state;
+			// return {
+			// 	...state,
+			// 	sortType: ''
+			// };
 
 		default:
 		  	return state;
