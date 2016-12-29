@@ -80,13 +80,15 @@ class PatternCollection extends React.Component {
 		//this._idTrashed = _idTrashed;
 	}
 
-	handleResize() {
+	handleResize(slient) {
 		let $patternViews = $(this.refs.container).find('.pattern-view:visible');
 		if($patternViews.length > 0) {
 			let width = $patternViews[0].clientWidth,
 					height = width * patternViewRate;
 			$patternViews.height(height);
-			callFunc();
+			if(!slient) {
+				callFunc();
+			} 
 		}
 	}
 
@@ -139,8 +141,8 @@ class PatternCollection extends React.Component {
 				if(showNotTrashed){ 																				//alway true
 					idArr.forEach((id) => {
 						var $patternView = $(`#pattern_view_${id}`,node).removeClass('hide');
-						var width = $patternView.width();
-						$patternView.height(width * patternViewRate);       //设置高度, 以防没有对齐
+						// var width = $patternView.width();
+						// $patternView.height(width * patternViewRate);       //设置高度, 以防没有对齐
 
 						closePrice[id] && closePriceFiltered.push(closePrice[id]);
 					});
@@ -150,6 +152,7 @@ class PatternCollection extends React.Component {
 						isTrashed && $(`#pattern_view_${id}`,node).removeClass('hide');
 					});
 				}
+				this.handleResize(true);
 				$(node).toggleClass('empty', $('.pattern-view:visible', node).length == 0);
 				
 				//更新统计信息, 极值统计, 回撤统计, 振幅统计
