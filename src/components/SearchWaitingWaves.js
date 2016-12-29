@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import getSineWaves from './lib/sine-waves';
+import getSineWaves from '../../vendor/sine-waves';
 
 const propTypes = {
 	slow: PropTypes.bool

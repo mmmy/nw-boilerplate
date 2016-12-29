@@ -1,5 +1,5 @@
 
-import getSineWaves from '../components/lib/sine-waves';
+import getSineWaves from '../../vendor/sine-waves';
 
 function KsWave(canvas, config){
 	this._canvas = canvas;

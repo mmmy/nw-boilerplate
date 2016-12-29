@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 // import echarts from 'echarts';
 import classNames from 'classnames';
-import {factorCandleOption , factorLineOption} from './utils/echart-options';
+// import {factorCandleOption , factorLineOption} from './utils/echart-options';
 import store from '../store';
 import painter from '../ksControllers/painter';
 import updateEchartImage from './helper/updateEchartImage';

@@ -12,8 +12,8 @@ let initJquery = () => {
 };
 
 let initJqueryPlugins = () => {
-	require('./bootstrap-datepicker.min');
-	require('./bootstrap-datepicker.zh-CN.min');
+	require('../../vendor/bootstrap-datepicker.min');
+	require('../../vendor/bootstrap-datepicker.zh-CN.min');
 
 	require('./extendJquery')($);
 	//load tradingview libs
