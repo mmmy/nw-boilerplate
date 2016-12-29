@@ -21,6 +21,8 @@ const propTypes = {
 	filter: PropTypes.object,
 };
 
+const patternViewRate = 260 / 160;
+
 const defaultProps = {
   	
 };
@@ -82,7 +84,7 @@ class PatternCollection extends React.Component {
 		let $patternViews = $(this.refs.container).find('.pattern-view:visible');
 		if($patternViews.length > 0) {
 			let width = $patternViews[0].clientWidth,
-					height = width * 260 / 160;
+					height = width * patternViewRate;
 			$patternViews.height(height);
 			callFunc();
 		}
@@ -136,7 +138,10 @@ class PatternCollection extends React.Component {
 				$('.pattern-view', node).addClass('hide');
 				if(showNotTrashed){ 																				//alway true
 					idArr.forEach((id) => {
-						$(`#pattern_view_${id}`,node).removeClass('hide');
+						var $patternView = $(`#pattern_view_${id}`,node).removeClass('hide');
+						var width = $patternView.width();
+						$patternView.height(width * patternViewRate);       //设置高度, 以防没有对齐
+
 						closePrice[id] && closePriceFiltered.push(closePrice[id]);
 					});
 				}
