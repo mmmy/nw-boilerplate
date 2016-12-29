@@ -61,6 +61,8 @@ class PatternInfo extends React.Component {
 	render(){
 		//console.log('pattern-info-container');
 		let {similarity, vsimilarity} = this.props.pattern;
+		similarity = typeof similarity == 'undefined' ? 0 : similarity;
+		vsimilarity = typeof vsimilarity == 'undefined' ? 0 : vsimilarity;
 		let yieldRate = this.props.pattern.yield;
 
 		let { column, index, fullView, isTrashed } = this.props;
@@ -88,11 +90,11 @@ class PatternInfo extends React.Component {
 			<div className = {flexClass}>
 				<div className='item'>
 					<h5 className='font-simsun'>价相似度</h5>
-					<p className='font-number'>{(similarity*100 + '').slice(0, 4)}{'%'}</p>
+					<p className='font-number'>{(similarity.toFixed(4)*100 + '').slice(0, 4)}{'%'}</p>
 				</div>
 				<div className='item'>
 					<h5 className='font-simsun'>量相似度</h5>
-					<p className='font-number'>{(vsimilarity*100 + '').slice(0, 4)}{'%'}</p>
+					<p className='font-number'>{(vsimilarity.toFixed(4)*100 + '').slice(0, 4)}{'%'}</p>
 				</div>
 				{ (column && smaller) ? [] : (<div className='item return'>
 					<h5 className='font-simsun'>涨跌</h5>
