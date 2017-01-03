@@ -112,7 +112,7 @@ class PatternCollection extends React.Component {
 		 * filter手动刷新
 		 */
 		//return;
-		let {crossFilter, closePrice, searchMetaData, searchConfig} = newProps.patterns;
+		let {crossFilter, closePrice, searchMetaData, searchConfig, sort} = newProps.patterns;
 		if(this.oldCrossFilter !== crossFilter) {
 			$(".start-btn-container").addClass('hide'); //隐藏预测工具栏
     	$(".toolbar-item.item1").removeClass('hide');     //显示pattern过滤工具栏
@@ -124,6 +124,8 @@ class PatternCollection extends React.Component {
 			//idDim , 剔除dimentsion
 			this.idDim = crossFilter.dimension(d=>{ return d.id; });
 			_idTrashed = [];
+			//v2.1, 修复, 重新搜索后排序还是旧数据的bug, 这是思路一, 思路二: 重置this.sortedData = [];
+			this.sortedData = [];
 			$('.trashed-number', '.pattern-statistics-panel').text('');			
 		}
 
@@ -233,7 +235,7 @@ class PatternCollection extends React.Component {
 		}
 		return 	(newProps.filter === this.props.filter)    //filter更新后不进行自动刷新, 而是在componentWillReceiveProps 进行手动刷新
 						&& (newProps.active.id === this.props.active.id)   //点击patternview
-						&& (newProps.patternTrashed === this.props.patternTrashed) //eye
+						&& (newProps.patternTrashed === this.props.patternTrashed) //eye 弃用
 						//&& (newProps.fullView === this.props.fullView)   //视图切换
 		// return (newProps.sort !== this.props.sort) || (newProps.patterns != this.props.patterns);
 	}
@@ -245,11 +247,12 @@ class PatternCollection extends React.Component {
 	componentDidUpdate() {
 		// console.info('patterns collections view  did update', new Date() - this.renderDate);
 		// console.info('patterns collections view  did update2', new Date() - this.renderDate2);
-		if(!this.props.fullView) {
+
+		/*  现在不会执行 v2.1
+		if(!this.props.fullView) { 
 			//console.log('patternCollection did update');
 			this.refs.container.scrollTop = 0;
 			let parent = $(this.refs.container);
-			console.debug(__visibleNumber);
 			if(__visibleNumber < 5) {
 				let placeHolders = generatePlaceHolder(5 - __visibleNumber);
 				placeHolders.forEach((e) => {
@@ -259,6 +262,7 @@ class PatternCollection extends React.Component {
 		} else {
 			$('.pattern-view.holder', this.refs.container).remove();
 		}
+		*/
 	}
 
 	sortData(rawData){
@@ -267,7 +271,7 @@ class PatternCollection extends React.Component {
 		//bug
 		//如果 sortType 没有变化那么不需要重新排序
 		// console.info('oldSortType',this.oldSortType,'sortType', sortType);
-		if(this.oldSortType === sortType) {
+		if(this.oldSortType === sortType && this.sortedData && this.sortedData.length > 0) {
 			console.info('sortType 没有变化那么不需要重新排序');
 			return this.sortedData;
 		}
