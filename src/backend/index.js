@@ -59,6 +59,7 @@ let searchPattern = (args, cb, errorCb) => {
 		__data = [];
 		__closePrice = [];
 		var args = [];
+		var index = 0; //注意id永远是连续的!
 
 		resObj.results.forEach((pattern, i) => {
 
@@ -73,7 +74,7 @@ let searchPattern = (args, cb, errorCb) => {
 			var threshold1 = (!vsimilarityThreshold) || (!vsimilarityThreshold.on) || (vsimilarityThreshold.on && (vsimilarity >= vsimilarityThreshold.value));
 			if(threshold0 && threshold1) {
 				__data.push({
-					id: i,
+					id: index++,
 					symbol: id,
 					similarity: similarity,//_growSimilarity(similarity),
 					vsimilarity: vsimilarity,//交易量相似度
