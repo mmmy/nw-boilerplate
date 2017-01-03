@@ -81,11 +81,13 @@ class SearchConfigModal extends React.Component {
 			'selected': futureSelected,
 		});
 
-		let warningClass = classNames('warning', {
-			'hide': !similarityThreshold.on || similarityThreshold.on && similarityThreshold.value < 0.8
-		});
+		// let warningClass = classNames('warning', {
+		// 	'hide': !similarityThreshold.on || similarityThreshold.on && similarityThreshold.value < 0.8
+		// });
+		let hide1 = !similarityThreshold.on || similarityThreshold.on && similarityThreshold.value < 0.8;
+		let hide2 = !vsimilarityThreshold.on || vsimilarityThreshold.on && vsimilarityThreshold.value < 0.8;
 		let warningClass2 = classNames('warning', {
-			'hide': !vsimilarityThreshold.on || vsimilarityThreshold.on && vsimilarityThreshold.value < 0.8
+			'hide': hide1 && hide2
 		});
 
 		return <div className='modal-content-contianer'>
@@ -127,7 +129,7 @@ class SearchConfigModal extends React.Component {
 					<option value='0.7'>70%</option>
 					<option value='0.6'>60%</option>
 				</select>
-				<div className={warningClass}>(搜索结果数量可能比较小或为零)</div>
+				{/*<div className={warningClass}>(搜索结果数量可能比较小或为零)</div>*/}
 			</div>
 			<div className='item-title font-simsun similarity'>
 				<input type='checkbox' checked={vsimilarityThreshold.on} onChange={this.toggleVSimilarityOn.bind(this)}/>
@@ -142,8 +144,8 @@ class SearchConfigModal extends React.Component {
 					<option value='0.3'>30%</option>
 					<option value='0.2'>20%</option>
 				</select>
-				<div className={warningClass2}>(搜索结果数量可能比较小或为零)</div>
 			</div>
+			<div className={warningClass2}>(搜索结果数量可能比较小或为零)</div>
 			<div className='item-title font-simsun hide'>标的类型</div>
 			<div className='item-body-container sid hide'>
 				<span className={stockClass} onClick={this.toggleType.bind(this, 'stock')}>股票</span><span className={futureClass} onClick={this.toggleType.bind(this, 'future')}>期货</span>
