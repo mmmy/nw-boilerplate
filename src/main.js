@@ -19,8 +19,8 @@ let loginSuccess = (info, cb) => {
   store.dispatch(actions.accountActions.setUser(info));
   var onClose = (isExpired) => {
     if(!isExpired) {
-      //显示更新日志
-      require('./ksControllers/updateLog').check();
+      //显示更新日志, 移动到guide之后显示
+      // require('./ksControllers/updateLog').check();
     }
   };
   //检查用户过期信息

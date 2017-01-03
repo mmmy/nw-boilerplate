@@ -41,8 +41,8 @@ updateLog.check = () => {
 	//注意: 第一次安装的时候不需要显示更新日志
 	if(lastVersion && isNewVersion(lastVersion, nowVersion)) {
 		updateLog.show();
-		localStorage[key] = nowVersion;
 	}
+	localStorage[key] = nowVersion;
 };
 
 module.exports = updateLog;

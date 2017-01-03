@@ -34,9 +34,11 @@ class StockView extends React.Component {
 		var that = this;
 		if(storage) {
 			watchlistController.init(this.refs.watchlist_view);
+      require('../ksControllers/updateLog').check();
 		} else {
 			var watchlistGuide = require('../ksControllers/watchlistController/watchlistGuide');
 			watchlistGuide.start(function(configObj){
+      	require('../ksControllers/updateLog').check();
 				watchlistStorage.saveToFile(configObj);
 				watchlistController.init(that.refs.watchlist_view);
 			});

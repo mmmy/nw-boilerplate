@@ -139,10 +139,6 @@ class SearchConfigModal extends React.Component {
 					<option value='0.8'>80%</option>
 					<option value='0.7'>70%</option>
 					<option value='0.6'>60%</option>
-					<option value='0.5'>50%</option>
-					<option value='0.4'>40%</option>
-					<option value='0.3'>30%</option>
-					<option value='0.2'>20%</option>
 				</select>
 			</div>
 			<div className={warningClass2}>(搜索结果数量可能比较小或为零)</div>
