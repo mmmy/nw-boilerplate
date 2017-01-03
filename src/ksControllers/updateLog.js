@@ -10,7 +10,7 @@ var isNewVersion = (lastVersion, nowVersion) => { //3.1.2, 3.1.3
 var updateLog = {};
 
 updateLog.show = (logs) => {
-	logs = logs || require('../../vender/updateLogs').logs;
+	logs = logs || require('../../vendor/updateLogs').logs;
 	// var pkg = require('../../package.json');
 	var pkg = require('../../package.json');
 	var $overlay = $('<div class="modal-overlay flex-center"></div>');
