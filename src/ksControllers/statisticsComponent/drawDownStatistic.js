@@ -190,13 +190,13 @@ drawDownStatistic._updateBarChart = (model) => {
 		xLables.push((unit * (i+1) * 100).toFixed(decimal) + '%');
 			data.push({
 				value: freqRight[i], 
-				fillStyle: _isLight ? 'rgba(0, 69, 135, 0.5)' : '#1e2f40', 
-				strokeStyle: _isLight ? 'rgba(0, 69, 135, 0.5)' : '#1e2f40',
+				fillStyle: _isLight ? 'rgba(0, 69, 135, 0.5)' : 'rgba(170,65,66,0.2)', 
+				strokeStyle: _isLight ? 'rgba(0, 69, 135, 0.5)' : 'rgba(170,65,66,0.2)',
 				textColor: _isLight ? '' : '#fff',
 				hover: {
 					textColor: _isLight ? '' : '#fff',
-					fillStyle: _isLight ? 'rgba(0,69,135,1)' : '#173552', 
-					strokeStyle: _isLight ? 'rgba(0,69,135,1)' : '#173552'
+					fillStyle: _isLight ? 'rgba(0,69,135,1)' : 'rgba(170,65,66,1)', 
+					strokeStyle: _isLight ? 'rgba(0,69,135,1)' : 'rgba(170,65,66,1)'
 				}
 			});
 	}
@@ -220,34 +220,34 @@ drawDownStatistic._udpateLineChart = (summaryDrawDown) => {
 			series = [{
 				data:freqLen.concat([]).slice(-dataLen),
 				activeIndexes: [dayMostDrawDownLast],
-				strokeStyle: _isLight ? 'rgba(178,178,178,1)' : '#004587',
+				strokeStyle: _isLight ? 'rgba(178,178,178,1)' : 'rgb(232,166,174)',
 				fillStyle: _isLight ? 'rgba(35,171,247,0.2)' : 'rgba(0,0,0,0)',
 				lineWidth: 2,
 				hover: {
 					lineWidth: 3,
-					strokeStyle: _isLight ? 'rgba(35,171,247,1)' : '#0054a4',
+					strokeStyle: _isLight ? 'rgba(35,171,247,1)' : 'rgb(232,166,174)',
 					fillStyle: _isLight ? 'rgba(35,171,247,0.4)' : 'rgba(0,0,0,0)',
 				}
 			}, {
 				data:freqStart.concat([]).slice(-dataLen),
 				activeIndexes: [dayMostDrawDownStart],
-				strokeStyle: _isLight ? 'rgba(120,120,120,1)' : '#0068af',
+				strokeStyle: _isLight ? 'rgba(120,120,120,1)' : 'rgb(170,65,66)',
 				fillStyle: _isLight ? 'rgba(0,104,175,0.2)' : 'rgba(0,0,0,0)',
 				lineWidth: 2,
 				hover: {
 					lineWidth: 3,
-					strokeStyle: _isLight ? 'rgba(0,104,175,1)' : '#007dd2',
+					strokeStyle: _isLight ? 'rgba(0,104,175,1)' : 'rgb(170,65,66)',
 					fillStyle: _isLight ? 'rgba(0,104,175,0.4)' : 'rgba(0,0,0,0)',
 				}
 			}, {
 				data:freqEnd.concat([]).slice(-dataLen),
 				activeIndexes: [dayMostDrawDownEnd],
-				strokeStyle: _isLight ? 'rgba(76,76,76,1)' : '#0d95b5',
+				strokeStyle: _isLight ? 'rgba(76,76,76,1)' : 'rgb(109,15,24)',
 				fillStyle: _isLight ? 'rgba(00,69,136,0.2)' : 'rgba(0,0,0,0)',
 				lineWidth: 2,
 				hover: {
 					lineWidth: 3,
-					strokeStyle: _isLight ? 'rgba(00,69,136,1)' : '#10b0d6',
+					strokeStyle: _isLight ? 'rgba(00,69,136,1)' : 'rgb(109,15,24)',
 					fillStyle: _isLight ? 'rgba(00,69,136,0.4)' : 'rgba(0,0,0,0)',
 				}
 			}];
