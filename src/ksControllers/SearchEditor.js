@@ -183,10 +183,11 @@ SearchEditor.prototype.updateOHLC = function(O, H, L, C) {
 	this._OHLC.L.text(L.toFixed(2)).css('color', '');
 	this._OHLC.C.text(C.toFixed(2)).css('color', '');
 	if(C > O) {
-		this._OHLC.O.css('color', '#ae0006');
-		this._OHLC.H.css('color', '#ae0006');
-		this._OHLC.L.css('color', '#ae0006');
-		this._OHLC.C.css('color', '#ae0006');
+		var red = $.keyStone && $.keyStone.configDefault.brownRed || '#8d151b';
+		this._OHLC.O.css('color', red);
+		this._OHLC.H.css('color', red);
+		this._OHLC.L.css('color', red);
+		this._OHLC.C.css('color', red);
 	}
 }
 SearchEditor.prototype._updateButtonsState = function() {   //主动更新按钮的状态
