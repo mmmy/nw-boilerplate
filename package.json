@@ -2,7 +2,7 @@
   "name": "keystone",
   "version": "2.1.0",
   "description": "onkeystone search",
-  "manifestUrl": "http://112.74.17.175/updateInfo.json",
+  "manifestUrl": "http://service.stone.io/updateInfo.json",
   "main": "./build/index.html",
   "window": {
     "title": "拱石",
