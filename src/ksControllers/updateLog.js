@@ -13,7 +13,7 @@ updateLog.show = (logs) => {
 	logs = logs || require('../../vendor/updateLogs').logs;
 	// var pkg = require('../../package.json');
 	var pkg = require('../../package.json');
-	var $overlay = $('<div class="modal-overlay flex-center"></div>');
+	var $overlay = $('<div class="modal-overlay flex-center font-msyh"></div>');
 	var $wrapper = $('<div class="modal-wrapper log"></div>');
 
 	var $title = $('<h4 class="title">更新日志</h4>');
