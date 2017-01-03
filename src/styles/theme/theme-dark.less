@@ -18,6 +18,8 @@
 
 @gray-static: #40474E;
 
+@dark-modal-bg: rgb(40, 40, 40);
+
 html {
 	background-color: @dark-bg-wrapper;
 }
@@ -63,9 +65,16 @@ body[theme="dark"] {
 	.pattern-info-switch-wrapper {
 		background-color: rgba(40, 43, 47, 0.9);
 	}
+	//modal 
+	.modal-wrapper {
+		background-color: @dark-modal-bg;
+		p {
+			color: inherit;
+		}
+	}
+	
 	//浅灰色, 对话框背景
 	.config-modal-container,
-	.modal-wrapper,
 	.container-ks-sr.meta .pattern-wrapper,
 	.container-header {
 		background-color: @dark-bg-inner !important;
