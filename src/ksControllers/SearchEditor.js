@@ -136,7 +136,7 @@ SearchEditor.prototype._initToolbar = function() {
 	let toolbarBtns = [];
 	toolbarBtns[0] = $(`<button class="flat-btn edit-a-bar active" data-kstooltip="选择工具">abar</button>`).click(this.changeEditMode.bind(this, EDIT_A_BAR));
 	toolbarBtns[1] = $(`<button class="flat-btn edit-range-bars" data-kstooltip="区域选择工具">rangebars</button>`).click(this.changeEditMode.bind(this, EDIT_RANGE_BARS));
-	toolbarBtns[2] = $(`<button class="flat-btn add-bars" data-kstooltip="添加工具">addbars</button>`).click(this.changeEditMode.bind(this, ADD_BARS));
+	toolbarBtns[2] = $(`<button class="flat-btn add-bars hide" data-kstooltip="添加工具">addbars</button>`).click(this.changeEditMode.bind(this, ADD_BARS));
 
 	for(let i=0; i<toolbarBtns.length; i++) {
 		this._$main.find('.kline-editor-toolbar').append(toolbarBtns[i]);
