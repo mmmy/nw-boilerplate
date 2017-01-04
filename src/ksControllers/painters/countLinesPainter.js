@@ -502,16 +502,18 @@ let drawAxis = (canvas, data, options) => {
 	// ctx.fillRect(0, 0, width, height);
 	ctx.font = `${10*ratio}px Arial`;
 	ctx.textAlign = isVertical ? 'right' : 'center';
+	ctx.textBaseline = 'middle';
 	for(let i=0; i<len; i+=interval) {
 		ctx.strokeStyle = gridColor;
 		ctx.fillStyle = textColor;
+		//y 轴
 		if(isVertical) {
 			if(hideVerticalGrid && (i===0 || i===len-1)) {
 				ctx.fillStyle = 'rgba(0,0,0,0)';
 			}
 			let x = labelWidth / 2;
 			let y = _dataToPointY(padding.top, height-padding.top-padding.bottom, data[0], data[data.length-1], data[i]);
-			ctx.fillText(data[i]+ (hideVerticalGrid ? '%' : ''), hideVerticalGrid ? x*1.8 : x*1.8, y+5*ratio);
+			ctx.fillText(data[i]+ (hideVerticalGrid ? '%' : ''), hideVerticalGrid ? x*1.8 : x*1.8, y);
 			if(!hideVerticalGrid) {
 				ctx.beginPath();
 				ctx.lineWidth = 1;
@@ -519,6 +521,7 @@ let drawAxis = (canvas, data, options) => {
 				ctx.lineTo(width-padding.right, _to05(y));
 				ctx.stroke();
 			}
+		//x 轴
 		} else {
 			let x = padding.left + i*space + (centerLabel ? space/2 : 0);
 			let y = height / 2;
