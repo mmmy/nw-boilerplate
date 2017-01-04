@@ -299,16 +299,20 @@ ConfigEditor.prototype._clickFuture = function(e) {
 }
 
 ConfigEditor.prototype._clickReduceBars = function(e) {
-	if(this._config.additionDate.value > 0) this._config.additionDate.value -= 1;
-	this.updateBars();
-	this.onEdit();
+	if(this._config.additionDate.value > 1) {
+		this._config.additionDate.value -= 1;
+		this.updateBars();
+		this.onEdit();
+	}
 }
 
 ConfigEditor.prototype._clickAddBars = function(e) {
-	var additionDateValue = +this._config.additionDate.value;
-	this._config.additionDate.value = additionDateValue + 1;
-	this.updateBars();
-	this.onEdit();
+	if(+this._config.additionDate.value < 100 ) {
+		var additionDateValue = +this._config.additionDate.value;
+		this._config.additionDate.value = additionDateValue + 1;
+		this.updateBars();
+		this.onEdit();
+	}
 }
 
 ConfigEditor.prototype._changeBars = function(e) {

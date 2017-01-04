@@ -235,7 +235,7 @@ class SearchConfigModal extends React.Component {
 
 	reduceDays() {
 		let { searchConfig } = this.state;
-		if(searchConfig.additionDate.value > 0) {
+		if(searchConfig.additionDate.value > 1) {
 			searchConfig.additionDate.value = parseInt(searchConfig.additionDate.value) - 1;
 			this.setState({searchConfig});
 		}
@@ -243,8 +243,10 @@ class SearchConfigModal extends React.Component {
 
 	addDays() {
 		let { searchConfig } = this.state;
-		searchConfig.additionDate.value = parseInt(searchConfig.additionDate.value) + 1;
-		this.setState({searchConfig});
+		if(searchConfig.additionDate.value < 100) {
+			searchConfig.additionDate.value = parseInt(searchConfig.additionDate.value) + 1;
+			this.setState({searchConfig});
+		}
 	}
 
 	toggleLastTimeAuto() {
