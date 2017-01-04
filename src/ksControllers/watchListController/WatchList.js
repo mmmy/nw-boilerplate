@@ -1,6 +1,7 @@
 
 import PredictionWatch from './PredictionWatch';
 import SymbolListDropDown from './SymbolListDropDown';
+import messager from '../messager';
 
 var now = new Date();
 
@@ -107,6 +108,7 @@ WatchList.prototype._append = function(symbolObj) {
 	//先查看有没有重复的
 	for(var i=0; i<this._list.length; i++) {
 		if(this._list[i].symbolInfo.ticker == symbolObj.symbol) {
+			messager.showWarningMessage("已经添加过该标的!");
 			return;
 		}
 	}
