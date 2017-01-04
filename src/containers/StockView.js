@@ -230,7 +230,14 @@ class StockView extends React.Component {
 	}
 
 	resetButton() {
+		var that = this;
+		this._$containerToggleCache = this._$containerToggleCache || $('.container-toggle');
+		this._$containerToggleCache.removeClass('transition-all');
 		$(document.body).removeClass('watchlist');
+		//注意: 此处代码只是取消切换到watchlsit的时候取消 '搜索结果'按钮的上下动画效果
+		setTimeout(function(){
+			that._$containerToggleCache.addClass('transition-all');
+		}, 500);
 		$(this.refs.watchlist_btn).removeClass('active');
 		$(this.refs.curve_btn).removeClass('active');
 		$(this.refs.history_btn).removeClass('active');
