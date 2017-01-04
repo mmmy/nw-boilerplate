@@ -45,8 +45,8 @@ updateLog.check = () => {
 	var lastVersion = localStorage[key];
 	var pkg = require('../../package.json');
 	var nowVersion = pkg.version;
-	//注意: 第一次安装的时候不需要显示更新日志
-	if(lastVersion && isNewVersion(lastVersion, nowVersion)) {
+	//注意: 第一次安装的时候不需要显示更新日志???
+	if(!lastVersion || isNewVersion(lastVersion, nowVersion)) {
 		updateLog.show();
 	}
 	localStorage[key] = nowVersion;
