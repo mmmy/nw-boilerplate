@@ -8,9 +8,13 @@ var isNewVersion = (lastVersion, nowVersion) => { //3.1.2, 3.1.3
 };
 
 var updateLog = {};
-
-updateLog.show = (logs) => {
-	logs = logs || require('../../vendor/updateLogs').logs;
+/*
+	logObj: {header:'',logs:[]}
+ */
+updateLog.show = (logObj) => {
+	logObj = logObj || require('../../vendor/updateLogs');
+	var header = logObj.header,
+			logs = logObj.logs
 	// var pkg = require('../../package.json');
 	var pkg = require('../../package.json');
 	var $overlay = $('<div class="modal-overlay flex-center font-msyh"></div>');
@@ -21,7 +25,10 @@ updateLog.show = (logs) => {
 	var $logs = logs.map(function(log){
 		return $(`<li class="log">${log}</li>`);
 	});
-	var $body = $(`<div class="body"></div>`).append($('<ol>').append($logs));
+	var $body = $(`<div class="body"></div>`)
+							.append(`<h5>${header}</h5>`)
+							.append($('<ul>').append($logs))
+
 	var $footer = $(`<div class="footer"><button class="flat-btn gray-light round">知道了</button></div>`);
 	$wrapper.append($title).append($version).append($body).append($footer);
 	$overlay.append($wrapper);
