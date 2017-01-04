@@ -726,8 +726,16 @@ SineWaves.prototype.running = true;
  * Animation Loop Controller
  */
 SineWaves.prototype.loop = function() {
-  if (this.running === true) {
-    this.update();
+  var FPS = 20;
+  var count = 60 / FPS;
+  this._emptyTimes = this._emptyTimes === undefined ? 1 : this._emptyTimes;
+  if(this._emptyTimes < count) {
+    this._emptyTimes ++;
+  } else {
+    if (this.running === true) {
+      this.update();
+    }
+    this._emptyTimes = 1;
   }
 
   window.requestAnimationFrame(this.loop.bind(this));

@@ -4,8 +4,8 @@ import getSineWaves from '../../vendor/sine-waves';
 function KsWave(canvas, config){
 	this._canvas = canvas;
 	this._slow = config && config.slow || true;
-	this._slowSpeed = 1;
-	this._baseSpeed = 3;
+	this._slowSpeed = 1 * 2;
+	this._baseSpeed = 3 * 2;
 	this._waves = null;
 	this._init();
 }
