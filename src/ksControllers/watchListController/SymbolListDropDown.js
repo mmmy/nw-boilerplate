@@ -58,7 +58,7 @@ SymbolListDropDown.prototype._fetchData = function() {
 	if(symbol === '') {
 		this._hide();
 	} else {
-		this._dataFeed.searchSymbolsByName(symbol,'','',this._render.bind(this));
+		this._dataFeed.searchSymbolsByName(symbol,'','',this._render.bind(this), "退市");
 	}
 }
 

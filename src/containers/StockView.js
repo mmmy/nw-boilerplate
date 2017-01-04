@@ -33,15 +33,27 @@ class StockView extends React.Component {
 		var storage = watchlistStorage.getDataFromStorage(this._category);
 		var that = this;
 		if(storage) {
-			watchlistController.init(this.refs.watchlist_view);
-      require('../ksControllers/updateLog').check();
+			watchlistController.init(that.refs.watchlist_view);
+			//显示更新日志在 关闭其他modal之后
+			var interval = setInterval(function(){
+				if($('body > .modal-overlay').length == 0) {
+      		require('../ksControllers/updateLog').check();
+      		clearInterval(interval);
+				}				
+			},500);
 		} else {
-			var watchlistGuide = require('../ksControllers/watchlistController/watchlistGuide');
-			watchlistGuide.start(function(configObj){
-      	require('../ksControllers/updateLog').check();
-				watchlistStorage.saveToFile(configObj);
-				watchlistController.init(that.refs.watchlist_view);
-			});
+			//查询如果没有模态对话框(比如过期信息对话框), 开始引导 , 简单粗暴
+			var interval = setInterval(function(){
+				if($('body > .modal-overlay').length == 0) {
+					var watchlistGuide = require('../ksControllers/watchlistController/watchlistGuide');
+					watchlistGuide.start(function(configObj){
+		      	require('../ksControllers/updateLog').check();
+						watchlistStorage.saveToFile(configObj);
+						watchlistController.init(that.refs.watchlist_view);
+					});
+					clearInterval(interval);
+				}
+			}, 500);
 		}
 	}
 
