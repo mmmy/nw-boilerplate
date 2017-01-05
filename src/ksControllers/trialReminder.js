@@ -34,7 +34,7 @@ trialReminder.show = (loginState, callback)=>{
 
 trialReminder.check = (info, callback) => {
 	var loginState = info.loginState;
-	if(loginState.expireInDay <= 1500) {    //小于15天, 提醒
+	if(loginState.expireInDay <= 15) {    //小于15天, 提醒
 		trialReminder.show(loginState, callback);
 	} else { //
 		callback && callback(false);
