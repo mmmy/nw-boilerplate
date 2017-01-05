@@ -45,14 +45,7 @@ OCLHTooltip.prototype.setOCLH = function(o, c, l, h, v) {
 	this._$L.text(l.toFixed(2));
 	this._$H.text(h.toFixed(2));
 
-	v = v / 100;
-	var vStr = 'N/A';
-	if(9995 > v) vStr = v + ' 手';
-	else {
-		var num = v / 1E4;
-		vStr = num >= 10000 ? num.toFixed(0) : (num + '').slice(0,6);
-		vStr += ' 万手'
-	}
+	var vStr = $.keyStone.volumeFormatter(v);
 	this._$V.text(vStr);
 }
 

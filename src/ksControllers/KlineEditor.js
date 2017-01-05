@@ -383,7 +383,7 @@ KlineEditor.prototype.updateHover = function(x, y) {
 
 KlineEditor.prototype.updateCanvas = function(){
 	let data = this._kline[this._hoverIndex];
-	data && this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2]);
+	data && this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2], data[5]);
 	//左右padding, 用于x轴 位置和比例变化
 	let padding = {left:this._xAxisStates.paddingLeft, right:this._xAxisStates.paddingRight};
 
@@ -396,7 +396,9 @@ KlineEditor.prototype.updateCanvas = function(){
 																yMax:this._drawInfo.yMax,
 																selectedRange: this._selectedRange,
 																rangeOption: this._rangeOption,
-																padding
+																padding,
+																volume:true,
+																volumeHeight:0.2
 															}, {
 																hoverY: this._hoverY,
 																textColor: this._isLight ? '' : '#999',

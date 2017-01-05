@@ -32,8 +32,22 @@ module.exports = function($) {
             }
         }
         return dataCategory;
+			},
+			volumeFormatter: function(volume) {
+				var v = parseInt(volume);
+				var str = 'N/A';
+				if(isNaN(v)) {
+					return str;
+				}
+				v = v / 100;
+				if(9995 > v) str = v + ' 手';
+				else {
+					var num = v / 1E4;
+					str = num >= 10000 ? num.toFixed(0) : (num + '').slice(0,6);
+					str += ' 万手'
+				}
+				return str;
 			}
-
 		}
 	});
 
