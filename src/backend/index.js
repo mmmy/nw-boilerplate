@@ -48,7 +48,7 @@ let searchPattern = (args, cb, errorCb) => {
 
 	const { symbol, kline, bars, dateRange, searchConfig, dataCategory, interval} = args;
 
-	let { additionDate, searchLenMax, isLatestDate, similarityThreshold, vsimilarityThreshold} = searchConfig;
+	let { additionDate, searchLenMax, isLatestDate, similarityThreshold, vsimilarityThreshold, dateThreshold} = searchConfig;
 
 	let dr = searchConfig.dateRange;
 
@@ -72,7 +72,27 @@ let searchPattern = (args, cb, errorCb) => {
 			//没有定义, 或者为false, 或者为true的时候在过滤范围内 , 这3个条件push
 			var threshold0 = (!similarityThreshold) || (!similarityThreshold.on) || (similarityThreshold.on && (similarity >= similarityThreshold.value));
 			var threshold1 = (!vsimilarityThreshold) || (!vsimilarityThreshold.on) || (vsimilarityThreshold.on && (vsimilarity >= vsimilarityThreshold.value));
-			if(threshold0 && threshold1) {
+			var threshold2 = true;
+			if(dateRange && (dateRange.length > 0) && dateThreshold && dateThreshold.on && (id == symbol) && (i < 5)) {
+				console.log(id, symbol, [begin.time, end.time], dateRange);
+				var maxPercent = parseFloat(dateThreshold.value);
+				var range1 = new Date(dateRange[0]),
+						range2 = new Date(dateRange[1]);
+				var d1 = new Date(begin.time),
+						d2 = new Date(end.time);
+				var percent = 0;
+				if((d1 > range1) && (d1 < range2)) {      //有区间重合1
+					percent = (range2 - d1) / (range2 - range1);
+					console.log('percent', percent);
+				} else if ((d2 > range1) && (d2 < range2)) {  //有区间重合2
+					percent = (d2 - range1) / (range2 - range1);
+					console.log('percent2', percent);
+				}
+				if(percent > maxPercent) {                     //比如超过30% 时间重合
+					threshold2 = false;
+				}
+			}
+			if(threshold0 && threshold1 && threshold2) {
 				__data.push({
 					id: index++,
 					symbol: id,

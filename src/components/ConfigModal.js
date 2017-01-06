@@ -47,6 +47,7 @@ class SearchConfigModal extends React.Component {
 			searchConfig.dateRange[1].date = dateStr;
 			that.setState({searchConfig});
 		});
+		$(this.refs.root).find('[data-kstooltip]').ksTooltip();
 	}
 
 	componentWillReceiveProps(){
@@ -63,7 +64,7 @@ class SearchConfigModal extends React.Component {
 
 	renderContent() {
 
-		let { dateRange, additionDate, spaceDefinition, isLatestDate, similarityThreshold, vsimilarityThreshold } = this.state.searchConfig;
+		let { dateRange, additionDate, spaceDefinition, isLatestDate, similarityThreshold, vsimilarityThreshold, dateThreshold } = this.state.searchConfig;
 		let d0 = dateRange[0],
 				d1 = dateRange[1];
 		const stockSelected = spaceDefinition.stock;
@@ -90,7 +91,7 @@ class SearchConfigModal extends React.Component {
 			'hide': hide1 && hide2
 		});
 
-		return <div className='modal-content-contianer'>
+		return <div className='modal-content-contianer' ref="root">
 			<div className='title'>搜索配置</div>
 			<div className='item-title font-simsun'>后向统计范围</div>
 			<div className='item-body-container days'>
@@ -119,6 +120,11 @@ class SearchConfigModal extends React.Component {
 						<input disabled={isLatestDate} type="number" min='0' max='59' value={d1.second} onChange={this.changeTime.bind(this, 1,'second')}/>
 					</div>
 				</div>
+			</div>
+			<div className='item-title font-simsun'>
+				<input type='checkbox' checked={dateThreshold.on} onChange={this.toggleDateThresholdOn.bind(this)} />
+				排除所选图形相同时间区间
+				<img src="./image/tooltip.png"  data-kstooltip='排除所选图形相同时间区间'/>
 			</div>
 			<div className='item-title font-simsun similarity'>
 				<input type='checkbox' checked={similarityThreshold.on} onChange={this.toggleSimilarityOn.bind(this)}/>
@@ -288,6 +294,11 @@ class SearchConfigModal extends React.Component {
 		this.setState({searchConfig});
 	}
 
+	toggleDateThresholdOn() {
+		let { searchConfig } = this.state;
+		searchConfig.dateThreshold.on = !searchConfig.dateThreshold.on;
+		this.setState({searchConfig});
+	}
 }
 
 SearchConfigModal.propTypes = propTypes;

@@ -8,6 +8,7 @@ var initialState = {
 	searchSpace: '000010',
 	dateRange: [{date:'1990/01/01', hour:'0', minute:'0', second:'0'}, {date:`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`, hour:'23', minute:'59', second:'59'}],
 	isLatestDate: true,
+	dateThreshold: {value: 0.3, on: true},        //排除所选图形相同时间区间
 	similarityThreshold: {value: 0.6, on: true},
 	vsimilarityThreshold: {value: 0.6, on: true},
 	spaceDefinition: { stock: true, future: false },

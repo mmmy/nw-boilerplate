@@ -18,7 +18,9 @@ let adjustConfig = (searchConfig) => {
 	if(!searchConfig.vsimilarityThreshold) {
 		searchConfig.vsimilarityThreshold = {on: false, value: 0.6};
 	}
-
+	if(!searchConfig.dateThreshold) {
+		searchConfig.dateThreshold = {on: false, value: 0.3};
+	}
 };
 /* watchlist 或者 additionConfig 提供resolution 和 baseBars
  ----------------------------------*/
@@ -67,6 +69,7 @@ function ConfigEditor(dom, searchConfig, info, watchlist, additionConfig) {
 									similaritySelect:null,
 									vsimilarityCheck:null,
 									vsimilaritySelect:null,
+									dateThresholdCheck:null,
 									startTime:{hour:null,minute:null,second:null},
 									endTime:{hour:null,minute:null,second:null},
 								};
@@ -78,7 +81,7 @@ function ConfigEditor(dom, searchConfig, info, watchlist, additionConfig) {
 }
 
 ConfigEditor.prototype._init = function() {
-	let { dateRange, additionDate, spaceDefinition, isLatestDate, similarityThreshold, vsimilarityThreshold} = this._config;
+	let { dateRange, additionDate, spaceDefinition, isLatestDate, similarityThreshold, vsimilarityThreshold, dateThreshold} = this._config;
 	let d0 = dateRange[0],
 			d1 = dateRange[1];
 
@@ -108,6 +111,7 @@ ConfigEditor.prototype._init = function() {
 	this._inputs.endTime.minute = minute1;
 	this._inputs.endTime.second = second1;
 
+	this._inputs.dateThresholdCheck = $('<input type="checkbox" />').prop('checked', dateThreshold.on);
 	this._inputs.similarityCheck = $('<input type="checkbox" />').prop('checked', similarityThreshold.on);
 	this._inputs.similaritySelect = $('<select><option value="0.9">90%</option><option value="0.8">80%</option><option value="0.7">70%</option><option value="0.6">60%</option></select>').attr('disabled', !similarityThreshold.on).val(similarityThreshold.value);
 	this._inputs.vsimilarityCheck = $('<input type="checkbox" />').prop('checked', vsimilarityThreshold.on);
@@ -143,6 +147,9 @@ ConfigEditor.prototype._init = function() {
 							.append(endDateDoms);
 
 	this._$wrapper.append($date);
+	if(!this._info) {
+		this._$wrapper.append($(`<div class="item-title font-simsun">排除所选图形相同时间区间</div>`).prepend(this._inputs.dateThresholdCheck));
+	}
 	//相似度过滤
 	let hide0 = !similarityThreshold.on || similarityThreshold.on && (+similarityThreshold.value < 0.8);
 	let hide1 = !vsimilarityThreshold.on || vsimilarityThreshold.on && (+vsimilarityThreshold.value < 0.8);
@@ -211,6 +218,8 @@ ConfigEditor.prototype._initActions = function() {
 	this._inputs.endTime.second.on('input', this._changeTime.bind(this, 1, 'second'));
 	this._$wrapper.find('.check-box-wrapper input[type="checkbox"]').on('change', this._toggleLatestTimeAuto.bind(this));
 
+	this._inputs.dateThresholdCheck.on('change', this._toggleDateThresholdOn.bind(this));
+
 	this._inputs.similarityCheck.on('change', this._toggleSimilarityOn.bind(this, 'similarity'));
 	this._inputs.similaritySelect.on('change', this._changeSimilarityValue.bind(this, 'similarity'));
 	this._inputs.vsimilarityCheck.on('change', this._toggleSimilarityOn.bind(this, 'vsimilarity'));
@@ -250,6 +259,12 @@ ConfigEditor.prototype._updateWarningInfo = function() {
 	let hide0 = !similarityThreshold.on || similarityThreshold.on && (+similarityThreshold.value < 0.8);
 	let hide1 = !vsimilarityThreshold.on || vsimilarityThreshold.on && (+vsimilarityThreshold.value < 0.8);
 	this._$wrapper.find('.warning').toggleClass('hide', hide0 && hide1);
+}
+
+ConfigEditor.prototype._toggleDateThresholdOn = function(e) {
+	var isOn = !this._config.dateThreshold.on;
+	this._config.dateThreshold.on = isOn;
+	this.onEdit();
 }
 
 ConfigEditor.prototype._toggleSimilarityOn = function(name, e) {
