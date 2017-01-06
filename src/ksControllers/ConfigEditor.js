@@ -148,7 +148,7 @@ ConfigEditor.prototype._init = function() {
 
 	this._$wrapper.append($date);
 	if(!this._info) {
-		this._$wrapper.append($(`<div class="item-title font-simsun">排除所选图形相同时间区间</div>`).prepend(this._inputs.dateThresholdCheck));
+		this._$wrapper.append($(`<div class="item-title font-simsun">排除所选图形相同时间区间<img src="./image/tooltip.png" data-kstooltip="排除所选图形相同时间区间"/></div>`).prepend(this._inputs.dateThresholdCheck));
 	}
 	//相似度过滤
 	let hide0 = !similarityThreshold.on || similarityThreshold.on && (+similarityThreshold.value < 0.8);
@@ -237,6 +237,8 @@ ConfigEditor.prototype._initActions = function() {
 	this._$wrapper.on('mouseup',function(e){
 		e.stopPropagation();
 	});
+
+	this._$wrapper.find('[data-kstooltip]').ksTooltip();
 }
 
 ConfigEditor.prototype._changeBasebars = function(e) {
