@@ -148,7 +148,7 @@ ConfigEditor.prototype._init = function() {
 
 	this._$wrapper.append($date);
 	if(!this._info) {
-		this._$wrapper.append($(`<div class="item-title font-simsun">排除所选图形相同时间区间<img src="./image/tooltip.png" data-kstooltip="排除所选图形相同时间区间"/></div>`).prepend(this._inputs.dateThresholdCheck));
+		this._$wrapper.append($(`<div class="item-title font-simsun">排除所选图形相同时间区间<img src="./image/tooltip.png" data-kstooltip="勾选后，每次搜索会自动剔除所有与所选图形相同时间段的匹配结果"/></div>`).prepend(this._inputs.dateThresholdCheck));
 	}
 	//相似度过滤
 	let hide0 = !similarityThreshold.on || similarityThreshold.on && (+similarityThreshold.value < 0.8);

@@ -124,7 +124,7 @@ class SearchConfigModal extends React.Component {
 			<div className='item-title font-simsun'>
 				<input type='checkbox' checked={dateThreshold.on} onChange={this.toggleDateThresholdOn.bind(this)} />
 				排除所选图形相同时间区间
-				<img src="./image/tooltip.png" data-kstooltip='排除所选图形相同时间区间'/>
+				<img src="./image/tooltip.png" data-kstooltip='勾选后，每次搜索会自动剔除所有与所选图形相同时间段的匹配结果'/>
 			</div>
 			<div className='item-title font-simsun similarity'>
 				<input type='checkbox' checked={similarityThreshold.on} onChange={this.toggleSimilarityOn.bind(this)}/>
