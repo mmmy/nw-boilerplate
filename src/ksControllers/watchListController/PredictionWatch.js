@@ -508,6 +508,7 @@ PredictionWatch.prototype._searchDetail = function() {
 	}
 	var param ={
 		symbol : this._symbolInfo.symbol,
+		describe: this._symbolInfo.ticker,
 		bars : kline.length,
 		dateRange: dateRange,
 		interval : this._resolution,
