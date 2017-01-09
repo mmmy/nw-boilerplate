@@ -4,6 +4,7 @@ import ReactTradingView from '../components/ReactTradingView';
 import { STOCK_VIEW } from '../flux/constants/Const';
 import datafeedCache from '../cache/datafeedCache';
 let { setDataFeed } = datafeedCache;
+import searchPatternGuide from '../ksControllers/searchPatternGuide';
 
 import stockviewController from '../ksControllers/stockviewController';
 let historyController = stockviewController.historyController;
@@ -251,6 +252,8 @@ class StockView extends React.Component {
 		$(this.refs.stock_view).addClass('top-z');
 		this.resetButton();
 		$(e.target).addClass('active');
+		//显示拱石搜索的guide
+		// searchPatternGuide.check();
 	}
 
 	showWatchlist(e) {
