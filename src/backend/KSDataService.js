@@ -25,8 +25,8 @@ let chunksToKline = (chunks, metaAdj) => {
 		if(type === 'RecordChunk' || type === undefined) {
 			
 			chunkKline = chunk.records.map((record) => {
-				let { datetime, open, close, low, high, adjfactor=1 } = record;
-				return [datetime, open*adjfactor/metaAdj, close*adjfactor/metaAdj, low*adjfactor/metaAdj, high*adjfactor/metaAdj];
+				let { datetime, open, close, low, high, volume, adjfactor=1 } = record;
+				return [datetime, open*adjfactor/metaAdj, close*adjfactor/metaAdj, low*adjfactor/metaAdj, high*adjfactor/metaAdj, volume];
 			});
 			
 		} else {

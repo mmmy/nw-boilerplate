@@ -102,15 +102,15 @@ class ComparatorPrediction extends React.Component {
   predictionChartSetData() {
     var isInit = this.initDimensions();
     if(isInit || this.props.stretchView) {
-      let { closePrice, searchMetaData, searchConfig } = this.props.patterns;
+      let { closePrice, searchMetaData, searchConfig, rawData } = this.props.patterns;
 
       let predictionBars = searchConfig.additionDate && searchConfig.additionDate.value;
       
-      let rawData = this.symbolDim.top(Infinity);
-      let filteredIds = rawData.map((pattern) => {
+      let rawDataFilter = this.symbolDim.top(Infinity);
+      let filteredIds = rawDataFilter.map((pattern) => {
         return pattern.id;
       });
-      this._predictionChart.setData(searchMetaData && searchMetaData.kline, closePrice, null, predictionBars);
+      this._predictionChart.setData(searchMetaData && searchMetaData.kline, closePrice, null, predictionBars, rawData);
       this._predictionChart.filterLines(filteredIds);
 
       let that = this;
@@ -131,7 +131,7 @@ class ComparatorPrediction extends React.Component {
         let isCursorOverBar = predictionChart.isCursorOverBar();
         if(isCursorOverBar) {
           let OCLH = predictionChart.getHoverOCLH();
-          that._tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
+          that._tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3], OCLH[4]);
           that._tooltip.setPosition(x,y,'fixed');
           that._tooltip.show();
           //触发下面的tooltip
@@ -154,8 +154,8 @@ class ComparatorPrediction extends React.Component {
     let {x,y} = this._predictionChart.setHoverIndex(index);
     if(showTooltip) {
       let OCLH = this._predictionChart.getHoverOCLH();
-      if(OCLH.length==4) {
-        this._tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3]);
+      if(OCLH.length==5) {
+        this._tooltip.setOCLH(OCLH[0], OCLH[1], OCLH[2], OCLH[3], OCLH[4]);
         this._tooltip.setPosition(x,y);
         this._tooltip.show();
       }else{
@@ -172,7 +172,7 @@ class ComparatorPrediction extends React.Component {
     let node = this.refs.info_prediction_name;
     let rate = baseBars / (baseBars + additionBars) * 100;
     rate = rate<15 ? 15 : rate;
-    rate = rate>85 ? 85 : rate;
+    rate = rate>76 ? 76 : rate;
     if(!isNaN(rate) && isFinite(rate)) {
       node.style.left = rate + '%';
     } else {

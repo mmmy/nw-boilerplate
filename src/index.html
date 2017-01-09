@@ -5,6 +5,7 @@
 	<title></title>
 	<link rel="stylesheet" type="text/css" href="../vendor/bootstrap.css" />
 	<link rel="stylesheet" type="text/css" href="main.css" />
+	<link rel="stylesheet" type="text/css" href="../vendor/animate.css" />
 	<script type="text/javascript">
 		// if(/macintosh/i.test(navigator.appVersion)) {  //mac
 		if (window.devicePixelRatio > 1) {                 //retina
@@ -36,7 +37,7 @@
 		  window._gui = gui;
 		  if (process.platform === "darwin") {
 			  var mb = new gui.Menu({type: 'menubar'});
-			  mb.createMacBuiltin('RoboPaint', {
+			  mb.createMacBuiltin('拱石', {
 			    hideEdit: false,
 			  });
 			  gui.Window.get().menu = mb;
@@ -48,7 +49,9 @@
       heap.load("2540454621");
 	</script>
 </head>
-<body>
+<body theme="dark" class="watchlist font-msyh">
+	<img src="./image/dengpao.png" alt="" style="display: none">
+	<img src="./image/warn.png" alt="" style="display: none">
 	<div id='app'></div>
 	<div id='login-dom'></div>
 	<!-- <div class="fuck"></div> -->

@@ -9,8 +9,8 @@ import UDF from '../../backend/udf';
  * @return {[type]}               [description]
  */
 
-let getSymbolHistory = (postData, cb) => {
-  UDF.getSymbolHistory(postData, cb);
+let getSymbolHistory = (postData, cb, errorCb) => {
+  UDF.getSymbolHistory(postData, cb, errorCb);
 };
 
 let getSymbolSearchResult = (postData, cb) => {

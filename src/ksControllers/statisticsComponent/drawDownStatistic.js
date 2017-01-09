@@ -2,6 +2,7 @@
 
 import CountLinesChart from '../CountLinesChart';
 import CountBarsChart from '../CountBarsChart';
+import KsSwitch from '../widget/KsSwitch';
 
 let drawDownStatistic = {};
 
@@ -21,15 +22,19 @@ let _model = null;
 let _isLong = true; //默认做多
 let _intervalObj = {value:1, unit:'D', describe:'天'};
 
+let _isLight = false;
+
 let _highlightLine = function(index) {
 	_retracementChart.highlightLine(index);
 }
 
 drawDownStatistic.init = (wrapper, model) => {
+	_isLight = $.keyStone && ($.keyStone.theme == 'light');
 
 	_model = model;
 
-	let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche.png"/>回撤统计<span class="btn-wrapper"><button class="flat-btn long active">做多</button><button class="flat-btn short">做空</button></span></h4><div class="row"></div></div>`);
+	// let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche${_isLight ? '' : '_white'}.png"/>回撤统计<span class="btn-wrapper"><button class="flat-btn long active">做多</button><button class="flat-btn short">做空</button></span></h4><div class="row"></div></div>`);
+	let newDom = $(`<div class='ks-container retracement'><h4 class="title"><img src="image/huiche${_isLight ? '' : '_white'}.png"/>回撤统计<span class="btn-wrapper">做多<span class="switch-wrapper"></span>做空</span></h4><div class="row"></div></div>`);
 	$(wrapper).append(newDom);
 
 	//add other doms
@@ -57,8 +62,8 @@ drawDownStatistic.init = (wrapper, model) => {
 	newDom.find('.row').append(part1).append(part2);
 
 	//init event
+	/*
 	newDom.find('.btn-wrapper .short').click(function(event) {  //做空
-		/* Act on the event */
 		if(_isLong) {
 			_isLong = false;
 			newDom.find('.btn-wrapper .short').addClass('active');
@@ -67,12 +72,31 @@ drawDownStatistic.init = (wrapper, model) => {
 		}
 	});
 	newDom.find('.btn-wrapper .long').click(function(event) {  //做多
-		/* Act on the event */
 		if(!_isLong) {
 			_isLong = true;
 			newDom.find('.btn-wrapper .long').addClass('active');
 			newDom.find('.btn-wrapper .short').removeClass('active');
 			drawDownStatistic.update();
+		}
+	});
+	*/
+	new KsSwitch({
+		dom: newDom.find('.switch-wrapper'),
+		onOn: function() {
+			if(_isLong) {
+				_isLong = false;
+				newDom.find('.btn-wrapper .short').addClass('active');
+				newDom.find('.btn-wrapper .long').removeClass('active');
+				drawDownStatistic.update();
+			}
+		},
+		onOff: function() {
+			if(!_isLong) {
+				_isLong = true;
+				newDom.find('.btn-wrapper .long').addClass('active');
+				newDom.find('.btn-wrapper .short').removeClass('active');
+				drawDownStatistic.update();
+			}
 		}
 	});
 
@@ -152,29 +176,37 @@ drawDownStatistic._updateBarChart = (model) => {
 
 	let decimal = 1;
 	if(unit >= 0.01)
-		decimal = 0;
-	else if(unit >= 0.001)
 		decimal = 1;
-	else if(unit >= 0.0001)
+	else if(unit >= 0.001)
 		decimal = 2;
-	else if(unit >= 0.00001)
+	else if(unit >= 0.0001)
 		decimal = 3;
-	else if(unit >= 0.000001)
+	else if(unit >= 0.00001)
 		decimal = 4;
+	else if(unit >= 0.000001)
+		decimal = 5;
 
 	for(var i=0; i<rightLen; i++) {
 		xLables.push((unit * (i+1) * 100).toFixed(decimal) + '%');
 			data.push({
 				value: freqRight[i], 
-				fillStyle:'rgba(0, 69, 135, 0.5)', 
-				strokeStyle: 'rgba(0, 69, 135, 0.5)',
-				hover: {fillStyle: 'rgba(0,69,135,1)', strokeStyle: 'rgba(0,69,135,1)'}
+				fillStyle: _isLight ? 'rgba(0, 69, 135, 0.5)' : 'rgba(170,65,66,0.2)', 
+				strokeStyle: _isLight ? 'rgba(0, 69, 135, 0.5)' : 'rgba(170,65,66,0.2)',
+				textColor: _isLight ? '' : '#fff',
+				hover: {
+					textColor: _isLight ? '' : '#fff',
+					fillStyle: _isLight ? 'rgba(0,69,135,1)' : 'rgba(170,65,66,1)', 
+					strokeStyle: _isLight ? 'rgba(0,69,135,1)' : 'rgba(170,65,66,1)'
+				}
 			});
 	}
 	series[0] = {
 		data: data
 	};
-	_barChart.setData({xLables:xLables, series: series});
+	let options = {
+		gridColor: _isLight ? '' : '#151515'
+	};
+	_barChart.setData({xLables:xLables, series: series, options:options});
 }
 
 drawDownStatistic._updateStuffs = () => {
@@ -188,39 +220,45 @@ drawDownStatistic._udpateLineChart = (summaryDrawDown) => {
 			series = [{
 				data:freqLen.concat([]).slice(-dataLen),
 				activeIndexes: [dayMostDrawDownLast],
-				strokeStyle:'rgba(178,178,178,1)',
-				fillStyle:'rgba(35,171,247,0.2)',
+				strokeStyle: _isLight ? 'rgba(178,178,178,1)' : 'rgb(232,166,174)',
+				fillStyle: _isLight ? 'rgba(35,171,247,0.2)' : 'rgba(0,0,0,0)',
+				lineWidth: 2,
 				hover: {
-					lineWidth: 2,
-					strokeStyle:'rgba(35,171,247,1)',
-					fillStyle:'rgba(35,171,247,0.4)',
+					lineWidth: 3,
+					strokeStyle: _isLight ? 'rgba(35,171,247,1)' : 'rgb(232,166,174)',
+					fillStyle: _isLight ? 'rgba(35,171,247,0.4)' : 'rgba(0,0,0,0)',
 				}
 			}, {
 				data:freqStart.concat([]).slice(-dataLen),
 				activeIndexes: [dayMostDrawDownStart],
-				strokeStyle:'rgba(120,120,120,1)',
-				fillStyle:'rgba(0,104,175,0.2)',
+				strokeStyle: _isLight ? 'rgba(120,120,120,1)' : 'rgb(170,65,66)',
+				fillStyle: _isLight ? 'rgba(0,104,175,0.2)' : 'rgba(0,0,0,0)',
+				lineWidth: 2,
 				hover: {
-					lineWidth: 2,
-					strokeStyle:'rgba(0,104,175,1)',
-					fillStyle:'rgba(0,104,175,0.4)',
+					lineWidth: 3,
+					strokeStyle: _isLight ? 'rgba(0,104,175,1)' : 'rgb(170,65,66)',
+					fillStyle: _isLight ? 'rgba(0,104,175,0.4)' : 'rgba(0,0,0,0)',
 				}
 			}, {
 				data:freqEnd.concat([]).slice(-dataLen),
 				activeIndexes: [dayMostDrawDownEnd],
-				strokeStyle:'rgba(76,76,76,1)',
-				fillStyle:'rgba(00,69,136,0.2)',
+				strokeStyle: _isLight ? 'rgba(76,76,76,1)' : 'rgb(109,15,24)',
+				fillStyle: _isLight ? 'rgba(00,69,136,0.2)' : 'rgba(0,0,0,0)',
+				lineWidth: 2,
 				hover: {
-					lineWidth: 2,
-					strokeStyle:'rgba(00,69,136,1)',
-					fillStyle:'rgba(00,69,136,0.4)',
+					lineWidth: 3,
+					strokeStyle: _isLight ? 'rgba(00,69,136,1)' : 'rgb(109,15,24)',
+					fillStyle: _isLight ? 'rgba(00,69,136,0.4)' : 'rgba(0,0,0,0)',
 				}
 			}];
-
+	let options = {
+		gridColor: _isLight ? '' : '#151515'
+	};
 	_retracementChart.setData({
 		dataLen,
 		series,
-		unit: _intervalObj.value
+		unit: _intervalObj.value,
+		options
 	});
 }
 

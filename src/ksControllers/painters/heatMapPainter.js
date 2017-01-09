@@ -15,7 +15,7 @@ let _toInt = (number) => {
 	****/
 let drawBlockHeatMap = (canvas, data, options) => {
 	if(!canvas || !canvas.getContext) {
-		cosnole.warn('drawBlockHeatMap, canvas is not canvas !');
+		console.warn('drawBlockHeatMap, canvas is not canvas !');
 		return;
 	}
 
@@ -37,6 +37,9 @@ let drawBlockHeatMap = (canvas, data, options) => {
 	// let blocksSorted = data.blocks.concat([]).sort((a, b) => {
 	// 	return a - b;
 	// });
+	if(blocksLen == 0) {
+		return;
+	}
 
 	let blocksY = [];
 	let blocksColor = data.colors;

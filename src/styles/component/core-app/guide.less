@@ -1,0 +1,24 @@
+
+.search-pattern-guide {
+	border-radius: 5px;
+	.body {
+		width: 800px;
+		overflow: hidden;
+		.content {
+			position: relative;
+			left: 0;
+			display: inline-block;
+			white-space: nowrap;
+			img {
+				width: 800px;
+				height: 480px;
+			}
+		}
+	}
+}
+
+[theme='dark'] {
+	.search-pattern-guide {
+		background-color: @dark-bg-inner-lighter;
+	}
+}

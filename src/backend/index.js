@@ -48,39 +48,79 @@ let searchPattern = (args, cb, errorCb) => {
 
 	const { symbol, kline, bars, dateRange, searchConfig, dataCategory, interval} = args;
 
-	let { additionDate, searchLenMax, isLatestDate } = searchConfig;
+	let { additionDate, searchLenMax, isLatestDate, similarityThreshold, vsimilarityThreshold, dateThreshold} = searchConfig;
 
 	let dr = searchConfig.dateRange;
 
 	let searchArgs = { symbol, kline, dateRange, bars, additionDate, searchLenMax, isLatestDate, dataCategory, dr};
 
 	let searchCb = (resObj) => {
-		
 		// console.info(`第一步: 搜索 [ 正常结束 ], 匹配到 ${resObj.results.length} 个`);
-		__data = resObj.results.map((pattern, i) => {
+		__data = [];
+		__closePrice = [];
+		var args = [];
+		var index = 0; //注意id永远是连续的!
+
+		resObj.results.forEach((pattern, i) => {
 
 			const {id, similarity= resObj.similarities && resObj.similarities[i], begin, end, industry=getIndustry(id), type=interval} = pattern;
+			const vsimilarity = resObj.volumeSim && resObj.volumeSim[i] || 0;
 			const lastDate = resObj.lastDates && resObj.lastDates[i];
 			const _return = resObj.returns ? resObj.returns[i] : undefined;
 			let kLine = [];
 			//let id = i;
-			return {
-				id: i,
-				symbol: id,
-				similarity: similarity,//_growSimilarity(similarity),
-				begin: begin.time,
-				end: end.time,
-				lastDate,
-				industry,
-				type,
-				baseBars: bars,
-				kLine,
-				'yield': _return
-			};
-
+			//没有定义, 或者为false, 或者为true的时候在过滤范围内 , 这3个条件push
+			var threshold0 = (!similarityThreshold) || (!similarityThreshold.on) || (similarityThreshold.on && (similarity >= similarityThreshold.value));
+			var threshold1 = (!vsimilarityThreshold) || (!vsimilarityThreshold.on) || (vsimilarityThreshold.on && (vsimilarity >= vsimilarityThreshold.value));
+			var threshold2 = true;
+			if(dateRange && (dateRange.length > 0) && dateThreshold && dateThreshold.on && (id == symbol) && (i < 5)) {
+				console.log(id, symbol, [begin.time, end.time], dateRange);
+				var maxPercent = parseFloat(dateThreshold.value);
+				var range1 = new Date(dateRange[0]),
+						range2 = new Date(dateRange[1]);
+				var d1 = new Date(begin.time),
+						d2 = new Date(end.time);
+				var percent = 0;
+				if((d1 > range1) && (d1 < range2)) {      //有区间重合1
+					percent = (range2 - d1) / (range2 - range1);
+					console.log('percent', percent);
+				} else if ((d2 > range1) && (d2 < range2)) {  //有区间重合2
+					percent = (d2 - range1) / (range2 - range1);
+					console.log('percent2', percent);
+				}
+				if(percent > maxPercent) {                     //比如超过30% 时间重合
+					threshold2 = false;
+				}
+			}
+			if(threshold0 && threshold1 && threshold2) {
+				__data.push({
+					id: index++,
+					symbol: id,
+					similarity: similarity,//_growSimilarity(similarity),
+					vsimilarity: vsimilarity,//交易量相似度
+					begin: begin.time,
+					end: end.time,
+					lastDate,
+					industry,
+					type,
+					baseBars: bars,
+					kLine,
+					'yield': _return
+				});
+				if(resObj.closePrices) {
+					__closePrice.push(resObj.closePrices[i]);					
+				}
+				args.push({
+					'symbol':id,
+					'dateRange': [begin.time, end.time],
+					'lastDate': resObj.lastDates && resObj.lastDates[i],
+					'additionDate': additionDate,
+					'bars': bars,
+					'dataCategory': dataCategory,
+				});
+			}
 		});
 
-		__closePrice = resObj.closePrices || [];
 		//获取kline具体数据
 		let dataCb = (startIndex, klineArr) => {
 			
@@ -107,25 +147,25 @@ let searchPattern = (args, cb, errorCb) => {
 		};
 
 		//let args = [{'symbol':'ss600000',dateRange:[3, 5]}, {'symbol':'ss600000', dateRange:[7, 8]}];
-		let args = resObj.results.map((pattern, i) => {
+		// let args = resObj.results.map((pattern, i) => {
 			
-			const {id, begin, end} = pattern;
+		// 	const {id, begin, end} = pattern;
 
-			return {
-				'symbol':id,
-				'dateRange': [begin.time, end.time],
-				'lastDate': resObj.lastDates && resObj.lastDates[i],
-				'additionDate': additionDate,
-				'bars': bars,
-				'dataCategory': dataCategory,
-			};
-		});
+		// 	return {
+		// 		'symbol':id,
+		// 		'dateRange': [begin.time, end.time],
+		// 		'lastDate': resObj.lastDates && resObj.lastDates[i],
+		// 		'additionDate': additionDate,
+		// 		'bars': bars,
+		// 		'dataCategory': dataCategory,
+		// 	};
+		// });
 
 		// console.log(resObj.results);
 		// console.info('第二步: 获取kline具体数据 [ 开始 ]');
 		//TODO: 需要配置初始获取数据的数量, 如 5 组数据
 		let startIndex = 0,
-				nextIndex = 5;
+				nextIndex = 3;
 		__ksDataXhr_1 =  KSDataService.postSymbolData(startIndex, args.slice(0, nextIndex), bars, dataCb, (err) => {
 			// console.warn(`第二步: 获取kline具体数据 [ 失败 ]`, err);
 			errorCb && errorCb(err);

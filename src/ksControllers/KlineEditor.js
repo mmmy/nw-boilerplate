@@ -39,9 +39,9 @@ function KlineEditor(container, kline) {  //container dom is div dom
 	$(container).append($wrapper);
 
 	let canvases = $wrapper.find('canvas');
+	this._isLight = $ && $.keyStone && ($.keyStone.theme == 'light');
 
 	this._wrapper = $wrapper[0];
-
 	this._canvas = canvases[0];
 	this._canvas_axis_y = canvases[1];
 	this._canvas_axis_x = canvases[2];
@@ -67,9 +67,16 @@ function KlineEditor(container, kline) {  //container dom is div dom
 	//move kline states
 	this._moveKlineStates = {isMouseDown: false, x:-1, y:-1};
 	//yAxis states
-	this._yAxisStates = {isMouseDown: false, y:-1};
+	this._yAxisStates = {
+		isMouseDown: false, y:-1,
+	};
 	//xAxis states
-	this._xAxisStates = {isMouseDown: false, x:-1, paddingLeft:0, paddingRight:0};
+	this._xAxisStates = {
+		isMouseDown: false, 
+		x:-1, 
+		paddingLeft:0, 
+		paddingRight:0,
+	};
 
 	this._updateOHLC = null; //func
 	this._onMoveIndex = null; //func
@@ -90,7 +97,8 @@ KlineEditor.prototype._drawKline = function(kline, options, optionsY, optionsX) 
 KlineEditor.prototype._init = function() {
 	this._updateCanvasSize();
 
-	this._drawKline(this._kline, {yMin:'200%', yMax:'200%'}); //预留上下的高度
+	// this._drawKline(this._kline, {yMin:'200%', yMax:'200%'}); //预留上下的高度
+	this.updateCanvas();
 	this._canvas.addEventListener('mousedown', this._mouseDown.bind(this));
 	this._canvas.addEventListener('mouseup', this._mouseUp.bind(this));
 	this._canvas.addEventListener('mousemove', this._mouseMove.bind(this));
@@ -375,7 +383,7 @@ KlineEditor.prototype.updateHover = function(x, y) {
 
 KlineEditor.prototype.updateCanvas = function(){
 	let data = this._kline[this._hoverIndex];
-	data && this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2]);
+	data && this._updateOHLC && this._updateOHLC(data[1], data[4], data[3], data[2], data[5]);
 	//左右padding, 用于x轴 位置和比例变化
 	let padding = {left:this._xAxisStates.paddingLeft, right:this._xAxisStates.paddingRight};
 
@@ -388,12 +396,20 @@ KlineEditor.prototype.updateCanvas = function(){
 																yMax:this._drawInfo.yMax,
 																selectedRange: this._selectedRange,
 																rangeOption: this._rangeOption,
-																padding
+																padding,
+																volume:true,
+																volumeHeight:0.2
 															}, {
 																hoverY: this._hoverY,
+																textColor: this._isLight ? '' : '#999',
+																hoverColor: this._isLight ? '' : '#333',
+																hoverBackground: this._isLight ? '' : '#aaa',
 															}, {
 																hoverIndex: this._hoverIndex,
 																selectedIndex: this._selectedIndex,
+																textColor: this._isLight ? '' : '#999',
+																hoverColor: this._isLight ? '' : '#333',
+																hoverBackground: this._isLight ? '' : '#aaa',
 																padding
 															});
 	// this._onMoveIndex && this._onMoveIndex(this._moveIndex, this._kline[this._moveIndex]);

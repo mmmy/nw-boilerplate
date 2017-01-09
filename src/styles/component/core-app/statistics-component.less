@@ -7,9 +7,9 @@
 @gray-line-middle: #787878;
 @gray-line-dark: rgb(76, 76, 76);
 
-@blue-line-light: #23abf7;
-@blue-line-middle: #0068af;
-@blue-line-dark: #004587;
+@blue-line-light: rgb(232,166,174);//#23abf7;
+@blue-line-middle: rgb(170,65,66);// #0068af;
+@blue-line-dark: rgb(109,15,24);// #004587;
 
 //显示百分比的UI, 66.66%
 .percent-info(@color:#333;@font-size:20px) {
@@ -39,6 +39,9 @@
 	}
 	&.green {
 		color: @ks-color-green-grass;
+	}
+	&.white {
+		color: @dark-white-gray;
 	}
 }
 
@@ -79,11 +82,12 @@
 	}
 	&.gray-light{
 		&:before {
-			background-color: @gray-line-light;
+			// background-color: @gray-line-light; //light
+			background-color: @blue-line-light;
 		}
 		&:hover {
 			strong {
-				color: @blue-line-light;
+				color: @blue-line-light !important;
 			}
 			&:before {
 				background-color: @blue-line-light;
@@ -92,11 +96,12 @@
 	}
 	&.gray-middle{
 		&:before {
-			background-color: @gray-line-middle;
+			// background-color: @gray-line-middle; //light
+			background-color: @blue-line-middle;
 		}
 		&:hover {
 			strong {
-				color: @blue-line-middle;
+				color: @blue-line-middle !important;
 			}
 			&:before {
 				background-color: @blue-line-middle;
@@ -105,11 +110,12 @@
 	}
 	&.gray-dark{
 		&:before {
-			background-color: @gray-line-dark;
+			// background-color: @gray-line-dark; //light
+			background-color: @blue-line-dark;
 		}
 		&:hover {
 			strong {
-				color: @blue-line-dark;
+				color: @blue-line-dark !important;
 			}
 			&:before {
 				background-color: @blue-line-dark;
@@ -118,26 +124,26 @@
 	}
 	&.blue-light {
 	 	strong {
-	 		color: @blue-line-light;
+	 		color: @blue-line-light !important;
 	 	}
 	 	&:before {
-			background-color: @blue-line-light;
+			background-color: @blue-line-light !important;
 		}
 	}
 	&.blue-middle {
 	 	strong {
-	 		color: @blue-line-middle;
+	 		color: @blue-line-middle !important;
 	 	}
 	 	&:before {
-			background-color: @blue-line-middle;
+			background-color: @blue-line-middle !important;
 		}
 	}
 	&.blue-dark {
 	 	strong {
-	 		color: @blue-line-dark;
+	 		color: @blue-line-dark !important;
 	 	}
 	 	&:before {
-			background-color: @blue-line-dark;
+			background-color: @blue-line-dark !important;
 		}
 	}
 	
@@ -148,6 +154,10 @@
 	margin-left: 2.5px;
 	margin-right: 2.5px;
 	padding: 20px;
+	img {
+		margin-left: 8px;
+		vertical-align: bottom;
+	}
 }
 .ks-data-pane-wrapper {
 	position: relative;
@@ -246,6 +256,7 @@
 		line-height: 60px;
 		img {
 			margin-right: 10px;
+			vertical-align: baseline;
 		}
 	}
 	p {
@@ -356,6 +367,9 @@
 		}
 		&.red:before {
 			background-color: @brown-red;
+		}
+		&.white:before {
+			background-color: @dark-white-gray;
 		}
 		&.green:before {
 			background-color: @ks-color-green-grass;
@@ -528,9 +542,15 @@
 		top: 10px;
 		right: 15px;
 		cursor: pointer;
-		transform: rotate(0deg);
+		width: 30px;
+		height: 30px;
+		img {
+			transform: rotate(0deg);
+		}
 		&.up {
-			transform: rotate(180deg);
+			img {
+				transform: rotate(180deg);
+			}
 		}
 	}
 }

@@ -1,8 +1,6 @@
 //搜索结果底部展示controller
 import { getKlineImgSrc } from './publicHelper';
-// import { generateHeatMapOption } from '../components/utils/heatmap-options';
 import statisticKline from '../components/utils/statisticKline';
-// import echarts from 'echarts';
 import painter from './painter';
 import store from '../store';
 import { getDecimalForStatistic } from '../shared/storeHelper';
@@ -72,7 +70,7 @@ let _decimal = 2;
 let _klineCharts = [];
 // let _earnChart = null;
 
-let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position transition-duration2"><div class="item title">搜索<span class='title-jieguo'>结果</span><span class='title-zhong'>中</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
+let toggleHtml = `<div class="container-toggle float transition-all"><div class="btn-container transition-position"><div class="item title"><span class='title-jieguo'>搜索结果</span><span class='title-zhong'>搜索中</span></div><div class="item btn-toggle"><span class='arrow-icon'></div></div></div>`;
 let _$toggle = null;
 
 let patternHtml = `<div class='pattern-inner'>
@@ -91,9 +89,11 @@ let comparatorInner = `<div class='container-ks-sr container-ks-st meta'>
 												<span class='info-item downrate'><div class='item-title font-simsun'>下跌比例</div><div class='item-value font-number'><span class='value'>0</span><span class='unit'>%</span></div></span>
 												<span class='info-item median'><div class='item-title font-simsun'>涨跌中位数</div><div class='item-value font-number red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
 												<span class='info-item mean'><div class='item-title font-simsun'>涨跌平均数</div><div class='item-value font-number red'><span class='value'>0.0</span><span class='unit'>%</span></div></span>
-												<span class='pattern-wrapper'>${patternHtml}</span>
-												<span class='pattern-wrapper'>${patternHtml}</span>
-												<span class='pattern-wrapper'>${patternHtml}</span>
+												<span class='patterns-container'>
+													<span class='pattern-wrapper'>${patternHtml}</span>
+													<span class='pattern-wrapper'>${patternHtml}</span>
+													<span class='pattern-wrapper'>${patternHtml}</span>
+												</span>
 											</div>`;
 
 let searchStatisticHtml = `<div class='container-ks-sr statistic'>
@@ -112,7 +112,7 @@ let searchChartHtml = `<div class='container-ks-sr chart'>
 												<span class='earnchart-wrapper'><div class='earnchart'></div></span>
 											</div>`;
 
-let wrappersDomStr = `<div class='transition-all container-searchreport static'>
+let wrappersDomStr = `<div class='transition-size container-searchreport static'>
 												<div class='inner-searchreport gray transition-all'>
 													<div class='search-report-wrapper white ${true ? 'slide-down' : ''} transition-top transition-duration2'>
 														${comparatorInner}
@@ -188,7 +188,7 @@ let _updatePredictionUI = ({timespent, total, model}) => {
 
 	try {
 		let uprateStr = (model.upPercent*100).toFixed(1);
-		let downRateStr = (100 - model.upPercent * 100).toFixed(1);
+		let downRateStr = (model.downPercent * 100).toFixed(1);
 		let medianStr = (model.median*100).toFixed(decimal);
 		let meanStr = (model.mean*100).toFixed(decimal);
 		timespent = parseFloat(timespent/1000).toFixed(2);
@@ -304,7 +304,7 @@ let updateDetailPane = () => {
 };
 
 let _triggerToggle = () => { //作为外部接口
-	if(_$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
+	if(_$toggle.hasClass('disabled') || _$toggle.find('.btn-container').hasClass('slide-center') || store.getState().patterns.error) {
 		if ((process.env.NODE_ENV !== 'development') && (process.env.NODE_ENV !== 'beta')) {
 			return;
 		}
@@ -312,6 +312,8 @@ let _triggerToggle = () => { //作为外部接口
 	}
 	let $detailReport = $('.container-searchreport:not(.static)');   //详情页
 	let $comparatorContainer = $('#__comparator_prediction_container');
+	let $tradingview = $('iframe');
+
 	$comparatorContainer.css('opacity', '0');
 	$detailReport.css('opacity', '0');
 
@@ -319,7 +321,7 @@ let _triggerToggle = () => { //作为外部接口
 
 	_$reportContainer.one('transitionend', ()=>{
 		let zIndex = $detailReport.css('z-index');
-		if(zIndex == '0') {
+		if(zIndex == '0') {                           //切换到详情页
 			updateDetailPane();
 			$detailReport.css({'z-index':'2', 'opacity':'1'});
 			$comparatorContainer.css({'z-index':'3', 'opacity':'1'});
@@ -329,6 +331,8 @@ let _triggerToggle = () => { //作为外部接口
 			_$reportWrapper.css('display', 'block');
 			//resize charts
 			_handleResize();
+			//将焦点切换到tradingview
+			$tradingview.focus();
 		}
 	});
 	_$reportContainer.toggleClass('searchreport-full');
@@ -343,6 +347,8 @@ let _initToggle = () => {
 	_$toggle.find('.btn-container').click(function() {
 		/* Act on the event */
 		_triggerToggle();
+	}).on('mouseup',function(e){
+		e.stopPropagation();
 	});
 };
 
@@ -452,7 +458,8 @@ searchResultController.updateCharts = (patterns) => {
 	_updateEarnChart(rawData);
 };
 */
-searchResultController.reportSlideDown = (slideDown, cb) => { 
+searchResultController.reportSlideDown = (slideDown, cb) => {
+	_$toggle.removeClass('disabled'); 
 	let $target = _$reportContainer.find('.search-report-wrapper');
 	$target.off('transitionend', '**');
 	$target.one('transitionend', () => {
@@ -467,9 +474,10 @@ searchResultController.reportSlideDown = (slideDown, cb) => {
 
 searchResultController.showErrorPanel = (searchKline, error) => {
 	searchKline = searchKline || [];
-
-	let title = '本次搜索失败了',
-			errorBody = `<span>请您尝试</span><button class='research'>重新搜索</button><span>或返回</span><button class='back'>上一次搜索</button>`;
+	let lastHasData = store.getState().patterns.rawData.length > 0;
+	let onLine = window.navigator.onLine;
+	let title = `本次搜索失败了 ${onLine ? "" : "<span class='subtitle'>请检查你的网络连接</span>"}`,
+			errorBody = `<span>请您尝试</span><button class='research'>重新搜索</button>${lastHasData ? "<span>或返回</span><button class='back'>上一次搜索</button>" : "" }`;
 
 	if(error && (error.type == 'no_data')) {
 		title = `本次搜索结果数为 "0"`;
@@ -489,6 +497,9 @@ searchResultController.showErrorPanel = (searchKline, error) => {
 	_$toggle.find('.btn-toggle').hide();
 
 	$errorPanel.find('img').attr('src', getKlineImgSrc(searchKline));
+
+	//直接全部隐藏
+	_$toggle.addClass('disabled');
 	//重新搜索
 	$errorPanel.find('.research').click(function(event) {
 		/* Act on the event */
@@ -504,6 +515,7 @@ searchResultController.showErrorPanel = (searchKline, error) => {
 
 searchResultController.removeErrorPanel = () => {
 	_$reportWrapper.find('.error-panel').remove();
+	_$toggle.removeClass('disabled'); 
 };
 
 searchResultController.triggerToggle = () => {

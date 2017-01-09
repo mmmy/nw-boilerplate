@@ -86,6 +86,7 @@ class CrossfilterView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {chart3larger: false};
+		this._isLight = $ && $.keyStone && ($.keyStone == 'light');
 		//this.oldCrossFilter = props.crossFilter;
 	}
 
@@ -632,11 +633,11 @@ resizeChart1() {
 		    // .xAxisLabel("x")
 		    //.clipPadding(16)
 				.transitionDuration(transitionDuration)
-		    .colors('#555')
+		    .colors(this._isLight ? '#555' : '#aaa')
 		    //.colors('rgba(117, 117, 117, 1)')
 		    .symbolSize(8) //width / 50
 		    .excludedSize(8)
-		    .excludedColor('#aFaFaF')
+		    .excludedColor(this._isLight ? '#aFaFaF' : '#555')
 		    .excludedOpacity(0.3)
 		    .renderHorizontalGridLines(true)
 		    .renderVerticalGridLines(true)
@@ -847,8 +848,8 @@ resizeChart1() {
 			.dimension(this.yieldDim)
 			.group(this.yieldGroup)
 			.renderHorizontalGridLines(true)
-			.colors('#4F4F4F')
-			//.excludedColor('#f00')
+			.colors(this._isLight ? '#4F4F4F' : '#aaa')
+			// .excludedColor(this._isLight ? '' : '#555')
 			.elasticY(true)
 			//.centerBar(true)
 			.gap(1)

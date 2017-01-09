@@ -1,0 +1,180 @@
+
+body[theme="dark"] {
+
+	.modal-content-contianer .item-body-container .date-icon {
+		background-color: @dark-input-bg !important;
+		color: #aaa;
+	}
+
+	.modal-content-contianer .item-body-container.days button {
+		background-color: @dark-input-bg;
+	}
+	.modal-content-contianer {
+		select {
+			background-color: @dark-input-bg;
+			color: #fff;
+			border-color: transparent;
+			&[disabled] {
+				opacity: 0.3;
+			}
+		}
+	}
+
+	.modal-content-contianer input, .modal-content-contianer .inputs-wrapper {
+		background-color: @dark-input-bg !important;
+		border-color: transparent !important;
+		color: #fff !important;
+		&[disabled] {
+			color: #666 !important;
+		}
+	}
+
+	.dropdown-menu {
+		background-color: @dark-input-bg;
+	}
+	.datepicker table tr td.day:hover, .datepicker table tr td.focused {
+		background-color: #aaa;
+		color: #333;
+	}
+	.datepicker .datepicker-switch:hover, .datepicker .next:hover, .datepicker .prev:hover, .datepicker tfoot tr th:hover {
+		background-color: #aaa;
+		color: #333;
+	}
+
+	//login
+	.login-panelsmall-container {
+		color: #333;
+		.error-text {
+			color: #999;
+		}
+	}
+
+	.header-toolbar-container .account-button .user-panel-container {
+		background-color: @dark-modal-bg;//lighten(@dark-bg-inner-lighter, 8%);
+		color: #fff;// @dark-graytitle;
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+		.username {
+			// border-color: #999;
+		}
+		.logout-btn {
+			color: white;
+			background-color: @brown-red;
+			&:hover {
+				background-color: @brown-red-light;
+			}
+		}
+	}
+
+	.modal-overlay {
+		background-color: rgba(0, 0, 0, 0.6);
+		&.black {
+			background-color: rgba(0, 0, 0, 1);
+		}
+	}
+	.modal-confirm-container {
+		background-color: @dark-bg-inner-lighter;
+		.btn-no {
+			color: #fff;
+			background-color: @dark-input-bg;
+			&:hover {
+				background-color: lighten(@dark-input-bg, 10%);
+			}
+		}
+	}
+	.rename-input-container {
+		background-color: #444 !important;
+	}
+
+	.container-stockview .nav-container .favorites-input-wrapper {
+		background-color: transparent;
+		border-color: #888;
+		input {
+			background-color: transparent;
+		}
+	}
+	.container-stockview .nav-container .trash-panel-btn.active .clear {
+		color: #444;
+		&:hover {
+			background-color: transparent;
+			color: #222;
+		}
+	}
+	.ks-input-wrapper {
+		input {
+			background-color: transparent;
+		}
+		.ks-check, .ks-delete {
+			background-image: url(@icons_dark_url);
+		}
+		&.border {
+			border-color: #666;
+		}
+	}
+
+	.search-report-wrapper .error-panel {
+		background-color: @dark-bg-inner-lighter;
+		p {
+			color: #aaa;
+		}
+	}
+
+	.pattern-statistics-container .statistics-slide-widget {
+		background-color: #111;
+		button {
+			background-color: #111 !important;
+		}
+	}
+
+	.trash-modal-container {
+		background-color: darken(@dark-bg-inner-lighter,2%);
+		.footer {
+			background-color: darken(@dark-bg-inner-lighter,2%);
+			margin-top: -6px;
+		}
+		.trash-modal-content-wrapper {
+			margin-left: 40px;
+			margin-right: 30px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
+		.footer {
+			border-color: #444;
+		}
+		.footer .info-container .font-number {
+			color: #fff;
+		}
+	}
+	
+	.reportdetail-container .toggle-btn {
+		padding-left: 9.5px;
+		padding-top: 3px;
+	  // background-color: #353a3d;
+	  background-image: url('./image/arrow_bg.png');
+	  // border-radius: 5px;
+	  // border: 1px solid #1C2023;
+	  // box-shadow: 2px 2px 4px rgba(0,0,0,0.2) inset
+	}
+
+	.flat-btn {
+		&.border-btn {
+			font-size: 12px;
+			background-color: transparent;//@dark-bg-inner-lighter-btn;
+			border-color: lighten(@dark-bg-inner-lighter-btn, 10%);
+			&:hover,&.hover {
+				color: #eee;
+				background-color: lighten(@dark-bg-inner-lighter-btn, 20%)
+			}
+			&[disabled],&[disabled]:hover {
+				opacity: 0.5;
+				background-color: transparent;//@dark-bg-inner-lighter-btn;
+			}
+		}
+	}
+	//排序按钮
+	.sort-btn .sorticons-container {
+		color: #333;
+		.active {
+			color: #ccc;
+		}
+	}
+}

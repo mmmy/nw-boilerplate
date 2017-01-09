@@ -54,6 +54,14 @@ let setFilterSimilarity = function(similarity) {
 	}
 }
 
+let setFilterVSimilarity = function(vsimilarity) {
+
+	return {
+		type: types.SET_FILTER_VSIMILARITY,
+		vsimilarity,
+	}
+}
+
 let _yieldDateRange = null;
 
 let _setFilterYieldDateRange = _.debounce((dispatch) => {
@@ -90,5 +98,6 @@ module.exports = {
 	setFilterYieldDateRange,
 	setFilterSymbol,
 	setFilterSimilarity,
+	setFilterVSimilarity,
 	setFilterId,
 }

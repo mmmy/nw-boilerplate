@@ -43,6 +43,13 @@ class ReactTradingView extends React.Component {
       widget.onChartReady(function(){
         console.log('~~~~~~widget.onCHartReady');
       });
+      setTimeout(function(){
+        widget.onIntervalChange(function(){
+          console.log('~~~~~~~~widget interval changed');
+          widget.removeAllShapes();
+        });
+      },2000);
+      // window._tradingview = widget;
       // if (this.props.viewId === 'comparator-chart') window.widget_comparator = widget;
 
       this._inited = true;

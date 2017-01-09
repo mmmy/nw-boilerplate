@@ -20,13 +20,16 @@ let _model = null;
 let _isUp = true; //上涨
 let _intervalObj = {value:1, unit:'D', describe:'天'};
 
+let _isLight = false;
+
 let _highlightLine = function(index) {
 	_peakChart.highlightLine(index);
 }
 
 peakStatistic.init = (wrapper, model) => {
+	_isLight = $.keyStone && ($.keyStone.theme == 'light');
 	_model = model;
-	let newDom = $(`<div class='ks-container peak'><h4 class="title"><img src="image/jizhi.png" />极值统计</h4><div class="row"></div></div>`);
+	let newDom = $(`<div class='ks-container peak'><h4 class="title"><img src="image/jizhi${_isLight ? '' : '_white'}.png" />极值统计</h4><div class="row"></div></div>`);
 	_$container = newDom;
 	$(wrapper).append(newDom);
 
@@ -37,8 +40,8 @@ peakStatistic.init = (wrapper, model) => {
 													.append(`<p class="describe"><span class="text">最高涨幅</span></p>`)
 												)
 	let percentInfo2 = $(`<div class="ks-col-50"></div>`)
-												.append($(`<div class="percent-item green"></div>`)
-													.append(`<p class="rate percent-info green"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
+												.append($(`<div class="percent-item white"></div>`)
+													.append(`<p class="rate percent-info white"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
 													.append(`<p class="describe"><span class="text">最大跌幅</span></p>`)
 												)
 	let part1 = $(`<div class="ks-col-50"></div>`)
@@ -49,7 +52,7 @@ peakStatistic.init = (wrapper, model) => {
 
 	let daysNode = $(`<div class="row"></div>`)
 							.append(`<div class="ks-col-50"><div class="days-info-wrapper red"><p class="days-info">第<strong>0</strong><span class="interval-unit">天</span></p><p class="text">到达最高点位</p></div></div>`)
-							.append(`<div class="ks-col-50"><div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong><span class="interval-unit">天</span></p><p class="text">到达最低点位</p></div></div>`)
+							.append(`<div class="ks-col-50"><div class="days-info-wrapper white"><p class="days-info">第<strong>0</strong><span class="interval-unit">天</span></p><p class="text">到达最低点位</p></div></div>`)
 
 	let part2 = $(`<div class="ks-col-50"></div>`)
 							// .append(`<div class="chart-title line">2.按时间分布统计图<span class="axis pull-right">横坐标:<span class="black interval-unit">天</span>纵坐标:<span class="black">个数</span></span></div>`)
@@ -68,7 +71,7 @@ peakStatistic.init = (wrapper, model) => {
 	_peakChartTitleUnit = newDom.find('.interval-unit');
 	//initEvent
 	daysNode.find('.days-info-wrapper.red').on('mouseenter',_highlightLine.bind(null,0)).on('mouseleave',_highlightLine.bind(null,-1));
-	daysNode.find('.days-info-wrapper.green').on('mouseenter',_highlightLine.bind(null,1)).on('mouseleave',_highlightLine.bind(null,-1));
+	daysNode.find('.days-info-wrapper.white').on('mouseenter',_highlightLine.bind(null,1)).on('mouseleave',_highlightLine.bind(null,-1));
 	/*
 	part1.find('.flat-btn.up').click(function(event) {
 		if(!_isUp) {
@@ -110,7 +113,7 @@ peakStatistic.init = (wrapper, model) => {
 /*
 peakStatistic._updateDescribeUI = () => {
 	let isUp = _isUp;
-	_$container.find('.circle').toggleClass('red', isUp).toggleClass('green', !isUp);
+	_$container.find('.circle').toggleClass('red', isUp).toggleClass('white', !isUp);
 	_$container.find('.describe .text').text(isUp ? '最高涨幅百分比' : '最低涨幅百分比');
 	var daysInfoTextDom = _$container.find('.days-info-wrapper .text');
 	$(daysInfoTextDom[0]).text(isUp ? '最多只匹配结果到达最高点' : '最多只匹配结果到达最低点');
@@ -125,7 +128,7 @@ peakStatistic._udpateDataUI = (dataObj, isUp=true) => {
 		let values = vauleStr.split('.');
 		$($(_$rates[index]).find('span')[0]).text(values[0]);
 		$($(_$rates[index]).find('span')[2]).text(values[1]);
-		// _$maxRate.toggleClass('green', !isUp);
+		// _$maxRate.toggleClass('white', !isUp);
 		// _$maxRate.toggleClass('red', isUp);
 	};
 	try {
@@ -155,23 +158,27 @@ peakStatistic._redrawBarChart = (model) => {
 
 		let decimal = 1;
 		if(unit >= 0.01)
-			decimal = 0;
-		else if(unit >= 0.001)
 			decimal = 1;
-		else if(unit >= 0.0001)
+		else if(unit >= 0.001)
 			decimal = 2;
-		else if(unit >= 0.00001)
+		else if(unit >= 0.0001)
 			decimal = 3;
-		else if(unit >= 0.000001)
+		else if(unit >= 0.00001)
 			decimal = 4;
+		else if(unit >= 0.000001)
+			decimal = 5;
 		for(var i=leftLen-1; i>=0; i--) {   //绿色
 			xLables.push((- unit * (i+1) * 100).toFixed(decimal)); 
 			data.push({
 				value: freqLeft[i], 
-				fillStyle:'rgba(16,145,33,0.2)', 
-				strokeStyle: 'rgba(16,145,33,0.2)',
-				textColor: 'rgba(16,145,33,1)',
-				hover: {fillStyle: 'rgba(16,145,33,1)', strokeStyle: 'rgba(16,145,33,1)'}
+				fillStyle: _isLight ? 'rgba(16,145,33,0.2)' : 'rgba(153,153,153,0.2)', 
+				strokeStyle: _isLight ? 'rgba(16,145,33,0.2)' : 'rgba(153,153,153,0.2)',
+				textColor: _isLight ? 'rgba(16,145,33,1)' : 'rgba(255,255,255,1)',
+				hover: {
+					textColor: _isLight ? 'rgba(16,145,33,1)' : 'rgba(255,255,255,1)',
+					fillStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(153,153,153,1)', 
+					strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(153,153,153,1)'
+				}
 			});
 		}
 		xLables.push('0');
@@ -179,10 +186,14 @@ peakStatistic._redrawBarChart = (model) => {
 			xLables.push((unit * (i+1) * 100).toFixed(decimal));
 			data.push({
 				value: freqRight[i], 
-				fillStyle:'rgba(141,22,27,0.2)', 
-				strokeStyle: 'rgba(141,22,27,0.2)',
-				textColor: 'rgba(141,22,27,1)',
-				hover: {fillStyle: 'rgba(141,22,27,1)', strokeStyle: 'rgba(141,22,27,1)'}
+				fillStyle: _isLight ? 'rgba(141,22,27,0.2)' : 'rgba(170,65,66,0.2)', 
+				strokeStyle: _isLight ? 'rgba(141,22,27,0.2)' : 'rgba(170,65,66,0.2)',
+				textColor: _isLight ? 'rgba(141,22,27,1)' : 'rgba(255,255,255,1)',
+				hover: {
+					textColor: _isLight ? 'rgba(141,22,27,1)' : 'rgba(255,255,255,1)',
+					fillStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)', 
+					strokeStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)'
+				}
 			});
 		}
 		series[0] = {
@@ -205,27 +216,32 @@ peakStatistic._redrawLineChart = (model) => {
 	
 		peakSeries[0] = {
 			data: tPeakS,
-			strokeStyle: 'rgba(141,22,27,1)',
-			fillStyle: 'rgba(141,22,27,0.1)',
+			strokeStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)',
+			fillStyle: _isLight ? 'rgba(141,22,27,0.1)' : 'rgba(170,65,66,0)',
+			lineWidth: 2,
 			hover: {
-				lineWidth: 2,
-				strokeStyle: 'rgba(141,22,27,1)',
-				fillStyle: 'rgba(141,22,27,0.1)'
+				lineWidth: 3,
+				strokeStyle: _isLight ? 'rgba(141,22,27,1)' : 'rgba(170,65,66,1)',
+				fillStyle: _isLight ? 'rgba(141,22,27,0.1)' : 'rgba(170,65,66,0)'
 			},
 			activeIndexes: [dayMostPeak-1]
 		};
 		peakSeries[1] = {
 			data: tDownS,
-			strokeStyle: 'rgba(16,145,33,1)',
-			fillStyle: 'rgba(16,145,33,0.1)',
+			strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(153,153,153,1)',
+			fillStyle: _isLight ? 'rgba(16,145,33,0.1)' : 'rgba(115,176,20,0)',
+			lineWidth: 2,
 			hover: {
-				lineWidth: 2,
-				strokeStyle: 'rgba(16,145,33,1)',
-				fillStyle: 'rgba(16,145,33,0.1)'
+				lineWidth: 3,
+				strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(153,153,153,1)',
+				fillStyle: _isLight ? 'rgba(16,145,33,0.1)' : 'rgba(115,176,20,0)'
 			},
 			activeIndexes: [dayMostDown-1]
 		};
-		_peakChart.setData({dataLen,series:peakSeries,unit:_intervalObj.value});
+		let options = {
+			gridColor: _isLight ? '' : '#151515'
+		};
+		_peakChart.setData({dataLen,series:peakSeries,unit:_intervalObj.value, options:options});
 	} catch(e) {
 		console.error(e);
 		_peakChart.setData({dataLen:0,series:[]});

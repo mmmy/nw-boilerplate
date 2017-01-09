@@ -93,8 +93,11 @@ function CountBarsChart(container, config) {
 }
 
 CountBarsChart.prototype._resize = function() {
-	this._updateCanvasSize();
-	this.render();
+	// this._updateCanvasSize();
+	let {width, height} = require('../shared/nwApp').appGetSize();
+	if(width > 1000) {
+		this.render();
+	}
 }
 
 CountBarsChart.prototype._updateCanvasSize = function() {
@@ -161,9 +164,11 @@ CountBarsChart.prototype.render = function() {
 	this._drawChart();
 }
 
-CountBarsChart.prototype.setData = function({xLables, series}) {
+CountBarsChart.prototype.setData = function({xLables, series, options}) {
+	options = options || {};
 	series = series || [];
 	xLables = xLables || [];
+	this._yAxisOptions.gridColor = options.gridColor;
 	this._linesOption.x = xLables;
 	this._linesOption.series = series;
 	this.render();

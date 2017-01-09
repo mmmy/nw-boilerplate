@@ -12,7 +12,7 @@ let getSymbolHistory = (postData, callback, errorCallback) => {
 
   const errorCb = (err) => {
     console.error('getSymbolHistory error', err);
-    // callback && callback(err);
+    errorCallback && errorCallback(err);
   };
 
   request(options, requestCb, errorCb, JSON.stringify(postData));
@@ -69,13 +69,13 @@ let dealGroupCode = (data) => {
 
 let getAllSymbolsList = (callback) => {
   if (Cache.isLegal('allSymbolsList')) {
-    console.log('allSymbolsList isLegal');
+    // console.log('allSymbolsList isLegal');
     callback && callback(Cache.getFromFile('allSymbolsList'));
     return;
   }
 
   let cb = (_groupCodes) => {
-    console.log(_groupCodes);
+    // console.log(_groupCodes);
     var promises = [];
     JSON.parse(_groupCodes).forEach(function(code) {
       if (code != 'cf_m5')
@@ -139,7 +139,7 @@ data = {
 }
 */
 let getOneSymbolList = (data, callback) => {
-  console.log('get one');
+  // console.log('get one');
   var fileName = data.fileName;
   var postData = data.postData;
   const { symbolListOptions } = config;
@@ -169,7 +169,7 @@ let dealSymbolList = (data) => {
 
 
 let getSymbolList = (postData, callback) => {
-  console.log("getAllSymbolList first");
+  // console.log("getAllSymbolList first");
   getAllSymbolsList(callback);/*
   return;
   const { symbolListOptions } = config;

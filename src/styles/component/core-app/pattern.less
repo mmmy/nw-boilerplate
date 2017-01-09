@@ -2,7 +2,7 @@
 @patternStatisticsPanel_H: 50px;//8%;
 //@patternView_W: @patternContainerStretch_W/2 - 13px - 8px - 10px;
 @patternView_W: calc(~"100% / 3 - 2px");//287px;//275px;//130px; // @patternContainerStretch_W * 0.393;
-@patternView_H: 200px;
+@patternView_H: 260px;
 
 @patternView_flat_W: @patternView_W; //130px
 @patternVIew_flat_W2: calc(~"100% / 4 - 2px");
@@ -29,7 +29,8 @@
 	overflow-x: hidden;
 	.scrollbar(@width:6px);
 	.scrollbar-track(@background-color:transparent);
-	.scrollbar-thumb(@background-color: @ks-color-gray-1);
+	// .scrollbar-thumb(@background-color: @ks-color-gray-1); //白版
+	.scrollbar-thumb();
 	
 	.no-data-wrapper {
 		display: none;
@@ -65,7 +66,7 @@
 	background-color: #fff;
 	// box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 	.mama-box-shadow();
-	.border-radius-inner();
+	// .border-radius-inner();
 	//border-top: 1px solid @ks-color-gray-8;
 	//border-bottom: 1px solid @ks-color-gray-8;
 
@@ -141,7 +142,7 @@
 
 		h5 {
 			color: @lulu-black;
-			font-size: 16px;//1.3rem;
+			font-size: 14px;//1.3rem;
 			font-weight: bold;
 			// margin-top: 1.6rem;
 			margin: 0;
@@ -171,7 +172,7 @@
 
 	.slider-container{
 		display: inline-block;
-		width: calc(~"100% - 60px - 20px");//55%;
+		width: calc(~"100% - 60px - 40px");//55%;
 		padding-left: 3%;
 		//padding: 8px;
 	}
@@ -195,7 +196,8 @@
 	.child-panel-container {
 		position: absolute;
 		width: calc(~"100% - 60px");//106.8%;
-		height: 34px;//3.2rem;
+		// height: 34px;//3.2rem;
+		padding-bottom: 8px;
 		// border: 1px solid #ddd;
 		// left: -50px;
 		top: calc(~"100% - 2px");
@@ -357,13 +359,13 @@
 
 //排序item btn
 .sort-btn {
-	text-align: left;
+	text-align: center;
 	display: block;
-	width: 42%;//33.3%;
+	width: calc(~"33.3% - 2px");// 42%;//33.3%;
 	float: left;
 	//padding: 10px 10px;
 	margin-top: 8px;//0.6rem;
-	padding-right: calc(~"6.8% + 7px");//7px;
+	padding-right: 0;//calc(~"6.8% + 7px");//7px;
 	font-size: 12px;//1.2rem;
 	cursor: pointer;
 	color: @ks-color-gray-6;
@@ -390,7 +392,7 @@
 	}
 
 	&.active {
-		color: #E00028;
+		color: @brown-red;
 	}
 }
 
@@ -431,14 +433,14 @@
 		}
 	}
 	position: relative;
-	height: 100%;
+	height: calc(~"100% + 1px");
 	overflow: scroll;
 	// padding: 10px 0 10px 10px;//2.8%;
 	margin-left: 30px;
 	margin-right: 30px;
 	.scrollbar(@width:6px);
 	.scrollbar-track(@background-color:transparent);
-	.scrollbar-thumb(@background-color: @ks-color-gray-1);
+	.scrollbar-thumb();
 
 	&.scroll-hidden{
 		overflow: hidden;
@@ -472,7 +474,7 @@
 	}
 	&.trashed {
 		width: 160px;
-		height: 200px;
+		height: 260px;
 		cursor: pointer;
 	}
 
@@ -641,7 +643,7 @@
 
 .echart-row-wrapper {
 	width: calc(~"100% - 60px");//100%;//140%;
-	height: calc(~"100% - 60px - 60px");//100%;//71.4%;
+	height: calc(~"100% - 60px - 90px");//100%;//71.4%;
 	position: absolute;
 	top: 60px;
 	left: 30px;
@@ -768,12 +770,28 @@
 
 .pattern-info-container {
 	position: relative;
-	height: 60px;//28.5%;
+	height: 90px;//28.5%;
 	width: 100%;
 	position: absolute;
 	bottom: 0;
 	.flex-container:not(.column) {
+		flex-flow: wrap;
+		align-content: center;
 		align-items: center;
+		.item {
+			width: 50%;
+			font-size: 14px;
+			&.return {
+			align-self: flex-start;
+				h5 {
+					display: none;
+				}
+				p {
+					margin-top: 0;
+				}
+				font-size: 12px;
+			}
+		}
 	}
 	&.column {
 		height: 100%;
@@ -846,27 +864,28 @@
 		// letter-spacing: 1px;
 	}
 
-	.flex-container > div:nth-child(1) {
-		p{
-			font-size: 14px;
-			width: 60px;
-		}
-	}
-	.flex-container > div:nth-child(2) {
-		p{
-			// font-size: 15px;
-			padding-top: 1px;
-			padding-bottom: 1px;
-			// background-color: #f5f5f5;
-			width: 60px;
-			font-size: 13px;
-		}
-	}
+	// .flex-container > div:nth-child(1) {
+	// 	p{
+	// 		font-size: 14px;
+	// 		// width: 60px;
+	// 	}
+	// }
+	// .flex-container > div:nth-child(2) {
+	// 	p{
+	// 		// font-size: 15px;
+	// 		padding-top: 1px;
+	// 		padding-bottom: 1px;
+	// 		// background-color: #f5f5f5;
+	// 		// width: 60px;
+	// 		font-size: 13px;
+	// 	}
+	// }
 
 	p{
 		color: @lulu-black;
-		font-size: 11px;
+		// font-size: 11px;
 		margin-top: 5%;
+		margin-bottom: 10px;
 		letter-spacing: 1px;
 		font-weight: bold;
 	}
@@ -876,7 +895,7 @@
 		top: 0;
 		left: 0;
 		width: 100%;
-		height: 80%;
+		height: 90%;
 
 		display: flex;
 		justify-content: center;

@@ -23,6 +23,7 @@
 	left: 25%;
 	top: 12px;//-15px;
 	z-index: 99;//101;
+	opacity: 1;
 	&.float {
 		top: auto;
 		bottom: 135px;
@@ -38,6 +39,13 @@
 	//暂时不需要效果
 	&.full{
 		top: 22px;//-20px;
+	}
+	&.disabled {
+		opacity: 0;
+		cursor: default;
+		* {
+			cursor: default;
+		}
 	}
 
 	.btn-container{
@@ -104,7 +112,7 @@
 				width: 20px;
 				height: 20px;
 				background-image: url(@icons_url);
-				.icon_position(1,5,2, 5px, 5px);
+				.icon_position(1,5,2, 3px, 5px);
 			}
 			&.rotate{
 				.arrow-icon{
@@ -123,6 +131,7 @@
 
 		//搜索状态
 		&.slide-center {
+			cursor: default;
 			top: 50px;
 			//left: 50px;
 			border-color: transparent;
@@ -198,17 +207,17 @@
 		// top: 70px;
 	}
 	&.slide-down {
-		top: 100%;
+		top: calc(~"100% + 27px");
 	}
 	.error-panel {
 		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		left: 0;
+		width: calc(~"100% - 40px");
+		height: calc(~"100% + 27px");
+		top: -27px;
+		left: 20px;
 		z-index: 6;
 		background-color: white;
-		box-shadow:  0 0 0 20px #fff;
+		// box-shadow:  0 0 0 20px #fff;
 		img {
 			// width: 130px;
 			height: 100px;
@@ -216,6 +225,9 @@
 		}
 		h2{
 			font-size: 24px;
+		}
+		.subtitle {
+			font-size: 14px;
 		}
 		p{
 			color: @ks-color-gray-4;

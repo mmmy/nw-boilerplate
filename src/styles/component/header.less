@@ -1,5 +1,5 @@
 .container-header{
-	border-top: 1px solid #eee;
+	// border-top: 1px solid #eee;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -23,7 +23,7 @@
 
 .header-toolbar-container {
 	position: absolute;
-	right: 20px;//120px;
+	right: 120px; //20px
 	// width: 50%;
 	top: 0;
 	height: 100%;
@@ -46,35 +46,46 @@
 		.user-panel-container {
 			position: absolute;
 			width: 160px;
-			height: 120px;
+			text-align: left;
+			padding: 20px;
+			// height: 120px;
 			right: 0;
 			top: 30px;
 			min-width: 50px;
+			font-size: 12px;
 			//width: 50px;
 			// padding: 5px 10px;
 			background-color: white;
 			border-radius: 5px;
 			.modal-box-shadow();
 			color: @ks-color-gray-1;
+			cursor: default;
 			.username {
-				padding-bottom: 10px;
-				margin: 20px;
-				text-align: center;
-				cursor: default;
-				border-bottom: 1px solid #eee;
+				padding-bottom: 5px;
+				// margin: 20px;
+				// text-align: center;
+				// border-bottom: 1px solid #eee;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				&:hover{
 					// color: @ks-color-gray-3;
 				}
 			}
+			hr {
+				margin-top: 10px;
+				margin-bottom: 10px;
+				border-color: #666;
+			}
 			.logout-btn {
-				width: 100px;
-				height: 30px;
-				line-height: 30px;
+				text-align: center;
+				margin-top: 10px;
+				width: 60px;
+				height: 24px;
+				line-height: 24px;
 				background-color: #eee;
 				border-radius: 2px;
-				margin-left: 30px;
+				cursor: pointer;
+				// margin-left: 30px;
 				color: #666;
 				&:hover {
 					.ks-button-hover();
@@ -88,6 +99,7 @@
 	position: absolute;
 	width: 100%;
 	height: 100%;
+	-webkit-app-region: drag;
 }
 
 .app-tool-container {
@@ -100,20 +112,35 @@
 		width: 30px;
 		height: 30px;
 		background-image: url(@icons_url);
-		margin-top: 5px;
+		margin-top: 2px;
 		margin-left: 0;//10px;
 		float: left;
 	}
 
 	.app-minimize {
-		.icon_position(0,0,3);
+		.icon_position(2,0,3);
+		&:hover {
+			.icon_position(0,0,3,0,1px);
+		}
 	}
 
 	.app-maximize {
-		.icon_position(0,1,3);
+		.icon_position(2,1,3);
+		&:hover {
+			.icon_position(0,1,3,0,1px);
+		}
+		&.fullScreen {
+			.icon_position(2,9,3,0,1px);
+			&:hover {
+				.icon_position(0,9,3);
+			}
+		}
 	}
 
 	.app-close {
-		.icon_position(0,2,3);
+		.icon_position(2,2,3);
+		&:hover {
+			.icon_position(0,2,3,0,1px);
+		}
 	}
 }

@@ -84,8 +84,11 @@ function CountLinesChart(container, config) {
 }
 
 CountLinesChart.prototype._resize = function() {
-	this._updateCanvasSize();
-	this.render();
+	// this._updateCanvasSize();
+	let {width, height} = require('../shared/nwApp').appGetSize();
+	if(width > 1000) {
+		this.render();
+	}
 }
 
 CountLinesChart.prototype._updateCanvasSize = function() {
@@ -195,8 +198,9 @@ CountLinesChart.prototype.render = function() {
 	this._drawChart();
 }
 
-CountLinesChart.prototype.setData = function({dataLen, series, unit}) {
+CountLinesChart.prototype.setData = function({dataLen, series, unit, options}) {
 	series = series || [[]];
+	options = options || {};
 	unit = unit || 1;
 	let len = dataLen || series[0].length;
 	let x = [];
@@ -204,6 +208,7 @@ CountLinesChart.prototype.setData = function({dataLen, series, unit}) {
 	for(var i=0; i<len; i++) {
 		x.push((i + 1) * unit);
 	}
+	this._yAxisOptions.gridColor = options.gridColor;
 	this._linesOption.x = x;
 	this._linesOption.series = series;
 	this.render();

@@ -29,7 +29,7 @@ function KlinePrediction(container, config) {
 	let canvases = $wrapper.find('canvas');
 
 	this._wrapper = $wrapper[0];
-
+	this._isLight = $ && $.keyStone && ($.keyStone.theme == 'light');
 	this._canvas = canvases[0];
 	this._canvas_axis_y = canvases[1];
 	this._canvas_axis_x = canvases[2];
@@ -45,7 +45,7 @@ function KlinePrediction(container, config) {
 	this._timeInterval = 'D';
 	this._symbolName = '';
 	this._symbolDescribe = '';
-	this._klineScaleRate = 1.5;
+	this._klineScaleRate = 1.3;
 
 	this._predictionPriceMin = 0; //记录预测部分kline价格下限
 	this._predictionPriceMax = 0; //记录预测部分kline价格上限
@@ -68,18 +68,29 @@ function KlinePrediction(container, config) {
 		yMin: null,
 		yMax: null,
 		symbolName:'',
+		symbolNameColor: this._isLight ? '' : '#eee',
 		symbolDescribe:'',
+		symbolDescribeColor: this._isLight ? '' : '#aaa',
 		baseBarRange: [],
 		overflowPane: false, //超出上界面的内阴影
 		overflowPaneBottom: false, //超出上界面的内阴影
+		volume: true,
+		volumeHeight: 0.19,
+		centerKline: true
 	};
 	this._yDrawOption = {
-		hoverY: -1
+		hoverY: -1,
+		textColor: this._isLight ? '' : '#999',
+		hoverColor: this._isLight ? '' : '#222',
+		hoverBackground: this._isLight ? '' : '#aaa',
 	};
 	this._xDrawOption = {
 		drawLen: null,       //保证与K线区域对其
 		hoverIndex: -1,
 		showTime: false, //是否精确显示到 时分秒
+		textColor: this._isLight ? '' : '#999',
+		hoverColor: this._isLight ? '' : '#222',
+		hoverBackground: this._isLight ? '' : '#aaa',
 	};
 
 	this._clickHitTest = NONE;
@@ -332,7 +343,7 @@ KlinePrediction.prototype.setData = function(kline, baseBars, interval, symbol, 
 
 KlinePrediction.prototype.getHoverOCLH = function() {
 	let OCLH = this._kline[this._hoverIndex] || [];
-	return OCLH.slice(-4);
+	return OCLH.slice(-5);
 }
 
 KlinePrediction.prototype.getHoverIndex = function() {

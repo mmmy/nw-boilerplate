@@ -21,6 +21,8 @@ const propTypes = {
 	filter: PropTypes.object,
 };
 
+const patternViewRate = 260 / 160;
+
 const defaultProps = {
   	
 };
@@ -78,13 +80,15 @@ class PatternCollection extends React.Component {
 		//this._idTrashed = _idTrashed;
 	}
 
-	handleResize() {
+	handleResize(e, slient) {
 		let $patternViews = $(this.refs.container).find('.pattern-view:visible');
 		if($patternViews.length > 0) {
 			let width = $patternViews[0].clientWidth,
-					height = width * 210 / 160;
+					height = width * patternViewRate;
 			$patternViews.height(height);
-			callFunc();
+			if(!slient) {
+				callFunc();
+			} 
 		}
 	}
 
@@ -108,7 +112,7 @@ class PatternCollection extends React.Component {
 		 * filter手动刷新
 		 */
 		//return;
-		let {crossFilter, closePrice, searchMetaData, searchConfig} = newProps.patterns;
+		let {crossFilter, closePrice, searchMetaData, searchConfig, sort} = newProps.patterns;
 		if(this.oldCrossFilter !== crossFilter) {
 			$(".start-btn-container").addClass('hide'); //隐藏预测工具栏
     	$(".toolbar-item.item1").removeClass('hide');     //显示pattern过滤工具栏
@@ -120,6 +124,8 @@ class PatternCollection extends React.Component {
 			//idDim , 剔除dimentsion
 			this.idDim = crossFilter.dimension(d=>{ return d.id; });
 			_idTrashed = [];
+			//v2.1, 修复, 重新搜索后排序还是旧数据的bug, 这是思路一, 思路二: 重置this.sortedData = [];
+			this.sortedData = [];
 			$('.trashed-number', '.pattern-statistics-panel').text('');			
 		}
 
@@ -136,7 +142,10 @@ class PatternCollection extends React.Component {
 				$('.pattern-view', node).addClass('hide');
 				if(showNotTrashed){ 																				//alway true
 					idArr.forEach((id) => {
-						$(`#pattern_view_${id}`,node).removeClass('hide');
+						var $patternView = $(`#pattern_view_${id}`,node).removeClass('hide');
+						// var width = $patternView.width();
+						// $patternView.height(width * patternViewRate);       //设置高度, 以防没有对齐
+
 						closePrice[id] && closePriceFiltered.push(closePrice[id]);
 					});
 				}
@@ -145,6 +154,7 @@ class PatternCollection extends React.Component {
 						isTrashed && $(`#pattern_view_${id}`,node).removeClass('hide');
 					});
 				}
+				this.handleResize(null, false);
 				$(node).toggleClass('empty', $('.pattern-view:visible', node).length == 0);
 				
 				//更新统计信息, 极值统计, 回撤统计, 振幅统计
@@ -225,7 +235,7 @@ class PatternCollection extends React.Component {
 		}
 		return 	(newProps.filter === this.props.filter)    //filter更新后不进行自动刷新, 而是在componentWillReceiveProps 进行手动刷新
 						&& (newProps.active.id === this.props.active.id)   //点击patternview
-						&& (newProps.patternTrashed === this.props.patternTrashed) //eye
+						&& (newProps.patternTrashed === this.props.patternTrashed) //eye 弃用
 						//&& (newProps.fullView === this.props.fullView)   //视图切换
 		// return (newProps.sort !== this.props.sort) || (newProps.patterns != this.props.patterns);
 	}
@@ -237,11 +247,12 @@ class PatternCollection extends React.Component {
 	componentDidUpdate() {
 		// console.info('patterns collections view  did update', new Date() - this.renderDate);
 		// console.info('patterns collections view  did update2', new Date() - this.renderDate2);
-		if(!this.props.fullView) {
+
+		/*  现在不会执行 v2.1
+		if(!this.props.fullView) { 
 			//console.log('patternCollection did update');
 			this.refs.container.scrollTop = 0;
 			let parent = $(this.refs.container);
-			console.debug(__visibleNumber);
 			if(__visibleNumber < 5) {
 				let placeHolders = generatePlaceHolder(5 - __visibleNumber);
 				placeHolders.forEach((e) => {
@@ -251,6 +262,7 @@ class PatternCollection extends React.Component {
 		} else {
 			$('.pattern-view.holder', this.refs.container).remove();
 		}
+		*/
 	}
 
 	sortData(rawData){
@@ -259,7 +271,7 @@ class PatternCollection extends React.Component {
 		//bug
 		//如果 sortType 没有变化那么不需要重新排序
 		// console.info('oldSortType',this.oldSortType,'sortType', sortType);
-		if(this.oldSortType === sortType) {
+		if(this.oldSortType === sortType && this.sortedData && this.sortedData.length > 0) {
 			console.info('sortType 没有变化那么不需要重新排序');
 			return this.sortedData;
 		}
@@ -277,10 +289,14 @@ class PatternCollection extends React.Component {
 
 		sortedData = sortedData.sort((a,b) => { 
 			switch (sortType) {
-				case sortTypes.SIMILARITY:
+				case sortTypes.SIMILARITY://价相似度
 					return  a.similarity - b.similarity;
 				case sortTypes.SIMILARITY_R:
 					return  b.similarity - a.similarity;
+				case sortTypes.VSIMILARITY://量相似度
+					return  a.vsimilarity - b.vsimilarity;
+				case sortTypes.VSIMILARITY_R:
+					return  b.vsimilarity - a.vsimilarity;
 				case sortTypes.DATE:
 					return  getLastDate(a) - getLastDate(b);
 				case sortTypes.DATE_R:

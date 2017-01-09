@@ -4,6 +4,7 @@ import ReactTradingView from '../components/ReactTradingView';
 import { STOCK_VIEW } from '../flux/constants/Const';
 import datafeedCache from '../cache/datafeedCache';
 let { setDataFeed } = datafeedCache;
+import searchPatternGuide from '../ksControllers/searchPatternGuide';
 
 import stockviewController from '../ksControllers/stockviewController';
 let historyController = stockviewController.historyController;
@@ -24,8 +25,37 @@ class StockView extends React.Component {
 
 
 	componentDidMount() {
+		
+		var watchlistController = require('../ksControllers/watchlistController');
 		historyController.init(this.refs.history_nav_container, this.refs.history_body_container);
 		favoritesController.init(this.refs.favorites_nav_container, this.refs.favorites_body_container);
+		
+		var watchlistStorage = require('../backend/watchlistStorage');
+		var storage = watchlistStorage.getDataFromStorage(this._category);
+		var that = this;
+		if(storage) {
+			watchlistController.init(that.refs.watchlist_view);
+			//显示更新日志在 关闭其他modal之后
+			var interval = setInterval(function(){
+				if($('body > .modal-overlay').length == 0) {
+      		require('../ksControllers/updateLog').check();
+      		clearInterval(interval);
+				}				
+			},500);
+		} else {
+			//查询如果没有模态对话框(比如过期信息对话框), 开始引导 , 简单粗暴
+			var interval = setInterval(function(){
+				if($('body > .modal-overlay').length == 0) {
+					var watchlistGuide = require('../ksControllers/watchlistController/watchlistGuide');
+					watchlistGuide.start(function(configObj){
+		      	require('../ksControllers/updateLog').check();
+						watchlistStorage.saveToFile(configObj);
+						watchlistController.init(that.refs.watchlist_view);
+					});
+					clearInterval(interval);
+				}
+			}, 500);
+		}
 	}
 
 	componentWillReceiveProps(){
@@ -88,16 +118,16 @@ class StockView extends React.Component {
 						"mainSeriesProperties.candleStyle.wickDownColor": "#666",//'#6A6A6A',
 						"mainSeriesProperties.candleStyle.barColorsOnPrevClose": false,
 
-						"mainSeriesProperties.hollowCandleStyle.upColor": "#999",
-						"mainSeriesProperties.hollowCandleStyle.downColor": "#666",
-						"mainSeriesProperties.hollowCandleStyle.drawWick": true,
-						"mainSeriesProperties.hollowCandleStyle.drawBorder": true,
-						"mainSeriesProperties.hollowCandleStyle.borderColor": "#999",
-						"mainSeriesProperties.hollowCandleStyle.borderUpColor": "#999",
-						"mainSeriesProperties.hollowCandleStyle.borderDownColor": "#666",
-						"mainSeriesProperties.hollowCandleStyle.wickUpColor": '#999',
-						"mainSeriesProperties.hollowCandleStyle.wickDownColor": '#666',
-						"mainSeriesProperties.hollowCandleStyle.barColorsOnPrevClose": false,
+						// "mainSeriesProperties.hollowCandleStyle.upColor": "#999",
+						// "mainSeriesProperties.hollowCandleStyle.downColor": "#666",
+						// "mainSeriesProperties.hollowCandleStyle.drawWick": true,
+						// "mainSeriesProperties.hollowCandleStyle.drawBorder": true,
+						// "mainSeriesProperties.hollowCandleStyle.borderColor": "#999",
+						// "mainSeriesProperties.hollowCandleStyle.borderUpColor": "#999",
+						// "mainSeriesProperties.hollowCandleStyle.borderDownColor": "#666",
+						// "mainSeriesProperties.hollowCandleStyle.wickUpColor": '#999',
+						// "mainSeriesProperties.hollowCandleStyle.wickDownColor": '#666',
+						// "mainSeriesProperties.hollowCandleStyle.barColorsOnPrevClose": false,
 						"scalesProperties.lineColor" : "rgba(255,255,255,0)",
 						"scalesProperties.textColor" : "rgba(255,255,255,1)"
 				},
@@ -109,13 +139,14 @@ class StockView extends React.Component {
 					// "ksSplitView": true,
 					// ksBottomView: true,
 					ksFullView: true,
-					volume: false,
+					volume: true,
 					OHLCBarBorderColor: true,
 					ksSearch: true,
 					ksSearchFloat: true,
 					ksSearchRange: [10, 250],
 					showLiveBtn: true,
 					alwaysUpdateCache: true,
+					customVolumeView: true,
 					// candleStyle: 9,
 					// ksPaneBackground: ['#222','#111'],
 
@@ -138,15 +169,20 @@ class StockView extends React.Component {
 				}
 			};
 		return (
-	    <div ref='container' className={"transition-all container-stockview " + (stockView ? "" : "stockview-hide")} >
+	    <div ref='container' className={"transition-all transition-opacity container-stockview " + (stockView ? "" : "stockview-hide")} >
 	    	<div className='container-stockview-inner'>
 	      	<div className='left-toolbar-container'>
-	      		<div><button data-kstooltip="K线图" ref='curve_btn' className='flat-btn curve active' onClick={ this.showSockView.bind(this) }>quxian</button></div>
-	      		<div><button data-kstooltip="收藏夹" ref='favorites_btn' className='flat-btn favorites' onClick={ this.showFavorites.bind(this) }>favorites</button></div>
-	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onClick={ this.showHistory.bind(this) }>history</button></div>
+	      		<div><button data-kstooltip="智能监控" ref='watchlist_btn' className='flat-btn watchlist active' onMouseDown={ this.showWatchlist.bind(this) }>watchlist</button></div>
+	      		<div><button data-kstooltip="K线图" ref='curve_btn' className='flat-btn curve' onMouseDown={ this.showSockView.bind(this) }>quxian</button></div>
+	      		<div><button data-kstooltip="收藏夹" ref='favorites_btn' className='flat-btn favorites' onMouseDown={ this.showFavorites.bind(this) }>favorites</button></div>
+	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onMouseDown={ this.showHistory.bind(this) }>history</button></div>
 	      	</div>
 
-		      <div ref='stock_view' className='content-wrapper curve top-z'>
+	      	<div ref="watchlist_view" className='content-wrapper watchlist top-z'>
+
+	      	</div>
+
+		      <div ref='stock_view' className='content-wrapper curve'>
 		        <ReactTradingView
 		          viewId={ STOCK_VIEW }
 		          options={ options }
@@ -195,21 +231,44 @@ class StockView extends React.Component {
 	}
 
 	resetButton() {
+		var that = this;
+		this._$containerToggleCache = this._$containerToggleCache || $('.container-toggle');
+		this._$containerToggleCache.removeClass('transition-all').find('>.btn-container').removeClass('transition-position');
+		$(document.body).removeClass('watchlist');
+		//注意: 此处代码只是取消切换到watchlsit的时候取消 '搜索结果'按钮的上下动画效果
+		setTimeout(function(){
+			that._$containerToggleCache.addClass('transition-all').find('>.btn-container').addClass('transition-position');
+		}, 500);
+		$(this.refs.watchlist_btn).removeClass('active');
 		$(this.refs.curve_btn).removeClass('active');
 		$(this.refs.history_btn).removeClass('active');
 		$(this.refs.favorites_btn).removeClass('active');
 	}
 
 	showSockView(e) {
+		$(this.refs.watchlist_view).removeClass('top-z');
 		$(this.refs.favorites_view).removeClass('top-z');
 		$(this.refs.history_view).removeClass('top-z');
 		$(this.refs.stock_view).addClass('top-z');
 		this.resetButton();
 		$(e.target).addClass('active');
+		//显示拱石搜索的guide
+		// searchPatternGuide.check();
+	}
+
+	showWatchlist(e) {
+		$(this.refs.watchlist_view).addClass('top-z');
+		$(this.refs.favorites_view).removeClass('top-z');
+		$(this.refs.history_view).removeClass('top-z');
+		$(this.refs.stock_view).removeClass('top-z');
+		this.resetButton();
+		$(e.target).addClass('active');
+		$(document.body).addClass('watchlist');
 	}
 
 	showFavorites(e) {
 		$(this.refs.favorites_view).addClass('top-z');
+		$(this.refs.watchlist_view).removeClass('top-z');
 		$(this.refs.history_view).removeClass('top-z');
 		$(this.refs.stock_view).removeClass('top-z');
 		this.resetButton();
@@ -217,6 +276,7 @@ class StockView extends React.Component {
 	}
 
 	showHistory(e) {
+		$(this.refs.watchlist_view).removeClass('top-z');
 		$(this.refs.favorites_view).removeClass('top-z');
 		$(this.refs.history_view).addClass('top-z');
 		$(this.refs.stock_view).removeClass('top-z');

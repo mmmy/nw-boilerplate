@@ -194,7 +194,7 @@
     .comparator-prediction-chart{
       position: absolute;
       top: 60px;
-      width: 100%;
+      width: calc(~"100% + 58px");
       height: calc(~"100% - 60px");
       // border-left: 1px solid #eee;
     }
@@ -249,17 +249,17 @@
   pointer-events: none;
   // box-shadow: 0px 0px 20px #DBDBDB;
   .mama-box-shadow();
-  .border-radius-inner();
+  // .border-radius-inner();
 }
 
 .pattern-tv-split-line {
   position: absolute;
-  background: #fff;
+  background-color: #fff;
   top: calc(~"50% - 12.5px");//calc(~"50% - 28px - 2px");
   right: 30px;
   width: calc(~"100% - 80px");//calc(~"100% - 71px");
   height: 1px;
-  border-top: 1px solid #eee;
+  // border-top: 1px solid #eee;
   // border-bottom: 1px solid #eee;
   z-index: 1;
 }
@@ -325,7 +325,7 @@
 .prediction-panel{
   position: absolute;
   width: 58px;
-  height: calc(~'50% - 12.5px - 60px - 10px');
+  height: calc(~'(50% - 12.5px - 60px - 10px) * 0.8');
   right: 22px;//37px;
   top: 60px;
   color: #000;
@@ -373,7 +373,7 @@
   position: relative;
 
   .title {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     padding-right: 20px;
     line-height: 60px;
@@ -392,6 +392,7 @@
     padding: 0;
     position: absolute;
     left: 40%;
+    font-weight: normal;
   }
   .add-btn {
     float: right;

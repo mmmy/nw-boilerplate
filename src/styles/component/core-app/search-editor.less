@@ -289,7 +289,7 @@
 			background-clip: content-box;
 			outline: none;
 			&:hover {
-				box-shadow: 0 2px 15px #ddd;
+				// box-shadow: 0 2px 15px #ddd;
 			}
 		}
 	}
@@ -477,9 +477,13 @@
 		text-align: left;
 		.scrollbar(@width:6px);
 		.scrollbar-track(@background-color:transparent);
-		.scrollbar-thumb(@background-color: #000);
+		.scrollbar-thumb();
 		.item {
 			// border: 1px solid red;
+			max-width: 180px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 			height: 30px;
 			padding-top: 6px;
 			padding-left: 20px;

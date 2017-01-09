@@ -6,12 +6,15 @@ let _$container = null;
 let _dataDoms = [];
 
 let _model = null;
+let _isLight = false;
+let _intervalObj = {value:1, unit:'D', describe:'天'};
 
 swingStatistic.init = (wrapper, model) => {
+	_isLight = $.keyStone && ($.keyStone.theme == 'light');
 
 	_model = model;
 
-	let newDom = $(`<div class='ks-container swing'><h4 class="title"><img src="image/zhenfu.png"/>波动统计</h4><div class='row'></div></div>`);
+	let newDom = $(`<div class='ks-container swing'><h4 class="title"><img src="image/zhenfu${_isLight ? '' : '_white'}.png"/>波动统计</h4><div class='row'></div></div>`);
 	$(wrapper).append(newDom);
 
 	//add other doms
@@ -19,7 +22,7 @@ swingStatistic.init = (wrapper, model) => {
 							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">振幅最大值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
 							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">振幅最小值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
 							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">振幅平均值</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
-							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">平均波动率</span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
+							.append(`<div class='ks-col-25'><div class="ks-data-pane"><p><span class="name">平均波动率<img class="ks-tooltip bodong" src="./image/tooltip.png"/></span><span class="percent-info"><span>0</span><span>.</span><span>0</span><span>%</span></span></p></div></div>`)
 
 	newDom.find('.row').append(part1);
 
@@ -30,9 +33,16 @@ swingStatistic.init = (wrapper, model) => {
 	_dataDoms[1] = $(percentInfos[1]);
 	_dataDoms[2] = $(percentInfos[2]);
 	_dataDoms[3] = $(percentInfos[3]);
+	_$container.find('.ks-tooltip.bodong').ksTooltip(function(){
+		var summaryDrawDown = _model.getSummary().summaryDrawDown;
+		var len = summaryDrawDown.nSym,
+				bars = summaryDrawDown.nDay - 1;
+		return `${len}只结果在${bars*_intervalObj.value} ${_intervalObj.describe} 内的波动率标准差的平均值`;
+	});
 };
 
-swingStatistic.update = () => {
+swingStatistic.update = (param) => {
+	_intervalObj = param && param.intervalObj || _intervalObj;
 	let model = _model;
 	try {
 		let dataObj = model.getSummary();

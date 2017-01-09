@@ -6,3 +6,6 @@ export const SIMILARITY_R = 'SIMILARITY_R'
 
 export const YIELD = 'YIELD';
 export const YIELD_R = 'YIELD_R';
+
+export const VSIMILARITY = 'VSIMILARITY';
+export const VSIMILARITY_R = 'VSIMILARITY_R';

@@ -16,6 +16,7 @@ class CrossfilterContainer extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {};
+		this._isLight = $ && $.keyStone && ($.keyStone.theme == 'light');
 	}
 
 	componentDidMount() {
@@ -23,7 +24,8 @@ class CrossfilterContainer extends React.Component {
 		 * add toggl btn
 		 */
 		let that = this;
-		let $toggleBtn = $(`<button class="flat-btn toggle-crossfilter"><img src="image/keshihua.png"/>可视化统计</button>`)
+		let isLight = this._isLight;
+		let $toggleBtn = $(`<button class="flat-btn toggle-crossfilter"><img src="image/keshihua${isLight ? '' : '_white'}.png"/>可视化统计</button>`)
 											.click(function(event) {
 												/* Act on the event */
 												$(that.refs.root).toggleClass('show');

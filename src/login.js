@@ -8,11 +8,11 @@ let isShowLogin = false;
 let showLogin = (onSuccessLogin) => {
 	if(isShowLogin) return;
   let LoginComponent = require('./components/LoginSmall').default;
-  let handleLogined = (username, password, autologin, cb) => {
+  let handleLogined = (info, cb) => {
   	waitingWidget.startWaiting();
   	setTimeout(unmountLogin, 1);
   	// setTimeout(() => {
-  	onSuccessLogin && onSuccessLogin(username, password, autologin, cb);
+  	onSuccessLogin && onSuccessLogin(info, cb);
   		
   	// }, 20);
   };

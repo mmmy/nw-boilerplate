@@ -1,10 +1,22 @@
 
-import { betterCanvasSize } from './canvasHelper';
+import { betterCanvasSize, getCanvasPixRatio } from './canvasHelper';
 
-let _priceToY = (height, yMax, yMin, price) => {
-    let rate = height / (yMin - yMax);
+let _to05 = (number) => {
+    return Math.floor(number) + 0.5;
+};
+
+let _priceToY = (height, yMax, yMin, price, volumeMaxHeight) => {
+    volumeMaxHeight = volumeMaxHeight || 0;
+    let rate = (height - volumeMaxHeight) / (yMin - yMax);
     return (price - yMax) * rate;
 };
+/*
+高度, volume高度, volume最大值, volume值
+ */
+let _volumeToY = (height, volumeMaxHeight, volumeMax, volume) => {
+    volumeMaxHeight -= 2;
+    return _to05(height - volume / volumeMax * volumeMaxHeight);
+}
 /***
 	options: {
 		yMin:
@@ -27,14 +39,26 @@ let drawLines = (canvas, lines, options) => {
     var height = canvas.height,
         width = canvas.width;
 
-    let strokeStyle = options && options.lineColor || 'rgba(200,200,200,0.5)';
+    var radio = getCanvasPixRatio();
 
-    var dataLen = options && options.dataLen || lines && lines[0] && lines[0].length,
+    let strokeStyle = options && options.lineColor || 'rgba(200,200,200,0.5)';
+    //dataLen :预测的天数
+    var dataLen = options && options.dataLen || lines && lines[0] && (lines[0].length - 1),
         emptyLeftLen = options && options.emptyLeftLen || 0,
         yMin = options && options.yMin || Infinity,
         yMax = options && options.yMax || -Infinity;
 
     var visibilitys = options && options.visibilitys;
+    var patterns = options && options.patterns || []; //需要获取volume 数据
+    var volumeHeight = options && options.volumeHeight || 0.2;
+    var padding = options && options.padding || {};
+    var right = padding.right * radio || 0;
+
+    var volume = patterns.length > 0;
+    var volumeMaxHeight = 0;
+    if(volume) {
+        volumeMaxHeight = height * volumeHeight;
+    }
 
     var len = lines.length;
 
@@ -45,7 +69,7 @@ let drawLines = (canvas, lines, options) => {
 	    }	
     }
 
-    var xInterval = width / (dataLen + emptyLeftLen);
+    var xInterval = (width - right) / (dataLen + emptyLeftLen);
 
     var ctx = canvas.getContext('2d');
     //init
@@ -67,7 +91,7 @@ let drawLines = (canvas, lines, options) => {
         let priceArr = lines[i];
         ctx.beginPath();
         priceArr.forEach((price, index) => {
-            let y = _priceToY(height, yMax, yMin, price);
+            let y = _priceToY(height, yMax, yMin, price, volumeMaxHeight);
             let x = (emptyLeftLen + index) * xInterval;
             if (index == 0) {
                 ctx.moveTo(x, y);
@@ -83,6 +107,8 @@ let drawLines = (canvas, lines, options) => {
 		activeIndex = parseInt(activeIndex);
 		if(!isNaN(activeIndex) && (!visibilitys || visibilitys[activeIndex])) {
 			let priceArr = lines[activeIndex];
+            let pattern = patterns[activeIndex];
+            let kline = pattern && pattern.kLine.slice(-dataLen); //[5] = volume
 			if(priceArr) {
 				ctx.beginPath();
                 ctx.save();
@@ -91,7 +117,7 @@ let drawLines = (canvas, lines, options) => {
                 ctx.shadowOffsetY = 5;
 				ctx.strokeStyle = options && options.activeColor || 'red';
 				priceArr.forEach((price, index) => {
-					let y = _priceToY(height, yMax, yMin, price);
+					let y = _priceToY(height, yMax, yMin, price, volumeMaxHeight);
 					let x = (emptyLeftLen + index) * xInterval;
 					if(index == 0){
 						ctx.moveTo(x, y);
@@ -101,6 +127,30 @@ let drawLines = (canvas, lines, options) => {
 				});
 				ctx.stroke();
                 ctx.restore();
+                ctx.clearRect(emptyLeftLen * xInterval, height - volumeMaxHeight, width, volumeMaxHeight);
+                if(kline && (kline.length > 0)) {
+                    var maxVolume = 0;
+                    for(var j=0; j<kline.length; j++) {
+                        maxVolume = Math.max(kline[j][5], maxVolume);
+                    }
+                    var klineW = Math.round(xInterval/2) * 1.2;
+                        klineW += (klineW % 2 == 0) ? 1 : 0;
+                    for(var j=0; j<dataLen; j++) {
+                        let vX = (emptyLeftLen + j + 1) * xInterval;
+                        let prices = kline[j];
+                        if(prices) { //有volume
+                            let vY = _volumeToY(height,volumeMaxHeight,maxVolume,prices[5])
+                            let isUp = prices[2] >= prices[1];
+                            ctx.strokeStyle = isUp ? '#a44044' : '#7e1b1b';
+                            ctx.fillStyle = ctx.strokeStyle;
+                            ctx.beginPath();
+                            ctx.rect(vX - (klineW-1)/2, vY, klineW, height - vY);
+                            ctx.stroke();
+                            ctx.fill();
+                        }
+                    }
+                }
+
 			}
 		}    
     ctx.restore();

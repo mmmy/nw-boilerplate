@@ -17,7 +17,7 @@ function SearchEditor(dom, dataObj, favoritesManager, favoritesController) {
 	this._favoritesController = favoritesController;
 	this._$main = $('<div class="main-editor"></div>');
 	this._$config = $('<div class="config-editor"></div>');
-	this._OHLC = { barsInfo:null, O:null, H:null, L:null, C:null}; //缓存dom
+	this._OHLC = { barsInfo:null, O:null, H:null, L:null, C:null, V:null}; //缓存dom
 	this._OHLCInputs = {O:null, H:null, L:null, C:null}; //缓存input dom
 	this._floatTools = {_container:null, addBars:null, rangeTool:null};
 
@@ -63,6 +63,7 @@ SearchEditor.prototype._initMain = function() {
 		H: $('<span class="font-arial number">N/A</span>'),
 		L: $('<span class="font-arial number">N/A</span>'),
 		C: $('<span class="font-arial number">N/A</span>'),
+		V: $('<span class="font-arial number">N/A</span>'),
 	};
 	let name = this._dataObj.name||'未命名';
 	let $nameInput = $(`<span class='rename-container'><span class='ks-input-wrapper border'><input value=${name} ><button class='button ks-check'>check</button><button class='button ks-delete'>del</button></span></span>`).hide();
@@ -76,7 +77,8 @@ SearchEditor.prototype._initMain = function() {
 																											.append(`<span class='font-arial'>O</span>`).append(this._OHLC.O)
 																											.append(`<span class='font-arial'>H</span>`).append(this._OHLC.H)
 																											.append(`<span class='font-arial'>L</span>`).append(this._OHLC.L)
-																											.append(`<span class='font-arial'>C</span>`).append(this._OHLC.C);
+																											.append(`<span class='font-arial'>C</span>`).append(this._OHLC.C)
+																											.append(`<span class='font-arial'>V</span>`).append(this._OHLC.V)
 
 	header.append($name).append($nameInput).append(OCLH).append($(`<button class='flat-btn tool-btn select-range'>区域</button>`).click(this._handleStartSelectRange.bind(this)))
 											// .append($(`<button class='flat-btn tool-btn delete-range'>删除</button>`).click(this._handleDeleteBars.bind(this)))
@@ -136,7 +138,7 @@ SearchEditor.prototype._initToolbar = function() {
 	let toolbarBtns = [];
 	toolbarBtns[0] = $(`<button class="flat-btn edit-a-bar active" data-kstooltip="选择工具">abar</button>`).click(this.changeEditMode.bind(this, EDIT_A_BAR));
 	toolbarBtns[1] = $(`<button class="flat-btn edit-range-bars" data-kstooltip="区域选择工具">rangebars</button>`).click(this.changeEditMode.bind(this, EDIT_RANGE_BARS));
-	toolbarBtns[2] = $(`<button class="flat-btn add-bars" data-kstooltip="添加工具">addbars</button>`).click(this.changeEditMode.bind(this, ADD_BARS));
+	toolbarBtns[2] = $(`<button class="flat-btn add-bars hide" data-kstooltip="添加工具">addbars</button>`).click(this.changeEditMode.bind(this, ADD_BARS));
 
 	for(let i=0; i<toolbarBtns.length; i++) {
 		this._$main.find('.kline-editor-toolbar').append(toolbarBtns[i]);
@@ -177,16 +179,19 @@ SearchEditor.prototype.resetKlineEditorState = function() {
 	this._klineEditor.resetState();
 }
 
-SearchEditor.prototype.updateOHLC = function(O, H, L, C) {
+SearchEditor.prototype.updateOHLC = function(O, H, L, C, V) {
 	this._OHLC.O.text(O.toFixed(2)).css('color', '');
 	this._OHLC.H.text(H.toFixed(2)).css('color', '');
 	this._OHLC.L.text(L.toFixed(2)).css('color', '');
 	this._OHLC.C.text(C.toFixed(2)).css('color', '');
+	this._OHLC.V.text($.keyStone.volumeFormatter(V)).css('color', '');
 	if(C > O) {
-		this._OHLC.O.css('color', '#ae0006');
-		this._OHLC.H.css('color', '#ae0006');
-		this._OHLC.L.css('color', '#ae0006');
-		this._OHLC.C.css('color', '#ae0006');
+		var red = $.keyStone && $.keyStone.configDefault.brownRed || '#8d151b';
+		this._OHLC.O.css('color', red);
+		this._OHLC.H.css('color', red);
+		this._OHLC.L.css('color', red);
+		this._OHLC.C.css('color', red);
+		this._OHLC.V.css('color', red);
 	}
 }
 SearchEditor.prototype._updateButtonsState = function() {   //主动更新按钮的状态
@@ -207,7 +212,7 @@ SearchEditor.prototype.handleMoveIndex = function(index, data, showAddBtn) { //d
 		let O = data[1],
 				C = data[2],
 				L = data[3],
-				H = data[4];
+				H = data[4]
 
 		this._OHLCInputs.O.val(O.toFixed(2));
 		this._OHLCInputs.H.val(H.toFixed(2));

@@ -335,7 +335,7 @@ let drawCountBars = (canvas, options) => {
 			if(j === hoverIndex) {
 				ctx.lineWidth = data[j].hover && data[j].hover.lineWidth || defaultHoverStyle.lineWidth;
 				ctx.strokeStyle = data[j].hover && data[j].hover.strokeStyle || defaultHoverStyle.strokeStyle;
-				ctx.fillStyle = data[j].hover && data[j].hover.fillStyle || defaultHoverStyle.fillStyle;
+				ctx.fillStyle = data[j].hover && (data[j].hover.textColor || data[j].hover.fillStyle) || defaultHoverStyle.fillStyle;
 				if(!showValue) {
 					var fontSize = barWidth > 15 ? 15 : barWidth * (isHorizon ? 0.7 : 0.7);
 					fontSize = fontSize < 10 ? 10 : fontSize;
@@ -348,6 +348,7 @@ let drawCountBars = (canvas, options) => {
 						ctx.fillText(data[j].value + '个', x+barWidth/2, y - 8);
 					}
 				}
+				ctx.fillStyle = data[j].hover && data[j].hover.fillStyle || defaultHoverStyle.fillStyle;
 			} else {
 				ctx.lineWidth = data[j].lineWidth || defaultDrawStyle.lineWidth;
 				ctx.strokeStyle = data[j].strokeStyle || defaultDrawStyle.strokeStyle;
@@ -501,16 +502,18 @@ let drawAxis = (canvas, data, options) => {
 	// ctx.fillRect(0, 0, width, height);
 	ctx.font = `${10*ratio}px Arial`;
 	ctx.textAlign = isVertical ? 'right' : 'center';
+	ctx.textBaseline = 'middle';
 	for(let i=0; i<len; i+=interval) {
 		ctx.strokeStyle = gridColor;
 		ctx.fillStyle = textColor;
+		//y 轴
 		if(isVertical) {
 			if(hideVerticalGrid && (i===0 || i===len-1)) {
 				ctx.fillStyle = 'rgba(0,0,0,0)';
 			}
 			let x = labelWidth / 2;
 			let y = _dataToPointY(padding.top, height-padding.top-padding.bottom, data[0], data[data.length-1], data[i]);
-			ctx.fillText(data[i]+ (hideVerticalGrid ? '%' : ''), hideVerticalGrid ? x*1.8 : x*1.8, y+5*ratio);
+			ctx.fillText(data[i]+ (hideVerticalGrid ? '%' : ''), hideVerticalGrid ? x*1.8 : x*1.8, y);
 			if(!hideVerticalGrid) {
 				ctx.beginPath();
 				ctx.lineWidth = 1;
@@ -518,6 +521,7 @@ let drawAxis = (canvas, data, options) => {
 				ctx.lineTo(width-padding.right, _to05(y));
 				ctx.stroke();
 			}
+		//x 轴
 		} else {
 			let x = padding.left + i*space + (centerLabel ? space/2 : 0);
 			let y = height / 2;
@@ -527,7 +531,7 @@ let drawAxis = (canvas, data, options) => {
 	if(hideVerticalGrid) {
 		ctx.beginPath();
 		ctx.lineWidth = 1;
-		ctx.strokeStyle = '#aaa';
+		ctx.strokeStyle = 'rgba(0,0,0,0)';
 		ctx.moveTo(_to05(labelWidth-2), padding.top - 2);
 		ctx.lineTo(_to05(labelWidth-2), height-padding.bottom-1);
 		ctx.stroke();
