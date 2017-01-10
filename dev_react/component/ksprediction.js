@@ -54,7 +54,7 @@ export default React.createClass({
 		});
 		// updateLog.show();
 		// trialReminder.show();
-		// searchPatternGuide.check();
+		searchPatternGuide.check();
 	},
 
 	render(){

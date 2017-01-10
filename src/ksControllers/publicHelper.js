@@ -47,7 +47,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 																	$btnGroup.toggleClass('show', false);
 																});
 	let $saveBtn = $(`<span class='flat-btn save-btn ${showSaveBtn?"":"hide"}'>保存</span>`).click((e) => { 
-																																														// favoritesController.updateFavorites(dataObj);
+																																														favoritesController.updateFavorites(dataObj);
 																																														favoritesController.setEditorSaved();
 																																														$target.children().remove();
 															 																														});

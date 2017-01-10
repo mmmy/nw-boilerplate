@@ -1,17 +1,17 @@
 
 .search-pattern-guide {
-	border-radius: 5px;
+	position: absolute;
 	.body {
-		width: 800px;
-		overflow: hidden;
+		padding: 20px;
 		.content {
-			position: relative;
-			left: 0;
-			display: inline-block;
-			white-space: nowrap;
-			img {
-				width: 800px;
-				height: 480px;
+			width: 230px;
+			h4 {
+				margin-top: 0;
+				margin-bottom: 20px;
+			}
+			p {
+				font-size: 12px;
+				line-height: 1.5;
 			}
 		}
 	}
@@ -19,6 +19,8 @@
 
 [theme='dark'] {
 	.search-pattern-guide {
-		background-color: @dark-bg-inner-lighter;
+		.body {
+			background-color: @dark-bg-inner-lighter;
+		}
 	}
 }
