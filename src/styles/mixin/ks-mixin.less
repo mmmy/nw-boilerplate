@@ -282,17 +282,7 @@
 	outline: none;
 	border: none;
 	background-color: transparent;
-	&.btn-red {
-		color: #fff;
-		background-color: @brown-red;
-		&:hover {
-			background-color: @brown-red-light;
-		}
-		&[disabled] {
-			opacity: 0.5;
-			background-color: @brown-red;
-		}
-	}
+	
 	&.border-btn {
 		border: 1px solid #bbb;
 		line-height: 30px;
@@ -312,7 +302,7 @@
 		}
 		&.icon-close {
 			.icon_position(2,7,0,7px,7px);
-			&:hover {
+			&:hover,&.hover {
 				.icon_position(0,7,0,7px,7px);
 			}
 		}
@@ -333,7 +323,7 @@
 		}
 		&.icon-close {
 			.icon_position(2,7,0);
-			&:hover {
+			&:hover,&.hover {
 				.icon_position(0,7,0);
 			}
 		}
@@ -343,21 +333,48 @@
 				.icon_position(0,1,1);
 			}	
 		}
+		&.icon-search {
+			.icon_position(2,5,0);
+			&:hover,&.hover {
+				.icon_position(0,5,0);
+			}	
+		}
+		&.icon-plot {
+			.icon_position(2,6,0);
+			&:hover,&.hover {
+				.icon_position(0,6,0);
+			}	
+		}
+
 	}
 	&.round {
 		border-radius: 2px;
 	}
 	&.gray-light {
+		color: #fff;
 		padding: 6px 20px;
 		background-color: rgb(66, 66, 66);
 		&:hover {
 			background-color: rgb(102, 102, 102);
 		}
-		[disabled] {
+		&[disabled] {
 			cursor: default;
+			opacity: 0.5;
 			&:hover {
 				background-color: rgb(66, 66, 66);
 			}
+		}
+	}
+
+	&.btn-red {
+		color: #fff;
+		background-color: @brown-red;
+		&:hover {
+			background-color: @brown-red-light;
+		}
+		&[disabled] {
+			opacity: 0.5;
+			background-color: @brown-red;
 		}
 	}
 }
@@ -672,4 +689,32 @@ a.link {
 
 .font-14 {
 	font-size: 14px;
+}
+
+.arrow-right {
+	width: 0; 
+  height: 0; 
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  
+  border-left: 20px solid green;
+}
+.arrow-left {
+  width: 0; 
+  height: 0; 
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent; 
+  border-right: 20px solid blue; 
+}
+
+.mask {
+	&:after {
+		content: ' ';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		background-color: rgba(0, 0, 0, 0.3);
+	}
 }

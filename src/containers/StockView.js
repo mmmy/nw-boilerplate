@@ -253,7 +253,7 @@ class StockView extends React.Component {
 		this.resetButton();
 		$(e.target).addClass('active');
 		//显示拱石搜索的guide
-		// searchPatternGuide.check();
+		searchPatternGuide.check();
 	}
 
 	showWatchlist(e) {
