@@ -4,13 +4,13 @@ var searchPatternGuide = {};
 searchPatternGuide.check = function() {
 	var storage = window.localStorage;
 	var key = '__FIRST_IN_TRADINGVIEW';
-	if(!storage[key]) {
+	// if(!storage[key]) {
 		var overlay = $(`<div class="modal-overlay flex-center">
 											<div class="guide-confirm-container">
 													<p>请浏览一下简短的功能指引<br/>以便您在最短的时间内熟悉拱石</p>
 													<div class="buttons-container">
-														<button class="flat-btn gray-light round btn-red">开始引导</button>
-														<button class="flat-btn gray-light round">跳过引导</button>
+														<button class="flat-btn border-btn2 round btn-red">开始引导</button>
+														<button class="flat-btn border-btn2 round">跳过引导</button>
 													</div>
 											</div>
 										</div>`);
@@ -26,7 +26,7 @@ searchPatternGuide.check = function() {
 
 		// searchPatternGuide.start();
 		storage[key] = true;
-	}
+	// }
 };
 
 searchPatternGuide.start = function() {
@@ -34,7 +34,7 @@ searchPatternGuide.start = function() {
 	var _$modal = $(`<div class="search-pattern-guide"></div>`);
 
 	var _$header = $(`<div class="title"></div>`);
-	var _$body = $(`<div class="body"><div class="content"><div class="step-container"></div><h4></h4><p></p></div></div>`);
+	var _$body = $(`<div class="body" data-step="-1"><div class="content"><div class="step-container"></div><h4></h4><p></p></div></div>`);
 	var _$footer = $(`<div class="footer"></div>`);
 	_$modal.append([_$header, _$body, _$footer]);
 	_$overlay.append(_$modal);
@@ -65,7 +65,7 @@ searchPatternGuide.start = function() {
 		},
 		{
 			title: '拖拽选择研究图形',
-			content: '<span class="">单击拱石，选择图形任一点往右平移选择区间 </span>注意：如果选择的研究图形区间过长，搜索得到的匹配结果数量较少或为零',
+			content: '<span class="">单击拱石后，在K线图中选择研究图形的区间起点和终点；</span>注意：如果选择的研究图形区间过长，搜索得到的匹配结果数量较少或为零',
 			position:{top:'auto', right: '240px', bottom: '176px', left:'auto'},
 			bodyClass: 'right',
 			others: [
@@ -114,10 +114,10 @@ searchPatternGuide.start = function() {
 		$content.find('p').html(option.content);
 		_$modal.css(option.position);
 
-		_$body.removeClass('top right left bottom down').addClass(option.bodyClass);
+		_$body.removeClass('top right left bottom down').addClass(option.bodyClass).attr('data-step', curIndex);
 		_$modal.siblings().remove();
 		_$overlay.append(option.others);
-		lastBtn.attr('disabled', curIndex == 0);
+		lastBtn.toggle(curIndex > 0);
 		if(curIndex >= len - 1) {
 			nextBtn.text('知道了');
 		} else {

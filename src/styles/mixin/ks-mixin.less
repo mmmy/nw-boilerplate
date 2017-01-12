@@ -288,6 +288,14 @@
 		line-height: 30px;
 		padding: 0 20px;
 	}
+	&.border-btn2 {
+		border: 1px solid #666;
+		padding: 5px 20px;
+		color: #666;
+		&:hover {
+			color: #aaa;
+		}
+	}
 	&.icon-btn-20 {
 		background-image: url(@icons_url);
 		width: 20px;
@@ -367,10 +375,12 @@
 	}
 
 	&.btn-red {
+		border-color: @brown-red;
 		color: #fff;
 		background-color: @brown-red;
 		&:hover {
 			background-color: @brown-red-light;
+			color: #fff;
 		}
 		&[disabled] {
 			opacity: 0.5;

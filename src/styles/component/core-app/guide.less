@@ -9,6 +9,12 @@
 		position: relative;
 		// display: table-cell;
 		// vertical-align: middle;
+		background-repeat: no-repeat;
+		background-position: right bottom;
+		&[data-step="0"] { background-image: url('./image/guide_search.png') }
+		&[data-step="1"] { background-image: url('./image/guide_arrow.png') }
+		&[data-step="2"] { background-image: url('./image/guide_config.png') }
+		&[data-step="3"] { background-image: url('./image/guide_config.png') }
 		&.left:before {
 			content: '';
 			display: inline-block;
@@ -47,7 +53,7 @@
 				position: absolute;
 				left: 0;
 				bottom: 0;
-				line-height: 0.9;
+				line-height: 0.8;
 				padding-left: 30px;
 				z-index: 0;
 			}
