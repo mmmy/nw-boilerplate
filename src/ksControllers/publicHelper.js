@@ -11,25 +11,22 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 	}
 	let folders = favoritesManager.getFavoritesFolders();
 	let optionsNode = $(`<div class='shoucang-pop-menu font-simsun'></div>`).on('mouseenter',function(e){ e.stopPropagation() });
-	let btnTemplate = `<span class='ks-input-wrapper border'><input placeholder='新建文件夹'><i class='button ks-check ks-disable'></i><i class='button ks-delete ks-disable'></i></span>`;
-	let $btnGroup = $(`<div class='input-wrapper'></div>`).append($(btnTemplate));
-	$btnGroup.find('.ks-delete').removeClass('ks-disable');
+	// let btnTemplate = `<div class='ks-input-wrapper border'><input placeholder='新建文件夹'><i class='button ks-check ks-disable'></i><i class='button ks-delete ks-disable'></i></div>`;
+	let btnTemplate = `<div class='new-folder-inputs'><input placeholder='文件夹名'><button class="flat-btn btn-red round" disabled>确 定</button><button class="flat-btn icon-btn-30 icon-pen"></button></div>`;
+
+	let $btnGroup = $(btnTemplate).hide();
+	$btnGroup.find('.icon-pen').remove();
 
 	$btnGroup.find('input').blur(() => { $target.focus() })
-													.on('input', (event)=>{
-														let folderName = event.currentTarget.value;
-														// $btnGroup.find('.ks-delete').toggleClass('ks-disable', folderName==='');
-														if(folderName === '' || favoritesController.hasFavoriteFolder(folderName)) {
-															$btnGroup.find('.ks-check').addClass('ks-disable');
-														} else {
-															$btnGroup.find('.ks-check').removeClass('ks-disable');
-														}
+													.on('input', (e)=>{
+														let folderName = e.currentTarget.value;
+														let bad = folderName === '' || favoritesController.hasFavoriteFolder(folderName);
+														$btnGroup.find('button').prop('disabled', bad);
 													});
 
-	$btnGroup.find('.ks-check').click(function(event) {
-																/* Act on the event */
-																if($(event.currentTarget).hasClass('ks-disable')) return;
-																let name = $footer.find('input').val();
+	$btnGroup.find('button').click(function(e) {
+																e.stopPropagation();
+																let name = $btnGroup.find('input').val();
 																if(name) {
 																	favoritesController.addNewFolder(name);
 																	let button = $(`<div class='item'>${name}</div>`).click((e) => {
@@ -37,54 +34,48 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 																		$target.children().remove();
 																	});
 																	$content.append(button);
-																	$footer.find('input').val('');
-																	$(event.currentTarget).addClass('ks-disable');
+																	$btnGroup.hide();
+																	$btnGroup.find('input').val('');
 																}
-																$btnGroup.toggleClass('show', false);
 															});
-	$btnGroup.find('.ks-delete').click(function(event) {
-																	/* Act on the event */
-																	$btnGroup.toggleClass('show', false);
-																});
+
 	let $saveBtn = $(`<span class='flat-btn save-btn ${showSaveBtn?"":"hide"}'>保存</span>`).click((e) => { 
 																																														favoritesController.updateFavorites(dataObj);
 																																														favoritesController.setEditorSaved();
 																																														$target.children().remove();
 															 																														});
-	let $title = showRename ? $(`<div class='name-container'><h5>${dataObj.name || '未命名'}</h5></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('新建文件夹','自定义文件名')))
+	let $title = showRename ? $(`<div class='name-container'><h4 class="title">将图形添加到收藏</h4></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('文件夹名','')))
 													: $(`<h4 class='title'>另存为</h4>`);
-	$title.find('input').blur(() => { $target.focus(); }).on('input', function(e){
+	$title.find('input').prop('disabled', true).val(dataObj.name).blur(() => { $target.focus(); }).on('input', function(e){
 		let newName = e.currentTarget.value;
-		$title.find('.button').toggleClass('ks-disable', newName==='');
+		$title.find('button').prop('disabled', newName==='');
 	});
 
-	$title.find('.ks-check').click(function(event) {
-		/* Act on the event */
+	$title.find('button.btn-red').prop('disabled', false).click(function(event) {
 		let name = $title.find('input').val();
 		if(name) {
-			$title.find('h5').text(name);
+			// $title.find('h5').text(name);
 			dataObj.name = name;
-			$title.find('input').val('');
-			$title.find('.button').addClass('ks-disable');
+			$title.find('input').prop('disabled', true);
 		}
 	});
-	$title.find('.ks-delete').click(function(event) {
-		/* Act on the event */
-		$title.find('input').val('');
-		$title.find('.button').addClass('ks-disable');
+
+	$title.find('button.icon-pen').click(function(event) {
+		$title.find('input').prop('disabled', false).focus();
 	});
 
   let $label = type===1 ? $(`<div class="label-title">收藏至</div>`) : '';
+  $label = '';
 
 	let $content = $(`<div class='content transition-all'></div>`);
-	let $footer = $(`<div class='footer-shoucang transition-all ${showSaveBtn?"heighter":""}'></div>`)
-								.append($(`<span class='new-folder'>新建文件夹</span>`))
-								.append($(`<i class='fa fa-plus toggle-btn'></i>`).click(function(event) {
-									/* Act on the event */
-									// $content.toggleClass('strech', true);
-									$btnGroup.toggleClass('show', true);
+	let $footer = $(`<div class='footer-shoucang transition-all ${showSaveBtn?"":""}'></div>`)
+								.append($(`<div class='new-folder'>新建文件夹</div>`).append($btnGroup).click(function(event) {
+									$btnGroup.show();
 								}))
-								.append($btnGroup)
+								// .append($(`<i class='fa fa-plus toggle-btn'></i>`).click(function(event) {
+								// 	// $content.toggleClass('strech', true);
+								// 	$btnGroup.toggleClass('show', true);
+								// }))
 								.append($saveBtn);
 								// .append($(`<div class='input-wrapper'></div>`).append($(`<input />`).blur(function() { $target.focus()/* 消除bug*/}))
 								// 				.append($(`<i class='fa fa-plus add-btn'></i>`).click(function(event) {
