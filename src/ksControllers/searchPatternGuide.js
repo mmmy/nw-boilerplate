@@ -4,7 +4,7 @@ var searchPatternGuide = {};
 searchPatternGuide.check = function() {
 	var storage = window.localStorage;
 	var key = '__FIRST_IN_TRADINGVIEW';
-	// if(!storage[key]) {
+	if(!storage[key]) {
 		var overlay = $(`<div class="modal-overlay flex-center">
 											<div class="guide-confirm-container">
 													<p>请浏览一下简短的功能指引<br/>以便您在最短的时间内熟悉拱石</p>
@@ -23,10 +23,9 @@ searchPatternGuide.check = function() {
 		overlay.find('button:nth-child(2)').click(function(event) {
 			overlay.remove();
 		});
-
-		// searchPatternGuide.start();
+		
 		storage[key] = true;
-	// }
+	}
 };
 
 searchPatternGuide.start = function() {
