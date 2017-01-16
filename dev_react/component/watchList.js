@@ -1,3 +1,4 @@
+/*
 import React from 'react';
 import watchListController from '../../src/ksControllers/watchListController';
 import watchlistGuide from '../../src/ksControllers/watchListController/watchlistGuide';
@@ -128,3 +129,4 @@ export default React.createClass({
 		this.setState({larger});
 	}
 });
+*/
