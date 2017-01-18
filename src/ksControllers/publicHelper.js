@@ -2,7 +2,7 @@ import painter from './painter';
 
 let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, options, e) => { //options:{type:0,1,2} 0编辑 1详情页 2历史记录和收藏 
 	let type = options && options.type || 0;
-	let showSaveBtn = type === 0,
+	let isSaveButton = type === 0,
 			showRename = type === 1;
 
 	let $target = $(e.target);
@@ -29,24 +29,36 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 																let name = $btnGroup.find('input').val();
 																if(name) {
 																	favoritesController.addNewFolder(name);
-																	let button = $(`<div class='item'>${name}</div>`).click((e) => {
-																		favoritesController.addFavorites(name, dataObj);
-																		$target.children().remove();
+																	let button = $(`<div class='item'>${name}</div>`).data({folder:name, dataObj:dataObj}).click((e) => {
+																		$(e.currentTarget).addClass('active').siblings().removeClass('active');
+																		// favoritesController.addFavorites(name, dataObj);
+																		// $target.children().remove();
 																	});
 																	$content.append(button);
 																	$btnGroup.hide();
 																	$btnGroup.find('input').val('');
+																	$content.scrollTop(99999);
 																}
 															});
 
-	let $saveBtn = $(`<span class='flat-btn save-btn ${showSaveBtn?"":"hide"}'>保存</span>`).click((e) => { 
-																																														favoritesController.updateFavorites(dataObj);
-																																														favoritesController.setEditorSaved();
-																																														$target.children().remove();
-															 																														});
-	let $title = showRename ? $(`<div class='name-container'><h4 class="title">将图形添加到收藏</h4></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('文件夹名','')))
-													: $(`<h4 class='title'>另存为</h4>`);
-	$title.find('input').prop('disabled', true).val(dataObj.name).blur(() => { $target.focus(); }).on('input', function(e){
+	let $saveBtn = $(`<span class='flat-btn save-btn'>${isSaveButton ? '收 藏' : '收 藏'}</span>`)
+									.click((e) => {
+										// if(isSaveButton) { //收藏
+										// 	favoritesController.updateFavorites(dataObj);
+										// 	favoritesController.setEditorSaved();
+										// } else {
+											var $dataDom = $content.find('.active');
+											var data = $dataDom.data();
+											var { folder, dataObj } = data;
+											favoritesController.addFavorites(folder, dataObj);
+      								// $target.blur();
+										// }
+										$target.children().remove();
+									});
+
+	let $title = $(`<div class='name-container'><h4 class="title">${showRename ? '将图形添加到收藏' : '另存为'}</h4></div>`).append($(`<div class='input-wrapper'></div>`).append(btnTemplate.replace('文件夹名','')));
+
+	$title.find('input').val(dataObj.name).blur(() => { $target.focus(); }).on('input', function(e){
 		let newName = e.currentTarget.value;
 		$title.find('button').prop('disabled', newName==='');
 	});
@@ -68,7 +80,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
   $label = '';
 
 	let $content = $(`<div class='content transition-all'></div>`);
-	let $footer = $(`<div class='footer-shoucang transition-all ${showSaveBtn?"":""}'></div>`)
+	let $footer = $(`<div class='footer-shoucang transition-all ${isSaveButton?"":""}'></div>`)
 								.append($(`<div class='new-folder'>新建文件夹</div>`).append($btnGroup).click(function(event) {
 									$btnGroup.show();
 								}))
@@ -96,19 +108,22 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 
 								// 				}));
 
-	folders.forEach((folder) => {
-		let button = $(`<div class='item'>${folder}</div>`).click((e) => {
-			favoritesController.addFavorites(folder, dataObj);
-			$target.children().remove();
-      $target.blur();
-      console.log('favorites button click');
+	folders.forEach((folder, i) => {
+		let button = $(`<div class='item'>${folder}</div>`).data({folder:folder, dataObj:dataObj}).click((e) => {
+			$(e.currentTarget).addClass('active').siblings().removeClass('active');
+			// favoritesController.addFavorites(folder, dataObj);
+			// $target.children().remove();
+      // $target.blur();
 		});
+		if(i == 0 ){
+			button.addClass('active');
+		}
 		$content.append(button);
 	});
 
 	optionsNode.append($title).append($label).append($content).append($footer);
 	$target.append(optionsNode);
-
+	$title.find('input').focus();
 };
 
 let handleShouCangBlur = (e) => {

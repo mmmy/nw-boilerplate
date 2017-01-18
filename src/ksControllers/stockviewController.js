@@ -192,7 +192,7 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 	let name = `<h2 class='name font-msyh'>${pattern.name||'未命名'}</h2>`;
 	// let info = `<p class='header-info'>${pattern.symbol}     ${pattern.kline.length}根K线</p>`;
 	let info = `<p class='header-info'><span class='strong'>${pattern.kline.length}</span>根K线</p>`;
-	let addButton = (type==2) ? '' : `<button class='add-btn flat-btn ${type==1?"right":""}' data-kstooltip='收藏'>add</button>`;
+	let addButton = (type==2) ? '' : `<button class='add-btn flat-btn ${type==1?"right":""}' data-kstooltip=${type==1?'收藏':'另存为'}>add</button>`;
 	let deleteButton = (type == 0 || type == 2) ? `<button class='delete-btn flat-btn' data-kstooltip='删除'>delete</button>` : '';
 	let hoverBtns = (type == 0) ? 
 									`<span class='btn-overlay flex-around'><button class='flat-btn re-search' data-kstooltip='再次搜索'>再次搜索</button><button class='flat-btn go-detail' data-kstooltip='编辑K线'>编辑K线</button></span>`

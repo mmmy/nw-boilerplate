@@ -204,13 +204,20 @@
 		}
 		&.add-favorites {
 			background-image: url(@icons_url);
-			.icon_position(0, 4, 2, 5px, 5px);
+			.icon_position(2, 4, 2, 5px, 5px);
+			&:hover {
+				.icon_position(0,4,2,5px,5px);
+			}
 			right: 10px;
 		}
 		&.save {
 			background-image: url('./image/save.png');
+			.icon_position(2,8,3,5px,3px);
+			&:hover {
+				.icon_position(0,8,3,5px,3px);
+			}
 			right: 50px;
-			display: none;
+			// display: none;
 		}
 		&:hover {
 			// background-position-y: 100%;
@@ -301,7 +308,7 @@
 		right: 80px;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 		border-radius: 2px;
-		z-index: 2;
+		// z-index: 2;
 		.drag-icon {
 			cursor: move;
 			display: inline-block;
@@ -421,7 +428,7 @@
 
 .shoucang-pop-menu {
 	position: absolute;
-	left: -85px;
+	left: -110px;
 	z-index: 102;
 	top: 25px;
 	background-color: #fff;
@@ -433,8 +440,8 @@
 	font-size: 12px;
 	color: #000;
 	.title {
-		line-height: 50px;
-		font-size: 16px;
+		line-height: 40px;
+		font-size: 14px;
 		color: #000;
 		margin: 0;
 		// background-color: #666;
@@ -526,6 +533,9 @@
 				background-image: url(@icons_dark_url);
 				.icon_position(1,6,1);
 			}
+			&.active {
+				background-color: #222;
+			}
 		}
 		&.strech {
 			margin-bottom: 80px;
@@ -584,6 +594,9 @@
 				height: 30px;
 				.icon_position(1,2,1);
 			}
+			input {
+				max-width: 145px;
+			}
 		}
 		
 		.toggle-btn {
@@ -625,12 +638,12 @@
 			text-align: center;
 			left: 20px;
 			padding-top: 5px;
-			background-color: #aaa;
+			background-color: @brown-red;
 			color: #fff;
 			font-size: 14px;
 			width: calc(~"50%");
 			&:hover {
-				background-color: @brown-red;
+				background-color: @brown-red-light;
 			}
 		}
 		// .add-btn {
