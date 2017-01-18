@@ -17,14 +17,42 @@
 		width: calc(~"100% - 400px");
 		height: 100%;
 		.filter-wrapper {
+			z-index: 1;
 			margin-left: 80px;
 			margin-top: 30px;
 			margin-bottom: 30px;
+			// height: 40px;
+			overflow: hidden;
+			position: relative;
+			font-size: 12px;
+			position: absolute;
+			background-color: #333;
+			&:hover {
+				// height: auto;
+			}
+			&>table {
+				&>tbody td {
+					vertical-align: top;
+				}
+			}
+			input[type="checkbox"] {
+				// visibility: hidden;
+				& + label {
+					display: inline-block;
+					height: 20px;
+					width: 20px;
+					border: 1px solid #222;
+				}
+				&:checked + label {
+					border-color: red;
+				}
+			}
 		}
 		.list-wrapper {
 			position: relative;
 			height: calc(~"100% - 150px");
 			overflow-y: scroll;
+			margin-top: 80px;
 			.scrollbar();
 			.scrollbar-thumb();
 			.scrollbar-track();

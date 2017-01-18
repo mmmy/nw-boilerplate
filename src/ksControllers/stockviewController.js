@@ -226,6 +226,8 @@ let _generatePattern = (pattern, type) => { //type: 0 favorites, 1 history, 2 tr
 
 	//init tooltip
 	$node.find('[data-kstooltip]').ksTooltip();
+	//fix bug
+	$node.on('mouseleave', function(){ $node.find('.add-btn').blur() });
 	return $node;
 };
 

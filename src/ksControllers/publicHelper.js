@@ -123,7 +123,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 
 	optionsNode.append($title).append($label).append($content).append($footer);
 	$target.append(optionsNode);
-	$title.find('input').focus();
+	$title.find('input').select();
 };
 
 let handleShouCangBlur = (e) => {
