@@ -124,6 +124,13 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 	optionsNode.append($title).append($label).append($content).append($footer);
 	$target.append(optionsNode);
 	$title.find('input').select();
+	$target.find('input').on('blur',(e)=>{
+		if($target.parent().find(e.relatedTarget).length == 0) {
+			optionsNode.remove();
+			$target.blur();
+			console.log('input blur....',e.relatedTarget,e.target,e);
+		}
+	});
 };
 
 let handleShouCangBlur = (e) => {
