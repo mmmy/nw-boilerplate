@@ -158,12 +158,12 @@ scannerController._fetchData = () => {
 
 	beforeFetch();
 	setTimeout(()=>{
-		if(Math.random()>0.2) {
+		if(Math.random()>0) {
 			afterFetch(fetch());
 		} else {
 			failFetch();
 		}
-	},2000);
+	},200);
 
 };
 
@@ -360,6 +360,7 @@ function _updateList() {
 			`<span><div>${'涨跌平均数'}</div><div class="red">${statistic.mean.toFixed(1)+'%'}</div></span>`,
 			`<span><div>${industry}</div><div>${subIndustry}</div></span>`,
 			`<span><div>${''}</div><div>${category}</div></span>`,
+			`<span><div><button class="flat-btn detail"><i class="arrow-down"></i>详情</button></div></span>`,
 		];
 		$item.append(children);
 	}

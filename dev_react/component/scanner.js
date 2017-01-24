@@ -106,7 +106,7 @@ export default React.createClass({
 		scannerController.init(this.refs.container);
 	},
 	render(){
-		return (<div ref="container" className="statistics-wrapper" style={{position:'relative',backgroundColor:'#222528',top:'20px',height:'500px',border:'1px solid rgba(0,0,0,0.2)'}}>
+		return (<div ref="container" className="statistics-wrapper" style={{position:'relative',backgroundColor:'#222528',top:'20px',height:'700px',border:'1px solid rgba(0,0,0,0.2)'}}>
 		</div>);
 	}
 });
