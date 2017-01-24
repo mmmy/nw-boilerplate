@@ -29,19 +29,25 @@ watchlistGuide.start = (callback) => {
 		searchConfig = $.extend(true, {}, store.getState().searchConfig);
 	} catch(e) {
 		console.error(e);
+		var now = new Date();
 		searchConfig = {
 										additionDate: {type:'days', value:7},
 										searchSpace: '000010',
 										dateRange: [{date:'1990/01/01', hour:'0', minute:'0', second:'0'}, {date:`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`, hour:'23', minute:'59', second:'59'}],
 										isLatestDate: true,
-										similarityThreshold: {value: 0.6, on:false},
+										similarityThreshold: {value: 0.6, on:true},
+										vsimilarityThreshold: {value: 0.6, on:false},
 										spaceDefinition: { stock: true, future: false },
 										matchType: '形态',
 										searchLenMax: 200
 									};
 	}
 
-	var now = new Date();
+	searchConfig.similarityThreshold.value = 0.6;
+	searchConfig.similarityThreshold.on = true;
+	searchConfig.vsimilarityThreshold.value = 0.6;
+	searchConfig.vsimilarityThreshold.on = false;
+
 	watchlistGuide._data = {list:[],resolution:'D',baseBars:30,
 														searchConfig: searchConfig
 													};

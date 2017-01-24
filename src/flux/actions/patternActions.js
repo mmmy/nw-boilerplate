@@ -48,7 +48,7 @@ let searchError = (searchKline, error)=>{
 const devLocal = false;
 let _lastSearch = {};
 
-let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, edited=false, searchConfig, dataCategory, name='未命名', favoriteFolder='', state={isTrashed: false, trashDate:null}}, cb) => {
+let getPatterns = ({symbol, describe, dateRange, bars, interval, type, lastDate, kline, edited=false, searchConfig, dataCategory, name='未命名', favoriteFolder='', state={isTrashed: false, trashDate:null}}, cb) => {
 	//console.log('patternActions: getPatterns',symbol, dateRange);
 	startSearch();
 	if(kline) {
@@ -70,6 +70,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 	if(symbol) isNewSearch = true;
 
 	symbol = symbol || _lastSearch.symbol;
+	describe = describe || _lastSearch.describe;
 	dateRange = dateRange || _lastSearch.dateRange;
 	bars = bars || _lastSearch.bars;
 	dataCategory = dataCategory || $.keyStone.resolutionToDataCategory({type:type, resolution:interval}) || getDataCategory();
@@ -77,6 +78,7 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 	// setComparatorVisibleRange({from: +new Date(dateRange[0])/1000, to: +new Date(lastDate)/1000}, '0');
 	//缓存上一次的
 	_lastSearch.symbol = symbol;
+	_lastSearch.describe = describe; //如武钢股份
 	_lastSearch.dateRange = dateRange;
 	_lastSearch.bars = bars;
 	_lastSearch.dataCategory = dataCategory;
@@ -120,13 +122,13 @@ let getPatterns = ({symbol, dateRange, bars, interval, type, lastDate, kline, ed
 					let patterns = {
 						rawData: resArr,
 						closePrice: closePrice || [],
-						searchMetaData: { symbol, dateRange, bars, lastDate, kline, edited, interval, searchTimeSpent }
+						searchMetaData: { symbol, describe, dateRange, bars, lastDate, kline, edited, interval, searchTimeSpent }
 					};
 					patterns.crossFilter = crossfilter(patterns.rawData);
 					patterns.searchConfig = searchConfig;
 					//保存历史
 					searchSuccess(patterns, searchTimeSpent);
-					setTimeout(() => { historyController.pushHistory({symbol, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig, dataCategory, name, favoriteFolder, state}); });
+					setTimeout(() => { historyController.pushHistory({symbol, describe, dateRange,bars, interval, type, kline, edited, lastDate, searchConfig, dataCategory, name, favoriteFolder, state}); });
 					dispacth({type: types.CHANGE_PATTERNS, patterns, searchTimeSpent});
 					cb && cb();
 

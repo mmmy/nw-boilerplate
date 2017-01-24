@@ -1,4 +1,8 @@
 
+function $s(elem) {
+  return $(document.createElementNS('http://www.w3.org/2000/svg', elem));
+}
+
 module.exports = function($) {
 	var theme = $(document.body).attr('theme');
 	$.extend({
@@ -6,7 +10,7 @@ module.exports = function($) {
 			configDefault:{
 				brownRedDark: '#750905',
 				brownRed: theme == 'dark' ? 'rgb(170,65,66)' : '#8D151B',
-				brownRedLight: '#AC1822'
+				brownRedLight: '#AC1822' //rgb(172,24,34)
 			},
 			theme: theme,              //or dark
 			resolutionToDataCategory: function(conifg) {
@@ -32,8 +36,22 @@ module.exports = function($) {
             }
         }
         return dataCategory;
+			},
+			volumeFormatter: function(volume) {
+				var v = parseInt(volume);
+				var str = 'N/A';
+				if(isNaN(v)) {
+					return str;
+				}
+				v = v / 100;
+				if(9995 > v) str = v + ' 手';
+				else {
+					var num = v / 1E4;
+					str = num >= 10000 ? num.toFixed(0) : (num + '').slice(0,6);
+					str += ' 万手'
+				}
+				return str;
 			}
-
 		}
 	});
 
@@ -156,6 +174,78 @@ module.exports = function($) {
 		  var $spans = $this.find('span');
 		  $($spans[0]).text(values[0]);
 		  $($spans[2]).text(values.length > 1 ? values[1] : '');
+			return this;
+		},
+		svgPercent: function(options) {
+			options = $.extend({
+				count: 0,
+				total: 0,
+				caption: ''
+			},options);
+			var l = 2 * Math.PI * 45;
+			var $this = $(this);
+			var $svg = $this.find('svg');
+			var $caption = $this.find('figcaption');
+
+			var percent = 1 - options.count / options.total;
+			var dashLen = isFinite(percent) ? l * percent : l;
+
+			$caption.text(options.caption || '---')
+			$svg[0].setAttribute('viewBox', '0 0 100 100');
+
+			var $circle = $($s('g').attr({'transform':'rotate(-90 50 50)'})).append($s('circle').attr({r:'45',cx:'50',cy:'50'}))
+										.append($s('circle').attr({r:'45',cx:'50',cy:'50','stroke-dasharray':l}));
+			$circle.find('circle:last-child').css('stroke-dashoffset', dashLen);
+
+			var $text = $($s('g')).append($s('text').attr({x:'50',y:'60'}))
+			$text.find('text').append([$s('tspan'),$s('tspan'),$s('tspan')]);
+			$text.find('tspan:nth-child(1)').text(options.count);
+			$text.find('tspan:nth-child(2)').text('/');
+			$text.find('tspan:nth-child(3)').text(options.total);
+			
+			$svg.empty().append($circle).append($text);
+			return this;
+		},
+		barChart: function(options) {
+			options = $.extend({barWidth:10, barSpace:2, data:[], keyFormatter:null,},options);
+			var $this = $(this);
+			var $svg = $this.find('svg');
+			var len = options.data.length;
+
+			var totalWidth = 250;
+			var labelWith = 15;
+			var viewWidth = totalWidth - labelWith;
+
+			var viewHeight = (options.barWidth + options.barSpace) * len;
+			// $svg.attr('height', viewHeight);
+			$svg[0].setAttribute('viewBox', `0 0 ${totalWidth} ${viewHeight > 0 ? viewHeight : 12}`);
+
+			var paths = [];
+			if(len > 0) {
+				var maxValue = options.data.reduce((pre, cur)=>{ return Math.max(pre,cur.value) }, 0);
+				for(var i=0; i<len; i++) {
+					var item = options.data[i];
+					var key = options.keyFormatter ? options.keyFormatter(item.key) : item.key;
+					var x = labelWith;
+					var y = i*(options.barWidth + options.barSpace);
+
+					var width = viewWidth * item.value / maxValue;
+					var $g = $($s('g')).append($s('rect')).append($s('rect')).append($s('text').addClass('key')).append($s('text').addClass('label'));
+					$g.find('rect:nth-child(1)').attr({x:x, y:y, height: options.barWidth, width: viewWidth}).addClass('bg');
+					var $animate = $s('animate');
+					$animate[0].setAttribute('attributeName','width');
+					// $animate[0].setAttribute('repeatCount','indefinite');
+					// $animate[0].setAttribute('autoReverse','true');
+
+					$g.find('rect:nth-child(2)').attr({x:x, y:y, height:options.barWidth})
+																				.append($animate.attr({'from':0,'to':width,dur:'3s',fill:'freeze'}))
+					$g.find('text.key').text(key).attr({x: x+3, y: (y + options.barWidth/2), 'font-size':options.barWidth * 0.8});
+					$g.find('text.label').text(item.value).attr({x: x-4, y: (y + options.barWidth/2), 'font-size':options.barWidth * 0.8});
+					paths.push($g);
+				}
+			}
+
+			$svg.empty().append(paths);
 			return this;
 		}
 	});

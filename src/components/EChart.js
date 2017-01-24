@@ -271,6 +271,10 @@ class EChart extends React.Component {
 
 	updateKlineCanvas() {
 		let canvas = this.refs.kline_canvas;
+		if(!canvas) {
+			console.warn('no canvas?');
+			return;
+		}
 		let pattern = this.props.pattern;
 		let index = this.props.index;
 		let kline = pattern && pattern.kLine || [];

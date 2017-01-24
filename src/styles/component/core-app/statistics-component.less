@@ -7,9 +7,9 @@
 @gray-line-middle: #787878;
 @gray-line-dark: rgb(76, 76, 76);
 
-@blue-line-light: #0054a4;//#23abf7;
-@blue-line-middle: #007dd2;// #0068af;
-@blue-line-dark: #10b0d6;// #004587;
+@blue-line-light: rgb(232,166,174);//#23abf7;
+@blue-line-middle: rgb(170,65,66);// #0068af;
+@blue-line-dark: rgb(109,15,24);// #004587;
 
 //显示百分比的UI, 66.66%
 .percent-info(@color:#333;@font-size:20px) {
@@ -39,6 +39,9 @@
 	}
 	&.green {
 		color: @ks-color-green-grass;
+	}
+	&.white {
+		color: @dark-white-gray;
 	}
 }
 
@@ -253,6 +256,7 @@
 		line-height: 60px;
 		img {
 			margin-right: 10px;
+			vertical-align: baseline;
 		}
 	}
 	p {
@@ -363,6 +367,9 @@
 		}
 		&.red:before {
 			background-color: @brown-red;
+		}
+		&.white:before {
+			background-color: @dark-white-gray;
 		}
 		&.green:before {
 			background-color: @ks-color-green-grass;

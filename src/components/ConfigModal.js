@@ -47,6 +47,7 @@ class SearchConfigModal extends React.Component {
 			searchConfig.dateRange[1].date = dateStr;
 			that.setState({searchConfig});
 		});
+		$(this.refs.root).find('[data-kstooltip]').ksTooltip();
 	}
 
 	componentWillReceiveProps(){
@@ -63,7 +64,7 @@ class SearchConfigModal extends React.Component {
 
 	renderContent() {
 
-		let { dateRange, additionDate, spaceDefinition, isLatestDate, similarityThreshold, vsimilarityThreshold } = this.state.searchConfig;
+		let { dateRange, additionDate, spaceDefinition, isLatestDate, similarityThreshold, vsimilarityThreshold, dateThreshold } = this.state.searchConfig;
 		let d0 = dateRange[0],
 				d1 = dateRange[1];
 		const stockSelected = spaceDefinition.stock;
@@ -81,14 +82,16 @@ class SearchConfigModal extends React.Component {
 			'selected': futureSelected,
 		});
 
-		let warningClass = classNames('warning', {
-			'hide': !similarityThreshold.on || similarityThreshold.on && similarityThreshold.value < 0.8
-		});
+		// let warningClass = classNames('warning', {
+		// 	'hide': !similarityThreshold.on || similarityThreshold.on && similarityThreshold.value < 0.8
+		// });
+		let hide1 = !similarityThreshold.on || similarityThreshold.on && similarityThreshold.value < 0.8;
+		let hide2 = !vsimilarityThreshold.on || vsimilarityThreshold.on && vsimilarityThreshold.value < 0.8;
 		let warningClass2 = classNames('warning', {
-			'hide': !vsimilarityThreshold.on || vsimilarityThreshold.on && vsimilarityThreshold.value < 0.8
+			'hide': hide1 && hide2
 		});
 
-		return <div className='modal-content-contianer'>
+		return <div className='modal-content-contianer' ref="root">
 			<div className='title'>搜索配置</div>
 			<div className='item-title font-simsun'>后向统计范围</div>
 			<div className='item-body-container days'>
@@ -118,6 +121,11 @@ class SearchConfigModal extends React.Component {
 					</div>
 				</div>
 			</div>
+			<div className='item-title font-simsun'>
+				<input type='checkbox' checked={dateThreshold.on} onChange={this.toggleDateThresholdOn.bind(this)} />
+				排除所选图形相同时间区间
+				<img src="./image/tooltip.png" data-kstooltip='勾选后，每次搜索会自动剔除所有与所选图形相同时间段的匹配结果'/>
+			</div>
 			<div className='item-title font-simsun similarity'>
 				<input type='checkbox' checked={similarityThreshold.on} onChange={this.toggleSimilarityOn.bind(this)}/>
 				只显示价相似度大于
@@ -127,7 +135,7 @@ class SearchConfigModal extends React.Component {
 					<option value='0.7'>70%</option>
 					<option value='0.6'>60%</option>
 				</select>
-				<div className={warningClass}>(搜索结果数量可能比较小或为零)</div>
+				{/*<div className={warningClass}>(搜索结果数量可能比较小或为零)</div>*/}
 			</div>
 			<div className='item-title font-simsun similarity'>
 				<input type='checkbox' checked={vsimilarityThreshold.on} onChange={this.toggleVSimilarityOn.bind(this)}/>
@@ -137,13 +145,9 @@ class SearchConfigModal extends React.Component {
 					<option value='0.8'>80%</option>
 					<option value='0.7'>70%</option>
 					<option value='0.6'>60%</option>
-					<option value='0.5'>50%</option>
-					<option value='0.4'>40%</option>
-					<option value='0.3'>30%</option>
-					<option value='0.2'>20%</option>
 				</select>
-				<div className={warningClass2}>(搜索结果数量可能比较小或为零)</div>
 			</div>
+			<div className={warningClass2}>(搜索结果数量可能比较小或为零)</div>
 			<div className='item-title font-simsun hide'>标的类型</div>
 			<div className='item-body-container sid hide'>
 				<span className={stockClass} onClick={this.toggleType.bind(this, 'stock')}>股票</span><span className={futureClass} onClick={this.toggleType.bind(this, 'future')}>期货</span>
@@ -237,7 +241,7 @@ class SearchConfigModal extends React.Component {
 
 	reduceDays() {
 		let { searchConfig } = this.state;
-		if(searchConfig.additionDate.value > 0) {
+		if(searchConfig.additionDate.value > 1) {
 			searchConfig.additionDate.value = parseInt(searchConfig.additionDate.value) - 1;
 			this.setState({searchConfig});
 		}
@@ -245,8 +249,10 @@ class SearchConfigModal extends React.Component {
 
 	addDays() {
 		let { searchConfig } = this.state;
-		searchConfig.additionDate.value = parseInt(searchConfig.additionDate.value) + 1;
-		this.setState({searchConfig});
+		if(searchConfig.additionDate.value < 100) {
+			searchConfig.additionDate.value = parseInt(searchConfig.additionDate.value) + 1;
+			this.setState({searchConfig});
+		}
 	}
 
 	toggleLastTimeAuto() {
@@ -288,6 +294,11 @@ class SearchConfigModal extends React.Component {
 		this.setState({searchConfig});
 	}
 
+	toggleDateThresholdOn() {
+		let { searchConfig } = this.state;
+		searchConfig.dateThreshold.on = !searchConfig.dateThreshold.on;
+		this.setState({searchConfig});
+	}
 }
 
 SearchConfigModal.propTypes = propTypes;

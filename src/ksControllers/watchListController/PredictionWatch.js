@@ -330,6 +330,12 @@ PredictionWatch.prototype._search = function() {
 			dataCategory = this._dataFeed.getDataCategory(),
 			interval = this._resolution;
 
+	var dateRange = [];
+	if(kline.length > 0) {
+		dateRange[0] = new Date(kline[0][0] * 1000);
+		dateRange[1] = new Date(kline[kline.length - 1][0] * 1000);
+	}
+
 	var that = this;
 	var cb = function(patterns, closePrices) {
 		that.__searchResults.patterns = patterns;
@@ -354,7 +360,7 @@ PredictionWatch.prototype._search = function() {
 		that._renderStuffs();
 		that._research();
 	};
-	this._searchPatternInstance.search({symbol, kline, bars, searchConfig, dataCategory, interval}, cb, errorCb);
+	this._searchPatternInstance.search({symbol, kline, bars, dateRange, searchConfig, dataCategory, interval}, cb, errorCb);
 }
 /*先获取kline数据, 然后搜索pattern, 完成后渲染
  -------------------------------------------------*/
@@ -502,6 +508,7 @@ PredictionWatch.prototype._searchDetail = function() {
 	}
 	var param ={
 		symbol : this._symbolInfo.symbol,
+		describe: this._symbolInfo.ticker,
 		bars : kline.length,
 		dateRange: dateRange,
 		interval : this._resolution,

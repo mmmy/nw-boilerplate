@@ -13,7 +13,7 @@ trialReminder.show = (loginState, callback)=>{
 								.append(isExpired ? '您的试用期已经结束' : '您的试用期即将结束')
 
 	var $body = $(`<div class="body"></body>`)
-							.append(isExpired ? '<p>很抱歉, 您的免费试用期已经结束</p>' : `<p>您的试用期仅剩 <span class="days">${daysRemain}</span> 天</p>`)
+							.append(isExpired ? '<p>很抱歉, 您的免费试用期已经结束</p>' : `<p><span class="font-14">您的试用期仅剩</span> <span class="days">${daysRemain}</span> 天</p>`)
 							.append('<p class="info">如需继续使用, 请联系我们:<br/>info@stone.com</p>');
 	
 	var $footer = $(`<div class="footer"><button class="flat-btn gray-light round">${isExpired ? '关闭' : '知道了'}</button></div>`);

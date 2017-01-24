@@ -18,6 +18,8 @@
 
 @gray-static: #40474E;
 
+@dark-modal-bg: rgb(40, 40, 40);
+
 html {
 	background-color: @dark-bg-wrapper;
 }
@@ -63,9 +65,16 @@ body[theme="dark"] {
 	.pattern-info-switch-wrapper {
 		background-color: rgba(40, 43, 47, 0.9);
 	}
+	//modal 
+	.modal-wrapper {
+		background-color: @dark-modal-bg;
+		p {
+			color: inherit;
+		}
+	}
+	
 	//浅灰色, 对话框背景
 	.config-modal-container,
-	.modal-wrapper,
 	.container-ks-sr.meta .pattern-wrapper,
 	.container-header {
 		background-color: @dark-bg-inner !important;
@@ -140,15 +149,26 @@ body[theme="dark"] {
 	.percent-info.green, .ks-container.peak .days-info-wrapper.green:hover strong {
 		color: @dark-green !important;
 	}
+	.container-ks-sr .info-item .item-value.white,
+	.ks-container.peak .days-info-wrapper.white.active strong,
+	.percent-info.white, .ks-container.peak .days-info-wrapper.white:hover strong {
+		color: @dark-white-gray !important;
+	}
+
 	.percent-item.red:before, .days-info-wrapper.red:before {
 		background-color: @dark-brown-red !important;
 	}
 	.percent-item.green:before, .days-info-wrapper.green:before {
 		background-color: @dark-green !important;
 	}
+	.percent-item.white:before, .days-info-wrapper.white:before {
+		background-color: @dark-white-gray !important;
+	}
+
 	/*
 	icons
 	--------------------------------------------------------------------*/
+	.history-item .canvas-wrapper .btn-overlay .recover,
 	.search-editor-wrapper .title-name button,
 	.pattern-statistics-panel .trash-all-button .fa-trash,
 	.trash-modal-container .close-icon .fa-close,

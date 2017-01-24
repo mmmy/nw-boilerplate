@@ -127,7 +127,7 @@ class Login extends React.Component {
 		let isEmpty = username === '' || password === '';
 
 		return (
-      <div className='login-panelsmall-container' ref='login_panel_container'>
+      <div className='login-panelsmall-container' ref='login_panel_container' onMouseUp={ (e)=>{ e.stopPropagation() } }>
       	{/*<div className='fix-drag-bug'></div>*/}
       	<div ref='drag_panel' className='login-titlebar-container'  onMouseDown={this.fixDragableBug.bind(this)}>
       		<button style={{}} className='flat-btn button app-close' onClick={this.closeApp.bind(this)}></button>

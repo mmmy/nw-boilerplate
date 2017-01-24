@@ -1,6 +1,7 @@
 
 import PredictionWatch from './PredictionWatch';
 import SymbolListDropDown from './SymbolListDropDown';
+import messager from '../messager';
 
 var now = new Date();
 
@@ -9,6 +10,7 @@ var defaultSearchConfig = {
 	searchSpace: '000010',
 	dateRange: [{date:'1990/01/01', hour:'0', minute:'0', second:'0'}, {date:`${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`, hour:'23', minute:'59', second:'59'}],
 	isLatestDate: true,
+	dateThreshold : {value: 0.3, on:true},
 	similarityThreshold: {value: 0.6, on:true},
 	spaceDefinition: { stock: true, future: false },
 	matchType: '形态',
@@ -107,6 +109,7 @@ WatchList.prototype._append = function(symbolObj) {
 	//先查看有没有重复的
 	for(var i=0; i<this._list.length; i++) {
 		if(this._list[i].symbolInfo.ticker == symbolObj.symbol) {
+			messager.showWarningMessage("已经添加过该标的!");
 			return;
 		}
 	}

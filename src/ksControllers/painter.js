@@ -61,6 +61,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 
 	let width = dom.width;
 	let height = dom.height - 1;
+	let ratio = getCanvasPixRatio();
 
 	let volume = options && options.volume || false;
 	let centerKline = options && options.centerKline || false;
@@ -108,10 +109,10 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 			drawLen = options && options.drawLen || len;
 
 	let padding = options && options.padding;
-	let top = padding && padding.top || 0,
-			left = padding && padding.left || 0,
-			right = padding && padding.right || 0,
-			bottom = padding && padding.bottom || 0;
+	let top = padding && padding.top * ratio || 0,
+			left = padding && padding.left * ratio || 0,
+			right = padding && padding.right * ratio || 0,
+			bottom = padding && padding.bottom * ratio || 0;
 
 	let viewYheight = height - top -bottom;
 	let klineXSpace = (width - left - right) / (drawLen + predictionBars);
@@ -174,7 +175,6 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 	let symbolDescribeColor = options && options.symbolDescribeColor || '#666';
 	let overflowPane = options && options.overflowPane;
 	let overflowPaneBottom = options && options.overflowPaneBottom;
-	let ratio = getCanvasPixRatio();
 
 	if(baseBarRange && baseBarRange[1] && baseBarRange[1]+1>=len) {
 		baseBarRange[1] = len - 1;

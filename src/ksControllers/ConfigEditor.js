@@ -15,6 +15,12 @@ let adjustConfig = (searchConfig) => {
 	if(!searchConfig.similarityThreshold) {
 		searchConfig.similarityThreshold = {on: false, value: 0.6};
 	}
+	if(!searchConfig.vsimilarityThreshold) {
+		searchConfig.vsimilarityThreshold = {on: false, value: 0.6};
+	}
+	if(!searchConfig.dateThreshold) {
+		searchConfig.dateThreshold = {on: false, value: 0.3};
+	}
 };
 /* watchlist 或者 additionConfig 提供resolution 和 baseBars
  ----------------------------------*/
@@ -61,6 +67,9 @@ function ConfigEditor(dom, searchConfig, info, watchlist, additionConfig) {
 									addBars:null, 
 									similarityCheck:null,
 									similaritySelect:null,
+									vsimilarityCheck:null,
+									vsimilaritySelect:null,
+									dateThresholdCheck:null,
 									startTime:{hour:null,minute:null,second:null},
 									endTime:{hour:null,minute:null,second:null},
 								};
@@ -72,7 +81,7 @@ function ConfigEditor(dom, searchConfig, info, watchlist, additionConfig) {
 }
 
 ConfigEditor.prototype._init = function() {
-	let { dateRange, additionDate, spaceDefinition, isLatestDate, similarityThreshold } = this._config;
+	let { dateRange, additionDate, spaceDefinition, isLatestDate, similarityThreshold, vsimilarityThreshold, dateThreshold} = this._config;
 	let d0 = dateRange[0],
 			d1 = dateRange[1];
 
@@ -102,8 +111,11 @@ ConfigEditor.prototype._init = function() {
 	this._inputs.endTime.minute = minute1;
 	this._inputs.endTime.second = second1;
 
+	this._inputs.dateThresholdCheck = $('<input type="checkbox" />').prop('checked', dateThreshold.on);
 	this._inputs.similarityCheck = $('<input type="checkbox" />').prop('checked', similarityThreshold.on);
 	this._inputs.similaritySelect = $('<select><option value="0.9">90%</option><option value="0.8">80%</option><option value="0.7">70%</option><option value="0.6">60%</option></select>').attr('disabled', !similarityThreshold.on).val(similarityThreshold.value);
+	this._inputs.vsimilarityCheck = $('<input type="checkbox" />').prop('checked', vsimilarityThreshold.on);
+	this._inputs.vsimilaritySelect = $('<select><option value="0.9">90%</option><option value="0.8">80%</option><option value="0.7">70%</option><option value="0.6">60%</option></select>').attr('disabled', !vsimilarityThreshold.on).val(vsimilarityThreshold.value);
 
 	this._$wrapper.append(`<div class='title'>搜索配置</div>`);
 	
@@ -135,9 +147,16 @@ ConfigEditor.prototype._init = function() {
 							.append(endDateDoms);
 
 	this._$wrapper.append($date);
+	if(!this._info) {
+		this._$wrapper.append($(`<div class="item-title font-simsun">排除所选图形相同时间区间<img src="./image/tooltip.png" data-kstooltip="勾选后，每次搜索会自动剔除所有与所选图形相同时间段的匹配结果"/></div>`).prepend(this._inputs.dateThresholdCheck));
+	}
 	//相似度过滤
-	let similarity80 = !similarityThreshold.on || similarityThreshold.on && (+similarityThreshold.value < 0.8);
-	this._$wrapper.append($(`<div class="item-title font-simsun similarity">只显示相似度大于</div>`).prepend(this._inputs.similarityCheck).append(this._inputs.similaritySelect).append($(`<span class="warning">(搜索结果数量可能比较小或为零)</span>`).toggleClass('hide', similarity80)));
+	let hide0 = !similarityThreshold.on || similarityThreshold.on && (+similarityThreshold.value < 0.8);
+	let hide1 = !vsimilarityThreshold.on || vsimilarityThreshold.on && (+vsimilarityThreshold.value < 0.8);
+	this._$wrapper.append($(`<div class="item-title font-simsun similarity">只显示价相似度大于</div>`).prepend(this._inputs.similarityCheck).append(this._inputs.similaritySelect));
+	this._$wrapper.append($(`<div class="item-title font-simsun similarity">只显示量相似度大于</div>`).prepend(this._inputs.vsimilarityCheck).append(this._inputs.vsimilaritySelect));
+	this._$wrapper.append($(`<span class="warning">(搜索结果数量可能比较小或为零)</span>`).toggleClass('hide', hide0 && hide1));
+
 
 	//标的类型
 	this._$wrapper.append(`<div class='item-title font-simsun hide'>标的类型</div>`);
@@ -199,8 +218,12 @@ ConfigEditor.prototype._initActions = function() {
 	this._inputs.endTime.second.on('input', this._changeTime.bind(this, 1, 'second'));
 	this._$wrapper.find('.check-box-wrapper input[type="checkbox"]').on('change', this._toggleLatestTimeAuto.bind(this));
 
-	this._inputs.similarityCheck.on('change', this._toggleSimilarityOn.bind(this));
-	this._inputs.similaritySelect.on('change', this._changeSimilarityValue.bind(this));
+	this._inputs.dateThresholdCheck.on('change', this._toggleDateThresholdOn.bind(this));
+
+	this._inputs.similarityCheck.on('change', this._toggleSimilarityOn.bind(this, 'similarity'));
+	this._inputs.similaritySelect.on('change', this._changeSimilarityValue.bind(this, 'similarity'));
+	this._inputs.vsimilarityCheck.on('change', this._toggleSimilarityOn.bind(this, 'vsimilarity'));
+	this._inputs.vsimilaritySelect.on('change', this._changeSimilarityValue.bind(this, 'vsimilarity'));
 
 	//close save & reset
 	var that = this;
@@ -214,6 +237,8 @@ ConfigEditor.prototype._initActions = function() {
 	this._$wrapper.on('mouseup',function(e){
 		e.stopPropagation();
 	});
+
+	this._$wrapper.find('[data-kstooltip]').ksTooltip();
 }
 
 ConfigEditor.prototype._changeBasebars = function(e) {
@@ -231,22 +256,34 @@ ConfigEditor.prototype._selectResolution = function(e) {
 	this._resolution = resolution;
 }
 
-ConfigEditor.prototype._toggleSimilarityOn = function(e) {
-	var isOn = !this._config.similarityThreshold.on;
-	this._config.similarityThreshold.on = isOn;
-	this._inputs.similaritySelect.attr('disabled', !isOn);
-	this.onEdit();
-	if(isOn) {
-		$(e.target).siblings('.warning').toggleClass('hide', +this._config.similarityThreshold.value < 0.8);
-	} else {
-		$(e.target).siblings('.warning').addClass('hide');
-	}
+ConfigEditor.prototype._updateWarningInfo = function() {
+	var { similarityThreshold, vsimilarityThreshold } = this._config;
+	let hide0 = !similarityThreshold.on || similarityThreshold.on && (+similarityThreshold.value < 0.8);
+	let hide1 = !vsimilarityThreshold.on || vsimilarityThreshold.on && (+vsimilarityThreshold.value < 0.8);
+	this._$wrapper.find('.warning').toggleClass('hide', hide0 && hide1);
 }
 
-ConfigEditor.prototype._changeSimilarityValue = function(e) {
+ConfigEditor.prototype._toggleDateThresholdOn = function(e) {
+	var isOn = !this._config.dateThreshold.on;
+	this._config.dateThreshold.on = isOn;
+	this.onEdit();
+}
+
+ConfigEditor.prototype._toggleSimilarityOn = function(name, e) {
+	var configName = name + 'Threshold',
+	    selectName = name + 'Select';
+	var isOn = !this._config[configName].on;
+	this._config[configName].on = isOn;
+	this._inputs[selectName].attr('disabled', !isOn);
+	this._updateWarningInfo();
+	this.onEdit();
+}
+
+ConfigEditor.prototype._changeSimilarityValue = function(name, e) {
+	var configName = name + 'Threshold';
 	var value = e.target.value;
-	this._config.similarityThreshold.value = value;
-	$(e.target).siblings('.warning').toggleClass('hide', +value < 0.8);
+	this._config[configName].value = value;
+	this._updateWarningInfo();
 	this.onEdit();
 } 
 
@@ -279,16 +316,20 @@ ConfigEditor.prototype._clickFuture = function(e) {
 }
 
 ConfigEditor.prototype._clickReduceBars = function(e) {
-	if(this._config.additionDate.value > 0) this._config.additionDate.value -= 1;
-	this.updateBars();
-	this.onEdit();
+	if(this._config.additionDate.value > 1) {
+		this._config.additionDate.value -= 1;
+		this.updateBars();
+		this.onEdit();
+	}
 }
 
 ConfigEditor.prototype._clickAddBars = function(e) {
-	var additionDateValue = +this._config.additionDate.value;
-	this._config.additionDate.value = additionDateValue + 1;
-	this.updateBars();
-	this.onEdit();
+	if(+this._config.additionDate.value < 100 ) {
+		var additionDateValue = +this._config.additionDate.value;
+		this._config.additionDate.value = additionDateValue + 1;
+		this.updateBars();
+		this.onEdit();
+	}
 }
 
 ConfigEditor.prototype._changeBars = function(e) {

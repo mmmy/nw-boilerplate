@@ -40,8 +40,8 @@ peakStatistic.init = (wrapper, model) => {
 													.append(`<p class="describe"><span class="text">最高涨幅</span></p>`)
 												)
 	let percentInfo2 = $(`<div class="ks-col-50"></div>`)
-												.append($(`<div class="percent-item green"></div>`)
-													.append(`<p class="rate percent-info green"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
+												.append($(`<div class="percent-item white"></div>`)
+													.append(`<p class="rate percent-info white"><span>00</span><span>.</span><span>00</span><span>%<span></p>`)
 													.append(`<p class="describe"><span class="text">最大跌幅</span></p>`)
 												)
 	let part1 = $(`<div class="ks-col-50"></div>`)
@@ -52,7 +52,7 @@ peakStatistic.init = (wrapper, model) => {
 
 	let daysNode = $(`<div class="row"></div>`)
 							.append(`<div class="ks-col-50"><div class="days-info-wrapper red"><p class="days-info">第<strong>0</strong><span class="interval-unit">天</span></p><p class="text">到达最高点位</p></div></div>`)
-							.append(`<div class="ks-col-50"><div class="days-info-wrapper green"><p class="days-info">第<strong>0</strong><span class="interval-unit">天</span></p><p class="text">到达最低点位</p></div></div>`)
+							.append(`<div class="ks-col-50"><div class="days-info-wrapper white"><p class="days-info">第<strong>0</strong><span class="interval-unit">天</span></p><p class="text">到达最低点位</p></div></div>`)
 
 	let part2 = $(`<div class="ks-col-50"></div>`)
 							// .append(`<div class="chart-title line">2.按时间分布统计图<span class="axis pull-right">横坐标:<span class="black interval-unit">天</span>纵坐标:<span class="black">个数</span></span></div>`)
@@ -71,7 +71,7 @@ peakStatistic.init = (wrapper, model) => {
 	_peakChartTitleUnit = newDom.find('.interval-unit');
 	//initEvent
 	daysNode.find('.days-info-wrapper.red').on('mouseenter',_highlightLine.bind(null,0)).on('mouseleave',_highlightLine.bind(null,-1));
-	daysNode.find('.days-info-wrapper.green').on('mouseenter',_highlightLine.bind(null,1)).on('mouseleave',_highlightLine.bind(null,-1));
+	daysNode.find('.days-info-wrapper.white').on('mouseenter',_highlightLine.bind(null,1)).on('mouseleave',_highlightLine.bind(null,-1));
 	/*
 	part1.find('.flat-btn.up').click(function(event) {
 		if(!_isUp) {
@@ -113,7 +113,7 @@ peakStatistic.init = (wrapper, model) => {
 /*
 peakStatistic._updateDescribeUI = () => {
 	let isUp = _isUp;
-	_$container.find('.circle').toggleClass('red', isUp).toggleClass('green', !isUp);
+	_$container.find('.circle').toggleClass('red', isUp).toggleClass('white', !isUp);
 	_$container.find('.describe .text').text(isUp ? '最高涨幅百分比' : '最低涨幅百分比');
 	var daysInfoTextDom = _$container.find('.days-info-wrapper .text');
 	$(daysInfoTextDom[0]).text(isUp ? '最多只匹配结果到达最高点' : '最多只匹配结果到达最低点');
@@ -128,7 +128,7 @@ peakStatistic._udpateDataUI = (dataObj, isUp=true) => {
 		let values = vauleStr.split('.');
 		$($(_$rates[index]).find('span')[0]).text(values[0]);
 		$($(_$rates[index]).find('span')[2]).text(values[1]);
-		// _$maxRate.toggleClass('green', !isUp);
+		// _$maxRate.toggleClass('white', !isUp);
 		// _$maxRate.toggleClass('red', isUp);
 	};
 	try {
@@ -171,13 +171,13 @@ peakStatistic._redrawBarChart = (model) => {
 			xLables.push((- unit * (i+1) * 100).toFixed(decimal)); 
 			data.push({
 				value: freqLeft[i], 
-				fillStyle: _isLight ? 'rgba(16,145,33,0.2)' : 'rgba(115,176,20,0.2)', 
-				strokeStyle: _isLight ? 'rgba(16,145,33,0.2)' : 'rgba(115,176,20,0.2)',
+				fillStyle: _isLight ? 'rgba(16,145,33,0.2)' : 'rgba(153,153,153,0.2)', 
+				strokeStyle: _isLight ? 'rgba(16,145,33,0.2)' : 'rgba(153,153,153,0.2)',
 				textColor: _isLight ? 'rgba(16,145,33,1)' : 'rgba(255,255,255,1)',
 				hover: {
 					textColor: _isLight ? 'rgba(16,145,33,1)' : 'rgba(255,255,255,1)',
-					fillStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)', 
-					strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)'
+					fillStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(153,153,153,1)', 
+					strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(153,153,153,1)'
 				}
 			});
 		}
@@ -228,12 +228,12 @@ peakStatistic._redrawLineChart = (model) => {
 		};
 		peakSeries[1] = {
 			data: tDownS,
-			strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)',
+			strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(153,153,153,1)',
 			fillStyle: _isLight ? 'rgba(16,145,33,0.1)' : 'rgba(115,176,20,0)',
 			lineWidth: 2,
 			hover: {
 				lineWidth: 3,
-				strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(115,176,20,1)',
+				strokeStyle: _isLight ? 'rgba(16,145,33,1)' : 'rgba(153,153,153,1)',
 				fillStyle: _isLight ? 'rgba(16,145,33,0.1)' : 'rgba(115,176,20,0)'
 			},
 			activeIndexes: [dayMostDown-1]

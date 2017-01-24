@@ -129,6 +129,12 @@
 	justify-content: 	flex-end;
 }
 
+.flex-between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
 .chart-container{
   position: absolute;
   height: 100%;
@@ -282,21 +288,19 @@
 	outline: none;
 	border: none;
 	background-color: transparent;
-	&.btn-red {
-		color: #fff;
-		background-color: @brown-red;
-		&:hover {
-			background-color: @brown-red-light;
-		}
-		&[disabled] {
-			opacity: 0.5;
-			background-color: @brown-red;
-		}
-	}
+	
 	&.border-btn {
 		border: 1px solid #bbb;
 		line-height: 30px;
 		padding: 0 20px;
+	}
+	&.border-btn2 {
+		border: 1px solid #666;
+		padding: 5px 20px;
+		color: #666;
+		&:hover {
+			color: #aaa;
+		}
 	}
 	&.icon-btn-20 {
 		background-image: url(@icons_url);
@@ -312,7 +316,7 @@
 		}
 		&.icon-close {
 			.icon_position(2,7,0,7px,7px);
-			&:hover {
+			&:hover,&.hover {
 				.icon_position(0,7,0,7px,7px);
 			}
 		}
@@ -333,7 +337,7 @@
 		}
 		&.icon-close {
 			.icon_position(2,7,0);
-			&:hover {
+			&:hover,&.hover {
 				.icon_position(0,7,0);
 			}
 		}
@@ -343,21 +347,56 @@
 				.icon_position(0,1,1);
 			}	
 		}
+		&.icon-search {
+			.icon_position(2,5,0);
+			&:hover,&.hover {
+				.icon_position(0,5,0);
+			}	
+		}
+		&.icon-plot {
+			.icon_position(2,6,0);
+			&:hover,&.hover {
+				.icon_position(0,6,0);
+			}	
+		}
+		&.icon-pen {
+			.icon_position(2,0,1);
+			&:hover,&.hover {
+				.icon_position(0,0,1);
+			}
+		}
+
 	}
 	&.round {
 		border-radius: 2px;
 	}
 	&.gray-light {
+		color: #fff;
 		padding: 6px 20px;
 		background-color: rgb(66, 66, 66);
 		&:hover {
 			background-color: rgb(102, 102, 102);
 		}
-		[disabled] {
+		&[disabled] {
 			cursor: default;
+			opacity: 0.5;
 			&:hover {
 				background-color: rgb(66, 66, 66);
 			}
+		}
+	}
+
+	&.btn-red {
+		border-color: @brown-red;
+		color: #fff;
+		background-color: @brown-red;
+		&:hover {
+			background-color: @brown-red-light;
+			color: #fff;
+		}
+		&[disabled] {
+			opacity: 0.5;
+			background-color: @brown-red;
 		}
 	}
 }
@@ -428,6 +467,14 @@ a.flat-btn {
 			.ks-button-hover();
 		}
 	}
+	.wrapper {
+		padding: 0 19px;
+		.sub-title {
+			margin-left: 0;
+			font-weight: bold;
+			margin-top: 15px;
+		}
+	}
 	&.log{
 		width: 360px;
 		overflow: hidden;
@@ -443,15 +490,17 @@ a.flat-btn {
 				}
 			}
 		}
-		ol {
+		ul {
 			background: url('./image/chilun.png') no-repeat;
 			background-position: calc(~"100% + 70px") calc(~"100% + 70px");
 			// padding-left: 15px;
 			min-height: 250px;
-			padding-left: 35px;
+			padding-left: 20px;
 			padding-right: 20px;
+			padding-bottom: 10px;
 			margin-bottom: -4px;
 			li {
+				list-style: none;
 				margin-bottom: 5px;
 			}
 		}
@@ -462,6 +511,9 @@ a.flat-btn {
 			margin-top: 20px;
 			margin-left: 20px;
 			margin-bottom: 10px;
+		}
+		h5 {
+			margin-left: 20px;
 		}
 		.version {
 			color: #999;
@@ -664,3 +716,36 @@ a.link {
 	cursor: pointer;
 	margin-bottom: 10px;
 }
+
+.font-14 {
+	font-size: 14px;
+}
+
+.arrow-right {
+	width: 0; 
+  height: 0; 
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  
+  border-left: 20px solid green;
+}
+.arrow-left {
+  width: 0; 
+  height: 0; 
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent; 
+  border-right: 20px solid blue; 
+}
+
+.mask {
+	&:after {
+		content: ' ';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		background-color: rgba(0, 0, 0, 0.3);
+	}
+}
+
