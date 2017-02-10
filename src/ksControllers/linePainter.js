@@ -54,7 +54,7 @@ let drawLines = (canvas, lines, options) => {
     var padding = options && options.padding || {};
     var right = padding.right * radio || 0;
 
-    var volume = patterns.length > 0;
+    var volume = options && options.volume || patterns.length > 0;
     var volumeMaxHeight = 0;
     if(volume) {
         volumeMaxHeight = height * volumeHeight;

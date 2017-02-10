@@ -375,7 +375,7 @@
 		padding: 6px 20px;
 		background-color: rgb(66, 66, 66);
 		&:hover {
-			background-color: rgb(102, 102, 102);
+			background-color: #484848;
 		}
 		&[disabled] {
 			cursor: default;
@@ -399,6 +399,20 @@
 			background-color: @brown-red;
 		}
 	}
+	&.btn-dark {
+		border-color: #2a2e32;
+		color: #fff;
+		background-color: #2a2e32;
+		&:hover {
+			background-color: lighten(#2a2e32, 1%);
+			color: #fff;
+		}
+		&[disabled] {
+			opacity: 0.5;
+			background-color: #2a2e32;
+		}
+	}
+
 }
 
 .warn {
@@ -751,4 +765,9 @@ a.link {
 
 .arrow-down {
 	border-top: 10px solid #aaa;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+}
+.arrow-up {
+
 }

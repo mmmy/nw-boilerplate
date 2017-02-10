@@ -66,8 +66,11 @@
 		.filter-wrapper {
 			position: absolute;
 			white-space: nowrap;
+			background-color: #262b2f;
+			width: calc(~"100% - 57px");
 			.reset-container {
 				display: inline-block;
+				float: right;
 				vertical-align: top;
 				height: 40px;
 				// padding-left: 20px;
@@ -226,8 +229,9 @@
 				line-height: 2;
 				text-align: left;
 				font-size: 14px;
+				position: relative;
 				@width-base: 100% / 7;
-				>span {
+				.section1 > span {
 					text-align: center;
 					// border: 1px solid lightblue;
 					// float: left;
@@ -242,11 +246,165 @@
 						font-size: 16px;
 					}
 				}
-				button.detail {
+				.section2 {
+					height: 0;
+					overflow: hidden;
+					padding: 0;
 					font-size: 12px;
+					line-height: 1;
+					.prediction-wrapper {
+						padding: 12px 15px 12px 12px;
+						display: inline-block;
+						width: calc(~"100% - 200px");
+						.chart {
+							position: relative;
+							height: 230px;
+							.prediction-chart {
+								position: absolute;
+								width: 100%;
+								height: 100%;
+								canvas {
+									position: absolute;
+									width: 100%;
+									height: 100%;
+								}
+								.main-wrapper {
+									position: absolute;
+									width: 100%;
+									height: 100%;
+								}
+								&.axis .main-wrapper {
+									width: calc(~"100% - 50px");
+									height: calc(~"100% - 20px");
+									left: 50px;
+									top: 0;
+								}
+								.bottom-axis-x-wrapper {
+									position: absolute;
+									height: 20px;
+									width: calc(~"100% - 50px - 70px");
+									bottom: 0;
+									left: 50px;
+								}
+								.left-axis-y-wrapper {
+									position: absolute;
+									width: 50px;
+									height: calc(~"100% - 20px");
+									left: 0;
+									top: 0;
+								}
+							}
+							.heatmap-chart {
+								position: absolute;
+								width: 70px;
+								height: calc(~"80% - 16px");
+								top: 0;
+								right: 0;
+							}
+							margin-bottom: 18px;
+						}
+						.statistic {  //
+							background-color: #2a2f32;
+							text-align: center;
+							font-size: 14px;
+							padding: 10px 0;
+							div:nth-child(1) {
+								color: #999;
+								margin-bottom: 10px;
+							}
+						}
+					}
+					.info-wrapper {
+						display: inline-block;
+						width: 200px;
+						padding: 12px 12px 12px 0;
+						vertical-align: top;
+						* {
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+						}
+						.info-section {
+							line-height: 1.5;
+							margin-bottom: 15px;
+							>div {
+								.des {
+											
+								}
+								>span:nth-child(2) {
+									margin-left: 15px;
+									color: #fff;
+								}
+							}
+							&:nth-child(1) {
+								color: #fff;
+								>div[title] { //full name
+									max-width: 155px;
+								}
+								div>span:nth-child(1) { //行业 板块
+									display: inline-block;
+									width: 70px;
+								}
+								div>span:nth-child(2) {
+									display: inline-block;
+									max-width: 100px;
+									color: #999;
+								}
+							}
+							&:nth-child(2) {
+								color: #999;
+								div:nth-child(2),  //总市值
+								div:nth-child(3),  //市盈率
+								div:nth-child(5) { //市净率
+									.des { letter-spacing: 6.7px; }
+									>span:nth-child(2) { margin-left: 9px; }
+								}
+							}
+							&:nth-child(3) {
+								color: #999;
+
+							}
+						}
+						button {
+							display: block;
+							width: 180px;
+							line-height: 20px;
+							margin-bottom: 5px;
+							&.btn-dark {
+								margin-bottom: 0;
+							}
+						}
+					}
+				}
+				button.detail {
+					position: absolute;
+					right: 20px;
+					top: 20px;
+					font-size: 10px;
 					color: #aaa;
 					&:hover {
 						color: #fff;
+					}
+					.fa {
+						transform: rotate(90deg);
+					}
+					>span {
+						margin-left: 5px;
+					}
+				}
+				&.expand {
+					.section1 {
+						display: none;
+					}
+					.section2 {
+						height: auto;
+					}
+					button.detail {
+						top: 10px;
+						right: 10px;
+						.fa {
+							transform: rotate(-90deg);
+						}
 					}
 				}
 			}

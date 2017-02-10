@@ -312,7 +312,7 @@ let drawKline = (dom, kline, options) => { //kline: [date, O, C, L, H] or [O, C,
 		ctx.lineDashOffset = 1;
 		ctx.strokeStyle = '#aaa';
 		ctx.moveTo(0, hoverY);
-		ctx.lineTo(width, hoverY);
+		ctx.lineTo(width - right, hoverY);
 		ctx.stroke();
 	}
 	//drawRangeRect
