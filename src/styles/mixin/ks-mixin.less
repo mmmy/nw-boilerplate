@@ -576,6 +576,42 @@ a.flat-btn {
 			}
 		}
 	}
+	//scanner
+	&.scanner {
+		width: 600px;
+		height: 280px;
+		border-radius: 0;
+		position: relative;
+		background: url('./image/scanner_g_1.png') no-repeat;
+		.body {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+		.wrapper {
+			white-space: nowrap;
+			padding: 0;
+			position: relative;
+			left: 0;
+			.section {
+				display: inline-block;
+				width: 600px;
+				height: 280px;
+				padding: 50px 200px 0 100px;
+				vertical-align: top;
+				p,h4 {
+					text-align: left;
+					white-space: normal;
+				}
+			}
+		}
+		.spins {
+			position: absolute;
+			width: 100%;
+			bottom: 20px;
+		}
+	}
 }
 
 .mama-box-shadow {
@@ -770,4 +806,25 @@ a.link {
 }
 .arrow-up {
 
+}
+
+.spins {
+	ul {
+		text-align: center;
+		padding: 0;
+		li {
+			display: inline-block;
+			list-style: none;
+			width: 10px;
+			height: 10px;
+			border-radius: 5px;
+			background-color: rgba(255, 255, 255, 0.2);
+			margin-left: 5px;
+			margin-right: 5px;
+			cursor: pointer;
+			&.active {
+				background-color: rgba(255, 255, 255, 0.4);
+			}
+		}
+	}
 }

@@ -5,6 +5,7 @@ import PredictionWidget from '../PredictionWidget';
 import BlockHeatMap from '../BlockHeatMap';
 import getPrice from '../../backend/getPrice';
 import OCLHTooltip from '../OCLHTooltip';
+import statisticKline from '../../components/utils/statisticKline';
 
 let { getLatestPrice, getPriceFromSina } = getPrice;
 
@@ -187,6 +188,14 @@ scannerController._fetchData = () => {
 			date: '2019.12.12',
 			list: [],
 		};
+		var originData = {
+			sids: [],
+			industries: [],
+			patterns: [],
+			cps: [],
+			EVs: [],		
+		};
+
 		var categories = ['手机游戏','智能制造','虚拟运行商','物联网','4G5G','海洋工程','美女主播'];
 		var industries = ['酿酒','石油石化','酒店餐饮','航天国防','医药流通','中药'];
 		var subIndustries = ['高速公路','机场','电子元器件','生态园林','水上运输','工程器械'];
@@ -198,30 +207,64 @@ scannerController._fetchData = () => {
 		// var kline = [];
 
 		for(var i=0; i<30; i++) {
+			// var item = {
+			// 	index: i,
+			// 	symbol: symbols[Math.round(Math.random() * 5)],
+			// 	name: names[Math.round(Math.random() * 5)],
+			// 	categoryIndustry: categories[Math.round(Math.random() * 6)],
+			// 	categoryConcept: categories[Math.round(Math.random() * 6)],
+			// 	industry: industries[Math.round(Math.random() * 5)],
+			// 	subIndustry: subIndustries[Math.round(Math.random() * 5)],
+			// 	meta: {
+			// 		fullName: '上海浦东发展银行股份有限公司',
+			// 	},
+			// 	statistic: {
+			// 		up: Math.random(),
+			// 		mean: Math.random() * 2 - 1,
+			// 	},
+			// 	aggregateValue: Math.round(Math.random() * 2000),
+			// 	volume: Math.round(Math.random() * 50),
+			// 	pattern: {
+			// 		closePrice: closePrice,
+			// 		kline: kline
+			// 	}
+			// };
+			originData.sids.push(symbols[Math.round(Math.random() * 5)]);
+			originData.industries.push({industry1:industries[Math.round(Math.random() * 5)], industry2:industries[Math.round(Math.random() * 5)]});
+			originData.cps.push(closePrice);
+			originData.patterns.push({
+				data: kline
+			});
+
+			// data.list.push(item);
+		}
+
+		for(var i=0,len=originData.sids.length; i<len; i++) {
+			var closePrices = originData.cps[i];
+			var earns = closePrices.map((closePrice)=>{
+				var len = closePrice.length;
+				return (closePrice[len-1] - closePrice[0]) / closePrice[0];
+			});
 			var item = {
 				index: i,
-				symbol: symbols[Math.round(Math.random() * 5)],
+				symbol: originData.sids[i],
 				name: names[Math.round(Math.random() * 5)],
-				categoryIndustry: categories[Math.round(Math.random() * 6)],
-				categoryConcept: categories[Math.round(Math.random() * 6)],
-				industry: industries[Math.round(Math.random() * 5)],
-				subIndustry: subIndustries[Math.round(Math.random() * 5)],
+				industry: originData.industries[i].industry1,
+				subIndustry: originData.industries[i].industry2,
 				meta: {
 					fullName: '上海浦东发展银行股份有限公司',
 				},
-				statistic: {
-					up: Math.random(),
-					mean: Math.random() * 2 - 1,
-				},
-				aggregateValue: Math.round(Math.random() * 2000),
-				volume: Math.round(Math.random() * 50),
 				pattern: {
-					closePrice: closePrice,
-					kline: kline
-				}
-			};
+					closePrice: originData.cps[i],
+					kline: originData.patterns[i].data,
+				},
+				statistic: statisticKline(earns),
+				aggregateValue: Math.round(Math.random() * 2000),
+
+			}
 			data.list.push(item);
 		}
+
 		return data;
 	}
 
@@ -231,6 +274,7 @@ scannerController._fetchData = () => {
 	};
 	var afterFetch = (data) => {
 		_data = data;
+		window._data = data;
 		scannerController._update();
 	};
 	var failFetch = (error) => {
@@ -456,7 +500,7 @@ function _updateList() {
 		var section1Children = [
 			`<span><div>${name}</div><div>${symbol}</div></span>`,
 			`<span><div role="price">${'--'}</div><div role="up-rate">${'--'}</div></span>`,
-			`<span><div>${'上涨比例'}</div><div class="red">${statistic.up.toFixed(1)+'%'}</div></span>`,
+			`<span><div>${'上涨比例'}</div><div class="red">${statistic.upPercent.toFixed(1)+'%'}</div></span>`,
 			`<span><div>${'涨跌平均数'}</div><div class="red">${statistic.mean.toFixed(1)+'%'}</div></span>`,
 			`<span><div>${industry}</div><div>${subIndustry}</div></span>`,
 			`<span><div>${''}</div><div>${category}</div></span>`,

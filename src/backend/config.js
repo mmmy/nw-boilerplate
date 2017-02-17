@@ -1,5 +1,6 @@
 
-const DOMAIN = 'http://service.stone.io';
+var DOMAIN = 'http://service.stone.io';
+    // DOMAIN = '120.24.71.4';
 
 let getURL = function(port, path) {
     return `${DOMAIN}:${port}/${path}`;

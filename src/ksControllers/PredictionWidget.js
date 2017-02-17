@@ -323,12 +323,15 @@ PredictionWidget.prototype._drawKline = function(){
 	this._klineOption.selectedRange[1] = this._showRange ? (this._kline.length>0 ? this._kline.length - 1 : 0) : -1;
 	//kline
 	this._drawKlineInfo = drawKline(this._canvas, this._kline, this._klineOption);
-	//yxis
-	var yMax = this._drawKlineInfo.yMax,
-			yMin = this._drawKlineInfo.yMin;
-	var vH = 0.2;
-	drawAxisY(this._canvas_axis_y, [yMin - (yMax - yMin) * vH / (1 - vH), yMax], this._yDrawOption);
-	drawAxisTime(this._canvas_axis_x, this._timeArray, this._xDrawOption);
+	if(this._axis) {
+		//y axis
+		var yMax = this._drawKlineInfo.yMax,
+				yMin = this._drawKlineInfo.yMin;
+		var vH = 0.2;
+		drawAxisY(this._canvas_axis_y, [yMin - (yMax - yMin) * vH / (1 - vH), yMax], this._yDrawOption);
+		//x axis
+		drawAxisTime(this._canvas_axis_x, this._timeArray, this._xDrawOption);
+	}
 }
 
 PredictionWidget.prototype._drawLines = function(){

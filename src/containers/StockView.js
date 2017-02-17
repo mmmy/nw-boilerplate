@@ -69,9 +69,34 @@ class StockView extends React.Component {
 	}
 
 	componentDidMount() {
+		var that = this;
 		this.initScanner();
 		historyController.init(this.refs.history_nav_container, this.refs.history_body_container);
 		favoritesController.init(this.refs.favorites_nav_container, this.refs.favorites_body_container);
+		//init date inputs
+		var $dateWrapper = $(this.refs.date_input_wrapper);
+		var $dateInput = $dateWrapper.find('input');
+		var $dateSubmit = $dateWrapper.find('button');
+
+		let datePickerOptions = {
+			format: "yyyy/mm/dd",
+			language: "zh-CN",
+			todayBtn: "linked",
+			keyboardNavigation: false,
+			autoclose: true,
+		};
+		$dateInput.on('mouseup',(e)=>{ e.stopPropagation(); })
+							.datepicker(datePickerOptions).on('hide', (e)=>{  });
+		//fix bug
+		$(this.refs.stock_view).find('.chart-container').on('ks-click',(e)=>{
+			$dateInput.datepicker('hide');
+		});
+		$dateSubmit.on('click',(e)=>{
+			var date = new Date($dateInput.val());
+			if(date > new Date('1980/1/1') && date < new Date()) {
+				that.stockViewGoDate(date);
+			}
+		});
 	}
 
 	componentWillReceiveProps(){
@@ -195,17 +220,18 @@ class StockView extends React.Component {
 	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onMouseDown={ this.showHistory.bind(this) }>history</button></div>
 	      	</div>
 
-	      	<div ref="scanner_view" className='content-wrapper scanner top-z'>
+	      	<div ref="scanner_view" className='content-wrapper scanner'>
 	      	</div>
 
 	      	<div ref="watchlist_view" className='content-wrapper watchlist'>
 	      	</div>
 
-		      <div ref='stock_view' className='content-wrapper curve'>
+		      <div ref='stock_view' className='content-wrapper curve top-z'>
 		        <ReactTradingView
 		          viewId={ STOCK_VIEW }
 		          options={ options }
 		          init={ logined } />
+		        <div className="date-input-wrapper" ref="date_input_wrapper"><input value={new Date().toLocaleDateString()}/><button className="flat-btn btn-red">跳转</button></div>
 		      </div>
 		      
 		      <div ref='favorites_view' className='content-wrapper favorites'>
@@ -338,6 +364,13 @@ class StockView extends React.Component {
 	handleClearTrashedPatterns(e) {
 		e.stopPropagation();
 		favoritesController.clearTrashedPatterns();
+	}
+
+	stockViewGoDate(date) {
+		var offset = 4 * 30 * 24 * 3600; //4 months
+		var middle = +new Date(date) / 1000;
+		var actionTradingview = require('../shared/actionTradingview');
+		actionTradingview.setStockViewVisibleRange('', {from: middle - offset, to: middle + offset},0);
 	}
 }
 

@@ -492,6 +492,10 @@ let _getPriceInterval = (priceMin, priceMax, viewHeight) => {
 };
 
 let drawAxisY = (canvas, priceRange, options) => {
+	if(!canvas) {
+		console.trace();
+		return;
+	}
 	betterCanvasSize(canvas);
 	let ctx = canvas.getContext('2d');
 	let width = canvas.width;
@@ -612,6 +616,10 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	let len = timeArr.length || 0;
 	if(!len) {
 		console.warn('drawAxisX len is 0');
+		return;
+	}
+	if(!canvas) {
+		console.trace();
 		return;
 	}
 	betterCanvasSize(canvas);
