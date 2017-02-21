@@ -110,7 +110,7 @@ WatchList.prototype._append = function(symbolObj) {
 	for(var i=0; i<this._list.length; i++) {
 		if(this._list[i].symbolInfo.ticker == symbolObj.symbol) {
 			messager.showWarningMessage("已经添加过该标的!");
-			return;
+			return 1;
 		}
 	}
 	var symbolInfo = {ticker:symbolObj.symbol, symbol:symbolObj.description, exchange:symbolObj.exchange, type:symbolObj.type, instrument:symbolObj.instrument};
@@ -119,8 +119,21 @@ WatchList.prototype._append = function(symbolObj) {
 	this._saveToFile();
 	if(this._list.length >= 20) {
 		this._hideAddPanel();
+		return 2;
 	}
+	return 0;
 }
+
+WatchList.prototype.append = function(symbolObj) {
+	var code = this._append(symbolObj);
+	if(code === 0) {
+		messager.showSuccessMessage("添加成功!");
+	} else if(code === 2) {
+		messager.showWarningMessage("添加数量超过上限20!");
+	}
+	return code;
+}
+
 WatchList.prototype._disposeAll = function() {
 	// for(var i=0,len=this._predictionList.length; i<len; i++) {
 	// 	this._predictionList[i].dispose();

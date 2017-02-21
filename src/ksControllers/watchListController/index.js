@@ -10,6 +10,7 @@ var _$headerDom = null;
 var _$bodyDom = null;
 
 watchListController.init = (wrapper) => {
+	console.log('watchlist init!!!');
 	if($(wrapper).find('.watchlist-body-wrapper').length > 0) {
 		return;
 	}
@@ -76,5 +77,8 @@ watchListController._initActions = () => {
 	// 	var configEditor = new ConfigEditor(null, searchConfig, null, _watchList);
 	// },300);
 }
+watchListController.append = (symbolObj) => {
+	_watchList.append(symbolObj);
+};
 
 module.exports = watchListController;

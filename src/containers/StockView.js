@@ -70,7 +70,6 @@ class StockView extends React.Component {
 
 	componentDidMount() {
 		var that = this;
-		this.initScanner();
 		historyController.init(this.refs.history_nav_container, this.refs.history_body_container);
 		favoritesController.init(this.refs.favorites_nav_container, this.refs.favorites_body_container);
 		//init date inputs
@@ -97,6 +96,13 @@ class StockView extends React.Component {
 				that.stockViewGoDate(date);
 			}
 		});
+		//init watchlist
+		// var watchlistStorage = require('../backend/watchlistStorage');
+		// var storage = watchlistStorage.getDataFromStorage(this._category);
+		// if(storage) {
+		// 	this.initWatchlist();
+		// }
+		this.initWatchlist();
 	}
 
 	componentWillReceiveProps(){
@@ -213,20 +219,20 @@ class StockView extends React.Component {
 	    <div ref='container' className={"transition-all transition-opacity container-stockview " + (stockView ? "" : "stockview-hide")} >
 	    	<div className='container-stockview-inner'>
 	      	<div className='left-toolbar-container'>
-	      		<div><button data-kstooltip="扫描" ref='scanner_btn' className='flat-btn scanner active' onMouseDown={ this.showScanner.bind(this) }>scanner</button></div>
-	      		<div><button data-kstooltip="智能监控" ref='watchlist_btn' className='flat-btn watchlist' onMouseDown={ this.showWatchlist.bind(this) }>watchlist</button></div>
+	      		<div><button data-kstooltip="智能监控" ref='watchlist_btn' className='flat-btn watchlist active' onMouseDown={ this.showWatchlist.bind(this) }>watchlist</button></div>
+	      		<div><button data-kstooltip="扫描" ref='scanner_btn' className='flat-btn scanner' onMouseDown={ this.showScanner.bind(this) }>scanner</button></div>
 	      		<div><button data-kstooltip="K线图" ref='curve_btn' className='flat-btn curve' onMouseDown={ this.showSockView.bind(this) }>quxian</button></div>
 	      		<div><button data-kstooltip="收藏夹" ref='favorites_btn' className='flat-btn favorites' onMouseDown={ this.showFavorites.bind(this) }>favorites</button></div>
 	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onMouseDown={ this.showHistory.bind(this) }>history</button></div>
 	      	</div>
 
+	      	<div ref="watchlist_view" className='content-wrapper watchlist top-z'>
+	      	</div>
+
 	      	<div ref="scanner_view" className='content-wrapper scanner'>
 	      	</div>
 
-	      	<div ref="watchlist_view" className='content-wrapper watchlist'>
-	      	</div>
-
-		      <div ref='stock_view' className='content-wrapper curve top-z'>
+		      <div ref='stock_view' className='content-wrapper curve'>
 		        <ReactTradingView
 		          viewId={ STOCK_VIEW }
 		          options={ options }
@@ -303,6 +309,7 @@ class StockView extends React.Component {
 		$(this.refs.scanner_view).addClass('top-z');
 		$(e.target).addClass('active');
 		$(document.body).addClass('watchlist');
+		this.initScanner();
 	}
 
 	showWatchlist(e) {

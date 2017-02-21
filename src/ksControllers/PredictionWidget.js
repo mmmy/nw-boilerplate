@@ -368,7 +368,13 @@ PredictionWidget.prototype._updateData = function(){
 }
 
 PredictionWidget.prototype.setData = function(kline, closePrice, baseBars, predictionBars, patterns){
-	this._kline = kline || this._kline;
+	var _kline = kline;
+	if(kline && kline.length>0 && kline[0].open) {
+		_kline = kline.map(function(price){
+			return [price.date, price.open, price.close, price.low, price.high, price.volume];
+		});
+	}
+	this._kline = _kline || this._kline;
 	this._closePrice = closePrice || this._closePrice;
 	this._baseBars = baseBars || kline && kline.length || this._baseBars;
 	this._predictionBars = predictionBars || closePrice && closePrice[0] && closePrice[0].length || this._predictionBars;

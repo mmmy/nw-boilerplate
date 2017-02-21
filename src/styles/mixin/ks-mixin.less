@@ -284,7 +284,7 @@
 	background-size: contain;
 }
 
-.flat-btn {
+.flat-btn, .button.flat-btn {
 	outline: none;
 	border: none;
 	background-color: transparent;
@@ -413,6 +413,12 @@
 		}
 	}
 
+}
+
+.button.flat-btn {
+	padding: 8px 12px;
+	vertical-align: middle;
+	cursor: pointer;
 }
 
 .warn {
@@ -680,6 +686,9 @@ a.flat-btn {
 
 .red {
 	color: @brown-red;
+}
+.green {
+	color: @ks-color-green-grass;
 }
 
 input[disabled] {

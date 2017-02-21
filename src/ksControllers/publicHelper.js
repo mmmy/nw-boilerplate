@@ -12,7 +12,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 	let folders = favoritesManager.getFavoritesFolders();
 	let optionsNode = $(`<div class='shoucang-pop-menu font-simsun'></div>`).on('mouseenter',function(e){ e.stopPropagation() });
 	// let btnTemplate = `<div class='ks-input-wrapper border'><input placeholder='新建文件夹'><i class='button ks-check ks-disable'></i><i class='button ks-delete ks-disable'></i></div>`;
-	let btnTemplate = `<div class='new-folder-inputs'><input placeholder='文件夹名'><button class="flat-btn btn-red round" disabled>确 定</button><button class="flat-btn icon-btn-30 icon-pen"></button></div>`;
+	let btnTemplate = `<div class='new-folder-inputs'><input placeholder='文件夹名'><span class="button flat-btn btn-red round" disabled>确 定</span><span class="button flat-btn icon-btn-30 icon-pen"></span></div>`;
 
 	let $btnGroup = $(btnTemplate).hide();
 	$btnGroup.find('.icon-pen').remove();
@@ -24,7 +24,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 														$btnGroup.find('button').prop('disabled', bad);
 													});
 
-	$btnGroup.find('button').click(function(e) {
+	$btnGroup.find('.button').click(function(e) {
 																e.stopPropagation();
 																let name = $btnGroup.find('input').val();
 																if(name) {
@@ -63,7 +63,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 		$title.find('button').prop('disabled', newName==='');
 	});
 
-	$title.find('button.btn-red').prop('disabled', false).click(function(event) {
+	$title.find('.button.btn-red').prop('disabled', false).click(function(event) {
 		let name = $title.find('input').val();
 		if(name) {
 			// $title.find('h5').text(name);
@@ -72,7 +72,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 		}
 	});
 
-	$title.find('button.icon-pen').click(function(event) {
+	$title.find('.button.icon-pen').click(function(event) {
 		$title.find('input').prop('disabled', false).focus();
 	});
 

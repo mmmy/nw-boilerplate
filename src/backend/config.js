@@ -77,4 +77,9 @@ export default {
 		// url: 'http://112.74.17.46:30030/api/logout',
 		method: 'POST'
 	},
+
+    scannerOptions: {
+        url: 'http://192.168.0.102:40054/scan',
+        method: 'GET',
+    },
 }
