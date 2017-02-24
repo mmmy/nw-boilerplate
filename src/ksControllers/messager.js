@@ -8,13 +8,13 @@ let showSuccessMessage = (message) => {
 	}, 2000);
 };
 
-let showWarningMessage = (message) => {
+let showWarningMessage = (message, duration) => {
 	let $body = $(window.document.body);
 	let $messageDom = $(`<div class='ks-messager-container'><span class='success-message'><img src="./image/warn.png">${message}</span></div>`);
 	$body.append($messageDom);
 	setTimeout(() => { 
 		$messageDom.remove();
-	}, 2000);
+	}, duration || 2000);
 };
 
 let afterSearchMessage = (number, timeSpent) => {

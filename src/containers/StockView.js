@@ -237,7 +237,7 @@ class StockView extends React.Component {
 		          viewId={ STOCK_VIEW }
 		          options={ options }
 		          init={ logined } />
-		        <div className="date-input-wrapper" ref="date_input_wrapper"><input value={new Date().toLocaleDateString()}/><button className="flat-btn btn-red">跳转</button></div>
+		        <div className="date-input-wrapper" ref="date_input_wrapper"><input value={new Date().toLocaleDateString()}/><button className="flat-btn btn-red round">跳转</button></div>
 		      </div>
 		      
 		      <div ref='favorites_view' className='content-wrapper favorites'>

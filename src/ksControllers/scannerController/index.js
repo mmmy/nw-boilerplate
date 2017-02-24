@@ -62,6 +62,9 @@ var _triggerTooltip = (e) => {
 		}
 	}
 };
+var _hideTooltip = ()=>{
+	_tooltip.hide();
+};
 
 var reOrderKline = (kline) => { //将[d,o,h,l,c,v] => [d,o,c,l,h,v]
 	return kline.map(function(price){
@@ -94,6 +97,9 @@ var _priceUpdate = (param, $item) => {
 		console.warn(param, $item, err);
 	});
 };
+
+//refresh watcher
+var _intervalFresh = null;
 
 var _handleAddWatchlist = function(e){
 	var data = $(e.target).closest('.item').data().data;
@@ -147,7 +153,7 @@ var _initCache = () => {
 											<div class="filter-table"><table><thead><tr></tr></thead><tr></tr><tbody></tbody></table></div>
 											<div class="reset-container"><span class="info"><span class="value">0</span>支股票</span><button class="flat-btn reset"><span>重置筛选</span></button></div>
 										</div>`);
-	_$filterTable.find('thead>tr').append(['板块（概念）','行业','总市值'].map(name=>{ return `<th>${name}</th>` }));
+	_$filterTable.find('thead>tr').append(['概念','行业','总市值'].map(name=>{ return `<th>${name}</th>` }));
 	
 	_$listWrapper = $(`<div class="list-wrapper"></div>`);
 	_datafeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10000 * 1000, 2, 0);
@@ -158,8 +164,8 @@ var _initCache = () => {
 		$(`<span><svg class="pie-process"></svg><figcaption>---</figcaption></span>`).svgPercent(),
 	];
 	_barCharts = [
-		$(`<div class="chart-wrapper"><figcaption>板块划分条形图</figcaption><div class="svg-container"><svg class="svg-bar-chart"></svg></div></div>`).barChart(),
-		$(`<div class="chart-wrapper"><figcaption>行业划分条形图</figcaption><div class="svg-container"><svg class="svg-bar-chart"></svg></div></div>`).barChart(),
+		$(`<div class="chart-wrapper"><figcaption>概念分布图</figcaption><div class="svg-container"><svg class="svg-bar-chart"></svg></div></div>`).barChart(),
+		$(`<div class="chart-wrapper"><figcaption>行业分布图</figcaption><div class="svg-container"><svg class="svg-bar-chart"></svg></div></div>`).barChart(),
 		$(`<div class="chart-wrapper"><figcaption>总市值分布图</figcaption><div class="svg-container"><svg class="svg-bar-chart"></svg></div></div>`).barChart(),
 	];
 }
@@ -168,13 +174,13 @@ scannerController.init = (container) => {
 	helperModal.check();
 	_initCache();
 
-	var $title = $(`<div class="title"><span>扫描</span><img src="./image/tooltip.png"/><span class="date-info"></span></div>`)
+	var $title = $(`<div class="title"><span>扫描</span><img src="./image/tooltip.png"/><span class="date-info"></span><button class="refresh hide flat-btn btn-red">最新一期扫描结果已经出炉</button></div>`)
 	var $left = $(`<div class="scanner-left"></div>`);
 	var $right = $(`<div class="scanner-right"></div>`);
 	_$container = $(container).append($(`<div class="scanner-wrapper"></div>`).append([$title, $left, $right]));
 
 
-	$left.append(`<h4 class="sub-title">Results<br/>结果列表</h4>`);
+	$left.append(`<h4 class="sub-title">Results 结果列表</h4>`);
 	$left.append(_$filterTable);
 	$left.append(_$listWrapper);
 	$left.append(`<div class="footer">
@@ -185,21 +191,23 @@ scannerController.init = (container) => {
 
 
 	//right panel
-	$right.append(`<h4 class="sub-title">Briefing<br/>简报</h4>`);
-	$right.append(`<div class="scanner-info">
+	$right.append(`<h4 class="sub-title">Briefing 简报</h4>`);
+	var $content = $('<div class="content"></div>');
+	$content.append(`<div class="scanner-info">
 									<div class="row">
 										<div class="col">
-											<p>本次扫描根据最近:<span>20根日线</span></p>
-											<p>搜索K线相似度高于:<span>80%</span></p>
+											<p>本期扫描根据:<span>最近${20}根日线</span></p>
+											<p>统计后向走势:<span>10根日线</span></p>
 										</div>
 										<div class="col">
-											<p>统计历史相似图形后向:<span>10天的走势</span></p>
-											<p>成交量相似度高于:<span>60%的历史相似图形</span></p>
+											<p>搜索历史相似图形:<span>K线相似度高于80%,成交量相似度高于60%</span></p>
+											<p>结果选取标准:<span>涨跌平均值高于1倍标准差*</span></p>
 										</div>
 									</div class="row">
 								</div>`);
-	$right.append('<p class="clearfix red">选取涨跌平均值高于2倍标准差的<span class="result-number">0</span>支个股呈现于此</p>');
-	$right.append($(`<div class="row charts-container"></div>`).append([$(`<div class="col piecharts-wrapper flex-between"></div>`).append(_pieCharts), $(`<div class="col barcharts-wrapper"></div>`).append(_barCharts)]));
+	$content.append('<p class="clearfix">*注解部分: 每期扫描结果的选取标准可能略有差异</p>');
+	$content.append($(`<div class="row charts-container"></div>`).append([$(`<div class="col piecharts-wrapper flex-between"></div>`).append(_pieCharts), $(`<div class="col barcharts-wrapper"></div>`).append(_barCharts)]));
+	$right.append($content);
 
 	_$rightPane = $right;
 
@@ -216,10 +224,11 @@ scannerController._initActions = () => {
 			_redrawFilterUI();
 		}
 	});
+	/*
 	_$container.find('.title').click(function(event) {
-		/* Act on the event */
 		scannerController._fetchData();
 	});
+	*/
 	_$container.find('.title img').click(function(event) {
 		helperModal.show();
 	});
@@ -228,16 +237,33 @@ scannerController._initActions = () => {
 		var now = new Date();
 		var hours = now.getHours();
 		if(hours > 9 && hours < 17) {
-			// _priceUpdaters.forEach((updater)=>{ updater(); });
+			_priceUpdaters.forEach((updater)=>{ updater(); });
 		}
 	}, 6000);
+	_intervalFresh = setInterval(()=>{       //10分钟
+		var date = _data.date;
+		request(config.scannerDateOptions, (latestDate)=>{
+			if(latestDate) {
+				if(!date || (+new Date(date) != +new Date(latestDate))) {
+					_$container.find('.refresh').removeClass('hide');
+				}
+			}
+		}, (error)=>{
+			console.error(error);
+		});
+	}, 10 * 60 * 1000);
 
 	_tooltip = new OCLHTooltip(_$container);
+
+	_$container.find('button.refresh').click(function(){
+		scannerController._fetchData();
+	});
 };
 
 scannerController.dispose = () => {
 	window.removeEventListener('resize',_resize);
 	clearInterval(_interval);  //clear updater
+	clearInterval(_intervalFresh);  //clear updater
 };
 
 scannerController._fetchData = () => {
@@ -247,7 +273,7 @@ scannerController._fetchData = () => {
 
 	var fetch = () => {
 		var data = {
-			date: '2019.12.12',
+			date: '',
 			list: [],
 		};
 
@@ -281,10 +307,9 @@ scannerController._fetchData = () => {
 	}
 	var convertData = (originData) => {
 		var data = {
-			date: '2019.12.12',
+			date: originData.today || '',
 			list: [],
 		};
-		console.log(originData);
 		var len = originData.sids.length;
 		for(var i=0; i<len; i++) {
 			var industries = originData.industries[i];
@@ -373,7 +398,7 @@ scannerController._update = () => {
 		var dom = $(`<div class="item">
 									<div class="section1"></div>
 									<div class="section2"></div>
-									<button class="flat-btn detail"><i class="fa fa-play"></i><span class="name">详情</span></button>
+									<button class="flat-btn detail"><i class="fa fa-play"></i><span class="name">展开</span></button>
 							</div>`)
 							.data({data: item});
 		return dom;
@@ -388,10 +413,11 @@ scannerController._update = () => {
 	_updateRightPanel();
 
 	//update title
-	_$container.find('.date-info').text(_data.date + '期扫描结果');
+	_$container.find('.date-info').text(_data.date ? (_data.date + '期扫描结果') : '');
 
 	_priceUpdaters.forEach((updater)=>{ updater(); });
 	_$rightPane.find('.result-number').text(list.length);
+	_$container.find('.refresh').addClass('hide');
 }
 function _updateDimensions() {
 	var newDims = _generateDimensions();
@@ -547,12 +573,15 @@ function _updateFilterTable() {
 //更新股票列表
 function _updateList() {
 	var $list = _$listWrapper.children();
+	$list.on('mouseout',_hideTooltip);
+
 	var handleClick = (e) => {
 
 	};
 	var expandItem = (e) => {
 		var $item = $(e.target).closest('.item');
 		$item.toggleClass('expand');
+		$item.find('button .name').text($item.hasClass('expand') ? '折叠' : '展开');
 	};
 	for(var i=0; i<$list.length; i++) {
 		var $item = $($list[i]);
@@ -565,7 +594,7 @@ function _updateList() {
 			`<span><div>${'上涨比例'}</div><div class="red">${(statistic.upPercent*100).toFixed(1)+'%'}</div></span>`,
 			`<span><div>${'涨跌平均数'}</div><div class=${statistic.mean>=0 ? 'red' : 'green'}>${(statistic.mean*100).toFixed(2)+'%'}</div></span>`,
 			`<span><div>${industry}</div><div>${subIndustry}</div></span>`,
-			`<span><div>${''}</div><div>${categoryConcept}</div></span>`,
+			`<span><div>${categoryIndustry}</div><div>${categoryConcept}</div></span>`,
 		];
 		//section1
 		$item.find('.section1').append(section1Children);
@@ -585,22 +614,24 @@ function _updateList() {
 		_predictionCharts.push(predictionChart);
 		_heatmapCharts.push(heatmapChart);
 				//statistic
+		/*
 		var nodes = [
 			`<span><div>上涨比例</div><div class="red">${(statistic.upPercent*100).toFixed(1)+'%'}</div></span>`,
 			`<span><div>下跌比例</div><div class="red">${(statistic.downPercent*100).toFixed(1)+'%'}</div></span>`,
 			`<span><div>涨跌平均</div><div class=${statistic.mean>=0 ? 'red' : 'green'}>${(statistic.mean*100).toFixed(2)+'%'}</div></span>`,
 			`<span><div>涨跌中位数</div><div class=${statistic.median>=0 ? 'red' : 'green'}>${(statistic.median*100).toFixed(2)+'%'}</div></span>`,
-		];
+		];*/
+		var nodes = [];
 		$predictionPane.find('.statistic').append(nodes);
 				//info sections
 		var infoNodes = [
 			[
-				`<div title="${dataObj.meta.fullName}">${dataObj.meta.fullName}</div>`,
-				`<div><span title=${dataObj.industry}>${dataObj.industry}</span><span title=${dataObj.subIndustry}>${dataObj.subIndustry}</span></div>`,
-				`<div><span title=${dataObj.categoryIndustry}>${dataObj.categoryIndustry}</span><span title=${dataObj.categoryConcept}>${dataObj.categoryConcept}</span></div>`,
+				`<div class="full-name" title="${dataObj.meta.fullName}">${dataObj.meta.fullName}</div>`,
+				/*`<div><span title=${dataObj.industry}>${dataObj.industry}</span><span title=${dataObj.subIndustry}>${dataObj.subIndustry}</span></div>`,
+				`<div><span title=${dataObj.categoryIndustry}>${dataObj.categoryIndustry}</span><span title=${dataObj.categoryConcept}>${dataObj.categoryConcept}</span></div>`,*/
 			],
 			[
-				`<div><span class="des">近10日平均换手率:</span><span>${meta.turnoverRate}%</span></div>`,
+				`<div><span class="des">近10日平均换手率:</span><span>${meta.turnoverRate.toFixed(2)}%</span></div>`,
 				`<div><span class="des">总市值:</span><span>${$.keyStone.amountFormatter(aggregateValue)}</span></div>`,
 				`<div><span class="des">市盈率:</span><span>${meta.PE}</span></div>`,
 				`<div><span class="des">市盈率[动]:</span><span>${meta.PE1}</span></div>`,

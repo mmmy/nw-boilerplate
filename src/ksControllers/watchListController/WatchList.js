@@ -119,17 +119,18 @@ WatchList.prototype._append = function(symbolObj) {
 	this._saveToFile();
 	if(this._list.length >= 20) {
 		this._hideAddPanel();
-		return 2;
 	}
 	return 0;
 }
 
 WatchList.prototype.append = function(symbolObj) {
+	if(this._list.length >= 20) {
+		messager.showWarningMessage("添加数量超过上限20!",3000);
+		return 2;
+	}
 	var code = this._append(symbolObj);
 	if(code === 0) {
 		messager.showSuccessMessage("添加成功!");
-	} else if(code === 2) {
-		messager.showWarningMessage("添加数量超过上限20!");
 	}
 	return code;
 }

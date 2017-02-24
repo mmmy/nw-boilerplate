@@ -12,7 +12,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 	let folders = favoritesManager.getFavoritesFolders();
 	let optionsNode = $(`<div class='shoucang-pop-menu font-simsun'></div>`).on('mouseenter',function(e){ e.stopPropagation() });
 	// let btnTemplate = `<div class='ks-input-wrapper border'><input placeholder='新建文件夹'><i class='button ks-check ks-disable'></i><i class='button ks-delete ks-disable'></i></div>`;
-	let btnTemplate = `<div class='new-folder-inputs'><input placeholder='文件夹名'><span class="button flat-btn btn-red round" disabled>确 定</span><span class="button flat-btn icon-btn-30 icon-pen"></span></div>`;
+	let btnTemplate = `<div class='new-folder-inputs'><input placeholder='文件夹名'><span class="button flat-btn btn-red round">确 定</span><span class="button flat-btn icon-btn-30 icon-pen"></span></div>`;
 
 	let $btnGroup = $(btnTemplate).hide();
 	$btnGroup.find('.icon-pen').remove();
@@ -21,11 +21,12 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 													.on('input', (e)=>{
 														let folderName = e.currentTarget.value;
 														let bad = folderName === '' || favoritesController.hasFavoriteFolder(folderName);
-														$btnGroup.find('button').prop('disabled', bad);
+														$btnGroup.find('.button').toggleClass('disabled', bad);
 													});
 
-	$btnGroup.find('.button').click(function(e) {
+	$btnGroup.find('.button').addClass('disabled').click(function(e) {
 																e.stopPropagation();
+																if($(this).hasClass('disabled')) return;
 																let name = $btnGroup.find('input').val();
 																if(name) {
 																	favoritesController.addNewFolder(name);
@@ -41,8 +42,9 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 																}
 															});
 
-	let $saveBtn = $(`<span class='flat-btn save-btn'>${isSaveButton ? '收 藏' : '收 藏'}</span>`)
+	let $saveBtn = $(`<span class='flat-btn save-btn disabled'>${isSaveButton ? '收 藏' : '收 藏'}</span>`)
 									.click((e) => {
+										if($saveBtn.hasClass('disabled')) return;
 										// if(isSaveButton) { //收藏
 										// 	favoritesController.updateFavorites(dataObj);
 										// 	favoritesController.setEditorSaved();
@@ -63,17 +65,19 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 		$title.find('button').prop('disabled', newName==='');
 	});
 
-	$title.find('.button.btn-red').prop('disabled', false).click(function(event) {
+	$title.find('.button.btn-red').removeAttr('disabled').click(function(event) {
 		let name = $title.find('input').val();
 		if(name) {
 			// $title.find('h5').text(name);
 			dataObj.name = name;
 			$title.find('input').prop('disabled', true);
+			$saveBtn.removeClass('disabled');
 		}
 	});
 
 	$title.find('.button.icon-pen').click(function(event) {
 		$title.find('input').prop('disabled', false).focus();
+		$saveBtn.addClass('disabled');
 	});
 
   let $label = type===1 ? $(`<div class="label-title">收藏至</div>`) : '';
@@ -82,7 +86,7 @@ let handleShouCangFocus = (favoritesManager, favoritesController, dataObj, optio
 	let $content = $(`<div class='content transition-all'></div>`);
 	let $footer = $(`<div class='footer-shoucang transition-all ${isSaveButton?"":""}'></div>`)
 								.append($(`<div class='new-folder'>新建文件夹</div>`).append($btnGroup).click(function(event) {
-									$btnGroup.show();
+									$btnGroup.show().find('input').focus();
 								}))
 								// .append($(`<i class='fa fa-plus toggle-btn'></i>`).click(function(event) {
 								// 	// $content.toggleClass('strech', true);

@@ -79,7 +79,14 @@ export default {
 	},
 
     scannerOptions: {
-        url: 'http://192.168.0.102:40054/scan',
+        url: getURL(30054, 'scan'),
+        // url: 'http://192.168.0.102:40054/scan',
         method: 'GET',
     },
+    scannerDateOptions: {
+        url: getURL(30054, 'newest'),
+        // url: 'http://192.168.0.102:40054/newest',
+        method: 'GET',
+    },
+
 }

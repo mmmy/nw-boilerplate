@@ -7,13 +7,13 @@ helperModal.show = () => {
 					'<h4>什么是"Scanner扫描"</h4>',
 					`<p>我们对沪深300中所有股票进行<b>形态搜索</b>,<br>选取其中预期未来走势最好的个股呈现于此.</p>`,
 					`<p>包括: 1.搜索结果 和 2.简报</p>`,
-					'<p><button index="1" class="flat-btn btn-red">点击了解更多</button></p>',
+					'<p><button index="1" class="round flat-btn btn-red">点击了解更多</button></p>',
 				],
 				[
 					'<h4>"Scanner扫描"是如何实现的</h4>',
 					'<p>拱石选取沪深300所有股票最近20根日线图形作为搜索源,在历史数据中搜索出K线及成交量高度相似事件.</p>',
 					'<p>对历史相似图形的后向10天走势进行统计,选取统计结果中涨跌平均值高于某一标准值的股票作为本次扫描的优选结果.</p>',
-					'<p><button class="flat-btn btn-red finish">开始体验</button></p>'
+					'<p><button class="round flat-btn btn-red finish">开始体验</button></p>'
 				]
 			];
 	var sections = messages.map((nodes)=>{

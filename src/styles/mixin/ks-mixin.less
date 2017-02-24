@@ -394,9 +394,10 @@
 			background-color: @brown-red-light;
 			color: #fff;
 		}
-		&[disabled] {
+		&[disabled],&.disabled {
 			opacity: 0.5;
 			background-color: @brown-red;
+			cursor: pointer;
 		}
 	}
 	&.btn-dark {
@@ -588,7 +589,6 @@ a.flat-btn {
 		height: 280px;
 		border-radius: 0;
 		position: relative;
-		background: url('./image/scanner_g_1.png') no-repeat;
 		.body {
 			position: absolute;
 			width: 100%;
@@ -609,6 +609,13 @@ a.flat-btn {
 				p,h4 {
 					text-align: left;
 					white-space: normal;
+				}
+				button {
+					padding: 5px 10px;
+				}
+				background: url('./image/scanner_g_1.png') no-repeat;
+				&:nth-child(2) {
+					background: url('./image/scanner_g_2.png') no-repeat;
 				}
 			}
 		}
@@ -688,7 +695,7 @@ a.flat-btn {
 	color: @brown-red;
 }
 .green {
-	color: @ks-color-green-grass;
+	color: @dark-green;
 }
 
 input[disabled] {
