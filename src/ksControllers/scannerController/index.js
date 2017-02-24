@@ -196,12 +196,12 @@ scannerController.init = (container) => {
 	$content.append(`<div class="scanner-info">
 									<div class="row">
 										<div class="col">
-											<p>本期扫描根据:<span>最近${20}根日线</span></p>
-											<p>统计后向走势:<span>10根日线</span></p>
+											<p>本期扫描根据:<span>最近<span class="value">--</span>根日线</span></p>
+											<p>统计后向走势:<span><span class="value">--</span>根日线</span></p>
 										</div>
 										<div class="col">
-											<p>搜索历史相似图形:<span>K线相似度高于80%,成交量相似度高于60%</span></p>
-											<p>结果选取标准:<span>涨跌平均值高于1倍标准差*</span></p>
+											<p>搜索历史相似图形:<span>K线相似度高于<span class="value">--</span>%,成交量相似度高于<span class="value">--</span>%</span></p>
+											<p>结果选取标准:<span>涨跌平均值高于<span class="value">--</span>倍标准差*</span></p>
 										</div>
 									</div class="row">
 								</div>`);
@@ -309,6 +309,13 @@ scannerController._fetchData = () => {
 		var data = {
 			date: originData.today || '',
 			list: [],
+			options: {
+				baseBars: 20,
+				prediction: 10,
+				similarityThreshold: 0.8,
+				vsimilarityThreshold: 0.6,
+				STDRate: 1,
+			}
 		};
 		var len = originData.sids.length;
 		for(var i=0; i<len; i++) {
@@ -352,13 +359,13 @@ scannerController._fetchData = () => {
 	var beforeFetch = () => {
 		_$listWrapper.find('.waiting-overlay').remove();
 		_$listWrapper.append('<div class="waiting-overlay flex-center"><i class="fa fa-spin fa-circle-o-notch"></i></div>');
+		_$container.find('.scanner-info .value').text('--');
 	};
 	var afterFetch = (originData) => {
 		originData = JSON.parse(originData);
 		var data = convertData(originData);
-		console.log('scanner data 90909090');
 		_data = data;
-		window._data = data;
+		// window._data = data;
 		scannerController._update();
 	};
 	var failFetch = (error) => {
@@ -679,6 +686,7 @@ function _filterList() {
 //update right panel
 function _updateRightPanel() {
 	var list = _data.list;
+	var options = _data.options;
 	var newDims = _generateDimensions();
 	var dimensions = newDims.dimensions;
 	var dimIndex = newDims.dimIndex;
@@ -706,6 +714,11 @@ function _updateRightPanel() {
 		$(chart).barChart({data:groups[i], keyFormatter:keyFormatter});
 	});
 
+	//update options UI
+	var _$infoValues = _$container.find('.scanner-info .value');
+	options && [options.baseBars, options.prediction, options.similarityThreshold*100, options.vsimilarityThreshold*100, options.STDRate].forEach(function(num,i){
+		$(_$infoValues[i]).text(num);
+	});
 }
 
 module.exports = scannerController;
