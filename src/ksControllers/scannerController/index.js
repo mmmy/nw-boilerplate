@@ -205,7 +205,7 @@ scannerController.init = (container) => {
 										</div>
 									</div class="row">
 								</div>`);
-	$content.append('<p class="clearfix">*注解部分: 每期扫描结果的选取标准可能略有差异</p>');
+	$content.append('<p class="clearfix">*注: 每期扫描结果的选取标准可能略有差异</p>');
 	$content.append($(`<div class="row charts-container"></div>`).append([$(`<div class="col piecharts-wrapper flex-between"></div>`).append(_pieCharts), $(`<div class="col barcharts-wrapper"></div>`).append(_barCharts)]));
 	$right.append($content);
 
