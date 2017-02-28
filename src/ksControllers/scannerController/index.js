@@ -174,7 +174,7 @@ scannerController.init = (container) => {
 	helperModal.check();
 	_initCache();
 
-	var $title = $(`<div class="title"><span>扫描</span><img src="./image/tooltip.png"/><span class="date-info"></span><button class="refresh hide flat-btn btn-red">最新一期扫描结果已经出炉</button></div>`)
+	var $title = $(`<div class="title"><span>扫描</span><img src="./image/tooltip.png"/><span class="date-info"></span><button class="refresh hide flat-btn btn-red round">最新一期扫描结果已经出炉</button></div>`)
 	var $left = $(`<div class="scanner-left"></div>`);
 	var $right = $(`<div class="scanner-right"></div>`);
 	_$container = $(container).append($(`<div class="scanner-wrapper"></div>`).append([$title, $left, $right]));
@@ -608,7 +608,7 @@ function _updateList() {
 		
 		//section2
 		var $predictionPane = $(`<div class="prediction-wrapper"><div class="chart"><div class="prediction-chart"></div><div class="heatmap-chart"></div></div><div class="statistic flex-around"></div></div>`);
-		var $infoPane = $(`<div class="info-wrapper"><div class="info-container"></div><button class="flat-btn btn-red">加入智能监控</button><button class="flat-btn btn-dark">详细搜索结果</button></div>`);
+		var $infoPane = $(`<div class="info-wrapper"><div class="info-container"></div><button class="flat-btn btn-red round">加入智能监控</button><button class="flat-btn btn-dark round">详细搜索结果</button></div>`);
 		$item.find('.section2').append([$predictionPane, $infoPane]);
 				//charts
 		var predictionChart = new PredictionWidget($predictionPane.find('.prediction-chart')[0], {showRange: false, slient: true, axis: true, padding: {right: 70}});
