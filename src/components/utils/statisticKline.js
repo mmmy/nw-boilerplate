@@ -25,7 +25,7 @@ let sum = (arr) => {
 		return pre + cur;
 	}, 0);
 };
-
+//klines: [{yield:},] or [yield,];
 module.exports = (klines) => {
 
 	let median = 0,
@@ -44,12 +44,13 @@ module.exports = (klines) => {
 			allArr = [];
 
 		klines.forEach((kline) => {
-			if (kline.yield > 0) {
-				upYieldArr.push(kline.yield);
-			} else if (kline.yield < 0) {
-				downYieldArr.push(kline.yield);
+			var earn = typeof kline == 'number' ? kline : kline.yield;
+			if (earn > 0) {
+				upYieldArr.push(earn);
+			} else if (earn < 0) {
+				downYieldArr.push(earn);
 			}
-			allArr.push(kline.yield);
+			allArr.push(earn);
 		});
 
 		var sortFunc = (a, b) => { return a - b };

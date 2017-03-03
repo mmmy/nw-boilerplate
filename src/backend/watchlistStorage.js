@@ -1,8 +1,9 @@
 import utils from './utils';
 import path from 'path';
 import fs from 'fs';
+var gui = window.require('nw.gui');
 
-const BASEPATH = '../storage';
+const BASEPATH = process.platform == 'darwin' ? (gui.App.dataPath+'/storage') : '../storage';
 const WATCHLIST = 'watchlist';
 
 const _watchlistPath = path.join(BASEPATH, WATCHLIST);

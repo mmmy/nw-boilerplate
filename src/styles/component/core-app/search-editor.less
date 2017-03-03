@@ -481,10 +481,10 @@
 				margin-left: 20px;
 				cursor: pointer;
 			}
-			input[disabled] ~ button.icon-pen {
+			input[disabled] ~ .button.icon-pen {
 				display: inline-block;
 			}
-			input[disabled] ~ button.btn-red {
+			input[disabled] ~ .button.btn-red {
 				display: none;
 			}
 		}
@@ -644,6 +644,12 @@
 			width: calc(~"50%");
 			&:hover {
 				background-color: @brown-red-light;
+			}
+			&.disabled {
+				opacity: 0.5;
+				&:hover {
+					background-color: @brown-red;
+				}
 			}
 		}
 		// .add-btn {

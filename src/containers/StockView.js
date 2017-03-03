@@ -69,9 +69,40 @@ class StockView extends React.Component {
 	}
 
 	componentDidMount() {
-		this.initScanner();
+		var that = this;
 		historyController.init(this.refs.history_nav_container, this.refs.history_body_container);
 		favoritesController.init(this.refs.favorites_nav_container, this.refs.favorites_body_container);
+		//init date inputs
+		var $dateWrapper = $(this.refs.date_input_wrapper);
+		var $dateInput = $dateWrapper.find('input');
+		var $dateSubmit = $dateWrapper.find('button');
+
+		let datePickerOptions = {
+			format: "yyyy/mm/dd",
+			language: "zh-CN",
+			todayBtn: "linked",
+			keyboardNavigation: false,
+			autoclose: true,
+		};
+		$dateInput.on('mouseup',(e)=>{ e.stopPropagation(); })
+							.datepicker(datePickerOptions).on('hide', (e)=>{  });
+		//fix bug
+		$(this.refs.stock_view).find('.chart-container').on('ks-click',(e)=>{
+			$dateInput.datepicker('hide');
+		});
+		$dateSubmit.on('click',(e)=>{
+			var date = new Date($dateInput.val());
+			if(date > new Date('1980/1/1') && date < new Date()) {
+				that.stockViewGoDate(date);
+			}
+		});
+		//init watchlist
+		// var watchlistStorage = require('../backend/watchlistStorage');
+		// var storage = watchlistStorage.getDataFromStorage(this._category);
+		// if(storage) {
+		// 	this.initWatchlist();
+		// }
+		this.initWatchlist();
 	}
 
 	componentWillReceiveProps(){
@@ -188,17 +219,17 @@ class StockView extends React.Component {
 	    <div ref='container' className={"transition-all transition-opacity container-stockview " + (stockView ? "" : "stockview-hide")} >
 	    	<div className='container-stockview-inner'>
 	      	<div className='left-toolbar-container'>
-	      		<div><button data-kstooltip="扫描" ref='scanner_btn' className='flat-btn scanner active' onMouseDown={ this.showScanner.bind(this) }>scanner</button></div>
-	      		<div><button data-kstooltip="智能监控" ref='watchlist_btn' className='flat-btn watchlist' onMouseDown={ this.showWatchlist.bind(this) }>watchlist</button></div>
+	      		<div><button data-kstooltip="智能监控" ref='watchlist_btn' className='flat-btn watchlist active' onMouseDown={ this.showWatchlist.bind(this) }>watchlist</button></div>
+	      		<div><button data-kstooltip="扫描" ref='scanner_btn' className='flat-btn scanner' onMouseDown={ this.showScanner.bind(this) }>scanner</button></div>
 	      		<div><button data-kstooltip="K线图" ref='curve_btn' className='flat-btn curve' onMouseDown={ this.showSockView.bind(this) }>quxian</button></div>
 	      		<div><button data-kstooltip="收藏夹" ref='favorites_btn' className='flat-btn favorites' onMouseDown={ this.showFavorites.bind(this) }>favorites</button></div>
 	      		<div><button data-kstooltip="历史记录" ref='history_btn' className='flat-btn history' onMouseDown={ this.showHistory.bind(this) }>history</button></div>
 	      	</div>
 
-	      	<div ref="scanner_view" className='content-wrapper scanner top-z'>
+	      	<div ref="watchlist_view" className='content-wrapper watchlist top-z'>
 	      	</div>
 
-	      	<div ref="watchlist_view" className='content-wrapper watchlist'>
+	      	<div ref="scanner_view" className='content-wrapper scanner'>
 	      	</div>
 
 		      <div ref='stock_view' className='content-wrapper curve'>
@@ -206,6 +237,7 @@ class StockView extends React.Component {
 		          viewId={ STOCK_VIEW }
 		          options={ options }
 		          init={ logined } />
+		        <div className="date-input-wrapper" ref="date_input_wrapper"><input value={new Date().toLocaleDateString()}/><button className="flat-btn btn-red round">跳转</button></div>
 		      </div>
 		      
 		      <div ref='favorites_view' className='content-wrapper favorites'>
@@ -277,6 +309,7 @@ class StockView extends React.Component {
 		$(this.refs.scanner_view).addClass('top-z');
 		$(e.target).addClass('active');
 		$(document.body).addClass('watchlist');
+		this.initScanner();
 	}
 
 	showWatchlist(e) {
@@ -338,6 +371,13 @@ class StockView extends React.Component {
 	handleClearTrashedPatterns(e) {
 		e.stopPropagation();
 		favoritesController.clearTrashedPatterns();
+	}
+
+	stockViewGoDate(date) {
+		var offset = 4 * 30 * 24 * 3600; //4 months
+		var middle = +new Date(date) / 1000;
+		var actionTradingview = require('../shared/actionTradingview');
+		actionTradingview.setStockViewVisibleRange('', {from: middle - offset, to: middle + offset},0);
 	}
 }
 

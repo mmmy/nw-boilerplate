@@ -123,5 +123,8 @@ module.exports = {
 	 	initResize();
 	 	initGolbalKeyEvent();
 	 	initNwEvents();
+	 	if(process && process.platform == 'darwin') {
+	 		$(document.body).addClass('mac');
+	 	}
 	}
 }

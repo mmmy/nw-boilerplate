@@ -10,6 +10,9 @@ let getCanvasPixRatio = () => {
 
 let betterCanvasSize = (canvas) => {
 	let ratio = getCanvasPixRatio();
+  if(!canvas) {
+    return;
+  }
 	let parent = canvas.parentNode;
 	// console.assert(parent,'canvas parent not exist');
 	let width = parent && parent.clientWidth || canvas.width;

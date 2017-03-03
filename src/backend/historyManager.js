@@ -2,8 +2,9 @@
 import fs from 'fs';
 import path from 'path';
 import { readFolder, dateFormatter, saveFile, removeDir, deleteFile } from './utils';
+var gui = window.require('nw.gui');
 
-const BASEPATH = '../storage';
+const BASEPATH = process.platform == 'darwin' ? (gui.App.dataPath+'/storage') : '../storage';
 const HISTORY = 'history';
 const _historyPath = path.join(BASEPATH, HISTORY);
 

@@ -3,8 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import { readFolder, dateFormatter, saveFile, deleteFile } from './utils';
 import { showSuccessMessage } from '../ksControllers/messager';
+var gui = window.require('nw.gui');
 
-const BASEPATH = '../storage';
+const BASEPATH = process.platform == 'darwin' ? (gui.App.dataPath+'/storage') : '../storage';
 const FAVORITES = 'favorites';
 const _favoritesPath = path.join(BASEPATH, FAVORITES);
 const _defaultFilePath = path.join(BASEPATH, FAVORITES, '0.json');

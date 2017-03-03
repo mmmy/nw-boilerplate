@@ -34,6 +34,8 @@ module.exports = function($) {
             } else if(resolution === 'D' || resolution == 'd') { //天数据
                 dataCategory = 'cf';
             }
+        } else {
+        	dataCategory = type;
         }
         return dataCategory;
 			},
@@ -49,6 +51,20 @@ module.exports = function($) {
 					var num = v / 1E4;
 					str = num >= 10000 ? num.toFixed(0) : (num + '').slice(0,6);
 					str += ' 万手'
+				}
+				return str;
+			},
+			amountFormatter: function(amount) { //万, 亿
+				var a = parseInt(amount);
+				var str = 'N/A';
+				if(isNaN(a)) {
+					return str;
+				}
+				a = Math.round(a / 10000);
+				if(10000 > a) str = a + ' 万';
+				else {
+					var num = Math.round(a / 10000);
+					str = num + ' 亿'
 				}
 				return str;
 			}
@@ -247,6 +263,7 @@ module.exports = function($) {
 
 			$svg.empty().append(paths);
 			return this;
-		}
+		},
+
 	});
 }

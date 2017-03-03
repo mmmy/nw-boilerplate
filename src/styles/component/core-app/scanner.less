@@ -15,6 +15,7 @@
 	.waiting-overlay {
 		font-size: 30px;
 		background-color: #262b2f;
+		width: calc(~"100% - 10px");
 		&.error {
 			font-size: 14px;
 			a.flat-btn {
@@ -31,8 +32,9 @@
 		left: 25px;
 		top: 20px;
 		z-index: 1;
-		font-size: 18px;
+		font-size: 20px;
 		font-weight: bold;
+		width: calc(~"100% - 25px");
 		>span {
 			vertical-align: middle;
 		}
@@ -42,7 +44,15 @@
 		}
 		.date-info {
 			margin-left: 100px;
+			font-size: 14px;
+		}
+		.refresh {
+			float: right;
 			font-size: 12px;
+			line-height: 28px;
+			margin-right: 10px;
+			padding-left: 15px;
+			padding-right: 15px;
 		}
 	}
 	.sub-title {
@@ -66,8 +76,12 @@
 		.filter-wrapper {
 			position: absolute;
 			white-space: nowrap;
+			background-color: #262b2f;
+			width: calc(~"100% - 57px");
+			height: 41px;
 			.reset-container {
 				display: inline-block;
+				float: right;
 				vertical-align: top;
 				height: 40px;
 				// padding-left: 20px;
@@ -145,6 +159,12 @@
 					}
 				}
 				table {
+					display: block;
+					max-height: 380px;
+					overflow-y: scroll;
+					.scrollbar();
+					.scrollbar-thumb();
+					.scrollbar-track();
 					tr {
 						line-height: 20px;
 						cursor: pointer;
@@ -210,7 +230,7 @@
 		}
 		.list-wrapper {
 			position: relative;
-			height: calc(~"100% - 170px");
+			height: calc(~"100% - 160px");
 			overflow-y: scroll;
 			margin-top: 60px;
 			padding-right: 10px;
@@ -226,8 +246,12 @@
 				line-height: 2;
 				text-align: left;
 				font-size: 14px;
+				position: relative;
 				@width-base: 100% / 7;
-				>span {
+				.section1 {
+					border-bottom: 1px solid transparent;
+				}
+				.section1 > span {
 					text-align: center;
 					// border: 1px solid lightblue;
 					// float: left;
@@ -242,11 +266,188 @@
 						font-size: 16px;
 					}
 				}
-				button.detail {
+				.section2 {
+					height: 0;
+					overflow: hidden;
+					padding: 0;
 					font-size: 12px;
+					line-height: 1;
+					// transition: height 0.5s linear;
+					.prediction-wrapper {
+						padding: 12px 15px 12px 12px;
+						display: inline-block;
+						width: calc(~"100% - 200px");
+						max-width: 800px;
+						.chart {
+							position: relative;
+							height: 275px;
+							.caption {
+								position: absolute;
+								left: 70px;
+								p {
+									margin-bottom: 5px;
+								}
+							}
+							.prediction-chart {
+								position: absolute;
+								width: 100%;
+								height: 100%;
+								canvas {
+									position: absolute;
+									width: 100%;
+									height: 100%;
+								}
+								.main-wrapper {
+									position: absolute;
+									width: 100%;
+									height: 100%;
+								}
+								&.axis .main-wrapper {
+									width: calc(~"100% - 50px");
+									height: calc(~"100% - 20px");
+									left: 50px;
+									top: 0;
+								}
+								.bottom-axis-x-wrapper {
+									position: absolute;
+									height: 20px;
+									width: calc(~"100% - 50px - 70px");
+									bottom: 0;
+									left: 50px;
+								}
+								.left-axis-y-wrapper {
+									position: absolute;
+									width: 50px;
+									height: calc(~"100% - 20px");
+									left: 0;
+									top: 0;
+								}
+							}
+							.heatmap-chart {
+								position: absolute;
+								width: 70px;
+								height: calc(~"80% - 16px");
+								top: 0;
+								right: 0;
+							}
+						}
+						.statistic {  //
+							background-color: #2a2f32;
+							text-align: center;
+							font-size: 14px;
+							// padding: 10px 0;
+							div:nth-child(1) {
+								color: #999;
+								margin-bottom: 10px;
+							}
+						}
+					}
+					//right-pane
+					.info-wrapper {
+						display: inline-block;
+						width: 200px;
+						padding: 12px 12px 12px 0;
+						vertical-align: top;
+						* {
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+						}
+						.info-container {
+							// margin-bottom: 80px;
+						}
+						.no-jiejin {
+							margin-bottom: 30px;
+							display: inline-block;
+						}
+						.info-section {
+							line-height: 1.5;
+							margin-bottom: 15px;
+							.full-name {
+								height: 30px;
+								white-space: normal;
+								line-height: 1.3;
+							}
+							>div {
+								.des {
+											
+								}
+								>span:nth-child(2) {
+									margin-left: 15px;
+									color: #fff;
+								}
+							}
+							&:nth-child(1) {
+								color: #fff;
+								>div[title] { //full name
+									max-width: 155px;
+								}
+								div>span:nth-child(1) { //行业 板块
+									display: inline-block;
+									max-width: 70px;
+								}
+								div>span:nth-child(2) {
+									display: inline-block;
+									max-width: 70px;
+									// color: #999;
+								}
+							}
+							&:nth-child(2) {
+								color: #999;
+								div:nth-child(2),  //总市值
+								div:nth-child(3),  //市盈率
+								div:nth-child(5) { //市净率
+									.des { letter-spacing: 6.7px; }
+									>span:nth-child(2) { margin-left: 9px; }
+								}
+							}
+							&:nth-child(3) {
+								color: #999;
+
+							}
+						}
+						button {
+							display: block;
+							width: 180px;
+							line-height: 20px;
+							margin-bottom: 7px;
+							&.btn-dark {
+								margin-bottom: 0;
+							}
+						}
+					}
+				}
+				button.detail {
+					position: absolute;
+					right: 20px;
+					top: 20px;
+					font-size: 10px;
 					color: #aaa;
 					&:hover {
 						color: #fff;
+					}
+					.fa {
+						transform: rotate(90deg);
+					}
+					>span {
+						margin-left: 5px;
+					}
+				}
+				&.expand {
+					.section1 {
+						// display: none;
+						border-color: #222;
+					}
+					.section2 {
+						// height: 300px;
+						height: auto;
+					}
+					button.detail {
+						// top: 10px;
+						// right: 10px;
+						.fa {
+							transform: rotate(-90deg);
+						}
 					}
 				}
 			}
@@ -263,31 +464,76 @@
 		right: 10px;
 		width: 400px;
 		height: calc(~"100% - 60px");
-		padding: 20px;
 		padding-bottom: 0;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-
-		.scanner-info {
-			font-weight: bold;
-			p {
-				margin-bottom: 5px;
-				>span {
-					color: #999;
-					margin-left: 10px;
-				}
-			}
-			margin-bottom: 5px;
+		.inner {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			padding: 20px;
 		}
-		.clearfix.red {
-			margin-bottom: 30px;
+		.flat-btn.briefing {
+			position: absolute;
+			top: -30px;
+			left: 10px;
 		}
-		.charts-container {
-			height: calc(~"100% - 175px");
+		.flat-btn.backtest {
+			position: absolute;
+			top: -30px;
+			left: 100px;
+		}
+		&.part1 {
+			.inner:nth-child(1) { left: 0; }
+			.inner:nth-child(2) { left: 100%; }
+		}
+		&.part2 {
+			.inner:nth-child(1) { left: 100%; }
+			.inner:nth-child(2) { left: 0; }
+		}
+		.content {
+			height: calc(~"100% - 50px");
 			overflow-y: scroll;
-			padding-right: 10px;
 			.scrollbar();
 			.scrollbar-track();
 			.scrollbar-thumb();
+		}
+		.scanner-info {
+			font-weight: bold;
+			margin-bottom: 5px;
+			p {
+				margin-bottom: 5px;
+				color: #999;
+				>span {
+					color: #fff;
+					margin-left: 5px;
+				}
+				.value {
+					margin-left: 1px;
+					margin-right: 1px;
+					font-size: 120%;
+				}
+			}
+			.col:nth-child(1) {
+				p>span {
+					margin-left: 28px;
+				}
+			}
+			.col:nth-child(2) {
+				p:nth-child(2)>span {
+					margin-left: 30px;
+				}
+			}
+
+		}
+		.backtest-info {
+			color: #999;
+			margin-bottom: 30px;
+		}
+		.clearfix {
+			margin-bottom: 30px;
+		}
+		.charts-container {
+			padding-right: 10px;
 		}
 		.piecharts-wrapper {
 			margin-bottom: 15px;
@@ -347,7 +593,7 @@
 					max-width: 421px;
 				}
 				&:nth-child(2) {
-					margin-left: 10px;
+					margin-left: 30px;
 				}
 			}
 		}
@@ -415,5 +661,61 @@
 	text.label {
 		text-anchor: end;
 		fill: #fff;
+	}
+}
+
+.backtest-chart {
+	position: relative;
+	.chart-header {
+		color: #666;
+	}
+	.legend {
+		margin-top: 5px;
+		span:nth-child(1) {
+			color: #fff;
+			&:before {
+				content: '';
+				margin-right: 3px;
+				display: inline-block;
+				width: 10px;
+				height: 10px;
+				border-radius: 2px;
+				background-color: #fff;
+			}
+		}
+		span:nth-child(2) {
+			color: @brown-red;
+			&:before {
+				content: '';
+				margin-right: 3px;
+				display: inline-block;
+				width: 10px;
+				height: 10px;
+				border-radius: 2px;
+				background-color: @brown-red;
+				margin-left: 20px;
+			}
+		}
+	}
+	.chart-container {
+		position: relative;
+		height: 260px;
+	}
+	ul {
+		padding: 0;
+		li {
+			list-style: none;
+			display: inline-block;
+			width: 70px;
+			// height: 45px;
+			line-height: 40px;
+			text-align: center;
+			color: #eee;
+			cursor: pointer;
+			&.active {
+				background-color: #191d21;
+				color: #fff;
+			}
+		}
 	}
 }

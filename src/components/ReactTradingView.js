@@ -32,6 +32,8 @@ class ReactTradingView extends React.Component {
   }
 
   tryInitTradingView() {
+    var that = this;
+    var $dateWrapper = $(this.refs[this.props.viewId]).siblings('.date-input-wrapper');
     if (this._inited) return;
     let {init} = this.props;
     if (init) {
@@ -44,9 +46,14 @@ class ReactTradingView extends React.Component {
         console.log('~~~~~~widget.onCHartReady');
       });
       setTimeout(function(){
-        widget.onIntervalChange(function(){
-          console.log('~~~~~~~~widget interval changed');
+        widget.onIntervalChange(function(interval){
+          console.log('~~~~~~~~widget interval changed',interval);
           widget.removeAllShapes();
+          if(interval == '1' || interval == '5' || interval == '15') {
+            $dateWrapper.hide();
+          } else {
+            $dateWrapper.show();
+          }
         });
       },2000);
       // window._tradingview = widget;
