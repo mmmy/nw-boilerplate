@@ -22,6 +22,8 @@ let _dataToPointY = (marginTop, viewYHeight, yMin, yMax, O, C, L, H, V, volumeMa
 	}
 	return {open:_to05(oY), close:_to05(cY), low:_to05(lY), high:_to05(hY), volume:_to05(vY)};
 };
+
+var paddingDefault = {top:0,right:0,bottom:0,left:0};
 /**
 options: {
 	padding: {left: number, right: number},
@@ -503,20 +505,24 @@ let drawAxisY = (canvas, priceRange, options) => {
 	let priceMin = priceRange[0],
 			priceMax = priceRange[1];
 
-	let ratio = getCanvasPixRatio();
-
-	let rate = height / (priceMin - priceMax);
-
-	let priceInterval = _getPriceInterval(priceMin, priceMax, height/ratio);
-
-	let priceShow = Math.floor(priceMin/10) * 10,
-			priceShowMax = Math.ceil(priceMax);
-	
 	//options
 	let hoverY = options && options.hoverY;
 	let textColor = options && options.textColor || '#000';
 	let hoverColor = options && options.hoverColor || '#fff';
 	let hoverBackground = options && options.hoverBackground || '#222';
+	let labelWidth = options && options.labelWidth;
+	let padding = options && options.padding || paddingDefault;
+	let labelFormatter = options && labelFormatter || null;
+	
+	let ratio = getCanvasPixRatio();
+	let viewHeight = height - padding.top - padding.bottom;
+
+	let rate = viewHeight / (priceMin - priceMax);
+
+	let priceInterval = _getPriceInterval(priceMin, priceMax, viewHeight/ratio);
+
+	let priceShow = Math.floor(priceMin/10) * 10,
+			priceShowMax = Math.ceil(priceMax);
 
 	//paint
 	ctx.clearRect(0,0, width, height);
@@ -525,10 +531,14 @@ let drawAxisY = (canvas, priceRange, options) => {
 	ctx.fillStyle = textColor;
 	ctx.textAlign = 'center';
 	ctx.font = `${10*ratio}px Arial`;
+	ctx.textBaseline = 'middle';
 	
 	while(priceShow < priceShowMax) {
-		let centerY = (priceShow - priceMax) * rate + 0;
-		ctx.fillText(priceShow.toFixed(2), width/2, centerY);
+		let centerY = (priceShow - priceMax) * rate + 0 + padding.top;
+		let x = labelWidth && labelWidth/2 || width/2;
+		var label = priceShow.toFixed(2);
+		label = labelFormatter ? labelFormatter(label) : label;
+		ctx.fillText(label, x, centerY);
 		priceShow = priceShow + priceInterval;
 	}
 
@@ -537,10 +547,11 @@ let drawAxisY = (canvas, priceRange, options) => {
 		hoverY *= ratio;
 		let rectH = 20 * ratio;
 		ctx.fillStyle = hoverBackground;
-		let priceAtHover = hoverY /rate + priceMax;
-		ctx.fillRect(0, hoverY - rectH / 2, width, rectH);
+		let priceAtHover = (hoverY - padding.top) /rate + priceMax;
+		let W = labelWidth || width;
+		ctx.fillRect(0, hoverY - rectH / 2, W, rectH);
 		ctx.fillStyle = hoverColor;
-		ctx.fillText(priceAtHover.toFixed(2), width/2, hoverY+5);
+		ctx.fillText(priceAtHover.toFixed(2), W/2, hoverY);
 	}
 };
 /*
@@ -628,12 +639,6 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 
 	let width = canvas.width;
 	let height = canvas.height;
-
-	let spaceX = width / drawLen;
-	let interval = 1;
-	let minSpaceX = 0;
-	let ratio = getCanvasPixRatio();
-
 	//options
 	let hoverIndex = options && options.hoverIndex;
 	let selectedIndex = options && options.selectedIndex;
@@ -641,12 +646,22 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	let textColor = options && options.textColor || '#000';
 	let hoverColor = options && options.hoverColor || '#fff';
 	let hoverBackground = options && options.hoverBackground || '#222';
+	let padding = options && options.padding || paddingDefault;
+	let noGap = options && options.noGap || false; // 标志不是为k线绘制时间轴
+
+	let viewWidth = width - padding.left - padding.right;
+	let spaceX = viewWidth / (noGap ? drawLen-1 : drawLen);
+	let interval = 1;
+	let minSpaceX = 0;
+	let ratio = getCanvasPixRatio();
+
+ 	let isDateStr = timeArr[0] && timeArr[0].length == 10;
 
 	if(showTime) {
 		minSpaceX = 55 * ratio;
  		interval = Math.ceil(minSpaceX / spaceX);
 	} else {
- 		minSpaceX = 20 * ratio;
+ 		minSpaceX = isDateStr ? 75 * ratio : 20 * ratio;
  		interval = Math.ceil(minSpaceX / spaceX);
 	}
 	//paint
@@ -658,9 +673,10 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 	for(let i=interval-1; i<len; i+=interval) {
 		ctx.strokeStyle = textColor;
 		ctx.fillStyle = textColor;
-		let center = i*spaceX + spaceX/2;
+		let center = i*spaceX + spaceX / 2 + padding.left;
+		if(noGap) center = i*spaceX + padding.left;
 		let timeText = timeArr[i];
-		let text = showTime ? timeText.slice(-8) : timeText.slice(8, 10);
+		let text = showTime ? timeText.slice(-8) : (isDateStr ? timeText : timeText.slice(8, 10));
 		ctx.fillText(text, center, 15*ratio);
 	}
 
@@ -682,7 +698,8 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 		rectW *= ratio;
 		let timeText = timeArr[hoverIndex];
 		let text = showTime ? timeText : timeText.slice(0, 10);
-		let center = hoverIndex*spaceX + spaceX/2;
+		let center = hoverIndex*spaceX + spaceX/2 + padding.left;
+		if(noGap) center = hoverIndex*spaceX + padding.left;
 		center = _toInt(center);
 		ctx.fillStyle = hoverBackground;
 		ctx.fillRect(center - rectW/2, 0, rectW, height);

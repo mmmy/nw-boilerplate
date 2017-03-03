@@ -30,6 +30,8 @@ let defaultHoverStyle = {
 	strokeStyle: 'rgba(0,0,0,1)',
 	fillStyle: 'rgba(0,0,0,0.5)'
 };
+
+let paddingDefault = {top:0,right:0,bottom:0,left:0};
 /**
   options: {
   	x:[]
@@ -262,8 +264,159 @@ let drawCountLines = (canvas, options) => {
 	return {
 		indexAtPoint,
 		indexToCoordinate,
+		yMin,
+		yMax,
 	};
 };
+
+let drawLines = (canvas, options) => {
+	//判断canvas
+	if(!canvas || !canvas.getContext) {
+		console.warn('drawBlockHeadMap, canvas is not canvas !');
+		return;
+	}
+	if(!options || !options.series) {
+		console.warn('options.series is required!!');
+		return;
+	}
+	//raw data & options
+	let	series = options.series,
+			yMin = options.yMin,
+			yMax = options.yMax,
+			xData = options.timeArray,
+			hoverIndex = options.hoverIndex,
+			activeIndex = options.activeIndex,
+			padding = options.padding || paddingDefault;
+	
+	if(yMax === undefined) {
+		let maxArr = series.map(function(e){
+			return Math.max.apply(null, e.data);
+		});
+		yMax = Math.max.apply(null, maxArr);
+	}
+	if(yMin === undefined) {
+		let minArr = series.map(function(e){
+			return Math.min.apply(null, e.data);
+		});
+		yMin = Math.min.apply(null, minArr);
+	}
+
+	//canvas
+	betterCanvasSize(canvas);
+	let ratio = getCanvasPixRatio();
+	let ctx = canvas.getContext('2d'),
+			width = canvas.width,
+			height = canvas.height,
+			viewWidth = width - padding.left - padding.right,
+			viewHeight = height - padding.top - padding.bottom;
+
+	//draw data
+	let xSpace = viewWidth / (xData.length - 1);
+
+	ctx.save();
+	//paint
+	ctx.clearRect(0,0,width,height);
+	//如果space 为Infinity , 绘图将会出现bug
+	if(!isFinite(xSpace)) {
+		return;
+	}
+	let drawLine = function(data) {
+		for(let j=0,len=data.length; j<len; j++) {
+			let x = _to05(padding.left + j * xSpace),
+					y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[j]);
+			//draw line
+			if(j===0) {   					//start
+				ctx.beginPath();
+				ctx.moveTo(x,y);
+			} else if(j===len-1) {  //end
+				ctx.lineTo(x,y);
+				ctx.stroke();        //绘制曲线
+				ctx.lineTo(x, height-padding.bottom);
+				ctx.lineTo(padding.left, height-padding.bottom);
+				ctx.closePath();
+				ctx.fill();           //填充区域
+				if(hoverIndex > -1) {
+					x = _to05(padding.left + hoverIndex * xSpace);
+					y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[hoverIndex]);
+					
+					ctx.beginPath();
+					ctx.arc(x,y,4,0,2*Math.PI);
+					ctx.closePath();
+					ctx.save();
+					ctx.shadowColor   = "rgba(0,0,0,0)";
+					ctx.fillStyle = ctx.strokeStyle;
+					ctx.fill();
+					ctx.restore();
+				}
+			} else { 								//line
+				ctx.lineTo(x,y);
+			}
+		}
+	}
+	ctx.shadowOffsetX = 0;
+	ctx.shadowOffsetY = 10;
+	ctx.shadowBlur    = 5;
+	ctx.shadowColor   = "rgba(0,0,0,1)";
+	//hoverIndex的画到最上层
+	if(hoverIndex > -1) {
+		
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = '#aaa';
+
+		let x = _to05(padding.left + hoverIndex * xSpace);
+
+		ctx.setLineDash([5,2]);
+		ctx.beginPath();
+		ctx.moveTo(x,0);
+		ctx.lineTo(x,height);
+		ctx.stroke();
+
+			// ctx.beginPath();
+			// ctx.arc(x,y,3,0,2*Math.PI);
+			// ctx.fill();
+	}
+	ctx.setLineDash([]);
+
+	for(let i=0; i<series.length; i++) {
+		//跳过hoverIndex
+		let line = series[i];
+		let data = line.data; //数据数组
+		ctx.lineWidth = line.lineWidth || defaultDrawStyle.lineWidth;
+		ctx.strokeStyle = line.strokeStyle || defaultDrawStyle.strokeStyle;
+		ctx.fillStyle = line.fillStyle || defaultDrawStyle.fillStyle;
+		ctx.lineJoin = 'round';
+		drawLine(data);
+	}
+
+	//returns
+	let pointToIndex = function (x, y){
+		var hoverIndex = Math.round((x - padding.left) / xSpace);
+		return hoverIndex;
+	};
+
+	let indexToCoordinate = function(lineIndex, dataIndex) {
+		var x ,y;
+		try {
+			var data = series[lineIndex].data;
+			x = padding.left + dataIndex * xSpace;
+			y = _dataToPointY(padding.top, viewHeight, yMin, yMax, data[dataIndex]);
+			x = x / ratio;
+			y = y / ratio;
+			return {x,y};
+		} catch(e) {
+			console.error(e);
+			return {x,y};
+		}
+	};
+
+	return {
+		pointToIndex,
+		indexToCoordinate,
+		yMin,
+		yMax,
+	};
+};
+
 /*
  绘制bar
 ------------------------------------------*/
@@ -573,6 +726,7 @@ let drawAxis = (canvas, data, options) => {
 
 module.exports = {
 	drawCountLines,
+	drawLines,
 	drawCountBars,
 	drawAxis
 }

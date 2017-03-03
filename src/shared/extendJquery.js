@@ -34,6 +34,8 @@ module.exports = function($) {
             } else if(resolution === 'D' || resolution == 'd') { //天数据
                 dataCategory = 'cf';
             }
+        } else {
+        	dataCategory = type;
         }
         return dataCategory;
 			},

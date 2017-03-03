@@ -103,11 +103,20 @@ class Header extends React.Component {
 
 	renderAppTool() {
 		let className = classNames('flat-btn button app-maximize', {fullScreen: this.state.fullScreen});
-		let node = <div className='app-tool-container'>
-			<button className='flat-btn button app-minimize' onClick={this.handleAppMinimize.bind(this)}></button>
-			<button ref='app_maximize' className={className} onClick={this.handleAppToggleMaximize.bind(this)}></button>
-			<button className='flat-btn button app-close' onClick={this.handleAppClose.bind(this)}></button>
-		</div>
+		let node = null;
+		if($(document.body).hasClass('mac')) {
+			node = <div className="app-tool-container">
+				<button className='flat-btn button app-close' onClick={this.handleAppClose.bind(this)}></button>
+				<button className='flat-btn button app-minimize' onClick={this.handleAppMinimize.bind(this)}></button>
+				<button ref='app_maximize' className={className} onClick={this.handleAppToggleMaximize.bind(this)}></button>
+			</div>
+		} else {
+			node = <div className='app-tool-container'>
+				<button className='flat-btn button app-minimize' onClick={this.handleAppMinimize.bind(this)}></button>
+				<button ref='app_maximize' className={className} onClick={this.handleAppToggleMaximize.bind(this)}></button>
+				<button className='flat-btn button app-close' onClick={this.handleAppClose.bind(this)}></button>
+			</div>
+		}
 		return node;
 	}
 

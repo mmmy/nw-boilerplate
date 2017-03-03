@@ -194,6 +194,40 @@ body[theme="dark"] {
 		background-image: url(@icons_dark_url) !important;
 	}
 
+	&.mac, .mac {
+		.app-tool-container {
+			.button.app-close {
+				background-image: url('./image/macos/close.png') !important;
+				background-position: 0 14px;
+			}
+			.button.app-minimize {
+				background-image: url('./image/macos/min.png') !important;
+				background-position: 0 14px;
+			}
+			.app-maximize {
+				background-image: url('./image/macos/max.png') !important;
+				background-position: 0 14px;
+				&.fullScreen {
+					background-position: 0 14px;
+				}
+			}
+			&:hover {
+				.app-close {
+					background-position: 0 0;
+				}
+				.app-maximize {
+					background-position: 0 0;
+					&.fullScreen {
+						background-position: 0 29px;
+					}
+				}
+				.app-minimize {
+					background-position: 0 0;
+				}
+			}
+		}
+	}
+
 	.flat-btn {
 		// background-color: transparent;
 	}

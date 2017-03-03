@@ -9,6 +9,7 @@ import statisticKline from '../../components/utils/statisticKline';
 import request from '../../backend/request';
 import config from '../../backend/config';
 import watchlistController from '../watchlistController';
+import LinesChart from './LinesChart';
 
 let { getLatestPrice, getPriceFromSina } = getPrice;
 
@@ -31,6 +32,8 @@ var _dimIndex = null;
 var _pieCharts = [];
 var _barCharts = [];
 var _$rightPane = null;
+
+var _backtestChart = null;
 
 //k线图
 var _predictionCharts = [];
@@ -176,7 +179,11 @@ scannerController.init = (container) => {
 
 	var $title = $(`<div class="title"><span>扫描</span><img src="./image/tooltip.png"/><span class="date-info"></span><button class="refresh hide flat-btn btn-red round">最新一期扫描结果已经出炉</button></div>`)
 	var $left = $(`<div class="scanner-left"></div>`);
-	var $right = $(`<div class="scanner-right"></div>`);
+	var $right = $(`<div class="scanner-right part2"></div>`);
+	var $briefing = $('<div class="inner briefing"></div>');
+	var $backtest = $('<div class="inner backtest"></div>');
+	$right.append($briefing).append($backtest).append([`<button class="flat-btn briefing">简报Briefing</button>`,`<button class="flat-btn backtest">历史回测</button>`]);
+
 	_$container = $(container).append($(`<div class="scanner-wrapper"></div>`).append([$title, $left, $right]));
 
 
@@ -191,7 +198,7 @@ scannerController.init = (container) => {
 
 
 	//right panel
-	$right.append(`<h4 class="sub-title">Briefing 简报</h4>`);
+	$briefing.append(`<h4 class="sub-title">Briefing 简报</h4>`);
 	var $content = $('<div class="content"></div>');
 	$content.append(`<div class="scanner-info">
 									<div class="row">
@@ -207,7 +214,27 @@ scannerController.init = (container) => {
 								</div>`);
 	$content.append('<p class="clearfix">*注: 每期扫描结果的选取标准可能略有差异</p>');
 	$content.append($(`<div class="row charts-container"></div>`).append([$(`<div class="col piecharts-wrapper flex-between"></div>`).append(_pieCharts), $(`<div class="col barcharts-wrapper"></div>`).append(_barCharts)]));
-	$right.append($content);
+	$briefing.append($content);
+
+	//backtest
+	$backtest.append(`<h4 class="sub-title">Backtest 回测</h4>`);
+	$content = $('<div class="content"></div>');
+	$content.append(`<div class="backtest-info">
+										<p>
+											本页描述基于扫描的参数配置进行的历史回测模拟本测试<br/>
+											对目前的沪深300成分股用拱石搜索系统的相似图形平均收益率因子进行了分层回测<br/>
+											同时也测试了一种构建有效量化决策因子的有效方法: 基于分组稳定性构建多空操作策略
+										</p>
+									</div>`);
+	$content.append(`<div class="backtest-chart">
+										<div class="chart-header">
+											<div>扫描策略的历史回测benchmark的走势</div>
+											<p class="legend"><span>拱石20看10策略</span><span>Benchmark</span></p>
+										</div>
+										<div class="chart-container"></div>
+										<div><ul><li class="active">三个月</li><li>六个月</li><li>一年</li><li>三年</li></ul></div>
+									</div>`);
+	$backtest.append($content);
 
 	_$rightPane = $right;
 
@@ -236,7 +263,7 @@ scannerController._initActions = () => {
 	_interval = setInterval(()=>{
 		var now = new Date();
 		var hours = now.getHours();
-		if(hours > 9 && hours < 17) {
+		if(hours > 9 && hours < 15) {
 			_priceUpdaters.forEach((updater)=>{ updater(); });
 		}
 	}, 6000);
@@ -258,6 +285,21 @@ scannerController._initActions = () => {
 	_$container.find('button.refresh').click(function(){
 		scannerController._fetchData();
 	});
+
+	_backtestChart = new LinesChart(_$rightPane.find('.backtest-chart .chart-container')[0]);
+	_backtestChart.test();
+
+	_$rightPane.find('.backtest-chart li').click(function(event) {
+		var $target = $(event.target);
+		$target.addClass('active').siblings().removeClass('active');
+	});
+	_$rightPane.find('.flat-btn.briefing').click((e)=>{
+		_$rightPane.removeClass('part2').addClass('part1');
+	});
+	_$rightPane.find('.flat-btn.backtest').click((e)=>{
+		_$rightPane.removeClass('part1').addClass('part2');
+	});
+
 };
 
 scannerController.dispose = () => {
