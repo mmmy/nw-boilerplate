@@ -17,7 +17,7 @@ function LinesChart(container, config) {
 	this._config = config;
 
 	let $wrapper = $(`<div class="countlines-chart-wrapper return"></div>`)
-								.append(`<div class="main-wrapper"><canvas class='main-canvas'/></div>`)
+								.append(`<div class="main-wrapper"><canvas class='main-canvas'/><div class="tool-tip"><div class="tooltip-title"><label>坐标时间:</label><div class="value"></div></div><div class="legend"></div></div></div>`)
 								.append(`<div class="y-axis-wrapper"><canvas /></div>`)
 								.append(`<div class="x-axis-wrapper"><canvas /></div>`);
 
@@ -30,6 +30,7 @@ function LinesChart(container, config) {
 	this._canvas = canvases[0];
 	this._canvas_axis_y = canvases[1];
 	this._canvas_axis_x = canvases[2];
+	this._$tooltip = $wrapper.find('.tool-tip').hide();
 	this._drawInfo = {}; //记录绘制后的参数
 	this._yAxisW = 50;
 	this._xAxisH = 24;
@@ -97,6 +98,22 @@ LinesChart.prototype._mouseMove = function(e) {
 	this.updateHover(x,y);
 }
 
+LinesChart.prototype._updateTooltip = function(x,y) {
+	var curIndex = this._hoverIndex;
+	if(curIndex < 0) {
+		this._$tooltip.hide();
+	} else {
+		var series = this._linesOption.series;
+		var time = this._linesOption.timeArray[curIndex];
+		var dataNodes = series.map(function(serie){ return `<span>${serie.data[curIndex]}</span>` });
+		this._$tooltip.show();
+		this._$tooltip.find('.tooltip-title .value').html(time);
+		this._$tooltip.find('.legend').empty().append(dataNodes);
+		var isMouseLeft = x < this._$tooltip.parent().width()/2;
+		this._$tooltip.toggleClass('right', isMouseLeft);
+	}
+}
+
 LinesChart.prototype.updateHover = function(x,y) {
 	let {pointToIndex} = this._drawInfo;
 	if(!pointToIndex) return;
@@ -105,6 +122,7 @@ LinesChart.prototype.updateHover = function(x,y) {
 	this._hoverY = y;
 	this._updateOptions();
 	this.render();
+	this._updateTooltip(x,y);
 }
 
 LinesChart.prototype.render = function() {

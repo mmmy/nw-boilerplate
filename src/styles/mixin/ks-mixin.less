@@ -188,7 +188,7 @@
 	}
 }
 // thumb
-.scrollbar-thumb(@background-color:#999;@box-shadow:none;@border-radius:3px; @border:none){
+.scrollbar-thumb(@background-color:#1E2327;@box-shadow:none;@border-radius:3px; @border:none){
 	&::-webkit-scrollbar-thumb {
 		border: @border;
 	    border-radius: @border-radius;
@@ -197,6 +197,9 @@
 	    background-position: center;
 	    -webkit-box-shadow: @box-shadow;
 	    cursor: pointer;
+	    &:hover {
+	    	background-color: #3B3C40;
+	    }
 	}
 	// body[theme="dark"] &::-webkit-scrollbar-thumb {
 	//     -webkit-box-shadow: @box-shadow;

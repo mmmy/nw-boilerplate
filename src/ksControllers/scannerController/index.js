@@ -18,6 +18,7 @@ var scannerController = {};
 var _$container = null;
 var _$filterTable = null;
 var _$listWrapper = null;
+var _$listWrapperPast = null;
 var _datafeed = null;
 var _data = {date:'',list:[]};
 
@@ -101,6 +102,12 @@ var _priceUpdate = (param, $item) => {
 	});
 };
 
+//past scanner
+var _pastScanner = {
+	dateSelected:'',
+	dataCache:{}
+};
+
 //refresh watcher
 var _intervalFresh = null;
 
@@ -153,12 +160,13 @@ var _handleSearchDetail = function(e){
 //初始化需要缓存的dom
 var _initCache = () => {
 	_$filterTable = $(`<div class="filter-wrapper">
-											<div class="filter-table"><table><thead><tr></tr></thead><tr></tr><tbody></tbody></table></div>
-											<div class="reset-container"><span class="info"><span class="value">0</span>支股票</span><button class="flat-btn reset"><span>重置筛选</span></button></div>
+											<div class="filter-table"><div class="filter-title"><i class="fa fa-list"></i>筛选条件</div><div class="filter-body"></div></div>
+											<div class="reset-container"><span class="info"><span class="value">0</span>支股票</span><button class="flat-btn reset" disabled><span>重置筛选</span></button></div>
 										</div>`);
-	_$filterTable.find('thead>tr').append(['概念','行业','总市值'].map(name=>{ return `<th>${name}</th>` }));
+	// _$filterTable.find('thead>tr').append(['概念','行业','总市值'].map(name=>{ return `<th>${name}</th>` }));
 	
 	_$listWrapper = $(`<div class="list-wrapper"></div>`);
+	_$listWrapperPast = $(`<div class="list-wrapper-past"></div>`);
 	_datafeed = new window.Kfeeds.UDFCompatibleDatafeed("", 10000 * 1000, 2, 0);
 
 	_pieCharts = [
@@ -178,7 +186,7 @@ scannerController.init = (container) => {
 	_initCache();
 
 	var $title = $(`<div class="title"><span>扫描</span><img src="./image/tooltip.png"/><span class="date-info"></span><button class="refresh hide flat-btn btn-red round">最新一期扫描结果已经出炉</button></div>`)
-	var $left = $(`<div class="scanner-left"></div>`);
+	var $left = $(`<div class="scanner-left"><div class="header"><button class="flat-btn recent active">本期扫描结果</button><button class="flat-btn past">往期扫描结果</button></div><div class="content"></div></div>`);
 	var $right = $(`<div class="scanner-right part2"></div>`);
 	var $briefing = $('<div class="inner briefing"></div>');
 	var $backtest = $('<div class="inner backtest"></div>');
@@ -186,16 +194,25 @@ scannerController.init = (container) => {
 
 	_$container = $(container).append($(`<div class="scanner-wrapper"></div>`).append([$title, $left, $right]));
 
+	var $contentRecent = $(`<div class="recent-wrapper"></div>`),
+			$contentPast = $(`<div class="past-wrapper"></div>`);
+	var $labels = $(`<div class="table-header"><span>代码名称</span><span>现价</span><span>涨跌幅</span><span>涨跌平均</span><span>上涨比例</span><span>行业</span><span>概念</span></div>`);
+	$contentRecent.append(_$filterTable).append($labels).append(_$listWrapper)
 
-	$left.append(`<h4 class="sub-title">Results 结果列表</h4>`);
-	$left.append(_$filterTable);
-	$left.append(_$listWrapper);
-	$left.append(`<div class="footer">
+	// $left.append(`<h4 class="sub-title">Results 结果列表</h4>`);
+	// $left.append(_$filterTable);
+	// $left.append(_$listWrapper);
+	$contentRecent.append(`<div class="footer">
 									注：选取的结果不代表其未来的绝对收益或概率；据历史回测统计，
 									持续按照扫描结果进行交易操作，有相当概率跑赢基准(大盘)。
 									欲了解更多关于我们的历史回测统计报告，请联系info@stone.io						
 								</div>`);
+	//往期扫描
+	$labels = $(`<div class="table-header"><span>代码名称</span><span>当日收盘价</span><span>现价</span><span>涨跌幅</span><span>时测涨跌平均数</span><span>时测上涨比例</span></div>`);
+	$contentPast.append('<div class="toolbar"><span class="select-ct"><select class="date"></select></span><button class="flat-btn btn-red round">查看</button><div class="pull-right"><select class="filter"></select><span class="stock-num"><span class="value">0</span>只股票</span></div></div>');
+	$contentPast.append($labels).append(_$listWrapperPast);
 
+	$left.find('.content').append([$contentRecent,$contentPast]);
 
 	//right panel
 	$briefing.append(`<h4 class="sub-title">Briefing 简报</h4>`);
@@ -217,13 +234,12 @@ scannerController.init = (container) => {
 	$briefing.append($content);
 
 	//backtest
-	$backtest.append(`<h4 class="sub-title">Backtest 回测</h4>`);
+	$backtest.append(`<h4 class="sub-title">基于扫描的参数配置进行的历史回测 模拟本测试走势图</h4>`);
 	$content = $('<div class="content"></div>');
 	$content.append(`<div class="backtest-info">
 										<p>
-											本页描述基于扫描的参数配置进行的历史回测模拟本测试<br/>
-											对目前的沪深300成分股用拱石搜索系统的相似图形平均收益率因子进行了分层回测<br/>
-											同时也测试了一种构建有效量化决策因子的有效方法: 基于分组稳定性构建多空操作策略
+											对目前的沪深300成分股用拱石搜索系统的相似图形平均收益率 因子进行了分层回测，<br/>
+											同时也测试了一种构建有效量化决策因子的有效方法：基于分组稳定性构建多空操作策略。
 										</p>
 									</div>`);
 	$content.append(`<div class="backtest-chart">
@@ -239,6 +255,7 @@ scannerController.init = (container) => {
 	_$rightPane = $right;
 
 	scannerController._initActions();
+	scannerController._initPast();
 	scannerController._fetchData();
 };
 
@@ -246,8 +263,8 @@ scannerController._initActions = () => {
 	_$filterTable.find('button.reset').click(function(event) {
 		if(_dimIndex) {
 			_dimensions.forEach(function(dim){ dim.filterAll(); });
-			_$filterTable.find('input[type="checkbox"]').prop('checked', false);
-			_$filterTable.find('tr.active').removeClass('active');
+			// _$filterTable.find('input[type="checkbox"]').prop('checked', false);
+			_$filterTable.find('span.active').removeClass('active');
 			_redrawFilterUI();
 		}
 	});
@@ -285,6 +302,11 @@ scannerController._initActions = () => {
 	_$container.find('button.refresh').click(function(){
 		scannerController._fetchData();
 	});
+	_$container.find('.scanner-left .header button').click(function(e){
+		$(e.target).addClass('active').siblings().removeClass('active');
+		var toPast = $(e.target).hasClass('past');
+		$(e.target).closest('.scanner-left').children('.content').toggleClass('past', toPast);
+	});
 
 	_backtestChart = new LinesChart(_$rightPane.find('.backtest-chart .chart-container')[0]);
 	_backtestChart.test();
@@ -306,6 +328,80 @@ scannerController.dispose = () => {
 	window.removeEventListener('resize',_resize);
 	clearInterval(_interval);  //clear updater
 	clearInterval(_intervalFresh);  //clear updater
+};
+// 初始化往期UI
+scannerController._initPast = () => {
+	var $pastWrapper = _$container.find('.past-wrapper');
+	var $selectDate = $pastWrapper.find('select.date').selectmenu({width: 142});
+	var $submit = $pastWrapper.find('button.btn-red');
+	var $selectFilter = $pastWrapper.find('select.filter');
+	$selectFilter.append(['<option value="0">筛选全部</option>','<option value="1">只看上涨</option>','<option value="2">只看下跌</option>'])
+								.selectmenu({width: 130})
+								.on('selectmenuchange',function(e){
+									var filterType = $selectFilter.val();
+									var children = _$listWrapperPast.children();
+									var count = 0;
+									children.each(function(i, item){
+										var data = $(item).data();
+										var isShow = filterType == 0 ? true : (filterType == 1 ^ (data && data.price>data.pricePast));
+										$(item).toggle(isShow);
+										if(isShow) count++;
+									});
+									_$container.find('.stock-num .value').text(count);
+								});
+
+	$submit.click(function(e){
+		var date = $selectDate.val();
+		_pastScanner.dateSelected = date;
+		scannerController._fetchPastData();
+	});
+	//网络请求
+	new Promise((resolve)=>{
+		//start waiting
+		resolve();
+	}).then(()=>{
+		$selectDate.empty().append([`<option>2017/1/1</option>`,`<option>2017/1/2</option>`]);
+		$selectDate.selectmenu("refresh");
+		$selectDate.next().find('.ui-selectmenu-text').text('请选择往期期数');
+
+	}).catch((e)=>{
+		console.error(e);
+	});
+};
+
+scannerController._fetchPastData = () => {
+	var date = _pastScanner.dateSelected;
+	//先看有没有缓存
+	var dataCache = _pastScanner.dataCache;
+	if(dataCache[date]) {
+		var data = dataCache[date].data;
+		var list = data.list;
+		var nodes = list.map(function(data){
+			return $(`<div class="item"><div class="section1"></div></div>`).data(data);
+		});
+		_$listWrapperPast.empty().append(nodes);
+		_updatePastList();
+		
+	} else {  //获取新数据
+		var data = {
+			name: '浦发银行',
+			symbol: '000001.SH',
+			pricePast: Math.random()*10,
+			price: Math.random()*10,
+			meanPast: 33.3,
+			upRatePast: 53.3,
+		};
+
+		var list = [data,data,data,data,data,data,data,data,data];
+		var nodes = list.map(function(data){
+			return $(`<div class="item"><div class="section1"></div></div>`).data(data);
+		});
+		_$listWrapperPast.empty().append(nodes);
+		
+		_updatePastList();
+		var cache = {data:{list:list}};
+		dataCache[date] = cache;
+	}
 };
 
 scannerController._fetchData = () => {
@@ -447,7 +543,7 @@ scannerController._update = () => {
 		var dom = $(`<div class="item">
 									<div class="section1"></div>
 									<div class="section2"></div>
-									<button class="flat-btn detail"><i class="fa fa-play"></i><span class="name">展开</span></button>
+									<button class="flat-btn detail"><i class="fa fa-play"></i><span class="name"></span></button>
 							</div>`)
 							.data({data: item});
 		return dom;
@@ -545,12 +641,13 @@ var _onFilter = (event) => {
 	if($cur.hasClass('disabled')) {
 		return;
 	}
-	var $curCheckbox = $cur.find('input[type="checkbox"]');
-	$curCheckbox.prop('checked', !$curCheckbox.prop('checked'));
-	$cur.toggleClass('active', $curCheckbox.prop('checked'));
+	// var $curCheckbox = $cur.find('input[type="checkbox"]');
+	// $curCheckbox.prop('checked', !$curCheckbox.prop('checked'));
+	// $cur.toggleClass('active', $curCheckbox.prop('checked'));
+	$cur.toggleClass('active');
 
-	var $table = $cur.closest('table');
-	var $trChecked = $table.find('tr').has(':checked');
+	var $table = $cur.closest('.body');
+	var $trChecked = $table.children('.active');
 	var filterArr = [];
 	$trChecked.each((index, ele)=>{
 		filterArr.push(JSON.stringify($(ele).data().key));
@@ -569,10 +666,10 @@ var _onFilter = (event) => {
 function _redrawFilterUI() {
 	//update UI
 	var groups = dimsToGroups(_dimensions);
-	var $tables = _$filterTable.find('td table');
+	var $tables = _$filterTable.find('.filter-body .body');
 	groups.forEach((group, i)=>{
 		var $table = $($tables[i]);
-		var $rows = $table.find('tr');
+		var $rows = $table.children();
 		group.forEach((obj, j)=>{
 			updateTr($($rows[j]).data(obj));
 		});
@@ -594,30 +691,53 @@ var aggregateFormatter = (key) => {
 		return str;
 };
 
-function updateTr($tr) {
-	var { key, value } = $tr.data();
+function updateTr($span) {
+	var { key, value } = $span.data();
 	if($.isArray(key)) {
 		key = aggregateFormatter(key);
 	}
-	$tr.find('td:nth-child(2)').html(`<span>${key}</span>`);
-	$tr.find('td:nth-child(3)').html(`<span>${value}</span>`);
-	$tr.toggleClass('disabled', value <= 0);
-	return $tr;
+	$span.find('i:nth-child(1)').html(`<span>${key}</span>`);
+	$span.find('i:nth-child(2)').html(`<span>${value}</span>`);
+	$span.toggleClass('disabled', value <= 0);
+	$span.attr('title',key);
+	return $span;
 }
 function _updateFilterTable() {
 	var dims = _dimensions;
+	var names = ['概念','行业','总市值'];
 	var filters = dimsToGroups(_dimensions);
 	var tables = filters.map((group, i)=>{
-		var $table = $(`<table><tbody></tbody></table>`).data('dim',dims[i]);
-		$table.find('tbody').append(group.map(item=>{
-			var $tr =  $(`<tr><td><input type="checkbox"/><label></label></td><td></td><td></td></tr>`).data(item).click(_onFilter);
-			return updateTr($tr);
+		var $table = $(`<div><div class="name"><span>${names[i]}</span><span><hr/><hr/></span></div><div class="body"></div></div>`);
+		$table.find('.body').data('dim',dims[i]).append(group.map(item=>{
+			var $span =  $(`<span><i></i><i></i></span>`).data(item).click(_onFilter);
+			// var $span =  $(`<span><input type="checkbox"/><label></label><i></i><i></i></span>`).data(item).click(_onFilter);
+			return updateTr($span);
 		}));
 		return $table;
 	});
-	_$filterTable.find('tbody>tr').empty().append(tables.map(table=>{
-		return $('<td></td>').append(table);
-	}));
+	_$filterTable.find('.filter-body').empty().append(tables);
+}
+//更新往期列表
+function _updatePastList() {
+	var $list = _$listWrapperPast.children();
+	for(var i=0; i<$list.length; i++) {
+		var $item = $($list[i]);
+		var dataObj = $item.data();
+		var {name, symbol, pricePast, price, meanPast, upRatePast} = dataObj;
+		var upRate = (price - pricePast)/price;
+		var children = [
+			`<span><div>${name}</div><div>${symbol}</div></span>`,
+			`<span><div>${pricePast}</div></span>`,
+			`<span><div>${price}</div></span>`,
+			`<span><div class=${upRate>=0 ? 'red':'green'}>${(upRate * 100).toFixed(2) + '%'}</div></span>`,
+			`<span><div class=${meanPast>=0 ? 'red':'green'}>${meanPast + '%'}</div></span>`,
+			`<span><div class=${upRatePast>=0 ? 'red':'green'}>${upRatePast + '%'}</div></span>`,
+		];
+		$item.find('.section1').append(children);
+	}
+	//other update
+	_$container.find('select.filter').val('0').selectmenu('refresh');
+	_$container.find('.stock-num .value').text($list.length);
 }
 //更新股票列表
 function _updateList() {
@@ -630,7 +750,7 @@ function _updateList() {
 	var expandItem = (e) => {
 		var $item = $(e.target).closest('.item');
 		$item.toggleClass('expand');
-		$item.find('button .name').text($item.hasClass('expand') ? '折叠' : '展开');
+		// $item.find('button .name').text($item.hasClass('expand') ? '折叠' : '展开');
 	};
 	for(var i=0; i<$list.length; i++) {
 		var $item = $($list[i]);
@@ -639,9 +759,10 @@ function _updateList() {
 
 		var section1Children = [
 			`<span><div>${name}</div><div>${symbol}</div></span>`,
-			`<span><div role="price">${'--'}</div><div role="up-rate">${'--'}</div></span>`,
-			`<span><div>${'上涨比例'}</div><div class="red">${(statistic.upPercent*100).toFixed(1)+'%'}</div></span>`,
-			`<span><div>${'涨跌平均数'}</div><div class=${statistic.mean>=0 ? 'red' : 'green'}>${(statistic.mean*100).toFixed(2)+'%'}</div></span>`,
+			`<span><div role="price">${'--'}</div></span>`,
+			`<span><div role="up-rate">${'--'}</div></span>`,
+			`<span><div class=${statistic.mean>=0 ? 'red' : 'green'}>${(statistic.mean*100).toFixed(2)+'%'}</div></span>`,
+			`<span><div class="red">${(statistic.upPercent*100).toFixed(1)+'%'}</div></span>`,
 			`<span><div>${industry}</div><div>${subIndustry}</div></span>`,
 			`<span><div>${categoryIndustry}</div><div>${categoryConcept}</div></span>`,
 		];
@@ -710,6 +831,7 @@ function _updateList() {
 	}
 
 	_$filterTable.find('.info .value').text($list.length);
+	_$filterTable.find('button.reset').prop('disabled',true);
 	//init tooltip trigger
 	$list.find('.main-wrapper').on('mousemove', _triggerTooltip);
 };
@@ -723,6 +845,7 @@ function _filterList() {
 		$(ele).toggleClass('hide', ids.indexOf(index) == -1);
 	});
 	_$filterTable.find('.info .value').text(filteredList.length);
+	_$filterTable.find('button.reset').prop('disabled',!(_$listWrapper.children('.hide').length>0));
 }
 
 //update right panel
