@@ -10,6 +10,7 @@ import request from '../../backend/request';
 import config from '../../backend/config';
 import watchlistController from '../watchlistController';
 import LinesChart from './LinesChart';
+import klineTooltip from './klineTooltip';
 
 let { getLatestPrice, getPriceFromSina } = getPrice;
 
@@ -107,6 +108,7 @@ var _pastScanner = {
 	dateSelected:'',
 	dataCache:{}
 };
+var _$sortButtons = null;
 
 //refresh watcher
 var _intervalFresh = null;
@@ -208,9 +210,19 @@ scannerController.init = (container) => {
 									欲了解更多关于我们的历史回测统计报告，请联系info@stone.io						
 								</div>`);
 	//往期扫描
-	$labels = $(`<div class="table-header"><span>代码名称</span><span>当日收盘价</span><span>现价</span><span>涨跌幅</span><span>时测涨跌平均数</span><span>时测上涨比例</span></div>`);
-	$contentPast.append('<div class="toolbar"><span class="select-ct"><select class="date"></select></span><button class="flat-btn btn-red round">查看</button><div class="pull-right"><select class="filter"></select><span class="stock-num"><span class="value">0</span>只股票</span></div></div>');
-	$contentPast.append($labels).append(_$listWrapperPast);
+	var $sortButtons = $(`<div class="table-header"></div>`)
+						.append([
+							'<button class="flat-btn">代码名称</button>',
+							'<button class="flat-btn" index="0">当日收盘价</button>',
+							'<button class="flat-btn" index="1">现价</button>',
+							'<button class="flat-btn" index="2">涨跌幅</button>',
+							'<button class="flat-btn" index="3">时测涨跌平均数</button>',
+							'<button class="flat-btn" index="4">时测上涨比例</button>',
+						]);
+	_$sortButtons = $sortButtons;
+
+	$contentPast.append('<div class="toolbar"><span class="select-ct"><select class="date"></select></span><button class="flat-btn btn-red round">查看</button><div class="right"><select class="filter"></select><span class="stock-num"><span class="value">0</span>只股票</span></div></div>');
+	$contentPast.append($sortButtons).append(_$listWrapperPast);
 
 	$left.find('.content').append([$contentRecent,$contentPast]);
 
@@ -343,8 +355,8 @@ scannerController._initPast = () => {
 									var count = 0;
 									children.each(function(i, item){
 										var data = $(item).data();
-										var isShow = filterType == 0 ? true : (filterType == 1 ^ (data && data.price>data.pricePast));
-										$(item).toggle(isShow);
+										var isShow = filterType == 0 ? true : !(filterType == 1 ^ (data && data.price>data.pricePast));
+										$(item)[isShow ? 'show' : 'hide']();
 										if(isShow) count++;
 									});
 									_$container.find('.stock-num .value').text(count);
@@ -355,7 +367,45 @@ scannerController._initPast = () => {
 		_pastScanner.dateSelected = date;
 		scannerController._fetchPastData();
 	});
-	//网络请求
+
+	var handleSort = function(e){
+		var $btn = $(e.currentTarget);
+		var $nodes = _$listWrapperPast.children();
+
+		var sortKeys = ['pricePast','price','upRate','meanPast','upRatePast'];
+		var sortIndex = $btn.attr('index');
+		var sortKey = sortKeys[sortIndex];
+		var sortType = '';
+		//reset other btns
+		$btn.siblings().removeClass('asc desc');
+
+		if($btn.hasClass('asc')) sortType = 'asc';
+		if($btn.hasClass('desc')) sortType = 'desc';
+		//sort
+		$nodes = $nodes.sort(function(a,b){
+			var data1 = $(a).data();
+			var data2 = $(b).data();
+			if(sortType == '') {
+				return data1.index - data2.index;
+			} else if(sortType == 'asc') {
+				return data1[sortKey] - data2[sortKey];
+			} else {
+				return data2[sortKey] - data1[sortKey];
+			}
+		});
+		$nodes.appendTo(_$listWrapperPast);
+	};
+
+	_$sortButtons.find('button').each(function(i,btn){
+		var $btn = $(btn);
+		if($btn.attr('index') === undefined) {
+			$btn.prop('disabled',true);
+		} else {
+			$btn.sortButton().click(handleSort);
+		}
+	});
+
+	//网络请求 获取往期列表
 	new Promise((resolve)=>{
 		//start waiting
 		resolve();
@@ -383,16 +433,21 @@ scannerController._fetchPastData = () => {
 		_updatePastList();
 		
 	} else {  //获取新数据
-		var data = {
-			name: '浦发银行',
-			symbol: '000001.SH',
-			pricePast: Math.random()*10,
-			price: Math.random()*10,
-			meanPast: 33.3,
-			upRatePast: 53.3,
-		};
 
-		var list = [data,data,data,data,data,data,data,data,data];
+		var list = [1,1,1,1,1,1,1,1,1].map(function(d, i){
+			var data = {
+				index: i,
+				name: '浦发银行',
+				symbol: '000001.SH',
+				pricePast: Math.random()*10,
+				price: Math.random()*10,
+				upRate: 0,
+				meanPast: Math.random()*10 - 5,
+				upRatePast: Math.random()*100,
+			};
+			data.upRate = (data.price - data.pricePast) / data.pricePast;
+			return data;
+		});
 		var nodes = list.map(function(data){
 			return $(`<div class="item"><div class="section1"></div></div>`).data(data);
 		});
@@ -726,18 +781,21 @@ function _updatePastList() {
 		var {name, symbol, pricePast, price, meanPast, upRatePast} = dataObj;
 		var upRate = (price - pricePast)/price;
 		var children = [
-			`<span><div>${name}</div><div>${symbol}</div></span>`,
-			`<span><div>${pricePast}</div></span>`,
-			`<span><div>${price}</div></span>`,
+			`<span class="kline-tooltip"><div>${name}</div><div>${symbol}</div></span>`,
+			`<span><div>${pricePast.toFixed(2)}</div></span>`,
+			`<span><div>${price.toFixed(2)}</div></span>`,
 			`<span><div class=${upRate>=0 ? 'red':'green'}>${(upRate * 100).toFixed(2) + '%'}</div></span>`,
-			`<span><div class=${meanPast>=0 ? 'red':'green'}>${meanPast + '%'}</div></span>`,
-			`<span><div class=${upRatePast>=0 ? 'red':'green'}>${upRatePast + '%'}</div></span>`,
+			`<span><div class=${meanPast>=0 ? 'red':'green'}>${meanPast.toFixed(2) + '%'}</div></span>`,
+			`<span><div class=${upRatePast>=0 ? 'red':'green'}>${upRatePast.toFixed(2) + '%'}</div></span>`,
 		];
 		$item.find('.section1').append(children);
 	}
 	//other update
 	_$container.find('select.filter').val('0').selectmenu('refresh');
 	_$container.find('.stock-num .value').text($list.length);
+	_$sortButtons.find('button.sort-btn').removeClass('asc desc');
+	//初始化k线弹出框
+	klineTooltip($list.find('.kline-tooltip'));
 }
 //更新股票列表
 function _updateList() {

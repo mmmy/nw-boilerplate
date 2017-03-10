@@ -353,6 +353,7 @@
 				}
 				.section1 > span {
 					text-align: center;
+					position: relative;
 					// border: 1px solid lightblue;
 					// float: left;
 					display: inline-block;
@@ -561,6 +562,15 @@
 				width: @base-width;
 			}
 		}
+		.kline-tooltip-container {
+			position: absolute;
+			top: 0;
+			left: 80%;
+			width: 200px;
+			height: 200px;
+			z-index: 2;
+			background-color: #444;
+		}
 		.past-wrapper {
 			.select-ct {
 				display: inline-block;
@@ -574,7 +584,7 @@
 				height: 40px;
 				background-color: transparent;
 				border-radius: 0;
-				width: 100px
+				width: 100px;
 			}
 			button.btn-red {
 				line-height: 30px;
@@ -582,11 +592,22 @@
 				margin-left: 10px;
 				vertical-align: middle;
 			}
+			.right {
+				position: absolute;
+				right: 0;
+				top: 0;
+			}
 			.toolbar {
 				padding-left: 20px;
+				position: relative;
 			}
 			.table-header {
-				margin-top: 0;
+				margin-top: 10px;
+				>button, >span {
+					width: 100% / 6;
+					white-space: nowrap;
+					// padding-left: 10px;
+				}
 			}
 			.stock-num {
 				margin-left: 10px;

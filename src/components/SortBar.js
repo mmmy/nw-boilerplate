@@ -119,15 +119,16 @@ class SortBar extends React.Component {
 				break;
 		}
 
-		let ascClass=classNames({'active':asc});
-		let descClass=classNames({'active':desc});
+		// let ascClass=classNames({'active':asc});
+		// let descClass=classNames({'active':desc});
 		let icons = (asc || desc) ? (<span className='sorticons-container'>
-						<span className={ascClass}><i className='fa fa-sort-asc'></i></span>
-						<span className={descClass}><i className='fa fa-sort-desc'></i></span>
+						<span><i className='fa fa-sort-asc'></i></span>
+						<span><i className='fa fa-sort-desc'></i></span>
 					</span>) : '';
 
 		let btnClass = classNames('sort-btn font-simsun', {
-			'active': asc || desc
+			'asc': asc,
+			'desc': desc
 		});
 		return (<a className={btnClass} onClick={this.handleSort.bind(this, btnType.type)} >{ btnType.label } <span className='sort-icon'>{ icons }</span></a>);
 	}

@@ -264,6 +264,21 @@ module.exports = function($) {
 			$svg.empty().append(paths);
 			return this;
 		},
-
+		sortButton: function() {
+			var $this = $(this).addClass('sort-btn');
+			if($this.find('.sort-icon').length == 0) {
+				$this.append('<span class="sort-icon"><span class="sorticons-container"><i class="fa fa-sort-asc"></i><i class="fa fa-sort-desc"></i></span></span>')
+			}
+			$this.on('click.sort', function(){
+				if($this.hasClass('asc')) {
+					$this.toggleClass('asc desc');
+				} else if($this.hasClass('desc')) {
+					$this.removeClass('asc desc');
+				} else {
+					$this.addClass('asc');
+				}
+			});
+			return $this;
+		},
 	});
 }

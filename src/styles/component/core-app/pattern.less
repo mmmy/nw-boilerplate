@@ -356,19 +356,22 @@
 	border: none;
 	overflow: hidden;
 }
-
+.pattern-bar-btn {
+	.sort-btn {
+		display: inline-block;
+		width: calc(~"33.3% - 2px");// 42%;//33.3%;
+		// float: left;
+		text-align: center;
+		//padding: 10px 10px;
+		margin-top: 8px;//0.6rem;
+		padding-right: 0;//calc(~"6.8% + 7px");//7px;
+		font-size: 12px;//1.2rem;
+		cursor: pointer;
+	}
+}
 //排序item btn
 .sort-btn {
-	text-align: center;
-	display: block;
-	width: calc(~"33.3% - 2px");// 42%;//33.3%;
-	float: left;
-	//padding: 10px 10px;
-	margin-top: 8px;//0.6rem;
-	padding-right: 0;//calc(~"6.8% + 7px");//7px;
-	font-size: 12px;//1.2rem;
-	cursor: pointer;
-	color: @ks-color-gray-6;
+	color: @ks-color-gray-5;
 	.sorticons-container {
 		color: @ks-color-gray-8;	
 		.fa-sort-desc {
@@ -388,11 +391,21 @@
 
 	&:hover {
 		text-decoration: none;
-		color: @ks-color-gray-5;
+		color: @ks-color-gray-6;
 	}
 
-	&.active {
+	&.active, &.desc, &.asc {
 		color: @brown-red;
+	}
+	&.desc {
+		.fa-sort-desc {
+			color: @ks-color-gray-8;
+		}
+	}
+	&.asc {
+		.fa-sort-asc:before {
+			color: @ks-color-gray-8;
+		}
 	}
 }
 
