@@ -513,6 +513,7 @@ let drawAxisY = (canvas, priceRange, options) => {
 	let labelWidth = options && options.labelWidth;
 	let padding = options && options.padding || paddingDefault;
 	let labelFormatter = options && labelFormatter || null;
+	let marks = options && options.marks;
 	
 	let ratio = getCanvasPixRatio();
 	let viewHeight = height - padding.top - padding.bottom;
@@ -541,11 +542,32 @@ let drawAxisY = (canvas, priceRange, options) => {
 		ctx.fillText(label, x, centerY);
 		priceShow = priceShow + priceInterval;
 	}
+	let rectH = 20 * ratio;
+	//marks 比如要显示一个参考线
+	if(marks) {
+		marks.forEach(function(mark){
+			var val = mark.value;
+			val *= ratio;
+			var centerY = (val - priceMax) * rate + padding.top;
+			let W = labelWidth || width;
+			ctx.fillStyle = hoverBackground;
+			ctx.fillRect(0, centerY - rectH / 2, W, rectH);
+			ctx.fillStyle = hoverColor;
+			ctx.fillText(val.toFixed(2), W/2, centerY);
+			ctx.setLineDash([3,3]);
+			ctx.strokeStyle = hoverBackground;
+			ctx.beginPath();
+			ctx.moveTo(W, centerY);
+			ctx.lineTo(width, centerY);
+			ctx.stroke();
+
+			ctx.setLineDash([]);
+		});
+	}
 
 	if(hoverY >=0) {
 		// let ratio = getCanvasPixRatio();
 		hoverY *= ratio;
-		let rectH = 20 * ratio;
 		ctx.fillStyle = hoverBackground;
 		let priceAtHover = (hoverY - padding.top) /rate + priceMax;
 		let W = labelWidth || width;

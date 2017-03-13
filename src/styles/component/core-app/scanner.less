@@ -389,41 +389,6 @@
 									margin-bottom: 5px;
 								}
 							}
-							.prediction-chart {
-								position: absolute;
-								width: 100%;
-								height: 100%;
-								canvas {
-									position: absolute;
-									width: 100%;
-									height: 100%;
-								}
-								.main-wrapper {
-									position: absolute;
-									width: 100%;
-									height: 100%;
-								}
-								&.axis .main-wrapper {
-									width: calc(~"100% - 50px");
-									height: calc(~"100% - 20px");
-									left: 50px;
-									top: 0;
-								}
-								.bottom-axis-x-wrapper {
-									position: absolute;
-									height: 20px;
-									width: calc(~"100% - 50px - 70px");
-									bottom: 0;
-									left: 50px;
-								}
-								.left-axis-y-wrapper {
-									position: absolute;
-									width: 50px;
-									height: calc(~"100% - 20px");
-									left: 0;
-									top: 0;
-								}
-							}
 							.heatmap-chart {
 								position: absolute;
 								width: 70px;
@@ -558,18 +523,12 @@
 		.list-wrapper-past {
 			height: calc(~"100% - 60px");
 			@base-width: 100% / 6;
+			.item {
+				overflow: visible;
+			}
 			.item .section1>span {
 				width: @base-width;
 			}
-		}
-		.kline-tooltip-container {
-			position: absolute;
-			top: 0;
-			left: 80%;
-			width: 200px;
-			height: 200px;
-			z-index: 2;
-			background-color: #444;
 		}
 		.past-wrapper {
 			.select-ct {
@@ -967,5 +926,102 @@
 				color: #fff;
 			}
 		}
+	}
+}
+
+.prediction-chart {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	canvas {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+	.main-wrapper {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+	&.axis .main-wrapper {
+		width: calc(~"100% - 50px");
+		height: calc(~"100% - 20px");
+		left: 50px;
+		top: 0;
+	}
+	.bottom-axis-x-wrapper {
+		position: absolute;
+		height: 20px;
+		width: 100%;//calc(~"100% - 50px - 70px");
+		bottom: 0;
+		left: 0;//50px;
+	}
+	.left-axis-y-wrapper {
+		position: absolute;
+		width: 50px;
+		height: 100%;//calc(~"100% - 20px");
+		left: 0;
+		top: 0;
+	}
+}
+
+.kline-tooltip-container {
+	position: absolute;
+	top: -5px;
+	left: calc(~"100% - 20px");
+	// width: 200px;
+	// height: 200px;
+	z-index: 2;
+	background-image: linear-gradient(180deg, #353B40, #303539);
+	padding: 10px;
+	text-align: left;
+	overflow: visible !important;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	&.bottom {
+		top: auto;
+		bottom: -5px;
+		&:before {
+			top: auto;
+			bottom: 20px;
+			background-color: #303539;
+		}
+	}
+	&:before {
+		content: '';
+		display: inline-block;
+		position: absolute;
+		left: -7px;
+		top: 15px;
+		width: 15px;
+		height: 15px;
+		transform: rotate(45deg);
+		background-color: #353B40;
+	}
+	.symbol {
+
+	}
+	.close-price {
+		float: right;
+	}
+	.chart {
+		position: relative;
+		width: 300px;
+		height: 160px;
+		background-color: #292E33;
+		.waiting-overlay {
+			width: 100%;
+		}
+	}
+	.axis .main-wrapper {
+		width: calc(~"100% - 40px");
+		left: 40px;
+		z-index: 1;
+	}
+	.bottom-axis-x-wrapper {
+		width: 100%;//calc(~"100% - 40px");
+		left: 0;
+	}
+	.left-axis-y-wrapper {
+		width: 100%;
 	}
 }

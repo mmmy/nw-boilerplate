@@ -26,9 +26,14 @@ let PredictionWidget = function(dom, config){
 		slient: false,
 		klineScaleRate: 1.25,
 		padding: {right:58},
+		xPadding: {left: 0, right: 0, top:0, bottom:0},
 		axis: false,         //显示x,y轴的
+		xHeight: 20,
+		yWidth: 50,
 		volume: false,
+		yMarks: [],
 	},config);
+	this._config = config;
 	this._canvas = null;
 	this._ctx = null;
 	this._canvasParent = null;
@@ -94,6 +99,9 @@ let PredictionWidget = function(dom, config){
 		textColor: this._isLight ? '' : '#999',
 		hoverColor: this._isLight ? '' : '#222',
 		hoverBackground: this._isLight ? '' : '#aaa',
+		padding:{left:0,top:0,right:0,bottom:config.xHeight},
+		labelWidth: config.yWidth,
+		marks: this._config.yMarks,
 	};
 	this._xDrawOption = {
 		drawLen: null,       //保证与K线区域对其
@@ -102,6 +110,7 @@ let PredictionWidget = function(dom, config){
 		textColor: this._isLight ? '' : '#999',
 		hoverColor: this._isLight ? '' : '#222',
 		hoverBackground: this._isLight ? '' : '#aaa',
+		padding: {left:config.yWidth,top:0,right:padding.right,bottom:0},
 	};
 	this._timeArray = [];
 	this._timeInterval = 'D';
@@ -284,9 +293,13 @@ PredictionWidget.prototype._updateKlineOption = function(){
 
   offset *= this._klineScaleRate;
   offset = isNaN(offset) ? 0 : offset;
-
+  //last close 居中显示
   this._klineOption.yMax = lastClosePrice + offset;
   this._klineOption.yMin = lastClosePrice - offset;
+  if(!this._predictionBars || this._predictionBars < 1) { //没有预测线 不需要居中显示
+  	this._klineOption.yMax = max;
+  	this._klineOption.yMin = min;
+  }
   this._klineOption.predictionBars = +this._predictionBars;
   this._klineOption.volume = this._patterns.length > 0  || this._axis;
   this._linesOptions.volume = this._axis;

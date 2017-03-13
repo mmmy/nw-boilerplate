@@ -109,6 +109,7 @@ var _pastScanner = {
 	dataCache:{}
 };
 var _$sortButtons = null;
+window._pastScanner = _pastScanner;
 
 //refresh watcher
 var _intervalFresh = null;
@@ -354,7 +355,7 @@ scannerController._initPast = () => {
 									var children = _$listWrapperPast.children();
 									var count = 0;
 									children.each(function(i, item){
-										var data = $(item).data();
+										var data = $(item).data().data;
 										var isShow = filterType == 0 ? true : !(filterType == 1 ^ (data && data.price>data.pricePast));
 										$(item)[isShow ? 'show' : 'hide']();
 										if(isShow) count++;
@@ -383,8 +384,8 @@ scannerController._initPast = () => {
 		if($btn.hasClass('desc')) sortType = 'desc';
 		//sort
 		$nodes = $nodes.sort(function(a,b){
-			var data1 = $(a).data();
-			var data2 = $(b).data();
+			var data1 = $(a).data().data;
+			var data2 = $(b).data().data;
 			if(sortType == '') {
 				return data1.index - data2.index;
 			} else if(sortType == 'asc') {
@@ -427,7 +428,7 @@ scannerController._fetchPastData = () => {
 		var data = dataCache[date].data;
 		var list = data.list;
 		var nodes = list.map(function(data){
-			return $(`<div class="item"><div class="section1"></div></div>`).data(data);
+			return $(`<div class="item"><div class="section1"></div></div>`).data({data});
 		});
 		_$listWrapperPast.empty().append(nodes);
 		_updatePastList();
@@ -437,19 +438,20 @@ scannerController._fetchPastData = () => {
 		var list = [1,1,1,1,1,1,1,1,1].map(function(d, i){
 			var data = {
 				index: i,
-				name: '浦发银行',
-				symbol: '000001.SH',
-				pricePast: Math.random()*10,
+				name: Math.random() > 0.5 ? '浦发银行' : '恒瑞医药',
+				symbol: '600000.SH',
+				pricePast: Math.random()*2 + 15,
 				price: Math.random()*10,
 				upRate: 0,
 				meanPast: Math.random()*10 - 5,
 				upRatePast: Math.random()*100,
+				kline: null,                          //最近30根K线
 			};
 			data.upRate = (data.price - data.pricePast) / data.pricePast;
 			return data;
 		});
 		var nodes = list.map(function(data){
-			return $(`<div class="item"><div class="section1"></div></div>`).data(data);
+			return $(`<div class="item"><div class="section1"></div></div>`).data({data});
 		});
 		_$listWrapperPast.empty().append(nodes);
 		
@@ -777,8 +779,8 @@ function _updatePastList() {
 	var $list = _$listWrapperPast.children();
 	for(var i=0; i<$list.length; i++) {
 		var $item = $($list[i]);
-		var dataObj = $item.data();
-		var {name, symbol, pricePast, price, meanPast, upRatePast} = dataObj;
+		var dataObj = $item.data().data;
+		var {name, symbol, pricePast, price, meanPast, upRatePast, kline} = dataObj;
 		var upRate = (price - pricePast)/price;
 		var children = [
 			`<span class="kline-tooltip"><div>${name}</div><div>${symbol}</div></span>`,
