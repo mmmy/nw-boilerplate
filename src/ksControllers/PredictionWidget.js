@@ -299,6 +299,18 @@ PredictionWidget.prototype._updateKlineOption = function(){
   if(!this._predictionBars || this._predictionBars < 1) { //没有预测线 不需要居中显示
   	this._klineOption.yMax = max;
   	this._klineOption.yMin = min;
+  	if(this._config.yMarks) {        //需要显示 标线, 比如一个价格线
+  		var that = this;
+  		this._config.yMarks.forEach(function(mark){
+  			var val = mark.value;
+  			that._klineOption.yMax = Math.max(that._klineOption.yMax, val);
+  			that._klineOption.yMin = Math.min(that._klineOption.yMin, val);
+  		});
+  	}
+  	offset = this._klineOption.yMax - this._klineOption.yMin;
+  	//上下偏移5% 显示, 防止到顶
+  	this._klineOption.yMax += offset * 0.05;
+  	this._klineOption.yMin -= offset * 0.05;
   }
   this._klineOption.predictionBars = +this._predictionBars;
   this._klineOption.volume = this._patterns.length > 0  || this._axis;

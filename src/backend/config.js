@@ -78,16 +78,28 @@ export default {
 		// url: 'http://112.74.17.46:30030/api/logout',
 		method: 'POST'
 	},
-
+    //本期扫描
     scannerOptions: {
         url: getURL(30054, 'scan'),
         // url: 'http://192.168.0.102:40054/scan',
         method: 'GET',
     },
+    //扫描是否更新
     scannerDateOptions: {
         url: getURL(30054, 'newest'),
         // url: 'http://192.168.0.102:40054/newest',
         method: 'GET',
     },
-
+    //获取扫描往期列表
+    scannerListOptions: {
+        url: 'http://139.129.11.35:40054/oldscanlist',
+        method: 'GET',
+    },
+    //获取往期数据
+    scannerQueryOptions: function(date) {
+        return {
+            url: 'http://139.129.11.35:40054/scanbydate/' + date,
+            method: 'GET',
+        }
+    },
 }

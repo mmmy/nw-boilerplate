@@ -190,10 +190,10 @@ scannerController.init = (container) => {
 
 	var $title = $(`<div class="title"><span>扫描</span><img src="./image/tooltip.png"/><span class="date-info"></span><button class="refresh hide flat-btn btn-red round">最新一期扫描结果已经出炉</button></div>`)
 	var $left = $(`<div class="scanner-left"><div class="header"><button class="flat-btn recent active">本期扫描结果</button><button class="flat-btn past">往期扫描结果</button></div><div class="content"></div></div>`);
-	var $right = $(`<div class="scanner-right part2"></div>`);
+	var $right = $(`<div class="scanner-right part1"></div>`);
 	var $briefing = $('<div class="inner briefing"></div>');
 	var $backtest = $('<div class="inner backtest"></div>');
-	$right.append($briefing).append($backtest).append([`<button class="flat-btn briefing">简报Briefing</button>`,`<button class="flat-btn backtest">历史回测</button>`]);
+	$right.append($briefing).append($backtest);//.append([`<button class="flat-btn briefing">简报Briefing</button>`,`<button class="flat-btn backtest">历史回测</button>`]);
 
 	_$container = $(container).append($(`<div class="scanner-wrapper"></div>`).append([$title, $left, $right]));
 
@@ -407,11 +407,15 @@ scannerController._initPast = () => {
 	});
 
 	//网络请求 获取往期列表
-	new Promise((resolve)=>{
+	new Promise((resolve, reject)=>{
 		//start waiting
-		resolve();
-	}).then(()=>{
-		$selectDate.empty().append([`<option>2017/1/1</option>`,`<option>2017/1/2</option>`]);
+		request(config.scannerListOptions, resolve, reject);
+	}).then((res)=>{
+		var dateArr = JSON.parse(res);
+		var optionNodes = dateArr.map(function(date){
+			return `<option>${date}</option>`;
+		});
+		$selectDate.empty().append(optionNodes);
 		$selectDate.selectmenu("refresh");
 		$selectDate.next().find('.ui-selectmenu-text').text('请选择往期期数');
 
