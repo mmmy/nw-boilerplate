@@ -80,14 +80,18 @@ var reOrderKline = (kline) => { //将[d,o,h,l,c,v] => [d,o,c,l,h,v]
 //price updater interval
 var _interval = null;
 var _priceUpdaters = [];
+var _priceUpdaters2 = [];
 var _priceUpdate = (param, $item) => {
 	var symbolInfo = $.extend({
 		type: 'stock',
 		symbol: '000001.SH',
 	},param);
+	var dataObj = $item.data().data;
 	getPriceFromSina(symbolInfo, null, (data)=>{ //data: [{open,close,high,low,lastClose}]
 		if(data.length == 0) return;
 		var {open, close, high, low, lastClose} = data[0];
+		//往期扫描的更新使用的是 过去的价格
+		lastClose = dataObj.pricePast || lastClose;
 		if(lastClose) {
 			var upRate = (close - lastClose) / lastClose;
 			let colorClass = '';
@@ -97,6 +101,10 @@ var _priceUpdate = (param, $item) => {
 				colorClass = 'green';
 			$item.find('[role="price"]').text(close).addClass(colorClass).animateCss('fadeIn');
 			$item.find('[role="up-rate"]').text((upRate*100).toFixed(2) + '%').addClass(colorClass).animateCss('fadeIn');
+			if(dataObj.pricePast) {
+				dataObj.price = close;
+				dataObj.upRate = upRate;
+			}
 		}
 	}, (err)=>{
 		console.warn(param, $item, err);
@@ -189,7 +197,7 @@ scannerController.init = (container) => {
 	_initCache();
 
 	var $title = $(`<div class="title"><span>扫描</span><img src="./image/tooltip.png"/><span class="date-info"></span><button class="refresh hide flat-btn btn-red round">最新一期扫描结果已经出炉</button></div>`)
-	var $left = $(`<div class="scanner-left"><div class="header"><button class="flat-btn recent active">本期扫描结果</button><button class="flat-btn past">往期扫描结果</button></div><div class="content"></div></div>`);
+	var $left = $(`<div class="scanner-left"><div class="header"><button class="flat-btn recent active">本期扫描结果</button><button class="flat-btn past">往期扫描结果</button><span class="active-line transition-position"></span></div><div class="content"></div></div>`);
 	var $right = $(`<div class="scanner-right part1"></div>`);
 	var $briefing = $('<div class="inner briefing"></div>');
 	var $backtest = $('<div class="inner backtest"></div>');
@@ -295,6 +303,7 @@ scannerController._initActions = () => {
 		var hours = now.getHours();
 		if(hours > 9 && hours < 15) {
 			_priceUpdaters.forEach((updater)=>{ updater(); });
+			_priceUpdaters2.forEach((updater)=>{ updater(); });
 		}
 	}, 6000);
 	_intervalFresh = setInterval(()=>{       //10分钟
@@ -438,30 +447,58 @@ scannerController._fetchPastData = () => {
 		_updatePastList();
 		
 	} else {  //获取新数据
+		var option = config.scannerQueryOptions(date);
 
-		var list = [1,1,1,1,1,1,1,1,1].map(function(d, i){
-			var data = {
-				index: i,
-				name: Math.random() > 0.5 ? '浦发银行' : '恒瑞医药',
-				symbol: '600000.SH',
-				pricePast: Math.random()*2 + 15,
-				price: Math.random()*10,
-				upRate: 0,
-				meanPast: Math.random()*10 - 5,
-				upRatePast: Math.random()*100,
-				kline: null,                          //最近30根K线
-			};
-			data.upRate = (data.price - data.pricePast) / data.pricePast;
-			return data;
+		new Promise((resolve, reject)=>{
+			request(option, resolve, reject);
+		}).then((res)=>{
+			var res = JSON.parse(res); //res: {sids:,EVs,hitRates,industries,prices0,prices10}
+			var { sids, EVs, hitRates, industries, prices0, prices10 } = res;
+			var list = [];
+			for(var i=0; i<sids.length; i++) {
+				var data = {
+					index: i,
+					name: industries[i].secShortName,
+					symbol: sids[i],
+					pricePast: prices0[i][4],
+					price: undefined,//prices10[i].close,
+					upRate: 0,
+					meanPast: EVs[i],
+					upRatePast: hitRates[i],
+					kline: null
+				};
+				if(data.price) {
+					data.upRate = (data.price - data.pricePast) / data.pricePast;
+				}
+				list.push(data);
+			}
+			var nodes = list.map(function(data){
+				return $(`<div class="item"><div class="section1"></div></div>`).data({data});
+			});
+			_$listWrapperPast.empty().append(nodes);
+			
+			_updatePastList();
+			var cache = {data:{list:list}};
+			dataCache[date] = cache;
+
+		}).catch((err)=>{
+			console.error(err);
 		});
-		var nodes = list.map(function(data){
-			return $(`<div class="item"><div class="section1"></div></div>`).data({data});
-		});
-		_$listWrapperPast.empty().append(nodes);
-		
-		_updatePastList();
-		var cache = {data:{list:list}};
-		dataCache[date] = cache;
+		// var list = [1,1,1,1,1,1,1,1,1].map(function(d, i){
+		// 	var data = {
+		// 		index: i,
+		// 		name: Math.random() > 0.5 ? '浦发银行' : '恒瑞医药',
+		// 		symbol: '600000.SH',
+		// 		pricePast: Math.random()*2 + 15,
+		// 		price: Math.random()*10,
+		// 		upRate: 0,
+		// 		meanPast: Math.random()*10 - 5,
+		// 		upRatePast: Math.random()*100,
+		// 		kline: null,                          //最近30根K线
+		// 	};
+		// 	data.upRate = (data.price - data.pricePast) / data.pricePast;
+		// 	return data;
+		// });
 	}
 };
 
@@ -781,21 +818,26 @@ function _updateFilterTable() {
 //更新往期列表
 function _updatePastList() {
 	var $list = _$listWrapperPast.children();
+	_priceUpdaters2 = [];
 	for(var i=0; i<$list.length; i++) {
 		var $item = $($list[i]);
 		var dataObj = $item.data().data;
 		var {name, symbol, pricePast, price, meanPast, upRatePast, kline} = dataObj;
-		var upRate = (price - pricePast)/price;
+		var upRate = price && (price - pricePast)/price;
 		var children = [
 			`<span class="kline-tooltip"><div>${name}</div><div>${symbol}</div></span>`,
 			`<span><div>${pricePast.toFixed(2)}</div></span>`,
-			`<span><div>${price.toFixed(2)}</div></span>`,
-			`<span><div class=${upRate>=0 ? 'red':'green'}>${(upRate * 100).toFixed(2) + '%'}</div></span>`,
-			`<span><div class=${meanPast>=0 ? 'red':'green'}>${meanPast.toFixed(2) + '%'}</div></span>`,
-			`<span><div class=${upRatePast>=0 ? 'red':'green'}>${upRatePast.toFixed(2) + '%'}</div></span>`,
+			`<span><div role="price">${price && price.toFixed(2) || '--'}</div></span>`,
+			`<span><div role="up-rate" class=${upRate && (upRate>=0 ? 'red':'green')}>${(upRate && (upRate * 100).toFixed(2) || '--') + '%'}</div></span>`,
+			`<span><div class=${meanPast>=0 ? 'red':'green'}>${(meanPast*100).toFixed(2) + '%'}</div></span>`,
+			`<span><div class=${upRatePast>=0 ? 'red':'green'}>${(upRatePast*100).toFixed(2) + '%'}</div></span>`,
 		];
 		$item.find('.section1').append(children);
+		if(!price) {
+			_priceUpdaters2.push(_priceUpdate.bind(null, {symbol:symbol}, $item));
+		}
 	}
+	_priceUpdaters2.forEach(function(updater){ updater(); });
 	//other update
 	_$container.find('select.filter').val('0').selectmenu('refresh');
 	_$container.find('.stock-num .value').text($list.length);

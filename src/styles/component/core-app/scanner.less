@@ -554,23 +554,36 @@
 			.right {
 				position: absolute;
 				right: 0;
-				top: 0;
+				top: 5px;
 			}
 			.toolbar {
+				padding: 5px 0;
 				padding-left: 20px;
 				position: relative;
 			}
 			.table-header {
 				margin-top: 10px;
+				line-height: 2;
 				>button, >span {
 					width: 100% / 6;
 					white-space: nowrap;
 					// padding-left: 10px;
 				}
+				button.flat-btn {
+					padding: 0;
+					position: relative;
+					.sort-icon {
+						position: absolute;
+
+					}
+				}
+				.sort-btn.asc, .sort-btn.desc {
+					color: #fff;
+				}
 			}
 			.stock-num {
 				margin-left: 10px;
-				margin-right: 20px;
+				margin-right: 26px;
 			}
 		}
 		.footer {
@@ -583,6 +596,16 @@
 		.header {
 			border-bottom: 1px solid #383E43;
 			height: 50px;
+			position: relative;
+			.active-line {
+				position: absolute;
+				bottom: 0;
+				width: 100px;
+				height: 3px;
+				background-color: @brown-red;
+				left: 33px;
+				transition-duration: 0.1s;
+			}
 			button.flat-btn {
 				font-size: 16px;
 				color: #999;
@@ -595,7 +618,12 @@
 				}
 				&.active {
 					color: #fff;
-					border-bottom-color: @brown-red;
+					&.past {
+						& + .active-line {
+							left: 164px;
+						}
+					}
+					// border-bottom-color: @brown-red;
 				}
 			}
 		}
