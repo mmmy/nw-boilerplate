@@ -475,7 +475,7 @@ scannerController._fetchPastData = () => {
 			request(option, resolve, reject);
 		}).then((res)=>{
 			var res = JSON.parse(res); //res: {sids:,EVs,hitRates,industries,prices0,prices10}
-			var { sids, EVs, hitRates, industries, prices0, prices10 } = res;
+			var { sids, EVs, hitRates, industries, prices0, prices10, config } = res;
 			var list = [];
 			for(var i=0; i<sids.length; i++) {
 				var data = {
@@ -500,9 +500,9 @@ scannerController._fetchPastData = () => {
 			_$listWrapperPast.find('.waiting-overlay').remove();
 			_$listWrapperPast.empty().append(nodes);
 			
-			_updatePastList();
-			var cache = {data:{list:list}};
+			var cache = {data:{list:list,config}};
 			dataCache[date] = cache;
+			_updatePastList();
 
 		}).catch((err)=>{
 			_$listWrapperPast.find('.waiting-overlay').html('<span class="info">获取数据失败</span>');
@@ -841,6 +841,9 @@ function _updateFilterTable() {
 }
 //更新往期列表
 function _updatePastList() {
+	var date = _pastScanner.dateSelected;
+	var config = _pastScanner.dataCache[date] && _pastScanner.dataCache[date].data.config;
+	var prediction = config && config.dCome || 10;
 	var $list = _$listWrapperPast.children();
 	_priceUpdaters2 = [];
 	for(var i=0; i<$list.length; i++) {
@@ -861,14 +864,15 @@ function _updatePastList() {
 			_priceUpdaters2.push(_priceUpdate.bind(null, {symbol:symbol}, $item));
 		}
 	}
-	_$sortButtons.find('button:nth-child(3)').contents()[0].textContent = _priceUpdaters2.length == 0 ? '10天收盘' : '现价';
-	
+	var str = _priceUpdaters2.length == 0 ? `${prediction}天后收盘价` : '现价';
+	_$sortButtons.find('button:nth-child(3)').contents()[0].textContent = str;
+
 	_priceUpdaters2.forEach(function(updater){ updater(); });
 	//other update
 	_$container.find('select.filter').val('0').selectmenu('refresh');
 	_$container.find('.stock-num .value').text($list.length);
 	_$sortButtons.find('button.sort-btn').removeClass('asc desc');
-	_$sortButtons.find('button:nth-child(5)').trigger('click').trigger('click');
+	_$sortButtons.find('button:nth-child(5)').attr('data-kstooltip', str + '和当日收盘价相比较的变化').trigger('click').trigger('click');
 	//初始化k线弹出框
 	klineTooltip($list.find('.kline-tooltip'));
 }
