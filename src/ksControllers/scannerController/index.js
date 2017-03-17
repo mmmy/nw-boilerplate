@@ -117,6 +117,7 @@ var _pastScanner = {
 	dataCache:{}
 };
 var _$sortButtons = null;
+var _$selectDate = null;
 window._pastScanner = _pastScanner;
 
 //refresh watcher
@@ -222,11 +223,11 @@ scannerController.init = (container) => {
 	var $sortButtons = $(`<div class="table-header"></div>`)
 						.append([
 							'<button class="flat-btn">代码名称</button>',
-							'<button class="flat-btn" index="0">当日收盘价</button>',
+							'<button class="flat-btn" index="0" data-kstooltip="扫描当日收盘价">当日收盘价</button>',
 							'<button class="flat-btn" index="1">现价</button>',
-							'<button class="flat-btn" index="2">涨跌幅</button>',
-							'<button class="flat-btn" index="3">时测涨跌平均数</button>',
-							'<button class="flat-btn" index="4">时测上涨比例</button>',
+							'<button class="flat-btn" index="2" data-kstooltip="现价(或者10日后收盘价)和当日收盘价相比较的变化">涨跌幅</button>',
+							'<button class="flat-btn" index="3" data-kstooltip="对扫描当日的图形进行测算的涨跌平均数">时测涨跌平均数</button>',
+							'<button class="flat-btn" index="4" data-kstooltip="对扫描当日的图形进行测算的上涨比例">时测上涨比例</button>',
 						]);
 	_$sortButtons = $sortButtons;
 
@@ -278,6 +279,7 @@ scannerController.init = (container) => {
 	scannerController._initActions();
 	scannerController._initPast();
 	scannerController._fetchData();
+	_$container.find('[data-kstooltip]').ksTooltip();
 };
 
 scannerController._initActions = () => {
@@ -351,13 +353,38 @@ scannerController.dispose = () => {
 	clearInterval(_interval);  //clear updater
 	clearInterval(_intervalFresh);  //clear updater
 };
+
+var _updatePastSelect = () => {
+	//网络请求 获取往期列表
+	new Promise((resolve, reject)=>{
+		//start waiting
+		request(config.scannerListOptions, resolve, reject);
+	}).then((res)=>{
+		var dateArr = JSON.parse(res);
+		var optionNodes = dateArr.map(function(date){
+			return `<option>${date}</option>`;
+		});
+		_$selectDate.empty().append(optionNodes);
+		_$selectDate.selectmenu("refresh");
+		_$selectDate.next().find('.ui-selectmenu-text').text('请选择往期期数');
+
+	}).catch((e)=>{
+		_$listWrapperPast.find('.waiting-overlay').remove();
+		_$listWrapperPast.append('<div class="waiting-overlay flex-center"><span class="info">获取往期列表失败<a class="flat-btn">重试</a></span></div>');
+		_$listWrapperPast.find('.waiting-overlay .flat-btn').click(()=>{
+			_updatePastSelect();
+		});
+		console.error(e);
+	});
+};
+
 // 初始化往期UI
 scannerController._initPast = () => {
 	var $pastWrapper = _$container.find('.past-wrapper');
 	var $selectDate = $pastWrapper.find('select.date').selectmenu({width: 142});
 	var $submit = $pastWrapper.find('button.btn-red');
 	var $selectFilter = $pastWrapper.find('select.filter');
-	$selectFilter.append(['<option value="0">筛选全部</option>','<option value="1">只看上涨</option>','<option value="2">只看下跌</option>'])
+	$selectFilter.append(['<option value="0">全部</option>','<option value="1">只看上涨</option>','<option value="2">只看下跌</option>'])
 								.selectmenu({width: 130})
 								.on('selectmenuchange',function(e){
 									var filterType = $selectFilter.val();
@@ -366,9 +393,13 @@ scannerController._initPast = () => {
 									children.each(function(i, item){
 										var data = $(item).data().data;
 										var isShow = filterType == 0 ? true : !(filterType == 1 ^ (data && data.price>data.pricePast));
-										$(item)[isShow ? 'show' : 'hide']();
+										$(item)[isShow ? 'show' : 'hide']().css('background-color','');
 										if(isShow) count++;
 									});
+									if(filterType != 0) {
+										_$listWrapperPast.children(':visible:even').css('background-color','#272A2D');
+										_$listWrapperPast.children(':visible:odd').css('background-color','transparent');
+									}
 									_$container.find('.stock-num .value').text(count);
 								});
 
@@ -377,6 +408,8 @@ scannerController._initPast = () => {
 		_pastScanner.dateSelected = date;
 		scannerController._fetchPastData();
 	});
+	//缓存
+	_$selectDate = $selectDate;
 
 	var handleSort = function(e){
 		var $btn = $(e.currentTarget);
@@ -415,22 +448,7 @@ scannerController._initPast = () => {
 		}
 	});
 
-	//网络请求 获取往期列表
-	new Promise((resolve, reject)=>{
-		//start waiting
-		request(config.scannerListOptions, resolve, reject);
-	}).then((res)=>{
-		var dateArr = JSON.parse(res);
-		var optionNodes = dateArr.map(function(date){
-			return `<option>${date}</option>`;
-		});
-		$selectDate.empty().append(optionNodes);
-		$selectDate.selectmenu("refresh");
-		$selectDate.next().find('.ui-selectmenu-text').text('请选择往期期数');
-
-	}).catch((e)=>{
-		console.error(e);
-	});
+	_updatePastSelect();
 };
 
 scannerController._fetchPastData = () => {
@@ -450,6 +468,10 @@ scannerController._fetchPastData = () => {
 		var option = config.scannerQueryOptions(date);
 
 		new Promise((resolve, reject)=>{
+			//start waiting
+			_$listWrapperPast.find('.waiting-overlay').remove();
+			_$listWrapperPast.append('<div class="waiting-overlay flex-center"><i class="fa fa-spin fa-circle-o-notch"></i></div>');
+		
 			request(option, resolve, reject);
 		}).then((res)=>{
 			var res = JSON.parse(res); //res: {sids:,EVs,hitRates,industries,prices0,prices10}
@@ -461,7 +483,7 @@ scannerController._fetchPastData = () => {
 					name: industries[i].secShortName,
 					symbol: sids[i],
 					pricePast: prices0[i][4],
-					price: undefined,//prices10[i].close,
+					price: prices10[i].close,
 					upRate: 0,
 					meanPast: EVs[i],
 					upRatePast: hitRates[i],
@@ -475,6 +497,7 @@ scannerController._fetchPastData = () => {
 			var nodes = list.map(function(data){
 				return $(`<div class="item"><div class="section1"></div></div>`).data({data});
 			});
+			_$listWrapperPast.find('.waiting-overlay').remove();
 			_$listWrapperPast.empty().append(nodes);
 			
 			_updatePastList();
@@ -482,6 +505,7 @@ scannerController._fetchPastData = () => {
 			dataCache[date] = cache;
 
 		}).catch((err)=>{
+			_$listWrapperPast.find('.waiting-overlay').html('<span class="info">获取数据失败</span>');
 			console.error(err);
 		});
 		// var list = [1,1,1,1,1,1,1,1,1].map(function(d, i){
@@ -546,8 +570,8 @@ scannerController._fetchData = () => {
 			date: originData.today || '',
 			list: [],
 			options: {
-				baseBars: 20,
-				prediction: 10,
+				baseBars: originData.config && originData.config.dBack || 20,
+				prediction: originData.config && originData.config.dCome || 10,
 				similarityThreshold: 0.8,
 				vsimilarityThreshold: 0.6,
 				STDRate: 1,
@@ -837,11 +861,14 @@ function _updatePastList() {
 			_priceUpdaters2.push(_priceUpdate.bind(null, {symbol:symbol}, $item));
 		}
 	}
+	_$sortButtons.find('button:nth-child(3)').contents()[0].textContent = _priceUpdaters2.length == 0 ? '10天收盘' : '现价';
+	
 	_priceUpdaters2.forEach(function(updater){ updater(); });
 	//other update
 	_$container.find('select.filter').val('0').selectmenu('refresh');
 	_$container.find('.stock-num .value').text($list.length);
 	_$sortButtons.find('button.sort-btn').removeClass('asc desc');
+	_$sortButtons.find('button:nth-child(5)').trigger('click').trigger('click');
 	//初始化k线弹出框
 	klineTooltip($list.find('.kline-tooltip'));
 }
@@ -950,6 +977,8 @@ function _filterList() {
 		var index = data.index;
 		$(ele).toggleClass('hide', ids.indexOf(index) == -1);
 	});
+	_$listWrapper.children(':visible:even').css('background-color','#272A2D');
+	_$listWrapper.children(':visible:odd').css('background-color','transparent');
 	_$filterTable.find('.info .value').text(filteredList.length);
 	_$filterTable.find('button.reset').prop('disabled',!(_$listWrapper.children('.hide').length>0));
 }

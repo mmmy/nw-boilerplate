@@ -79,15 +79,17 @@ export default {
     },
     //获取扫描往期列表
     scannerListOptions: {
-        url: 'http://139.129.11.35:40054/oldscanlist',
-        url: 'http://192.168.0.106:40054/oldscanlist',
+        url: getURL(30054, 'oldscanlist'),
+        // url: 'http://139.129.11.35:40054/oldscanlist',
+        // url: 'http://192.168.0.106:40054/oldscanlist',
         method: 'GET',
     },
     //获取往期数据
     scannerQueryOptions: function(date) {
         return {
-            url: 'http://139.129.11.35:40054/scanbydate/' + date,
-            url: 'http://192.168.0.106:40054/scanbydate/' + date,
+            url: getURL(30054, 'scanbydate') + '/' + date,
+            // url: 'http://139.129.11.35:40054/scanbydate/' + date,
+            // url: 'http://192.168.0.106:40054/scanbydate/' + date,
             method: 'GET',
         }
     },

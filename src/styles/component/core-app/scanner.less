@@ -14,8 +14,12 @@
 	}
 	.waiting-overlay {
 		font-size: 30px;
-		background-color: #262b2f;
+		background-color: transparent;
 		width: calc(~"100% - 10px");
+		.info {
+			font-size: 14px;
+			color: #999;
+		}
 		&.error {
 			font-size: 14px;
 			a.flat-btn {
@@ -337,9 +341,9 @@
 			.scrollbar-thumb();
 			.scrollbar-track();
 			>.item {
-				background-color: #2B2F33;
-				margin-top: 7px;
-				margin-bottom: 7px;
+				// background-color: #2B2F33;
+				// margin-top: 7px;
+				// margin-bottom: 7px;
 				// padding: 5px 0;
 				overflow: auto;
 				line-height: 2;
@@ -347,6 +351,10 @@
 				font-size: 14px;
 				position: relative;
 				@width-base: 100% / 15 * 2;
+				&:nth-child(2n+1) {
+					background-color: #272A2D;
+					// box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+				}
 				.section1 {
 					padding: 5px 0;
 					border-bottom: 1px solid transparent;
@@ -532,6 +540,23 @@
 			}
 			.item .section1>span {
 				width: @base-width;
+			}
+			&:empty {
+				&:before {
+					font-size: 30px;
+					margin-top: 20%;
+					font-family: FontAwesome;
+					content: '\f06a';
+					display: block;
+					text-align: center;
+					margin-bottom: 10px;
+				}
+				&:after {
+					color: #999;
+					content: '支持查看过往二十期的扫描结果';
+					display: block;
+					text-align: center;
+				}
 			}
 		}
 		.past-wrapper {
