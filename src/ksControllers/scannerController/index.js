@@ -367,7 +367,7 @@ var _updatePastSelect = () => {
 		_$selectDate.empty().append(optionNodes);
 		_$selectDate.selectmenu("refresh");
 		_$selectDate.next().find('.ui-selectmenu-text').text('请选择往期期数');
-
+		_$selectDate.parent().siblings('.flat-btn.btn-red').prop('disabled',true);
 	}).catch((e)=>{
 		_$listWrapperPast.find('.waiting-overlay').remove();
 		_$listWrapperPast.append('<div class="waiting-overlay flex-center"><span class="info">获取往期列表失败<a class="flat-btn">重试</a></span></div>');
@@ -381,7 +381,9 @@ var _updatePastSelect = () => {
 // 初始化往期UI
 scannerController._initPast = () => {
 	var $pastWrapper = _$container.find('.past-wrapper');
-	var $selectDate = $pastWrapper.find('select.date').selectmenu({width: 142});
+	var $selectDate = $pastWrapper.find('select.date').selectmenu({width: 142}).on('selectmenuchange',function(e){
+		_$selectDate.parent().siblings('.flat-btn.btn-red').prop('disabled',false);
+	});
 	var $submit = $pastWrapper.find('button.btn-red');
 	var $selectFilter = $pastWrapper.find('select.filter');
 	$selectFilter.append(['<option value="0">全部</option>','<option value="1">只看上涨</option>','<option value="2">只看下跌</option>'])
