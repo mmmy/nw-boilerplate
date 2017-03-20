@@ -722,6 +722,13 @@ let drawAxisTime = (canvas, timeArr, options) => { //timeArr:['2012-01-21 09:21:
 		let text = showTime ? timeText : timeText.slice(0, 10);
 		let center = hoverIndex*spaceX + spaceX/2 + padding.left;
 		if(noGap) center = hoverIndex*spaceX + padding.left;
+		//不让画出边界
+		if(center < rectW/2) {
+			center = rectW / 2;
+		}
+		if(center + rectW/2 > width) {
+			center = width - rectW / 2;
+		}
 		center = _toInt(center);
 		ctx.fillStyle = hoverBackground;
 		ctx.fillRect(center - rectW/2, 0, rectW, height);

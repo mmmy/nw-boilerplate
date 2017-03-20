@@ -158,6 +158,15 @@ module.exports = function($) {
 	    }
 	    return this;
 		},
+		ksSpinner: function() {
+			var $this = $(this);
+			if($this.children('svg').length > 0) return;
+			var $svg = $s('svg').addClass('ks-spinner');
+			var $circle = $s('circle').attr({cx:25,cy:25,r:20,fill:'none','stroke-width':5})
+			$svg[0].setAttribute('viewBox', '0 0 50 50');
+			$this.append($svg.append($circle));
+			return this;
+		},
 		ksTooltip: function(handle) {
 			var $this = $(this);
 			$this.on('mouseenter', function(e) {
