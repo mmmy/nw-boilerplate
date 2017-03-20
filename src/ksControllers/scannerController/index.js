@@ -471,7 +471,7 @@ scannerController._fetchPastData = () => {
 
 		new Promise((resolve, reject)=>{
 			//start waiting
-			_$listWrapperPast.find('.waiting-overlay').remove();
+			_$listWrapperPast.empty().find('.waiting-overlay').remove();
 			_$listWrapperPast.append('<div class="waiting-overlay flex-center"><i class="fa fa-spin fa-circle-o-notch"></i></div>');
 		
 			request(option, resolve, reject);
@@ -874,7 +874,8 @@ function _updatePastList() {
 	_$container.find('select.filter').val('0').selectmenu('refresh');
 	_$container.find('.stock-num .value').text($list.length);
 	_$sortButtons.find('button.sort-btn').removeClass('asc desc');
-	_$sortButtons.find('button:nth-child(5)').data('kstooltip', str + '和当日收盘价相比较的变化').trigger('click').trigger('click');
+	_$sortButtons.find('button:nth-child(4)').data('kstooltip', str + '和当日收盘价相比较的变化');
+	_$sortButtons.find('button:nth-child(5)').trigger('click').trigger('click');
 	//初始化k线弹出框
 	klineTooltip($list.find('.kline-tooltip'));
 }
