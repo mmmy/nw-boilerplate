@@ -99,7 +99,7 @@ var _priceUpdate = (param, $item) => {
 				colorClass = 'red';
 			else if(upRate < 0) 
 				colorClass = 'green';
-			$item.find('[role="price"]').text(close).addClass(colorClass).animateCss('fadeIn');
+			$item.find('[role="price"]').text(close && close.toFixed(2)).addClass(colorClass).animateCss('fadeIn');
 			$item.find('[role="up-rate"]').text((upRate*100).toFixed(2) + '%').addClass(colorClass).animateCss('fadeIn');
 			if(dataObj.pricePast) {
 				dataObj.price = close;
@@ -857,7 +857,7 @@ function _updatePastList() {
 			`<span class="kline-tooltip"><div>${name}</div><div>${symbol}</div></span>`,
 			`<span><div>${pricePast.toFixed(2)}</div></span>`,
 			`<span><div role="price">${price && price.toFixed(2) || '--'}</div></span>`,
-			`<span><div role="up-rate" class=${upRate && (upRate>=0 ? 'red':'green')}>${(upRate && (upRate * 100).toFixed(2) || '--') + '%'}</div></span>`,
+			`<span><div role="up-rate" class=${upRate && (upRate>=0 ? 'red':'green')}>${(upRate !== undefined && (upRate * 100).toFixed(2) || '--') + '%'}</div></span>`,
 			`<span><div class=${meanPast>=0 ? 'red':'green'}>${(meanPast*100).toFixed(2) + '%'}</div></span>`,
 			`<span><div class=${upRatePast>=0 ? 'red':'green'}>${(upRatePast*100).toFixed(2) + '%'}</div></span>`,
 		];
