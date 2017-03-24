@@ -39,7 +39,16 @@ class Login extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {errorText:'', isLogining: false, username: '', password:'', autoLogin: false, usernameError: false, passwordError: false};
+		this.state = {
+									errorText:'', 
+									isLogining: false, 
+									username: '', 
+									password:'', 
+									autoLogin: false, 
+									usernameError: false, //弃用
+									passwordError: false, //弃用
+									renderType: 'login',  //'login','sign',''
+								};
 		let that = this;
 		// this.handleRiseze = (e) => {
 		// 	if(store.getState().account.username) return;
@@ -50,6 +59,9 @@ class Login extends React.Component {
 		// 	let logoTop =  - ((height - 232.75) - 100);
 		// 	waveNode.css({top: waveTop, transitionProperty: (e ? 'none' : '')});
 		// 	logoNode.css({top: logoTop, transitionProperty: (e ? 'none' : '')});
+		// }
+		// this.handleSign = () => {
+		// 	console.log(this.state);
 		// }
 	}
 
@@ -89,6 +101,10 @@ class Login extends React.Component {
 		}
 	}
 
+	handleSign() {
+		console.log(this.state);
+	}
+
 	componentDidMount() {
 		// this.initUI();
 		// this.handleRiseze();
@@ -120,7 +136,7 @@ class Login extends React.Component {
 	}
 
 	render(){
-		let { isLogining, username, password, autoLogin } = this.state;
+		let { isLogining, username, password, autoLogin, renderType } = this.state;
 		let innerBtn = isLogining ? <i className='fa fa-spinner fa-spin'></i> : '登录';
 		let autoLoginBtnClass = classNames('flat-btn autologin-button', {'checked':autoLogin});
 		let autoLoginIconClass = classNames('icon-not-check', {'checked': autoLogin});
@@ -132,10 +148,10 @@ class Login extends React.Component {
       	<div ref='drag_panel' className='login-titlebar-container'  onMouseDown={this.fixDragableBug.bind(this)}>
       		<button style={{}} className='flat-btn button app-close' onClick={this.closeApp.bind(this)}></button>
       	</div>
-      	<div className='body-container'>
+      	<div className={'body-container ' + renderType}>
       		<div className='logo'></div>
       		<div className='error-text'>{this.state.errorText}</div>
-      		<div>
+      		<div className="section login">
       			<div className='user-name font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_username'>用户名</span>*/}<input ref='input_user' onChange={this.changeUsernamne.bind(this)} type='text' value={username} placeholder='用户名'/>{this.state.usernameError ? <span className='error-icon'></span> : ''}</div>
       			<div className='password font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_password'>密码</span>*/}<input ref='password_user' onChange={this.changePassword.bind(this)} onFocus={this.handleFocus.bind(this, 1)} onBlur={this.handleBlur.bind(this, 1)} type='password' value={password} placeholder='密码'/>{this.state.passwordError ? <span className='error-icon'></span> : ''}</div>
       			<div className='denglu'><button className='' onClick={this.handleLogin.bind(this)} disabled={isEmpty}>{innerBtn}</button></div>
@@ -144,8 +160,19 @@ class Login extends React.Component {
       					<span className={autoLoginIconClass}></span>{/*<input onChange={this.changeAutoLogin.bind(this)} type='checkbox' checked={autoLogin}/>*/}
       					自动登录
       				</button>
+      				<button className="flat-btn" onClick={()=>{this.setState({renderType:'sign'})}}>注册</button>
       			</div>
       		</div>
+					<div className="section sign">
+						<div className="full-name"><input type="text" ref="sign_first_name" placeholder="姓"/><input type="text" ref="sign_last_name" placeholder="名"/></div>
+						<div><input ref="sign_username" type="text" placeholder="邮箱"/></div>
+						<div><input ref="sign_password" type="password" placeholder="密码"/></div>
+						<div><input ref="sign_password_confirm" type="password" placeholder="确认密码"/></div>
+						<div className="zhuce"><button onClick={this.handleSign.bind(this)}>注册</button></div>
+						<div>
+							<button className="flat-btn return" onClick={()=>{this.setState({renderType:'login'})}}><i className="fa fa-angle-left"></i></button>
+						</div>
+					</div>	
       	</div>
       	{/*<div className='wave-container'><Waves /></div>*/}
       </div>

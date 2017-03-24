@@ -301,6 +301,15 @@
 		// -webkit-app-region: no-drag;
 		width: 240px;//280px;
 		margin: 0 auto 0 auto;
+		.section {
+			display: none;
+		}
+		&.login .login {
+			display: block;
+		}
+		&.sign .sign {
+			display: block;
+		}
 	}
 	.error-icon {
 		position: absolute;
@@ -429,7 +438,7 @@
 			}
 		}
 	}
-	.denglu{
+	.denglu, .zhuce{
 		margin-top: 30px;
 		button{
 			border: none;
@@ -442,7 +451,7 @@
 			padding: 2px;
 			letter-spacing: 10px;
 			border-radius: 2px;
-			&:hover {
+			&:hover,&:focus {
 				background-color: @brown-red-light;//lighten(@brown-red, 10%);
 				// box-shadow: 0 3px 10px 0 #eee;
 			}
@@ -458,6 +467,24 @@
 				text-align: center;
 			}
 			// letter-spacing: 10px;
+		}
+	}
+	.zhuce {
+		margin-top: 10px;
+	}
+	.return {
+		position: absolute;
+		left: 20px;
+		top: 20px;
+		color: #fff;
+		font-size: 20px;
+	}
+	.full-name {
+		input {
+			width: 48%;
+			&:nth-child(2) {
+				margin-left: 4%;
+			}
 		}
 	}
 	.wave-container {
