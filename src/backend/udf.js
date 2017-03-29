@@ -240,6 +240,22 @@ let getLogoutInfo = (postData, callback) => {
   request(options, requestCb, errorCb, postData);
 }
 
+let signIn = (postData, callback) => {
+  const { signOptions } = config;
+  const options = { ...signOptions };
+
+  const requestCb = (result) => {
+    callback && callback(result);
+  };
+
+  const errorCb = (err) => {
+    callback && callback(err);
+  };
+
+  request(options, requestCb, errorCb, postData);
+}
+
+
 module.exports = {
   getGroupCode,
   getSymbolHistory,
@@ -248,4 +264,5 @@ module.exports = {
   getLoginInfo,
   getLogoutInfo,
   getAllSymbolsList,
+  signIn,
 }

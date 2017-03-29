@@ -267,6 +267,7 @@
 	height: 100%;
 	background-color: #fff;
 	z-index: 150;
+
 	.error-text {
 		text-align: center;
 		position: absolute;
@@ -419,6 +420,9 @@
 			margin-right: 5px;
 		}
 		.autologin-button {
+			padding: 0;
+			// margin-left: -5px;
+			margin-right: 50px;
 		  // -webkit-app-region: no-drag;
 		  &.checked {
 		  	color: @white-active;
@@ -437,8 +441,13 @@
 				.icon_position(0,10,2,9px,9px);
 			}
 		}
+		.sign-btn, .forget-btn {
+			padding: 0;
+			margin-left: 10px;
+			text-decoration: underline;
+		}
 	}
-	.denglu, .zhuce{
+	.ksty, .denglu, .zhuce{
 		margin-top: 30px;
 		button{
 			border: none;
@@ -474,8 +483,8 @@
 	}
 	.return {
 		position: absolute;
-		left: 20px;
-		top: 20px;
+		left: -50px;
+		top: -110px;
 		color: #fff;
 		font-size: 20px;
 	}
@@ -499,6 +508,62 @@
 			position: absolute;
 			top: 20px;
 			right: 0;
+		}
+	}
+	input.error, input.error:focus {
+		// border: 1px solid @brown-red;
+		border-color: #f1dfe0;
+		background-color: #f1dfe0;
+	}
+	.sign {
+		position: relative;
+		.title {
+			margin-bottom: 5px;
+			text-align: center;
+			font-size: 12px;
+			color: #aaa;
+		}
+		div.error {
+			margin-top: 20px;
+			color: #eee;
+			font-size: 12px;
+		}
+		.fuwu {
+			font-size: 12px;
+			color: #999;
+			margin-top: 5px;
+			margin-bottom: 5px;
+			a {
+				color: #999;
+				text-decoration: underline;
+			}
+		}
+		.sign-success-container {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background-color: #15181A;
+			top: 0;
+			left: 0;
+			z-index: 1;
+			text-align: center;
+			color: #bbb;
+			font-size: 12px;
+			.icon {
+				display: inline-block;
+				width: 65px;
+				height: 68px;
+				margin-top: 30px;
+				background-image: url('image/success.png');
+			}
+			h4 {
+				font-size: 16px;
+			}
+			.ksty button {
+				letter-spacing: 1px;
+				margin-bottom: 15px;
+				margin-top: 35px;
+			}
 		}
 	}
 }

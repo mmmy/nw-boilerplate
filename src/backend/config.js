@@ -62,9 +62,16 @@ export default {
 
 	logoutOptions: {
         url: getURL(30030, 'api/logout'),
+        // url: 'http://112.74.17.46:30030/api/logout',
+        method: 'POST'
+    },
+
+    signOptions: {
+        url: getURL(30030, 'api/signin'),
 		// url: 'http://112.74.17.46:30030/api/logout',
 		method: 'POST'
 	},
+
     //本期扫描
     scannerOptions: {
         url: getURL(30054, 'scan'),

@@ -6,6 +6,16 @@ import localStorage from '../backend/localStorage';
 import nwApp from '../shared/nwApp';
 import pkg from '../../package.json';
 let { storageAccount, getAccount, removeAccount, saveUser, removeSavedUser, getAllSavedUsers } = localStorage;
+				//email
+function validateEmail(email) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
+//英文和中文
+function validateName(name) {
+	var re =  /^[a-zA-Z\u4e00-\u9fa5]+$/;
+	return re.test(name);
+}
 
 let setAppStateBeforeLogin = () => {
 	// $('.app-drag-area').css('-webkit-app-region','');
@@ -47,7 +57,15 @@ class Login extends React.Component {
 									autoLogin: false, 
 									usernameError: false, //弃用
 									passwordError: false, //弃用
-									renderType: 'login',  //'login','sign',''
+									renderType: 'login',  //'login','sign'
+
+									firstName: '',
+									lastName: '',
+									usernameNew: '',
+									passwordNew: '',
+									passwordNewConfirm: '',
+									signError: '',
+									signSucess: false,
 								};
 		let that = this;
 		// this.handleRiseze = (e) => {
@@ -60,9 +78,34 @@ class Login extends React.Component {
 		// 	waveNode.css({top: waveTop, transitionProperty: (e ? 'none' : '')});
 		// 	logoNode.css({top: logoTop, transitionProperty: (e ? 'none' : '')});
 		// }
-		// this.handleSign = () => {
-		// 	console.log(this.state);
-		// }
+		this.handleSignInputChange = (e) => {
+			var keys = ['firstName','lastName','usernameNew','passwordNew','passwordNewConfirm'];
+			var index = parseInt(e.target.id); //0:first name, 1:last name, 3:username, 4:password, 5:password confirm
+			var key = keys[index];
+			var value = e.target.value.trim();
+			var state = {};
+			state[key] = value;
+			let signError = '';
+			//validate
+			if(key == 'firstName') {
+				signError = (value.length < 12) && validateName(value) ? '' : '请输入正确的姓氏';
+			}
+			if(key == 'lastName') {
+				signError = (value.length < 12) && validateName(value) ? '' : '请输入正确的名字';
+			}
+			if(key == 'usernameNew') {
+				signError = validateEmail(value) ? '' : '请输入正确的电子邮箱';
+			}
+			if(key == 'passwordNew') {
+				signError = (value.length >= 6 && value.length <= 20) ? '' : '6-20位数字,字符';
+			}
+			if(key == 'passwordNewConfirm') {
+				signError = value == this.state.passwordNew ? '' : '两串密码不一致';
+			}
+			state.signError = signError;
+			this.setState(state);
+			$(e.target).toggleClass('error', signError != '');
+		}
 	}
 
 	initUI() {
@@ -102,7 +145,90 @@ class Login extends React.Component {
 	}
 
 	handleSign() {
-		console.log(this.state);
+		var {firstName, lastName, usernameNew, passwordNew, passwordNewConfirm} = this.state;
+		//validate
+		if((firstName.length >= 12) || !validateName(firstName)) {
+			this.setState({signError: '请输入正确的姓氏'});
+			return;
+		}
+		if((lastName.length >= 12) || !validateName(lastName)) {
+			this.setState({signError: '请输入正确的名字'});
+			return;
+		}
+		if(!validateEmail(usernameNew)) {
+			this.setState({signError: '请输入正确的电子邮箱'});
+			return;
+		}
+		if(passwordNew.length < 6 || passwordNew.length > 20) {
+			this.setState({signError: '密码为6-20位数字,字符'});
+			return;
+		}
+		if(passwordNew !== passwordNewConfirm) {
+			this.setState({signError: '两串密码不一致'});
+			return;
+		}
+		if(!window.navigator.onLine) {
+			this.setState({errorText: '未连接互联网 !'});
+			return;
+		}
+		var that = this;
+
+		var enterApp = () => {
+			try {
+				window.heap.identify(usernameNew);
+				window.USERNAME = usernameNew;
+			} catch(e) {
+				console.log(e);
+			}
+			that.hideLogin();
+
+			setTimeout(function(){
+				setAppStateAfterLogin();
+			}, 10);
+			var autoLogin = false;
+			var { onLogined } = that.props;
+			setTimeout(function(){
+				autoLogin ? storageAccount(usernameNew, passwordNew) : removeAccount();
+				window.document.body.style.opacity = '';
+				onLogined && onLogined({usernameNew, passwordNew, autoLogin, loginState:{code:0}}, (error) => { 
+					if(!error) {
+						saveUser(usernameNew, passwordNew);
+					}
+				});
+			}, 100);
+		};
+
+		var logInSuccess = () => {
+			var newNode = $(`<div class="sign-success-container">
+											<div><i class="icon"></i></div>
+											<h4>解码历史, 洞悉未来</h4>
+											<p>恭喜你注册成功!</p>
+											<div class="ksty"><button>开始体验</button></div>
+											<div><span class="time"><span class="value"></span>秒后自动进入拱石</span></div>
+										</div>`);
+			newNode.find('.ksty button').click(()=>{
+				enterApp();
+			});
+			var count = 5;
+			newNode.find('.time .value').text(count);
+			var interval = setInterval(()=>{
+				count --;
+				if(count <= 0) {
+					clearInterval(interval);
+					enterApp();
+				} else {
+					newNode.find('.time .value').text(count);
+				}
+			},1000);
+			$(that.refs.section_sign).append(newNode);
+		};
+
+		var udf = require('../backend/udf');
+		// udf.signIn({}, (data)=>{
+		// 	//todo:
+		// });
+		
+		logInSuccess();
 	}
 
 	componentDidMount() {
@@ -136,11 +262,13 @@ class Login extends React.Component {
 	}
 
 	render(){
-		let { isLogining, username, password, autoLogin, renderType } = this.state;
+		let { isLogining, username, password, autoLogin, renderType, firstName, lastName, usernameNew, passwordNew, passwordNewConfirm, signError } = this.state;
 		let innerBtn = isLogining ? <i className='fa fa-spinner fa-spin'></i> : '登录';
 		let autoLoginBtnClass = classNames('flat-btn autologin-button', {'checked':autoLogin});
 		let autoLoginIconClass = classNames('icon-not-check', {'checked': autoLogin});
 		let isEmpty = username === '' || password === '';
+
+		let signBtnDisabled = signError || firstName === '' || lastName === '' || usernameNew==='' || passwordNew==='' || passwordNewConfirm==='' ;
 
 		return (
       <div className='login-panelsmall-container' ref='login_panel_container' onMouseUp={ (e)=>{ e.stopPropagation() } }>
@@ -160,15 +288,19 @@ class Login extends React.Component {
       					<span className={autoLoginIconClass}></span>{/*<input onChange={this.changeAutoLogin.bind(this)} type='checkbox' checked={autoLogin}/>*/}
       					自动登录
       				</button>
-      				<button className="flat-btn" onClick={()=>{this.setState({renderType:'sign'})}}>注册</button>
+      				<button className="flat-btn sign-btn" onClick={()=>{this.setState({renderType:'sign'})}}>注册账号</button>
+      				<button className="flat-btn forget-btn" onClick={()=>{this.setState({})}}>忘记密码</button>
       			</div>
       		</div>
-					<div className="section sign">
-						<div className="full-name"><input type="text" ref="sign_first_name" placeholder="姓"/><input type="text" ref="sign_last_name" placeholder="名"/></div>
-						<div><input ref="sign_username" type="text" placeholder="邮箱"/></div>
-						<div><input ref="sign_password" type="password" placeholder="密码"/></div>
-						<div><input ref="sign_password_confirm" type="password" placeholder="确认密码"/></div>
-						<div className="zhuce"><button onClick={this.handleSign.bind(this)}>注册</button></div>
+					<div className="section sign" ref="section_sign">
+						<div className="title">创建一个新的拱石账号</div>
+						<div className="full-name"><input type="text" ref="sign_first_name" placeholder="姓" id='0' value={firstName} onChange={this.handleSignInputChange}/><input type="text" id='1' ref="sign_last_name" placeholder="名" value={lastName} onChange={this.handleSignInputChange}/></div>
+						<div><input ref="sign_username" id='2' type="text" placeholder="邮箱" value={usernameNew} onChange={this.handleSignInputChange}/></div>
+						<div><input ref="sign_password" id='3' type="password" placeholder="密码" value={passwordNew} onChange={this.handleSignInputChange}/></div>
+						<div><input ref="sign_password_confirm" id='4' type="password" placeholder="确认密码" value={passwordNewConfirm} onChange={this.handleSignInputChange}/></div>
+						<div className="fuwu">点击注册, 表示您同意我们的: <a>服务和隐私条款</a></div>
+						<div className="zhuce"><button disabled={signBtnDisabled} onClick={this.handleSign.bind(this)}>注册</button></div>
+						<div className="error">{signError}</div>
 						<div>
 							<button className="flat-btn return" onClick={()=>{this.setState({renderType:'login'})}}><i className="fa fa-angle-left"></i></button>
 						</div>
