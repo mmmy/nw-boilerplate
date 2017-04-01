@@ -5,6 +5,9 @@ import localStorage from '../backend/localStorage';
 // import store from '../store';
 import nwApp from '../shared/nwApp';
 import pkg from '../../package.json';
+
+var udf = require('../backend/udf');
+
 let { storageAccount, getAccount, removeAccount, saveUser, removeSavedUser, getAllSavedUsers } = localStorage;
 				//email
 function validateEmail(email) {
@@ -57,7 +60,7 @@ class Login extends React.Component {
 									autoLogin: false, 
 									usernameError: false, //弃用
 									passwordError: false, //弃用
-									renderType: 'login',  //'login','sign'
+									renderType: 'login',  //'login','sign','reset'
 
 									firstName: '',
 									lastName: '',
@@ -66,6 +69,14 @@ class Login extends React.Component {
 									passwordNewConfirm: '',
 									signError: '',
 									signSucess: false,
+
+									usernameReset: '',//忘记密码
+									firstNameReset: '',
+									lastNameReset: '',
+									passwordReset: '',
+									passwordResetConfirm: '',
+									resetStep: 0, //0:验证email, 1:验证姓名, 2:更改密码, 3:开始进入
+									resetError: '',
 								};
 		let that = this;
 		// this.handleRiseze = (e) => {
@@ -97,7 +108,7 @@ class Login extends React.Component {
 				signError = validateEmail(value) ? '' : '请输入正确的电子邮箱';
 			}
 			if(key == 'passwordNew') {
-				signError = (value.length >= 6 && value.length <= 20) ? '' : '6-20位数字,字符';
+				signError = (value.length >= 6 && value.length <= 20) ? '' : '6-20位数字、字母符号';
 			}
 			if(key == 'passwordNewConfirm') {
 				signError = value == this.state.passwordNew ? '' : '两串密码不一致';
@@ -143,6 +154,31 @@ class Login extends React.Component {
 			}, 3000);
 		}
 	}
+	//注册和找回密码使用
+	enterApp(username, password) {
+		try {
+			window.heap.identify(username);
+			window.USERNAME = username;
+		} catch(e) {
+			console.log(e);
+		}
+		this.hideLogin();
+
+		setTimeout(function(){
+			setAppStateAfterLogin();
+		}, 10);
+		var autoLogin = false;
+		var { onLogined } = this.props;
+		setTimeout(function(){
+			autoLogin ? storageAccount(username, password) : removeAccount();
+			window.document.body.style.opacity = '';
+			onLogined && onLogined({username, password, autoLogin, loginState:{code:0}}, (error) => { 
+				if(!error) {
+					saveUser(username, password);
+				}
+			});
+		}, 100);
+	};
 
 	handleSign() {
 		var {firstName, lastName, usernameNew, passwordNew, passwordNewConfirm} = this.state;
@@ -160,7 +196,7 @@ class Login extends React.Component {
 			return;
 		}
 		if(passwordNew.length < 6 || passwordNew.length > 20) {
-			this.setState({signError: '密码为6-20位数字,字符'});
+			this.setState({signError: '密码为6-20位数字、字母符号'});
 			return;
 		}
 		if(passwordNew !== passwordNewConfirm) {
@@ -173,41 +209,16 @@ class Login extends React.Component {
 		}
 		var that = this;
 
-		var enterApp = () => {
-			try {
-				window.heap.identify(usernameNew);
-				window.USERNAME = usernameNew;
-			} catch(e) {
-				console.log(e);
-			}
-			that.hideLogin();
-
-			setTimeout(function(){
-				setAppStateAfterLogin();
-			}, 10);
-			var autoLogin = false;
-			var { onLogined } = that.props;
-			setTimeout(function(){
-				autoLogin ? storageAccount(usernameNew, passwordNew) : removeAccount();
-				window.document.body.style.opacity = '';
-				onLogined && onLogined({usernameNew, passwordNew, autoLogin, loginState:{code:0}}, (error) => { 
-					if(!error) {
-						saveUser(usernameNew, passwordNew);
-					}
-				});
-			}, 100);
-		};
-
 		var logInSuccess = () => {
 			var newNode = $(`<div class="sign-success-container">
-											<div><i class="icon"></i></div>
+											<div><i class="icon-good"></i></div>
 											<h4>解码历史, 洞悉未来</h4>
 											<p>恭喜你注册成功!</p>
 											<div class="ksty"><button>开始体验</button></div>
 											<div><span class="time"><span class="value"></span>秒后自动进入拱石</span></div>
 										</div>`);
 			newNode.find('.ksty button').click(()=>{
-				enterApp();
+				enterApp(usernameNew, passwordNew);
 			});
 			var count = 5;
 			newNode.find('.time .value').text(count);
@@ -215,7 +226,7 @@ class Login extends React.Component {
 				count --;
 				if(count <= 0) {
 					clearInterval(interval);
-					enterApp();
+					this.enterApp(usernameNew, passwordNew);
 				} else {
 					newNode.find('.time .value').text(count);
 				}
@@ -223,12 +234,30 @@ class Login extends React.Component {
 			$(that.refs.section_sign).append(newNode);
 		};
 
-		var udf = require('../backend/udf');
-		// udf.signIn({}, (data)=>{
-		// 	//todo:
-		// });
-		
-		logInSuccess();
+		$(that.refs.sign_btn).html(`<i className='fa fa-spinner fa-spin'></i>`);
+
+		var form = new window.FormData();
+		form.append("name.first", firstName);
+		form.append("name.last", lastName);
+		form.append("password", passwordNew);
+		form.append("email", usernameNew);
+		form.append("website", "www.xx.com");
+		form.append("fromType", "C");
+
+		udf.signIn(form, (repstate)=>{
+			if(!repstate || (repstate.code != 0)) {
+				$(that.refs.sign_btn).text('注册');
+				var errorText = '注册失败,请联系拱石获取帮助';
+				if(repstate) {
+					if(repstate.code == 10004) errorText = '服务器内部错误';
+					else if(repstate.code == 20001) errorText = '该用户已经被注册';
+				}
+				$(that.refs.sign_error).text(errorText);
+				return;
+			}
+			//注册成功
+			logInSuccess();
+		});
 	}
 
 	componentDidMount() {
@@ -256,6 +285,15 @@ class Login extends React.Component {
 		return true;
 	}
 
+	componentDidUpdate() {
+		let { renderType,resetStep } = this.state;
+		if(renderType == 'reset') {
+			if($(this.refs.reset_inputs).children('input:visible:focus').length == 0) {
+				$($(this.refs.reset_inputs).children('input:visible')[0]).focus();
+			}
+		}
+	}
+
 	componentWillUnmount(){
 		// setAppStateAfterLogin();
 		// window.removeEventListener('resize', this.handleRiseze);
@@ -269,6 +307,9 @@ class Login extends React.Component {
 		let isEmpty = username === '' || password === '';
 
 		let signBtnDisabled = signError || firstName === '' || lastName === '' || usernameNew==='' || passwordNew==='' || passwordNewConfirm==='' ;
+
+		//忘记密码
+		let { usernameReset, firstNameReset, lastNameReset, passwordReset, passwordResetConfirm, resetStep, resetError } = this.state;
 
 		return (
       <div className='login-panelsmall-container' ref='login_panel_container' onMouseUp={ (e)=>{ e.stopPropagation() } }>
@@ -289,9 +330,10 @@ class Login extends React.Component {
       					自动登录
       				</button>
       				<button className="flat-btn sign-btn" onClick={()=>{this.setState({renderType:'sign'})}}>注册账号</button>
-      				<button className="flat-btn forget-btn" onClick={()=>{this.setState({})}}>忘记密码</button>
+      				<button className="flat-btn forget-btn" onClick={()=>{this.setState({renderType:'reset'})}}>忘记密码</button>
       			</div>
       		</div>
+      		{/*---------------注册--------------*/}
 					<div className="section sign" ref="section_sign">
 						<div className="title">创建一个新的拱石账号</div>
 						<div className="full-name"><input type="text" ref="sign_first_name" placeholder="姓" id='0' value={firstName} onChange={this.handleSignInputChange}/><input type="text" id='1' ref="sign_last_name" placeholder="名" value={lastName} onChange={this.handleSignInputChange}/></div>
@@ -299,16 +341,134 @@ class Login extends React.Component {
 						<div><input ref="sign_password" id='3' type="password" placeholder="密码" value={passwordNew} onChange={this.handleSignInputChange}/></div>
 						<div><input ref="sign_password_confirm" id='4' type="password" placeholder="确认密码" value={passwordNewConfirm} onChange={this.handleSignInputChange}/></div>
 						<div className="fuwu">点击注册, 表示您同意我们的: <a>服务和隐私条款</a></div>
-						<div className="zhuce"><button disabled={signBtnDisabled} onClick={this.handleSign.bind(this)}>注册</button></div>
-						<div className="error">{signError}</div>
+						<div className="zhuce"><button ref="sign_btn" disabled={signBtnDisabled} onClick={this.handleSign.bind(this)}>注册</button></div>
+						<div className="error" ref="sign_error">{signError}</div>
 						<div>
 							<button className="flat-btn return" onClick={()=>{this.setState({renderType:'login'})}}><i className="fa fa-angle-left"></i></button>
 						</div>
+					</div>
+      		{/*---------------忘记密码--------------*/}
+					<div className={`section reset step-${resetStep}`}>
+						<div className="title">找回密码</div>
+						<div className={`inputs-wrapper step-${resetStep}`} ref="reset_inputs">
+							<input value={usernameReset} onChange={(e)=>{ this.setState({usernameReset:e.target.value}) }} type="text" placeholder="输入注册电子邮箱" />
+							<input value={firstNameReset} onChange={(e)=>{this.setState({firstNameReset:e.target.value}) }} type="text" placeholder="输入注册时候的 姓" />
+							<input value={lastNameReset} onChange={(e)=>{this.setState({lastNameReset:e.target.value})}} type="text" placeholder="输入注册时候的 名" />
+							<input value={passwordReset} onChange={(e)=>{this.setState({passwordReset:e.target.value})}} type="text" placeholder="设置新密码(6-20位数字、字母符号)" />
+							<input value={passwordResetConfirm} onChange={(e)=>{this.setState({passwordResetConfirm:e.target.value})}} type="text" placeholder="确认密码" />
+							<div className="good">
+								<div><i className="icon-good"></i></div>
+								<p>设置新密码成功</p>
+								<p>请牢记您的新密码</p>
+							</div>
+							<div className="error" ref="reset_error">{resetError}</div>
+						</div>
+						<div className="yanzheng"><button ref="yanzheng_btn" onClick={this.handleValidateReset.bind(this)}>{resetStep==3 ? '进入拱石' : '验证'}</button></div>
+						<div>
+							<button className="flat-btn return" onClick={this.handleResetBack.bind(this)}><i className="fa fa-angle-left"></i></button>
+						</div>
+						<div><span className="time" ref="reset_interval"></span></div>
 					</div>	
       	</div>
       	{/*<div className='wave-container'><Waves /></div>*/}
       </div>
     );
+	}
+
+	handleValidateReset(e) {
+		if(!window.navigator.onLine) {
+			this.setState({resetError: '未连接互联网 !'});
+			return;
+		}
+
+		let { usernameReset, firstNameReset, lastNameReset, passwordReset, passwordResetConfirm, resetStep } = this.state;
+		// this.setState({resetStep: resetStep+1});
+		if(resetStep == 0) {    //验证username
+			new Promise((resolve, reject)=>{
+				udf.validateUser({username: usernameReset}, resolve, reject);
+			}).then((result)=>{
+				if(result) {
+					if(result.code === 0) { this.setState({resetStep: resetStep+1, resetError:''}) }
+					else if(result.code === 10001) { this.setState({resetError:'用户不存在'}) }
+					else { this.setState({resetError:'服务器内部错误'}) }
+				} else {
+					this.setState({resetError:'未知错误,请稍后重试'});
+				}
+			}).catch((err)=>{
+				console.error(err);
+				this.setState({resetError:"验证失败,请稍后重试,或联系拱石"});
+			});
+		} else if(resetStep == 1) { //验证姓名
+			new Promise((resolve, reject)=>{
+				var postData = {};
+				postData.username = usernameReset;
+				postData['name.first'] = firstNameReset;
+				postData['name.last'] = lastNameReset;
+				udf.validateUser(postData,resolve,reject);
+			}).then((result)=>{
+				if(result) {
+					if(result.code === 0) { this.setState({resetStep: resetStep+1, resetError:''}) }
+					else if(result.code === 10001) { this.setState({resetError:'验证不正确'}) }
+					else { this.setState({resetError:'服务器内部错误'}) }
+				} else {
+					this.setState({resetError:'未知错误,请稍后重试'});
+				}
+			}).catch((err)=>{
+				console.error(err);
+				this.setState({resetError:"验证失败,请稍后重试,或联系拱石"});
+			});
+		} else if(resetStep == 2) { //重设密码
+			//判断密码是否正常
+			if(passwordReset.length < 6 || passwordReset.length > 20 ) {
+				this.setState({resetError:'密码为6-20位数字、字母符号'});
+			} else if(passwordReset !== passwordResetConfirm) {
+				this.setState({resetError:'密码不一致'});
+			} else { //发送请求
+				new Promise((resolve, reject)=>{
+					var postData = {};
+					postData.username = usernameReset;
+					postData['name.first'] = firstNameReset;
+					postData['name.last'] = lastNameReset;
+					postData.passwordNew = passwordReset;
+					udf.resetPassword(postData,resolve,reject);
+				}).then((result)=>{
+					if(result) {
+						if(result.code === 0) { 
+							//todo: start logi
+							this.setState({resetStep: resetStep+1, resetError:''});
+							var count = 5;
+							$(this.refs.reset_interval).text(count+'秒后自动进入拱石');
+							var interval = setInterval(()=>{
+								count --;
+								if(count === 0) {
+									clearInterval(interval);
+									this.enterApp(usernameReset, passwordReset);
+								} else { $(this.refs.reset_interval).text(count+'秒后自动进入拱石'); }
+							},1000);
+						} else {
+							this.setState({resetError:('重置密码失败'+result.code)});
+						}
+					} else {
+						this.setState({resetError:'未知错误,请稍后重试'});
+					}
+				}).catch((err)=>{
+					console.error(err);
+					this.setState({resetError:"重置失败,请稍后重试,或联系拱石"});
+				});
+			}
+		} else if(resetStep == 3) {
+			this.enterApp(usernameReset, passwordReset);
+		}
+
+	}
+
+	handleResetBack(e) {
+		let { resetStep } = this.state;
+		if(resetStep > 0) {
+			this.setState({resetStep: resetStep - 1});
+		} else {
+			this.setState({renderType:'login'});
+		}
 	}
 
 	fixDragableBug(e) {
@@ -397,8 +557,6 @@ class Login extends React.Component {
 		let username = this.state.username;
 		let password = this.state.password;
 		let autoLogin = this.state.autoLogin;
-
-		var udf = require('../backend/udf');
 
 		//udf.getLoginInfo({username: username,password:password}, function(data) {if(data)loginstate=data;});
 		var postData = 'username='+ encodeURIComponent(username)+'&password='+encodeURIComponent(password);

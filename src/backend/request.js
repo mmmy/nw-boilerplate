@@ -19,12 +19,17 @@ import http from 'http';
 
 let request = (options, cb, errorCb, postData) => {
 	//使用浏览器ajax请求
-	let xhr = $.ajax({
+	var settings = {
 		url: options.url,
 		type: options.method,
 		//dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
 		data: postData,
-	})
+	};
+	if(postData && postData.toString() == '[object FormData]') {
+		settings.processData = false;
+		settings.contentType = false;
+	}
+	let xhr = $.ajax(settings)
 	.done(function(data) {
 		//console.log("success =======", data);
 		cb && cb(data);

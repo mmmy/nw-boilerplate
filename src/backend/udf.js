@@ -254,6 +254,16 @@ let signIn = (postData, callback) => {
 
   request(options, requestCb, errorCb, postData);
 }
+//验证用户是否存在
+let validateUser = (postData, resolve, reject) => {
+  const { validateOptions } = config;
+  request(validateOptions, resolve, reject, postData);
+};
+
+let resetPassword = (postData, resolve, reject) => {
+  const { resetPasswordOptions } = config;
+  request(resetPasswordOptions, resolve, reject, postData);
+};
 
 
 module.exports = {
@@ -265,4 +275,6 @@ module.exports = {
   getLogoutInfo,
   getAllSymbolsList,
   signIn,
+  validateUser,
+  resetPassword,
 }

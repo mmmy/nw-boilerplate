@@ -311,6 +311,9 @@
 		&.sign .sign {
 			display: block;
 		}
+		&.reset .reset {
+			display: block;
+		}
 	}
 	.error-icon {
 		position: absolute;
@@ -447,7 +450,7 @@
 			text-decoration: underline;
 		}
 	}
-	.ksty, .denglu, .zhuce{
+	.ksty, .denglu, .zhuce, .yanzheng{
 		margin-top: 30px;
 		button{
 			border: none;
@@ -515,7 +518,14 @@
 		border-color: #f1dfe0;
 		background-color: #f1dfe0;
 	}
-	.sign {
+	.icon-good {
+		display: inline-block;
+		width: 65px;
+		height: 68px;
+		margin-top: 30px;
+		background-image: url('image/success.png');
+	}
+	.sign, .reset {
 		position: relative;
 		.title {
 			margin-bottom: 5px;
@@ -549,13 +559,6 @@
 			text-align: center;
 			color: #bbb;
 			font-size: 12px;
-			.icon {
-				display: inline-block;
-				width: 65px;
-				height: 68px;
-				margin-top: 30px;
-				background-image: url('image/success.png');
-			}
 			h4 {
 				font-size: 16px;
 			}
@@ -565,6 +568,53 @@
 				margin-top: 35px;
 			}
 		}
+	}
+	.section.reset {
+		padding-top: 30px;
+		&.step-3 {
+			.title {
+				opacity: 0;
+			}
+			button.return {
+				display: none;
+			}
+		}
+		.title {
+			margin-bottom: 10px;
+		}
+		.time{
+			text-align: center;
+			display: block;
+			font-size: 12px;
+			margin-top: 10px;
+			color: #fff;
+		}
+		.inputs-wrapper {
+			height: 120px;
+			.good {
+				text-align: center;
+				color: #fff;
+				.icon-good{
+					margin-top: -30px;
+				}
+			}
+			>input, >.good { display: none };
+			&.step-0 {
+				input:nth-child(1) {display: inline-block;}
+			}
+			&.step-1 {
+				input:nth-child(2), input:nth-child(3) {display: inline-block;}
+			}
+			&.step-2 {
+				input:nth-child(4), input:nth-child(5) {display: inline-block;}
+			}
+			&.step-3 {
+				.good {
+					display: block;
+				}
+			}
+		}
+
 	}
 }
 
