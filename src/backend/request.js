@@ -24,6 +24,7 @@ let request = (options, cb, errorCb, postData) => {
 		type: options.method,
 		//dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
 		data: postData,
+		timeout: 20 * 1000
 	};
 	if(postData && postData.toString() == '[object FormData]') {
 		settings.processData = false;

@@ -29,8 +29,8 @@ changePassword.show = function() {
 	$wrapper.append($content);
 
 	//actions
-	var handleError = () => {
-		$error2('修改密码失败, 请稍后重试');
+	var handleError = (e) => {
+		$error2.text('修改密码失败, 请稍后重试');
 		$content.find('.flat-btn.btn-red').text('保存');
 	};
 	var handleSuccess = (state) => {

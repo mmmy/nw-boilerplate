@@ -252,7 +252,10 @@ class Login extends React.Component {
 				var errorText = '注册失败,请联系拱石获取帮助';
 				if(repstate) {
 					if(repstate.code == 10004) errorText = '服务器内部错误';
-					else if(repstate.code == 20001) errorText = '该用户已经被注册';
+					else if(repstate.code == 20001) { 
+						errorText = '该用户已经被注册';
+						$(this.refs.sign_username).addClass('error')
+					}
 				}
 				$(that.refs.sign_error).text(errorText);
 				return;
@@ -331,8 +334,8 @@ class Login extends React.Component {
       					<span className={autoLoginIconClass}></span>{/*<input onChange={this.changeAutoLogin.bind(this)} type='checkbox' checked={autoLogin}/>*/}
       					自动登录
       				</button>
-      				<button className="flat-btn sign-btn" onClick={()=>{this.setState({renderType:'sign'})}}>注册账号</button>
-      				<button className="flat-btn forget-btn" onClick={()=>{this.setState({renderType:'reset'})}}>忘记密码</button>
+      				<button className="flat-btn sign-btn" onClick={()=>{this.setState({renderType:'sign',errorText:''})}}>注册账号</button>
+      				<button className="flat-btn forget-btn" onClick={()=>{this.setState({renderType:'reset',errorText:''})}}>忘记密码</button>
       			</div>
       		</div>
       		{/*---------------注册--------------*/}
@@ -361,10 +364,10 @@ class Login extends React.Component {
 						</div>
 						<div className={`inputs-wrapper step-${resetStep}`} ref="reset_inputs">
 							<input value={usernameReset} onChange={(e)=>{ this.setState({usernameReset:e.target.value, resetError:''}) }} type="text" placeholder="输入注册电子邮箱" />
-							<input value={lastNameReset} onChange={(e)=>{this.setState({lastNameReset:e.target.value})}} type="text" placeholder="输入注册时候的 姓" />
-							<input value={firstNameReset} onChange={(e)=>{this.setState({firstNameReset:e.target.value}) }} type="text" placeholder="输入注册时候的 名" />
-							<input value={passwordReset} onChange={(e)=>{this.setState({passwordReset:e.target.value})}} type="password" placeholder="设置新密码(6-20位数字、字母符号)" />
-							<input value={passwordResetConfirm} onChange={(e)=>{this.setState({passwordResetConfirm:e.target.value})}} type="password" placeholder="确认密码" />
+							<input value={lastNameReset} onChange={(e)=>{this.setState({lastNameReset:e.target.value, resetError:''})}} type="text" placeholder="输入注册时候的 姓" />
+							<input value={firstNameReset} onChange={(e)=>{this.setState({firstNameReset:e.target.value, resetError:''}) }} type="text" placeholder="输入注册时候的 名" />
+							<input value={passwordReset} onChange={(e)=>{this.setState({passwordReset:e.target.value, resetError:''})}} type="password" placeholder="设置新密码(6-20位数字、字母符号)" />
+							<input value={passwordResetConfirm} onChange={(e)=>{this.setState({passwordResetConfirm:e.target.value, resetError:''})}} type="password" placeholder="确认密码" />
 							<div className="good">
 								<div><i className="icon-good"></i></div>
 								<p>设置新密码成功</p>
@@ -487,7 +490,7 @@ class Login extends React.Component {
 		if(resetStep > 0) {
 			this.setState({resetStep: resetStep - 1});
 		} else {
-			this.setState({renderType:'login'});
+			this.setState({renderType:'login', resetError:''});
 		}
 	}
 

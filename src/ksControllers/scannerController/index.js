@@ -597,8 +597,8 @@ scannerController._fetchData = () => {
 				name: industries.secShortName,
 				industry: industries.industryName1,
 				subIndustry: industries.industryName2,
-				categoryIndustry: concepts[0] && concepts[0].word || '未知',
-				categoryConcept: concepts[1] && concepts[1].word || '未知',    //概念分类
+				categoryIndustry: concepts[0] && concepts[0].word || '',
+				categoryConcept: concepts[1] && concepts[1].word || '',    //概念分类
 				meta: {
 					fullName: industries.secFullName,
 					turnoverRate: originData.turnoverRate[i],   //换手率
@@ -825,6 +825,9 @@ function updateTr($span) {
 	$span.find('i:nth-child(2)').html(`<span>${value}</span>`);
 	$span.toggleClass('disabled', value <= 0);
 	$span.attr('title',key);
+	if(!key) {
+		$span.addClass('hide');
+	}
 	return $span;
 }
 function _updateFilterTable() {
@@ -848,6 +851,7 @@ function _updatePastList() {
 	var config = _pastScanner.dataCache[date] && _pastScanner.dataCache[date].data.config;
 	var prediction = config && config.dCome || 10;
 	var $list = _$listWrapperPast.children();
+	var str = '现价';
 	_priceUpdaters2 = [];
 	for(var i=0; i<$list.length; i++) {
 		var $item = $($list[i]);
@@ -865,9 +869,10 @@ function _updatePastList() {
 		$item.find('.section1').append(children);
 		if(!price) {
 			_priceUpdaters2.push(_priceUpdate.bind(null, {symbol:symbol}, $item));
+		} else if(str == '现价') {
+			str = `${prediction}天后收盘价`;
 		}
 	}
-	var str = _priceUpdaters2.length == 0 ? `${prediction}天后收盘价` : '现价';
 	_$sortButtons.find('button:nth-child(3)').contents()[0].textContent = str;
 
 	_priceUpdaters2.forEach(function(updater){ updater(); });
@@ -1003,7 +1008,7 @@ function _updateRightPanel() {
 	var total = dimIndex.top(Infinity).length;
 	var tops = groups.map((group)=>{
 		var maxValueObj = group.reduce((pre, cur)=>{
-			return cur.value > pre.value ? cur : pre;
+			return (cur.key && cur.value > pre.value) ? cur : pre;
 		},{value:0});
 		return maxValueObj;
 	});

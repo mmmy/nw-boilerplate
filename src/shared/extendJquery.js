@@ -247,10 +247,13 @@ module.exports = function($) {
 
 			var paths = [];
 			if(len > 0) {
-				var maxValue = options.data.reduce((pre, cur)=>{ return Math.max(pre,cur.value) }, 0);
+				var maxValue = options.data.reduce((pre, cur)=>{ return Math.max(pre, cur.key && cur.value || 0) }, 0);
 				for(var i=0; i<len; i++) {
 					var item = options.data[i];
 					var key = options.keyFormatter ? options.keyFormatter(item.key) : item.key;
+					if(!key) {
+						continue;
+					}
 					var x = labelWith;
 					var y = i*(options.barWidth + options.barSpace);
 
