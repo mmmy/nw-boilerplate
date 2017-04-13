@@ -87,6 +87,7 @@ class Header extends React.Component {
 												<div className='username'>{account.username}</div>
 												<div className='userType red'>{loginState && loginState.userType && loginState.userType.toUpperCase() == 'VIP' ? 'VIP用户' : '试用账户'}</div>
 												<div className='days-remain red'>有效期剩余 {loginState && loginState.expireInDay} 天</div>
+												<a className='link change-password' onClick={this.changePassword}>更改密码</a>
 												<hr />
 												<div className='version'>当前版本: {pkg.version}</div>
 												<a className='link udpate-log' onClick={this.showUpdateLog}>更新日志</a>
@@ -200,6 +201,10 @@ class Header extends React.Component {
 
 	showUpdateLog() {
 		require('../ksControllers/updateLog').show();
+	}
+
+	changePassword() {
+		require('../ksControllers/changePassword').show();
 	}
 }
 

@@ -265,6 +265,10 @@ let resetPassword = (postData, resolve, reject) => {
   request(resetPasswordOptions, resolve, reject, postData);
 };
 
+let changePassword = (postData, resolve, reject) => {
+  const { changePasswordOptions } = config;
+  request(changePasswordOptions, resolve, reject, postData);
+};
 
 module.exports = {
   getGroupCode,
@@ -277,4 +281,5 @@ module.exports = {
   signIn,
   validateUser,
   resetPassword,
+  changePassword,
 }

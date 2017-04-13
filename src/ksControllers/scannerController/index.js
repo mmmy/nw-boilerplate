@@ -21,7 +21,7 @@ var _$filterTable = null;
 var _$listWrapper = null;
 var _$listWrapperPast = null;
 var _datafeed = null;
-var _data = {date:'',list:[]};
+var _data = {date:'',list:[],options:{}};
 
 var _aggregateRanges = [[-Infinity, 200],[200, 300],[300, 500],[500, 1000],[1000, 2000], [2000, Infinity]];
 
@@ -461,7 +461,7 @@ scannerController._fetchPastData = () => {
 		var data = dataCache[date].data;
 		var list = data.list;
 		var nodes = list.map(function(data){
-			return $(`<div class="item"><div class="section1"></div></div>`).data({data});
+			return $(`<div class="item"><div class="section1"></div></div>`).data({data:$.extend(true,{},data)});
 		});
 		_$listWrapperPast.empty().append(nodes);
 		_updatePastList();
@@ -497,7 +497,8 @@ scannerController._fetchPastData = () => {
 				list.push(data);
 			}
 			var nodes = list.map(function(data){
-				return $(`<div class="item"><div class="section1"></div></div>`).data({data});
+				//复制
+				return $(`<div class="item"><div class="section1"></div></div>`).data({data:$.extend(true,{},data)});
 			});
 			_$listWrapperPast.find('.waiting-overlay').remove();
 			_$listWrapperPast.empty().append(nodes);
@@ -916,7 +917,7 @@ function _updateList() {
 				//charts
 		var predictionChart = new PredictionWidget($predictionPane.find('.prediction-chart')[0], {showRange: false, slient: true, axis: true, padding: {right: 70}});
 		var heatmapChart = new BlockHeatMap($predictionPane.find('.heatmap-chart')[0], {textColor: '#999'});
-		predictionChart.setData(reOrderKline(dataObj.pattern.kline), dataObj.pattern.closePrice, null, 10);
+		predictionChart.setData(reOrderKline(dataObj.pattern.kline), dataObj.pattern.closePrice, null, _data.options && _data.options.prediction);
 		var {yMin, yMax} = predictionChart.getLineChartMinMax();
 		var labelDecimal = 3;
 		heatmapChart.setData(predictionChart.getLastPrices(), yMin, yMax, {labelDecimal});

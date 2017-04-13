@@ -90,7 +90,7 @@ class Login extends React.Component {
 		// 	logoNode.css({top: logoTop, transitionProperty: (e ? 'none' : '')});
 		// }
 		this.handleSignInputChange = (e) => {
-			var keys = ['firstName','lastName','usernameNew','passwordNew','passwordNewConfirm'];
+			var keys = ['lastName','firstName','usernameNew','passwordNew','passwordNewConfirm'];
 			var index = parseInt(e.target.id); //0:first name, 1:last name, 3:username, 4:password, 5:password confirm
 			var key = keys[index];
 			var value = e.target.value.trim();
@@ -99,10 +99,10 @@ class Login extends React.Component {
 			let signError = '';
 			//validate
 			if(key == 'firstName') {
-				signError = (value.length < 12) && validateName(value) ? '' : '请输入正确的姓氏';
+				signError = (value.length < 12) && validateName(value) ? '' : '请输入正确的名字';
 			}
 			if(key == 'lastName') {
-				signError = (value.length < 12) && validateName(value) ? '' : '请输入正确的名字';
+				signError = (value.length < 12) && validateName(value) ? '' : '请输入正确的姓氏';
 			}
 			if(key == 'usernameNew') {
 				signError = validateEmail(value) ? '' : '请输入正确的电子邮箱';
@@ -243,6 +243,8 @@ class Login extends React.Component {
 		form.append("email", usernameNew);
 		form.append("website", "www.xx.com");
 		form.append("fromType", "C");
+		form.append('userType', 'Free Trial');
+		form.append('expireAt', Date.now() + 60 * 24 * 3600 * 1000);
 
 		udf.signIn(form, (repstate)=>{
 			if(!repstate || (repstate.code != 0)) {
@@ -336,7 +338,7 @@ class Login extends React.Component {
       		{/*---------------注册--------------*/}
 					<div className="section sign" ref="section_sign">
 						<div className="title">创建一个新的拱石账号</div>
-						<div className="full-name"><input type="text" ref="sign_first_name" placeholder="姓" id='0' value={firstName} onChange={this.handleSignInputChange}/><input type="text" id='1' ref="sign_last_name" placeholder="名" value={lastName} onChange={this.handleSignInputChange}/></div>
+						<div className="full-name"><input type="text" id='0' ref="sign_last_name" placeholder="姓" value={lastName} onChange={this.handleSignInputChange}/><input type="text" ref="sign_first_name" placeholder="名" id='1' value={firstName} onChange={this.handleSignInputChange}/></div>
 						<div><input ref="sign_username" id='2' type="text" placeholder="邮箱" value={usernameNew} onChange={this.handleSignInputChange}/></div>
 						<div><input ref="sign_password" id='3' type="password" placeholder="密码" value={passwordNew} onChange={this.handleSignInputChange}/></div>
 						<div><input ref="sign_password_confirm" id='4' type="password" placeholder="确认密码" value={passwordNewConfirm} onChange={this.handleSignInputChange}/></div>
@@ -349,13 +351,20 @@ class Login extends React.Component {
 					</div>
       		{/*---------------忘记密码--------------*/}
 					<div className={`section reset step-${resetStep}`}>
-						<div className="title">找回密码</div>
+						<div className="title">
+							{	function(){
+									if(resetStep==1) { return <div>验证账号<span className="value">{usernameReset}</span>的信息</div>; }
+									if(resetStep==2) { return '设置新密码' }
+									return '找回密码'
+								}()
+							}
+						</div>
 						<div className={`inputs-wrapper step-${resetStep}`} ref="reset_inputs">
-							<input value={usernameReset} onChange={(e)=>{ this.setState({usernameReset:e.target.value}) }} type="text" placeholder="输入注册电子邮箱" />
-							<input value={firstNameReset} onChange={(e)=>{this.setState({firstNameReset:e.target.value}) }} type="text" placeholder="输入注册时候的 姓" />
-							<input value={lastNameReset} onChange={(e)=>{this.setState({lastNameReset:e.target.value})}} type="text" placeholder="输入注册时候的 名" />
-							<input value={passwordReset} onChange={(e)=>{this.setState({passwordReset:e.target.value})}} type="text" placeholder="设置新密码(6-20位数字、字母符号)" />
-							<input value={passwordResetConfirm} onChange={(e)=>{this.setState({passwordResetConfirm:e.target.value})}} type="text" placeholder="确认密码" />
+							<input value={usernameReset} onChange={(e)=>{ this.setState({usernameReset:e.target.value, resetError:''}) }} type="text" placeholder="输入注册电子邮箱" />
+							<input value={lastNameReset} onChange={(e)=>{this.setState({lastNameReset:e.target.value})}} type="text" placeholder="输入注册时候的 姓" />
+							<input value={firstNameReset} onChange={(e)=>{this.setState({firstNameReset:e.target.value}) }} type="text" placeholder="输入注册时候的 名" />
+							<input value={passwordReset} onChange={(e)=>{this.setState({passwordReset:e.target.value})}} type="password" placeholder="设置新密码(6-20位数字、字母符号)" />
+							<input value={passwordResetConfirm} onChange={(e)=>{this.setState({passwordResetConfirm:e.target.value})}} type="password" placeholder="确认密码" />
 							<div className="good">
 								<div><i className="icon-good"></i></div>
 								<p>设置新密码成功</p>
@@ -363,7 +372,18 @@ class Login extends React.Component {
 							</div>
 							<div className="error" ref="reset_error">{resetError}</div>
 						</div>
-						<div className="yanzheng"><button ref="yanzheng_btn" onClick={this.handleValidateReset.bind(this)}>{resetStep==3 ? '进入拱石' : '验证'}</button></div>
+						<div className="yanzheng">
+							<button ref="yanzheng_btn" onClick={this.handleValidateReset.bind(this)}>
+								{
+									function(){
+										if(resetStep==0) return '下一步';
+										if(resetStep==1) return '验证';
+										if(resetStep==2) return '确定';
+										return '进入拱石';
+									}()
+								}
+							</button>
+						</div>
 						<div>
 							<button className="flat-btn return" onClick={this.handleResetBack.bind(this)}><i className="fa fa-angle-left"></i></button>
 						</div>

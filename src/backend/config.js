@@ -53,40 +53,39 @@ export default {
         // url: "http://112.74.17.46:25501/querysymbols",
         method: "POST"
     },
-
+    //用户管理
 	loginOptions: {
         url: getURL(30030, 'api/login'),
-		// url: 'http://112.74.17.46:30030/api/login',
+		// url: 'http://localhost:3000/api/login',
 		method: 'POST'
 	},
 
 	logoutOptions: {
         url: getURL(30030, 'api/logout'),
         // url: 'http://112.74.17.46:30030/api/logout',
+        // url: 'http://localhost:3000/api/logout',
         method: 'POST'
     },
 
     signOptions: {
         url: getURL(30030, 'api/signup'),
         // url: 'http://112.74.17.46:30030/api/signup',
-		url: 'http://localhost:3000/api/signup',
+		// url: 'http://localhost:3000/api/signup',
 		method: 'POST'
 	},
     validateOptions: {
         url: getURL(30030, 'api/validate'),
-        url: 'http://localhost:3000/api/validate',
-
+        // url: 'http://localhost:3000/api/validate',
         method: 'POST'
     },
     resetPasswordOptions: {
         url: getURL(30030, 'api/reset_password'),
-        url: 'http://localhost:3000/api/reset_password',
-
+        // url: 'http://localhost:3000/api/reset_password',
         method: 'POST'
     },
     changePasswordOptions: {
         url: getURL(30030, 'api/change_password'),
-        url: 'http://localhost:3000/api/change_password',
+        // url: 'http://localhost:3000/api/change_password',
 
         method: 'POST'
     },
