@@ -99,7 +99,7 @@ var _priceUpdate = (param, $item) => {
 				colorClass = 'red';
 			else if(upRate < 0) 
 				colorClass = 'green';
-			$item.find('[role="price"]').text(close && close.toFixed(2)).addClass(colorClass).animateCss('fadeIn');
+			$item.find('[role="price"]').text(close && close.toFixed(2)).removeClass('green red').addClass(colorClass).animateCss('fadeIn');
 			$item.find('[role="up-rate"]').text((upRate*100).toFixed(2) + '%').addClass(colorClass).animateCss('fadeIn');
 			if(dataObj.pricePast) {
 				dataObj.price = close;
