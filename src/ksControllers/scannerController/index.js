@@ -99,8 +99,14 @@ var _priceUpdate = (param, $item) => {
 				colorClass = 'red';
 			else if(upRate < 0) 
 				colorClass = 'green';
-			$item.find('[role="price"]').text(close && close.toFixed(2)).removeClass('green red').addClass(colorClass).animateCss('fadeIn');
-			$item.find('[role="up-rate"]').text((upRate*100).toFixed(2) + '%').addClass(colorClass).animateCss('fadeIn');
+
+			if(upRate <= -1) {
+				colorClass = ''
+			}
+			var closeTxt = close && close.toFixed(2) || '--';
+			var upRateTxt = close && ((upRate*100).toFixed(2) + '%') || '--';
+			$item.find('[role="price"]').text(closeTxt).removeClass('green red').addClass(colorClass).animateCss('fadeIn');
+			$item.find('[role="up-rate"]').text(upRateTxt).removeClass('green red').addClass(colorClass).animateCss('fadeIn');
 			if(dataObj.pricePast) {
 				dataObj.price = close;
 				dataObj.upRate = upRate;
@@ -381,7 +387,7 @@ var _updatePastSelect = () => {
 // 初始化往期UI
 scannerController._initPast = () => {
 	var $pastWrapper = _$container.find('.past-wrapper');
-	var $selectDate = $pastWrapper.find('select.date').selectmenu({width: 142}).on('selectmenuchange',function(e){
+	var $selectDate = $pastWrapper.find('select.date').selectmenu({width: 142}).on('selectmenuselect',function(e){
 		_$selectDate.parent().siblings('.flat-btn.btn-red').prop('disabled',false);
 	});
 	var $submit = $pastWrapper.find('button.btn-red');
