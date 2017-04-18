@@ -23,7 +23,7 @@ var _$listWrapperPast = null;
 var _datafeed = null;
 var _data = {date:'',list:[],options:{}};
 
-var _aggregateRanges = [[-Infinity, 200],[200, 300],[300, 500],[500, 1000],[1000, 2000], [2000, Infinity]];
+var _aggregateRanges = [[-Infinity, 50],[50, 70],[70, 100],[100, 200],[200, 500], [500, Infinity]];
 
 var _crossfilter = null; //统计信息
 
@@ -492,6 +492,8 @@ scannerController._fetchPastData = () => {
 					symbol: sids[i],
 					pricePast: prices0[i][4],
 					price: prices10[i].close,
+					isTingpai: prices10[i].isValid,
+					isPast: prices10[i].isPast,
 					upRate: 0,
 					meanPast: EVs[i],
 					upRatePast: hitRates[i],
@@ -862,18 +864,23 @@ function _updatePastList() {
 	for(var i=0; i<$list.length; i++) {
 		var $item = $($list[i]);
 		var dataObj = $item.data().data;
-		var {name, symbol, pricePast, price, meanPast, upRatePast, kline} = dataObj;
+		var {name, symbol, pricePast, price, meanPast, upRatePast, kline, isTingpai, isPast} = dataObj;
 		var upRate = price && (price - pricePast)/price;
+
+		var colorClass = !isTingpai && upRate && (upRate>=0 ? 'red':'green') || '';
+		var priceTxt = isTingpai ? '--' : price && price.toFixed(2) || '--';
+		var upRateTxt = isTingpai ? '--' : (upRate !== undefined && (upRate * 100).toFixed(2) + '%') || '--';
+
 		var children = [
 			`<span class="kline-tooltip"><div>${name}</div><div>${symbol}</div></span>`,
 			`<span><div>${pricePast.toFixed(2)}</div></span>`,
-			`<span><div role="price">${price && price.toFixed(2) || '--'}</div></span>`,
-			`<span><div role="up-rate" class=${upRate && (upRate>=0 ? 'red':'green')}>${(upRate !== undefined && (upRate * 100).toFixed(2) || '--') + '%'}</div></span>`,
+			`<span><div role="price" class=${colorClass}>${priceTxt}</div></span>`,
+			`<span><div role="up-rate" class=${colorClass}>${upRateTxt}</div></span>`,
 			`<span><div class=${meanPast>=0 ? 'red':'green'}>${(meanPast*100).toFixed(2) + '%'}</div></span>`,
 			`<span><div class=${upRatePast>=0 ? 'red':'green'}>${(upRatePast*100).toFixed(2) + '%'}</div></span>`,
 		];
 		$item.find('.section1').append(children);
-		if(!price) {
+		if(!isPast) {
 			_priceUpdaters2.push(_priceUpdate.bind(null, {symbol:symbol}, $item));
 		} else if(str == '现价') {
 			str = `${prediction}天后收盘价`;
