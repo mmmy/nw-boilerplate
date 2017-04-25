@@ -599,6 +599,8 @@ scannerController._fetchData = () => {
 				var len = closePrice.length;
 				return (closePrice[len-1] - closePrice[0]) / closePrice[0];
 			});
+			var EV = originData.EVs[i];   //收益率
+			var hitRate = originData.hitRates[i]; //上涨比例
 			var item = {
 				index: i,
 				symbol: originData.sids[i],
@@ -621,6 +623,8 @@ scannerController._fetchData = () => {
 					kline: originData.patterns[i],
 				},
 				statistic: statisticKline(earns),
+				EV: EV,
+				hitRate: hitRate,
 				aggregateValue: latestData.marketValue
 			};
 			data.list.push(item);
@@ -914,14 +918,14 @@ function _updateList() {
 	for(var i=0; i<$list.length; i++) {
 		var $item = $($list[i]);
 		var dataObj = $item.data().data;
-		var { name, symbol, meta, categoryIndustry, categoryConcept, industry, subIndustry, statistic, aggregateValue, jiejin } = dataObj;
+		var { name, symbol, meta, categoryIndustry, categoryConcept, industry, subIndustry, statistic, EV, hitRate, aggregateValue, jiejin } = dataObj;
 
 		var section1Children = [
 			`<span><div>${name}</div><div>${symbol}</div></span>`,
 			`<span><div role="price">${'--'}</div></span>`,
 			`<span><div role="up-rate">${'--'}</div></span>`,
-			`<span><div class=${statistic.mean>=0 ? 'red' : 'green'}>${(statistic.mean*100).toFixed(2)+'%'}</div></span>`,
-			`<span><div class="red">${(statistic.upPercent*100).toFixed(1)+'%'}</div></span>`,
+			`<span><div class=${EV>=0 ? 'red' : 'green'}>${(EV*100).toFixed(2)+'%'}</div></span>`,
+			`<span><div class="red">${(hitRate*100).toFixed(1)+'%'}</div></span>`,
 			`<span><div>${industry}</div><div>${subIndustry}</div></span>`,
 			`<span><div>${categoryIndustry}</div><div>${categoryConcept}</div></span>`,
 		];
