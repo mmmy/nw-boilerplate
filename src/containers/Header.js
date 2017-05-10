@@ -87,6 +87,7 @@ class Header extends React.Component {
 												<div className='username'>{account.username}</div>
 												<div className='userType red'>{loginState && loginState.userType && loginState.userType.toUpperCase() == 'VIP' ? 'VIP用户' : '试用账户'}</div>
 												<div className='days-remain red'>有效期剩余 {loginState && loginState.expireInDay} 天</div>
+												<a className='link change-password' onClick={this.changePassword}>更改密码</a>
 												<hr />
 												<div className='version'>当前版本: {pkg.version}</div>
 												<a className='link udpate-log' onClick={this.showUpdateLog}>更新日志</a>
@@ -103,11 +104,20 @@ class Header extends React.Component {
 
 	renderAppTool() {
 		let className = classNames('flat-btn button app-maximize', {fullScreen: this.state.fullScreen});
-		let node = <div className='app-tool-container'>
-			<button className='flat-btn button app-minimize' onClick={this.handleAppMinimize.bind(this)}></button>
-			<button ref='app_maximize' className={className} onClick={this.handleAppToggleMaximize.bind(this)}></button>
-			<button className='flat-btn button app-close' onClick={this.handleAppClose.bind(this)}></button>
-		</div>
+		let node = null;
+		if($(document.body).hasClass('mac')) {
+			node = <div className="app-tool-container">
+				<button className='flat-btn button app-close' onClick={this.handleAppClose.bind(this)}></button>
+				<button className='flat-btn button app-minimize' onClick={this.handleAppMinimize.bind(this)}></button>
+				<button ref='app_maximize' className={className} onClick={this.handleAppToggleMaximize.bind(this)}></button>
+			</div>
+		} else {
+			node = <div className='app-tool-container'>
+				<button className='flat-btn button app-minimize' onClick={this.handleAppMinimize.bind(this)}></button>
+				<button ref='app_maximize' className={className} onClick={this.handleAppToggleMaximize.bind(this)}></button>
+				<button className='flat-btn button app-close' onClick={this.handleAppClose.bind(this)}></button>
+			</div>
+		}
 		return node;
 	}
 
@@ -191,6 +201,10 @@ class Header extends React.Component {
 
 	showUpdateLog() {
 		require('../ksControllers/updateLog').show();
+	}
+
+	changePassword() {
+		require('../ksControllers/changePassword').show();
 	}
 }
 

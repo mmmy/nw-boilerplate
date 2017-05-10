@@ -168,6 +168,7 @@ body[theme="dark"] {
 	/*
 	icons
 	--------------------------------------------------------------------*/
+	.history-item .canvas-wrapper .btn-overlay .recover,
 	.search-editor-wrapper .title-name button,
 	.pattern-statistics-panel .trash-all-button .fa-trash,
 	.trash-modal-container .close-icon .fa-close,
@@ -193,13 +194,47 @@ body[theme="dark"] {
 		background-image: url(@icons_dark_url) !important;
 	}
 
+	&.mac, .mac {
+		.app-tool-container {
+			.button.app-close {
+				background-image: url('./image/macos/close.png') !important;
+				background-position: 0 12px;
+			}
+			.button.app-minimize {
+				background-image: url('./image/macos/min.png') !important;
+				background-position: 0 12px;
+			}
+			.app-maximize {
+				background-image: url('./image/macos/max.png') !important;
+				background-position: 0 12px;
+				&.fullScreen {
+					background-position: 0 12px;
+				}
+			}
+			&:hover {
+				.app-close {
+					background-position: 0 0;
+				}
+				.app-maximize {
+					background-position: 0 0;
+					&.fullScreen {
+						background-position: 0 2px;
+					}
+				}
+				.app-minimize {
+					background-position: 0 0;
+				}
+			}
+		}
+	}
+
 	.flat-btn {
 		// background-color: transparent;
 	}
 
 	//
 	.red {
-		color: @dark-brown-red;
+		color: @brown-red-light;//@dark-brown-red;
 	}
 	.pattern-toolbar-container:after,
 	.pattern-statistics-panel:before,

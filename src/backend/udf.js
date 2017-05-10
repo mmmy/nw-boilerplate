@@ -240,6 +240,36 @@ let getLogoutInfo = (postData, callback) => {
   request(options, requestCb, errorCb, postData);
 }
 
+let signIn = (postData, callback) => {
+  const { signOptions } = config;
+  const options = { ...signOptions };
+
+  const requestCb = (result) => {
+    callback && callback(result);
+  };
+
+  const errorCb = (err) => {
+    callback && callback(err);
+  };
+
+  request(options, requestCb, errorCb, postData);
+}
+//验证用户是否存在
+let validateUser = (postData, resolve, reject) => {
+  const { validateOptions } = config;
+  request(validateOptions, resolve, reject, postData);
+};
+
+let resetPassword = (postData, resolve, reject) => {
+  const { resetPasswordOptions } = config;
+  request(resetPasswordOptions, resolve, reject, postData);
+};
+
+let changePassword = (postData, resolve, reject) => {
+  const { changePasswordOptions } = config;
+  request(changePasswordOptions, resolve, reject, postData);
+};
+
 module.exports = {
   getGroupCode,
   getSymbolHistory,
@@ -248,4 +278,8 @@ module.exports = {
   getLoginInfo,
   getLogoutInfo,
   getAllSymbolsList,
+  signIn,
+  validateUser,
+  resetPassword,
+  changePassword,
 }

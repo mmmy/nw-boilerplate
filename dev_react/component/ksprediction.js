@@ -54,7 +54,7 @@ export default React.createClass({
 		});
 		// updateLog.show();
 		// trialReminder.show();
-		// searchPatternGuide.check();
+		searchPatternGuide.check();
 	},
 
 	render(){
@@ -64,6 +64,14 @@ export default React.createClass({
 				</div>
 				<div style={{position:'absolute', right:'20px', height:'240px', width:'70px', border:'1px solid #eee'}} ref='heatmap'>
 				</div>
+				<div style={{position:'absolute', top:'350px'}}><svg width="200" height="200" viewBox="0 0 100 100" style={{fill: 'trasparent', border: "1px solid trasparent"}}>
+					<g>
+						<circle r="45" cx="50" cy="50" stroke="lightblue" fill="trasparent" strokeWidth="2" strokeDasharray="282.7431" style={{'strokeDashoffset': '100px'}}></circle>
+					</g>
+					<g>
+						<text x="50" y="50" alignmentBaseline="middle" fill="lightgreen" textAnchor="middle" fontSize="20" style={{alignmentBaseline:"middle"}}><tspan fontSize="30" style={{alignmentBaseline:"middle"}}>5</tspan><tspan dx="5" style={{alignmentBaseline:"middle"}}>/12</tspan></text>
+					</g>
+				</svg></div>
 				</div>);
 	},
 

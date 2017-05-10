@@ -5,7 +5,20 @@ import localStorage from '../backend/localStorage';
 // import store from '../store';
 import nwApp from '../shared/nwApp';
 import pkg from '../../package.json';
+
+var udf = require('../backend/udf');
+
 let { storageAccount, getAccount, removeAccount, saveUser, removeSavedUser, getAllSavedUsers } = localStorage;
+				//email
+function validateEmail(email) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
+//英文和中文
+function validateName(name) {
+	var re =  /^[a-zA-Z\u4e00-\u9fa5]+$/;
+	return re.test(name);
+}
 
 let setAppStateBeforeLogin = () => {
 	// $('.app-drag-area').css('-webkit-app-region','');
@@ -39,7 +52,32 @@ class Login extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {errorText:'', isLogining: false, username: '', password:'', autoLogin: false, usernameError: false, passwordError: false};
+		this.state = {
+									errorText:'', 
+									isLogining: false, 
+									username: '', 
+									password:'', 
+									autoLogin: false, 
+									usernameError: false, //弃用
+									passwordError: false, //弃用
+									renderType: 'login',  //'login','sign','reset'
+
+									firstName: '',
+									lastName: '',
+									usernameNew: '',
+									passwordNew: '',
+									passwordNewConfirm: '',
+									signError: '',
+									signSucess: false,
+
+									usernameReset: '',//忘记密码
+									firstNameReset: '',
+									lastNameReset: '',
+									passwordReset: '',
+									passwordResetConfirm: '',
+									resetStep: 0, //0:验证email, 1:验证姓名, 2:更改密码, 3:开始进入
+									resetError: '',
+								};
 		let that = this;
 		// this.handleRiseze = (e) => {
 		// 	if(store.getState().account.username) return;
@@ -51,6 +89,34 @@ class Login extends React.Component {
 		// 	waveNode.css({top: waveTop, transitionProperty: (e ? 'none' : '')});
 		// 	logoNode.css({top: logoTop, transitionProperty: (e ? 'none' : '')});
 		// }
+		this.handleSignInputChange = (e) => {
+			var keys = ['lastName','firstName','usernameNew','passwordNew','passwordNewConfirm'];
+			var index = parseInt(e.target.id); //0:first name, 1:last name, 3:username, 4:password, 5:password confirm
+			var key = keys[index];
+			var value = e.target.value.trim();
+			var state = {};
+			state[key] = value;
+			let signError = '';
+			//validate
+			if(key == 'firstName') {
+				signError = (value.length < 12) && validateName(value) ? '' : '请输入正确的名字';
+			}
+			if(key == 'lastName') {
+				signError = (value.length < 12) && validateName(value) ? '' : '请输入正确的姓氏';
+			}
+			if(key == 'usernameNew') {
+				signError = validateEmail(value) ? '' : '请输入正确的电子邮箱';
+			}
+			if(key == 'passwordNew') {
+				signError = (value.length >= 6 && value.length <= 20) ? '' : '6-20位数字、字母符号';
+			}
+			if(key == 'passwordNewConfirm') {
+				signError = value == this.state.passwordNew ? '' : '两串密码不一致';
+			}
+			state.signError = signError;
+			this.setState(state);
+			$(e.target).toggleClass('error', signError != '');
+		}
 	}
 
 	initUI() {
@@ -88,6 +154,116 @@ class Login extends React.Component {
 			}, 3000);
 		}
 	}
+	//注册和找回密码使用
+	enterApp(username, password) {
+		try {
+			window.heap.identify(username);
+			window.USERNAME = username;
+		} catch(e) {
+			console.log(e);
+		}
+		this.hideLogin();
+
+		setTimeout(function(){
+			setAppStateAfterLogin();
+		}, 10);
+		var autoLogin = false;
+		var { onLogined } = this.props;
+		setTimeout(function(){
+			autoLogin ? storageAccount(username, password) : removeAccount();
+			window.document.body.style.opacity = '';
+			onLogined && onLogined({username, password, autoLogin, loginState:{code:0}}, (error) => { 
+				if(!error) {
+					saveUser(username, password);
+				}
+			});
+		}, 100);
+	};
+
+	handleSign() {
+		var {firstName, lastName, usernameNew, passwordNew, passwordNewConfirm} = this.state;
+		//validate
+		if((firstName.length >= 12) || !validateName(firstName)) {
+			this.setState({signError: '请输入正确的姓氏'});
+			return;
+		}
+		if((lastName.length >= 12) || !validateName(lastName)) {
+			this.setState({signError: '请输入正确的名字'});
+			return;
+		}
+		if(!validateEmail(usernameNew)) {
+			this.setState({signError: '请输入正确的电子邮箱'});
+			return;
+		}
+		if(passwordNew.length < 6 || passwordNew.length > 20) {
+			this.setState({signError: '密码为6-20位数字、字母符号'});
+			return;
+		}
+		if(passwordNew !== passwordNewConfirm) {
+			this.setState({signError: '两串密码不一致'});
+			return;
+		}
+		if(!window.navigator.onLine) {
+			this.setState({errorText: '未连接互联网 !'});
+			return;
+		}
+		var that = this;
+
+		var logInSuccess = () => {
+			var newNode = $(`<div class="sign-success-container">
+											<div><i class="icon-good"></i></div>
+											<h4>解码历史, 洞悉未来</h4>
+											<p>恭喜你注册成功!</p>
+											<div class="ksty"><button>开始体验</button></div>
+											<div><span class="time"><span class="value"></span>秒后自动进入拱石</span></div>
+										</div>`);
+			newNode.find('.ksty button').click(()=>{
+				enterApp(usernameNew, passwordNew);
+			});
+			var count = 5;
+			newNode.find('.time .value').text(count);
+			var interval = setInterval(()=>{
+				count --;
+				if(count <= 0) {
+					clearInterval(interval);
+					this.enterApp(usernameNew, passwordNew);
+				} else {
+					newNode.find('.time .value').text(count);
+				}
+			},1000);
+			$(that.refs.section_sign).append(newNode);
+		};
+
+		$(that.refs.sign_btn).html(`<i className='fa fa-spinner fa-spin'></i>`);
+
+		var form = new window.FormData();
+		form.append("name.first", firstName);
+		form.append("name.last", lastName);
+		form.append("password", passwordNew);
+		form.append("email", usernameNew);
+		form.append("website", "www.xx.com");
+		form.append("fromType", "C");
+		form.append('userType', 'Free Trial');
+		form.append('expireAt', Date.now() + 60 * 24 * 3600 * 1000);
+
+		udf.signIn(form, (repstate)=>{
+			if(!repstate || (repstate.code != 0)) {
+				$(that.refs.sign_btn).text('注册');
+				var errorText = '注册失败,请联系拱石获取帮助';
+				if(repstate) {
+					if(repstate.code == 10004) errorText = '服务器内部错误';
+					else if(repstate.code == 20001) { 
+						errorText = '该用户已经被注册';
+						$(this.refs.sign_username).addClass('error')
+					}
+				}
+				$(that.refs.sign_error).text(errorText);
+				return;
+			}
+			//注册成功
+			logInSuccess();
+		});
+	}
 
 	componentDidMount() {
 		// this.initUI();
@@ -114,17 +290,31 @@ class Login extends React.Component {
 		return true;
 	}
 
+	componentDidUpdate() {
+		let { renderType,resetStep } = this.state;
+		if(renderType == 'reset') {
+			if($(this.refs.reset_inputs).children('input:visible:focus').length == 0) {
+				$($(this.refs.reset_inputs).children('input:visible')[0]).focus();
+			}
+		}
+	}
+
 	componentWillUnmount(){
 		// setAppStateAfterLogin();
 		// window.removeEventListener('resize', this.handleRiseze);
 	}
 
 	render(){
-		let { isLogining, username, password, autoLogin } = this.state;
+		let { isLogining, username, password, autoLogin, renderType, firstName, lastName, usernameNew, passwordNew, passwordNewConfirm, signError } = this.state;
 		let innerBtn = isLogining ? <i className='fa fa-spinner fa-spin'></i> : '登录';
 		let autoLoginBtnClass = classNames('flat-btn autologin-button', {'checked':autoLogin});
 		let autoLoginIconClass = classNames('icon-not-check', {'checked': autoLogin});
 		let isEmpty = username === '' || password === '';
+
+		let signBtnDisabled = signError || firstName === '' || lastName === '' || usernameNew==='' || passwordNew==='' || passwordNewConfirm==='' ;
+
+		//忘记密码
+		let { usernameReset, firstNameReset, lastNameReset, passwordReset, passwordResetConfirm, resetStep, resetError } = this.state;
 
 		return (
       <div className='login-panelsmall-container' ref='login_panel_container' onMouseUp={ (e)=>{ e.stopPropagation() } }>
@@ -132,10 +322,10 @@ class Login extends React.Component {
       	<div ref='drag_panel' className='login-titlebar-container'  onMouseDown={this.fixDragableBug.bind(this)}>
       		<button style={{}} className='flat-btn button app-close' onClick={this.closeApp.bind(this)}></button>
       	</div>
-      	<div className='body-container'>
+      	<div className={'body-container ' + renderType}>
       		<div className='logo'></div>
       		<div className='error-text'>{this.state.errorText}</div>
-      		<div>
+      		<div className="section login">
       			<div className='user-name font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_username'>用户名</span>*/}<input ref='input_user' onChange={this.changeUsernamne.bind(this)} type='text' value={username} placeholder='用户名'/>{this.state.usernameError ? <span className='error-icon'></span> : ''}</div>
       			<div className='password font-simsun' >{/*<span className='placeholder transition-all transition-ease' ref='holder_password'>密码</span>*/}<input ref='password_user' onChange={this.changePassword.bind(this)} onFocus={this.handleFocus.bind(this, 1)} onBlur={this.handleBlur.bind(this, 1)} type='password' value={password} placeholder='密码'/>{this.state.passwordError ? <span className='error-icon'></span> : ''}</div>
       			<div className='denglu'><button className='' onClick={this.handleLogin.bind(this)} disabled={isEmpty}>{innerBtn}</button></div>
@@ -144,12 +334,164 @@ class Login extends React.Component {
       					<span className={autoLoginIconClass}></span>{/*<input onChange={this.changeAutoLogin.bind(this)} type='checkbox' checked={autoLogin}/>*/}
       					自动登录
       				</button>
+      				<button className="flat-btn sign-btn" onClick={()=>{this.setState({renderType:'sign',errorText:''})}}>注册账号</button>
+      				<button className="flat-btn forget-btn" onClick={()=>{this.setState({renderType:'reset',errorText:''})}}>忘记密码</button>
       			</div>
       		</div>
+      		{/*---------------注册--------------*/}
+					<div className="section sign" ref="section_sign">
+						<div className="title">创建一个新的拱石账号</div>
+						<div className="full-name"><input type="text" id='0' ref="sign_last_name" placeholder="姓" value={lastName} onChange={this.handleSignInputChange}/><input type="text" ref="sign_first_name" placeholder="名" id='1' value={firstName} onChange={this.handleSignInputChange}/></div>
+						<div><input ref="sign_username" id='2' type="text" placeholder="邮箱" value={usernameNew} onChange={this.handleSignInputChange}/></div>
+						<div><input ref="sign_password" id='3' type="password" placeholder="密码" value={passwordNew} onChange={this.handleSignInputChange}/></div>
+						<div><input ref="sign_password_confirm" id='4' type="password" placeholder="确认密码" value={passwordNewConfirm} onChange={this.handleSignInputChange}/></div>
+						<div className="fuwu">点击注册, 表示您同意我们的: <a>服务和隐私条款</a></div>
+						<div className="zhuce"><button ref="sign_btn" disabled={signBtnDisabled} onClick={this.handleSign.bind(this)}>注册</button></div>
+						<div className="error" ref="sign_error">{signError}</div>
+						<div>
+							<button className="flat-btn return" onClick={()=>{this.setState({renderType:'login'})}}><i className="fa fa-angle-left"></i></button>
+						</div>
+					</div>
+      		{/*---------------忘记密码--------------*/}
+					<div className={`section reset step-${resetStep}`}>
+						<div className="title">
+							{	function(){
+									if(resetStep==1) { return <div>验证账号<span className="value">{usernameReset}</span>的信息</div>; }
+									if(resetStep==2) { return '设置新密码' }
+									return '找回密码'
+								}()
+							}
+						</div>
+						<div className={`inputs-wrapper step-${resetStep}`} ref="reset_inputs">
+							<input value={usernameReset} onChange={(e)=>{ this.setState({usernameReset:e.target.value, resetError:''}) }} type="text" placeholder="输入注册电子邮箱" />
+							<input value={lastNameReset} onChange={(e)=>{this.setState({lastNameReset:e.target.value, resetError:''})}} type="text" placeholder="输入注册时候的 姓" />
+							<input value={firstNameReset} onChange={(e)=>{this.setState({firstNameReset:e.target.value, resetError:''}) }} type="text" placeholder="输入注册时候的 名" />
+							<input value={passwordReset} onChange={(e)=>{this.setState({passwordReset:e.target.value, resetError:''})}} type="password" placeholder="设置新密码(6-20位数字、字母符号)" />
+							<input value={passwordResetConfirm} onChange={(e)=>{this.setState({passwordResetConfirm:e.target.value, resetError:''})}} type="password" placeholder="确认密码" />
+							<div className="good">
+								<div><i className="icon-good"></i></div>
+								<p>设置新密码成功</p>
+								<p>请牢记您的新密码</p>
+							</div>
+							<div className="error" ref="reset_error">{resetError}</div>
+						</div>
+						<div className="yanzheng">
+							<button ref="yanzheng_btn" onClick={this.handleValidateReset.bind(this)}>
+								{
+									function(){
+										if(resetStep==0) return '下一步';
+										if(resetStep==1) return '验证';
+										if(resetStep==2) return '确定';
+										return '进入拱石';
+									}()
+								}
+							</button>
+						</div>
+						<div>
+							<button className="flat-btn return" onClick={this.handleResetBack.bind(this)}><i className="fa fa-angle-left"></i></button>
+						</div>
+						<div><span className="time" ref="reset_interval"></span></div>
+					</div>	
       	</div>
       	{/*<div className='wave-container'><Waves /></div>*/}
       </div>
     );
+	}
+
+	handleValidateReset(e) {
+		if(!window.navigator.onLine) {
+			this.setState({resetError: '未连接互联网 !'});
+			return;
+		}
+
+		let { usernameReset, firstNameReset, lastNameReset, passwordReset, passwordResetConfirm, resetStep } = this.state;
+		// this.setState({resetStep: resetStep+1});
+		if(resetStep == 0) {    //验证username
+			new Promise((resolve, reject)=>{
+				udf.validateUser({username: usernameReset}, resolve, reject);
+			}).then((result)=>{
+				if(result) {
+					if(result.code === 0) { this.setState({resetStep: resetStep+1, resetError:''}) }
+					else if(result.code === 10001) { this.setState({resetError:'用户不存在'}) }
+					else { this.setState({resetError:'服务器内部错误'}) }
+				} else {
+					this.setState({resetError:'未知错误,请稍后重试'});
+				}
+			}).catch((err)=>{
+				console.error(err);
+				this.setState({resetError:"验证失败,请稍后重试,或联系拱石"});
+			});
+		} else if(resetStep == 1) { //验证姓名
+			new Promise((resolve, reject)=>{
+				var postData = {};
+				postData.username = usernameReset;
+				postData['name.first'] = firstNameReset;
+				postData['name.last'] = lastNameReset;
+				udf.validateUser(postData,resolve,reject);
+			}).then((result)=>{
+				if(result) {
+					if(result.code === 0) { this.setState({resetStep: resetStep+1, resetError:''}) }
+					else if(result.code === 10001) { this.setState({resetError:'验证不正确'}) }
+					else { this.setState({resetError:'服务器内部错误'}) }
+				} else {
+					this.setState({resetError:'未知错误,请稍后重试'});
+				}
+			}).catch((err)=>{
+				console.error(err);
+				this.setState({resetError:"验证失败,请稍后重试,或联系拱石"});
+			});
+		} else if(resetStep == 2) { //重设密码
+			//判断密码是否正常
+			if(passwordReset.length < 6 || passwordReset.length > 20 ) {
+				this.setState({resetError:'密码为6-20位数字、字母符号'});
+			} else if(passwordReset !== passwordResetConfirm) {
+				this.setState({resetError:'密码不一致'});
+			} else { //发送请求
+				new Promise((resolve, reject)=>{
+					var postData = {};
+					postData.username = usernameReset;
+					postData['name.first'] = firstNameReset;
+					postData['name.last'] = lastNameReset;
+					postData.passwordNew = passwordReset;
+					udf.resetPassword(postData,resolve,reject);
+				}).then((result)=>{
+					if(result) {
+						if(result.code === 0) { 
+							//todo: start logi
+							this.setState({resetStep: resetStep+1, resetError:''});
+							var count = 5;
+							$(this.refs.reset_interval).text(count+'秒后自动进入拱石');
+							var interval = setInterval(()=>{
+								count --;
+								if(count === 0) {
+									clearInterval(interval);
+									this.enterApp(usernameReset, passwordReset);
+								} else { $(this.refs.reset_interval).text(count+'秒后自动进入拱石'); }
+							},1000);
+						} else {
+							this.setState({resetError:('重置密码失败'+result.code)});
+						}
+					} else {
+						this.setState({resetError:'未知错误,请稍后重试'});
+					}
+				}).catch((err)=>{
+					console.error(err);
+					this.setState({resetError:"重置失败,请稍后重试,或联系拱石"});
+				});
+			}
+		} else if(resetStep == 3) {
+			this.enterApp(usernameReset, passwordReset);
+		}
+
+	}
+
+	handleResetBack(e) {
+		let { resetStep } = this.state;
+		if(resetStep > 0) {
+			this.setState({resetStep: resetStep - 1});
+		} else {
+			this.setState({renderType:'login', resetError:''});
+		}
 	}
 
 	fixDragableBug(e) {
@@ -238,8 +580,6 @@ class Login extends React.Component {
 		let username = this.state.username;
 		let password = this.state.password;
 		let autoLogin = this.state.autoLogin;
-
-		var udf = require('../backend/udf');
 
 		//udf.getLoginInfo({username: username,password:password}, function(data) {if(data)loginstate=data;});
 		var postData = 'username='+ encodeURIComponent(username)+'&password='+encodeURIComponent(password);

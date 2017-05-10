@@ -15,7 +15,7 @@ var paths = {
 	BASE:  		'src',
 	APP: 		'src/index.html',
 	FONTS:      ['src/fonts/*'],
-	IMAGE: 		['src/image/*'],
+	IMAGE: 		['src/image/*','src/image/**/*'],
 	STYLES: 	['src/styles/*.less', 'src/styles/**/*.less'],
 	SCRIPTS: 	['src/*.js', 'src/**/*.js'],
 	COMPONENTS: ['src/components/**/*.js'],

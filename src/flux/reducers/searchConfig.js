@@ -1,5 +1,6 @@
 import * as types from '../constants/ActionTypes';
 import { SPACE_DEFINITION, MATCH_TYPE } from '../constants/Const';
+var gui = window.require('nw.gui');
 
 var now = new Date();
 
@@ -17,13 +18,14 @@ var initialState = {
 };
 
 var fs = require('fs');
+var dir = process.platform == 'darwin' ? (gui.App.dataPath+'/searchConfig') : '../searchConfig';
 try {
-	fs.mkdirSync('../searchConfig');
+	fs.mkdirSync(dir);
 } catch(e) {
 	console.log(e);
 }
 
-var searchConfigFilePath = '../searchConfig/searchConfigFilePath.json';
+var searchConfigFilePath = dir + '/searchConfigFilePath.json';
 try {
     var sC = JSON.parse(fs.readFileSync(searchConfigFilePath).toString());
     for (let x in initialState) {

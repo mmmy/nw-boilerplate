@@ -95,6 +95,7 @@ let setStockViewVisibleRange = function(symbol, unixTimeRange, interval) {
 				mainSeries._onCompleted.unsubscribe(null, func); //取消所有订阅
 			});
 
+			symbol = symbol || mainSeries.symbol();
 			// chart.setResolution(interval);    //设置 resolution
 			
 			_onComsubscribes = [];

@@ -144,3 +144,41 @@
 		}
 	}
 }
+
+.mac {
+	.header-icon {
+		margin-left: calc(~"50% - 30px");
+		display: none;
+	}
+	.header-toolbar-container {
+		right: 20px;
+	}
+	.app-tool-container {
+		right: auto;
+		left: 15px;
+		>button {
+			width: 12px;
+			height: 12px;
+			padding: 0;
+			margin-right: 10px;
+			margin-top: 8px;
+			background-position: 0 0;
+			&:hover {
+				background-position: 0 0;
+			}
+			cursor: default;
+			&.app-close {
+				// background-color: #FD5A59;
+				// border: 1px solid #DE3A3E;
+			}
+			&.app-minimize {
+				// background-color: #FEBE30;
+				// border: 1px solid #DEA11B;
+			}
+			&.app-maximize {
+				// background-color: #2AAF28;
+				// border: 1px solid #2AAF28;
+			}
+		}
+	}
+}

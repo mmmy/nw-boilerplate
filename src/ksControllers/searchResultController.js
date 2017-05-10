@@ -200,6 +200,8 @@ let _updatePredictionUI = ({timespent, total, model}) => {
 		_comparatorDoms.downRate.text(downRateStr);
 		_comparatorDoms.median.text(medianStr);
 		_comparatorDoms.mean.text(meanStr);
+		$(_comparatorDoms.median).closest('.item-value').removeClass('green red').addClass(model.median >= 0 ? 'red' : 'green');
+		$(_comparatorDoms.mean).closest('.item-value').removeClass('green red').addClass(model.mean >= 0 ? 'red' : 'green');
 	} catch(e) {
 		console.error(e);
 	}

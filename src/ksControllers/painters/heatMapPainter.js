@@ -65,6 +65,7 @@ let drawBlockHeatMap = (canvas, data, options) => {
 	let drawEachHeight = Math.floor(eachBlockHeight);
 	ctx.save();
 	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
 	ctx.font = 'italic ' + fontSize*ratio + 'px Arial';
 	blocksY.forEach((y, i) => {
 		ctx.fillStyle = blocksColor[i];
@@ -78,7 +79,8 @@ let drawBlockHeatMap = (canvas, data, options) => {
 		let label = labels[i];
 		if(label) {
 			ctx.fillStyle = textColor;
-			ctx.fillText(label, labelX, (i+1)*(drawEachHeight + blockGap) + fontSize/2);	
+			// ctx.fillText(label, labelX, (i+1)*(drawEachHeight + blockGap));	
+			ctx.fillText(label, labelX, y+drawEachHeight+blockGap);	
 		}
 	});
 	ctx.restore();

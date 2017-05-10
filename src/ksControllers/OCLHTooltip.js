@@ -37,6 +37,7 @@ OCLHTooltip.prototype.setPosition = function(left, top, cssPosition) {
 	top = (top > maxTop) ? maxTop : top;
 	let position = cssPosition || 'absolute';
 	this._$container.css({left, top, position});
+	return this;
 }
 
 OCLHTooltip.prototype.setOCLH = function(o, c, l, h, v) {
@@ -47,14 +48,17 @@ OCLHTooltip.prototype.setOCLH = function(o, c, l, h, v) {
 
 	var vStr = $.keyStone.volumeFormatter(v);
 	this._$V.text(vStr);
+	return this;
 }
 
 OCLHTooltip.prototype.show = function() {
 	this._$container.show();
+	return this;
 }
 
 OCLHTooltip.prototype.hide = function() {
 	this._$container.hide();
+	return this;
 }
 
 module.exports = OCLHTooltip;

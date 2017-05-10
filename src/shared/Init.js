@@ -12,8 +12,11 @@ let initJquery = () => {
 };
 
 let initJqueryPlugins = () => {
+	require('../../vendor/jquery-ui.min');
+	
 	require('../../vendor/bootstrap-datepicker.min');
 	require('../../vendor/bootstrap-datepicker.zh-CN.min');
+	
 
 	require('./extendJquery')($);
 	//load tradingview libs
@@ -123,5 +126,8 @@ module.exports = {
 	 	initResize();
 	 	initGolbalKeyEvent();
 	 	initNwEvents();
+	 	if(process && process.platform == 'darwin') {
+	 		$(document.body).addClass('mac');
+	 	}
 	}
 }

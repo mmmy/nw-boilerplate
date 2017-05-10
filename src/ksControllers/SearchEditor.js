@@ -82,8 +82,8 @@ SearchEditor.prototype._initMain = function() {
 
 	header.append($name).append($nameInput).append(OCLH).append($(`<button class='flat-btn tool-btn select-range'>区域</button>`).click(this._handleStartSelectRange.bind(this)))
 											// .append($(`<button class='flat-btn tool-btn delete-range'>删除</button>`).click(this._handleDeleteBars.bind(this)))
-											.append($(`<button class='flat-btn tool-btn save'>保存</button>`))
-											.append($(`<button class='flat-btn tool-btn add-favorites' data-kstooltip="添加到收藏夹">收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj, {type:0})).blur(handleShouCangBlur.bind(null)));
+											.append($(`<button class='flat-btn tool-btn save' data-kstooltip="保存">保存</button>`).click(this._handleSave.bind(this)))
+											.append($(`<button class='flat-btn tool-btn add-favorites' data-kstooltip="另存为到收藏夹">收藏</button>`).focus(handleShouCangFocus.bind(null, this._favoritesManager, this._favoritesController, this._dataObj, {type:0})).blur(handleShouCangBlur.bind(null)));
 
 	this._OHLCInputs = {
 		O: $('<input class="OCLH-input font-arial" type="number" step="0.1"/>').on('input', function(event){ that._klineEditor.setMoveIndexO(+event.target.value) }),
@@ -247,6 +247,11 @@ SearchEditor.prototype._handleStartSelectRange = function(e) {
 	// $target.css('box-shadow','0 0 1px #444 inset');
 	$target.addClass('active');
 	this._klineEditor.startSelectRange();
+}
+
+SearchEditor.prototype._handleSave = function(e) {
+	this._favoritesController.updateFavorites(this._dataObj);
+	this._favoritesController.setEditorSaved();
 }
 
 SearchEditor.prototype._handleDeleteBars = function(e) {

@@ -10,6 +10,10 @@ var _$headerDom = null;
 var _$bodyDom = null;
 
 watchListController.init = (wrapper) => {
+	console.log('watchlist init!!!');
+	if($(wrapper).find('.watchlist-body-wrapper').length > 0) {
+		return;
+	}
 	_$headerDom = $(`<div class="watchlist-header-wrapper"><strong class="title strong">智能监控</strong><span class="config-info">根据近期  <span role="config-data">-</span> 根  <span role="config-data">-</span> 线 统计后向 <span role="config-data">-</span>根</span><span class="update hide">实时监测中</span></div>`)
 								.append(`<div class="pull-right widget-wrapper edit-watchlist"><button role="edit-watchlist" class="flat-btn border-btn">编辑列表</button></div>`)
 								.append(`<div class="pull-right widget-wrapper edit-searchConfig"><button role="edit-searchConfig" class="flat-btn border-btn">设置搜索条件</button></div>`)
@@ -73,5 +77,8 @@ watchListController._initActions = () => {
 	// 	var configEditor = new ConfigEditor(null, searchConfig, null, _watchList);
 	// },300);
 }
+watchListController.append = (symbolObj) => {
+	_watchList.append(symbolObj);
+};
 
 module.exports = watchListController;

@@ -2,6 +2,9 @@
 //详情左上角预测
 import painter from './painter';
 import linePainter from './linePainter';
+import moment from 'moment';
+
+let { drawKline, drawAxisY, drawAxisTime } = painter;
 
 const HITTEST = {
 	SCALE_LINES: 100,
@@ -18,10 +21,23 @@ let createEmptyKline = (len) => {
 };
 
 let PredictionWidget = function(dom, config){
-	config = config || {};
+	config = $.extend({
+		showRange: false,
+		slient: false,
+		klineScaleRate: 1.25,
+		padding: {right:58},
+		xPadding: {left: 0, right: 0, top:0, bottom:0},
+		axis: false,         //显示x,y轴的
+		xHeight: 20,
+		yWidth: 50,
+		volume: false,
+		yMarks: [],
+	},config);
+	this._config = config;
 	this._canvas = null;
 	this._ctx = null;
 	this._canvasParent = null;
+	this._isLight = $ && $.keyStone && ($.keyStone.theme == 'light');
 
 	this._kline = [];
 	this._closePrice = [];
@@ -42,22 +58,26 @@ let PredictionWidget = function(dom, config){
 
 	this._showRange = Boolean(config.showRange);
 	this._slient = Boolean(config.slient);
-	let rate = parseFloat(config.klineScaleRate);
-	this._klineScaleRate = isNaN(rate) ? 1.25 : rate;
+	this._klineScaleRate = config.klineScaleRate;
+	this._axis = config.axis;
 
 	this._activeLine = this._slient ? -1 : 0;
 
-	var padding = config.padding || {right:58};
+	var padding = config.padding;
 	this._klineOption = {
 		yMin: null,
 		yMax: null,
 		predictionBars: 0,
 		hoverIndex: -1,
 		selectedRange: [0, 0],
+		hoverY: -1,
 		rangeOption: {noCloseBtn: true},
 		padding: padding,
 		volume: false,
 	};
+
+	this._canvas_axis_y = null;
+	this._canvas_axis_x = null;
 
 	this._linesOptions = {
 		yMin: null,
@@ -72,6 +92,28 @@ let PredictionWidget = function(dom, config){
 		padding: padding,
 		patterns: null
 	};
+
+	//axis options
+	this._yDrawOption = {
+		hoverY: -1,
+		textColor: this._isLight ? '' : '#999',
+		hoverColor: this._isLight ? '' : '#222',
+		hoverBackground: this._isLight ? '' : '#aaa',
+		padding:{left:0,top:0,right:0,bottom:config.xHeight},
+		labelWidth: config.yWidth,
+		marks: this._config.yMarks,
+	};
+	this._xDrawOption = {
+		drawLen: null,       //保证与K线区域对其
+		hoverIndex: -1,
+		showTime: false, //是否精确显示到 时分秒
+		textColor: this._isLight ? '' : '#999',
+		hoverColor: this._isLight ? '' : '#222',
+		hoverBackground: this._isLight ? '' : '#aaa',
+		padding: {left:config.yWidth,top:0,right:padding.right,bottom:0},
+	};
+	this._timeArray = [];
+	this._timeInterval = 'D';
 
 	this._onHoverKline = null; //func
 	this._onScaleLines = null; //func
@@ -90,8 +132,17 @@ PredictionWidget.prototype._init = function(dom){
 	} else {
 		this._canvas = document.createElement('canvas');
 		this._ctx = this._canvas.getContext('2d');
-		this._canvasParent = dom;
-		this._canvasParent.appendChild(this._canvas);
+		this._canvasParent = $('<div class="main-wrapper"></div>')[0];
+		$(dom).append($(this._canvasParent).append(this._canvas));
+		//axis
+		if(this._axis) {
+			this._canvas_axis_x = document.createElement('canvas');
+			this._canvas_axis_y = document.createElement('canvas');
+			$(dom).append($('<div class="bottom-axis-x-wrapper"></div>').append(this._canvas_axis_x))
+													.append($('<div class="left-axis-y-wrapper"></div>').append(this._canvas_axis_y))
+													.addClass('axis');
+
+		}
 	}
 	this._updateSize();
 	this._canvasParent.addEventListener('mousedown', this._mouseDown.bind(this));
@@ -101,8 +152,8 @@ PredictionWidget.prototype._init = function(dom){
 }
 
 PredictionWidget.prototype._updateSize = function(){
-	let width = this._canvasParent.clientWidth,
-			height = this._canvasParent.clientHeight;
+	let width = this._canvas.parentNode.clientWidth,
+			height = this._canvas.parentNode.clientHeight;
 	this._canvas.style.width = width + 'px';
 	this._canvas.style.height = height + 'px';
 	this._canvas.width = width;
@@ -188,15 +239,33 @@ PredictionWidget.prototype._scaleLines = function(x, y) {
 	this._linesYOffset = 0;
 }
 
+PredictionWidget.prototype._isMinuteTime = function() {
+	return (parseInt(this._timeInterval) + '') == this._timeInterval; //说明是 this._timeInterval = '1' || '5' || '15'
+}
+
+PredictionWidget.prototype._initTimeArray = function() {
+	this._timeArray = this._kline.map((priceArr) => {
+		let rawTime = priceArr[0];
+		let momentTime = typeof rawTime == 'number' ? moment.unix(rawTime) : moment(rawTime);
+		return momentTime.format('YYYY-MM-DD HH:mm:ss');
+	});
+}
+
 PredictionWidget.prototype.updateHover = function(x, y){
-	if(this._slient) return;
+	if(!this._axis && this._slient) return;
 	let {pointToIndex} = this._drawKlineInfo;
 	if(!pointToIndex) return;
 	let hittest =  this._getHitTest(x, y);
 	this.setCursorByHittest(hittest);
 
 	let currentIndex = pointToIndex(x, false);
-	if(this._hoverKlineIndex != currentIndex) {
+	if(this._hoverKlineIndex != currentIndex || this._axis) {
+		if(this._axis) {
+			this._klineOption.hoverY = y;
+			this._yDrawOption.hoverY = y;
+			this._xDrawOption.hoverIndex = currentIndex;
+			this._xDrawOption.showTime = this._isMinuteTime();
+		}
 		this._hoverKlineIndex = currentIndex;
 		let hoverData = this._kline[this._hoverKlineIndex];
 		this._onHoverKline && this._onHoverKline(this._hoverKlineIndex, hoverData);
@@ -224,11 +293,29 @@ PredictionWidget.prototype._updateKlineOption = function(){
 
   offset *= this._klineScaleRate;
   offset = isNaN(offset) ? 0 : offset;
-
+  //last close 居中显示
   this._klineOption.yMax = lastClosePrice + offset;
   this._klineOption.yMin = lastClosePrice - offset;
+  if(!this._predictionBars || this._predictionBars < 1) { //没有预测线 不需要居中显示
+  	this._klineOption.yMax = max;
+  	this._klineOption.yMin = min;
+  	if(this._config.yMarks) {        //需要显示 标线, 比如一个价格线
+  		var that = this;
+  		this._config.yMarks.forEach(function(mark){
+  			var val = mark.value;
+  			that._klineOption.yMax = Math.max(that._klineOption.yMax, val);
+  			that._klineOption.yMin = Math.min(that._klineOption.yMin, val);
+  		});
+  	}
+  	offset = this._klineOption.yMax - this._klineOption.yMin;
+  	//上下偏移5% 显示, 防止到顶
+  	this._klineOption.yMax += offset * 0.05;
+  	this._klineOption.yMin -= offset * 0.05;
+  }
   this._klineOption.predictionBars = +this._predictionBars;
-  this._klineOption.volume = this._patterns.length > 0;
+  this._klineOption.volume = this._patterns.length > 0  || this._axis;
+  this._linesOptions.volume = this._axis;
+  this._xDrawOption.drawLen = this._kline.length + this._predictionBars;
 }
 
 PredictionWidget.prototype._updateLinesOption = function(){
@@ -259,8 +346,17 @@ PredictionWidget.prototype._drawKline = function(){
 	//merge
 	this._klineOption.hoverIndex = this._hoverKlineIndex;
 	this._klineOption.selectedRange[1] = this._showRange ? (this._kline.length>0 ? this._kline.length - 1 : 0) : -1;
-
-	this._drawKlineInfo = painter.drawKline(this._canvas, this._kline, this._klineOption);
+	//kline
+	this._drawKlineInfo = drawKline(this._canvas, this._kline, this._klineOption);
+	if(this._axis) {
+		//y axis
+		var yMax = this._drawKlineInfo.yMax,
+				yMin = this._drawKlineInfo.yMin;
+		var vH = 0.2;
+		drawAxisY(this._canvas_axis_y, [yMin - (yMax - yMin) * vH / (1 - vH), yMax], this._yDrawOption);
+		//x axis
+		drawAxisTime(this._canvas_axis_x, this._timeArray, this._xDrawOption);
+	}
 }
 
 PredictionWidget.prototype._drawLines = function(){
@@ -297,11 +393,18 @@ PredictionWidget.prototype._updateData = function(){
 }
 
 PredictionWidget.prototype.setData = function(kline, closePrice, baseBars, predictionBars, patterns){
-	this._kline = kline || this._kline;
+	var _kline = kline;
+	if(kline && kline.length>0 && kline[0].open) {
+		_kline = kline.map(function(price){
+			return [price.date, price.open, price.close, price.low, price.high, price.volume];
+		});
+	}
+	this._kline = _kline || this._kline;
 	this._closePrice = closePrice || this._closePrice;
 	this._baseBars = baseBars || kline && kline.length || this._baseBars;
 	this._predictionBars = predictionBars || closePrice && closePrice[0] && closePrice[0].length || this._predictionBars;
 	this._patterns = patterns || this._patterns;
+	this._initTimeArray();
 	this._updateData();
 	this._hoverKlineIndex = -1;
 	this._updateKlineOption();
