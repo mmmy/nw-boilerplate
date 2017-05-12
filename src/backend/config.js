@@ -27,11 +27,11 @@ export default {
         // url: 'http://192.168.0.102:15501/query',  //USDJPY
         method: 'POST',
     },
-
+    //暂时没用
     fileChunkOptions: {
         method: 'GET',
     },
-
+    //获取证券列表信息
     groupOptions: {
         url: getURL(30011, 'groups'),
         // url: 'http://139.196.226.133:30011/groups',
@@ -53,36 +53,39 @@ export default {
         // url: "http://112.74.17.46:25501/querysymbols",
         method: "POST"
     },
-    //用户管理
+    //用户登陆
 	loginOptions: {
         url: getURL(30030, 'api/login'),
 		// url: 'http://localhost:3000/api/login',
 		method: 'POST'
 	},
-
+    //登出
 	logoutOptions: {
         url: getURL(30030, 'api/logout'),
         // url: 'http://112.74.17.46:30030/api/logout',
         // url: 'http://localhost:3000/api/logout',
         method: 'POST'
     },
-
+    //注册
     signOptions: {
         url: getURL(30030, 'api/signup'),
         // url: 'http://112.74.17.46:30030/api/signup',
 		// url: 'http://localhost:3000/api/signup',
 		method: 'POST'
 	},
+    //修改密码验证
     validateOptions: {
         url: getURL(30030, 'api/validate'),
         // url: 'http://localhost:3000/api/validate',
         method: 'POST'
     },
+    //重置密码
     resetPasswordOptions: {
         url: getURL(30030, 'api/reset_password'),
         // url: 'http://localhost:3000/api/reset_password',
         method: 'POST'
     },
+    //修改密码
     changePasswordOptions: {
         url: getURL(30030, 'api/change_password'),
         // url: 'http://localhost:3000/api/change_password',
